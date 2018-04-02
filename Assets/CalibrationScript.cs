@@ -16,7 +16,8 @@ public class CalibrationScript : MonoBehaviour {
 
 	public GameObject keyPrefab;
 
-	// Use this for initialization
+	// Use this for initialization:w
+
 	void Start () {
 		
 	}
@@ -26,12 +27,12 @@ public class CalibrationScript : MonoBehaviour {
 		if(left != null && right != null && !inited) {
             var horizontalDist = leftThumbPos.z - rightThumbPos.z;
             var delta = horizontalDist / (right.keyNum - left.keyNum);
-			Enumerable.Range(left.keyNum, right.keyNum).ToList().ForEach(v => {
+			for (var v = left.keyNum; v <= right.keyNum; v++){
+				Debug.Log("Left = " + left.keyNum + "Right = " + right.keyNum);
 				var obj = Instantiate(keyPrefab);
 				var nextPos = new Vector3(leftThumbPos.x, leftThumbPos.y, leftThumbPos.z + delta * v);
 				obj.transform.position = nextPos;
 			}
-			);
 			inited = true;
 		}
 		
