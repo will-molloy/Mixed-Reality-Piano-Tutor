@@ -63,7 +63,9 @@ namespace Sanford.Multimedia.Midi
 
             PostEventsOnCreationContext = postEventsOnCreationContext;
             PostDriverCallbackToDelegateQueue = postDriverCallbackToDelegateQueue;
-        }
+        
+        
+       }
 
         ~InputDevice()
         {

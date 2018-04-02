@@ -14,14 +14,12 @@ public class MidiTest : MonoBehaviour {
 	protected LeapServiceProvider provider;
 	private Frame lastFrame;
 
-
 	// Use this for initialization
 	void Start () {
 		if(InputDevice.DeviceCount != 1) {
 			Debug.LogError("Err: No device or too many devices found for MIDI input.");
 			throw new System.Exception();
 		}
-
 		inputDevice = new InputDevice(0);
 		inputDevice.ChannelMessageReceived += handleChannelMsg;
 		inputDevice.StartRecording();
@@ -30,6 +28,11 @@ public class MidiTest : MonoBehaviour {
         provider = GetComponent<LeapServiceProvider>();
 		provider.OnUpdateFrame += OnUpdateFrame;
 		provider.OnFixedFrame += OnFixedFrame;
+	}
+
+	void OnApplicationQuit(){
+		Debug.Log("MIDI closed");
+		inputDevice.Dispose();
 	}
 
 	protected virtual void OnUpdateFrame(Frame frame) {
@@ -44,15 +47,15 @@ public class MidiTest : MonoBehaviour {
 	}
 
 	void handleChannelMsg(object sender, ChannelMessageEventArgs e) {
-        string a;
-		a = e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + e.Message.Data1.ToString() + '\t' + e.Message.Data2.ToString();
-		Debug.Log(a);
+		Debug.Log(e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + e.Message.Data1.ToString() + '\t' + e.Message.Data2.ToString());
+		var obj = GameObject.FindGameObjectWithTag("MainCamera");
 		if(e.Message.Command == ChannelCommand.NoteOn && lastFrame != null) {
             if (CalibrationScript.left == null)
             {
                 CalibrationScript.left = PianoKeys.GetKeyFor(e.Message.Data1);
 				var fingers = lastFrame.Hands[0].Fingers;
 				CalibrationScript.leftThumbPos= fingers[4].TipPosition.ToVector3();
+				Debug.Log(CalibrationScript.leftThumbPos);
             }
             else if (CalibrationScript.right == null)
             {
