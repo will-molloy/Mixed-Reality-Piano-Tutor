@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 65458934275387960}
   - component: {fileID: 23472101974028292}
   m_Layer: 0
-  m_Name: Key
+  m_Name: BlackKey
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,8 +36,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1333224359579602}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.037617683, y: 0.2267294, z: -11.432697}
-  m_LocalScale: {x: 0.11, y: 0.1, z: 0.5}
+  m_LocalPosition: {x: -0.0111, y: 0.2291, z: -11.425}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -56,7 +56,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 67b66d4eb50ed684d94eb00bc04709d2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

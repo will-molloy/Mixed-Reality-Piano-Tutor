@@ -81,10 +81,10 @@ public enum BlackOrWhite {
 
 public class PianoKey {
 	public readonly int keyNum;
-	public readonly BlackOrWhite blockOrWhite;
+	public readonly BlackOrWhite blackOrWhite;
 
 	public PianoKey(int keyNum, BlackOrWhite bow) {
 		this.keyNum = keyNum;
-		this.blockOrWhite = bow;
+		this.blackOrWhite = bow;
 	}
 }
