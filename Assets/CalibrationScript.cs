@@ -31,7 +31,7 @@ public class CalibrationScript : MonoBehaviour
             var horizontalDist = leftThumbPos.z - rightThumbPos.z;
             var delta = horizontalDist / (right.keyNum - left.keyNum);
             var camera = GameObject.FindWithTag("MainCamera");
-            var leapSpace = GameObject.FindWithTag("LeapSpace");
+            //var leapSpace = GameObject.FindWithTag("LeapSpace");
             // Init keyboard
             Debug.Log("Left = " + left.keyNum + "Right = " + right.keyNum);
             Debug.Log("Num keys = " + (right.keyNum - left.keyNum + 1));
@@ -59,8 +59,8 @@ public class CalibrationScript : MonoBehaviour
             // Map game space to real world
 			var leftPrintZ = string.Format("{0:0.##########}", leftThumbPos.z); 
 			var rightPrintZ = string.Format("{0:0.##########}", rightThumbPos.z); 
-            Debug.Log("Left thumb = " + leftPrintZ + ", right thumb = " + rightPrintZ +
-                ", camera = " + camera.transform.position + ", leap = " + leapSpace.transform.position);
+            //Debug.Log("Left thumb = " + leftPrintZ + ", right thumb = " + rightPrintZ +
+            //  ", camera = " + camera.transform.position + ", leap = " + leapSpace.transform.position);
 
             inited = true;
         }

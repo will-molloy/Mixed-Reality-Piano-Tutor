@@ -42,6 +42,11 @@ public class MidiTest : MonoBehaviour
     protected virtual void OnUpdateFrame(Frame frame)
     {
         lastFrame = frame;
+        foreach(var i in frame.Hands) {
+            foreach(var j in i.Fingers) {
+                Debug.DrawRay(j.TipPosition.ToVector3(),j.Direction.ToVector3(), Color.red);
+            }
+        }
     }
     protected virtual void OnFixedFrame(Frame frame)
     {
@@ -62,8 +67,10 @@ public class MidiTest : MonoBehaviour
             if (CalibrationScript.left == null)
             {
                 CalibrationScript.left = PianoKeys.GetKeyFor(e.Message.Data1);
+                var finger = lastFrame.Hands[0].Fingers[0];
                 CalibrationScript.leftThumbPos = GetThumbPos(lastFrame.Hands[0].Fingers);
                 Debug.Log("Left thumb tip = " + CalibrationScript.leftThumbPos);
+
             }
             else if (CalibrationScript.right == null)
             {
@@ -76,7 +83,8 @@ public class MidiTest : MonoBehaviour
 
     private Vector3 GetThumbPos(List<Finger> fingers)
     {
-        return TransformToCameraVector(ToUnityVector3(GetThumb(fingers).TipPosition));
+        //return TransformToCameraVector(ToUnityVector3(GetThumb(fingers).TipPosition));
+        return GetThumb(fingers).TipPosition.ToVector3();
     }
 
 
