@@ -10,7 +10,6 @@ using Leap.Unity.Attributes;
 [RequireComponent(typeof(LeapServiceProvider))]
 public class MidiTest : MonoBehaviour
 {
-
     protected InputDevice inputDevice;
     protected LeapServiceProvider provider;
     private Frame lastFrame;
@@ -61,32 +60,27 @@ public class MidiTest : MonoBehaviour
     void handleChannelMsg(object sender, ChannelMessageEventArgs e)
     {
         Debug.Log(e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + e.Message.Data1.ToString() + '\t' + e.Message.Data2.ToString());
-        var obj = GameObject.FindGameObjectWithTag("MainCamera");
         if (e.Message.Command == ChannelCommand.NoteOn && lastFrame != null)
         {
-            if (CalibrationScript.left == null)
+            if (CalibrationScript.leftKey == null)
             {
-                CalibrationScript.left = PianoKeys.GetKeyFor(e.Message.Data1);
+                CalibrationScript.leftKey = PianoKeys.GetKeyFor(e.Message.Data1);
                 var finger = lastFrame.Hands[0].Fingers[0];
                 CalibrationScript.leftThumbPos = GetThumbPos(lastFrame.Hands[0].Fingers);
                 Debug.Log("Left thumb tip = " + CalibrationScript.leftThumbPos);
 
             }
-            else if (CalibrationScript.right == null)
+            else if (CalibrationScript.rightKey == null)
             {
-                CalibrationScript.right = PianoKeys.GetKeyFor(e.Message.Data1);
-                CalibrationScript.rightThumbPos = GetThumbPos(lastFrame.Hands[0].Fingers);
-                Debug.Log("Right thumb tip = " + CalibrationScript.rightThumbPos);
+                CalibrationScript.rightKey = PianoKeys.GetKeyFor(e.Message.Data1);
             }
         }
     }
 
     private Vector3 GetThumbPos(List<Finger> fingers)
     {
-        //return TransformToCameraVector(ToUnityVector3(GetThumb(fingers).TipPosition));
         return GetThumb(fingers).TipPosition.ToVector3();
     }
-
 
     private Finger GetThumb(List<Finger> fingers)
     {
@@ -100,20 +94,6 @@ public class MidiTest : MonoBehaviour
 		Debug.LogError("Couldn't find thumb returning null.");
         return null;
     }
-
-	private Vector3 ToUnityVector3(Vector vector){
-		return new Vector3(vector.x / 100,
-			vector.y / 100,
-			vector.z / -100);
-	}
-
-	private Vector3 TransformToCameraVector(Vector3 vector){
-        var camera = GameObject.FindWithTag("MainCamera");
-		var cameraVector = camera.transform.position;
-		return new Vector3(vector.x + cameraVector.x,
-			vector.y + cameraVector.y,
-			vector.z + cameraVector.z);
-	}
 }
 
 
