@@ -24,6 +24,8 @@ public class CalibrationScript : MonoBehaviour
 
     private const float blackKeyZOffset = 0.025f;
 
+    private static Dictionary<PianoKey, GameObject> pianoKeys = new Dictionary<PianoKey, GameObject>();
+
     void Start()
     {
         whiteKeyX = WhiteKey.transform.localScale.x;
@@ -40,7 +42,8 @@ public class CalibrationScript : MonoBehaviour
             var currentX = 0f;
             for (var v = 0; v <= rightKey.keyNum - leftKey.keyNum; v++)
             {
-                var keyType = PianoKeys.GetKeyFor(v + leftKey.keyNum).blackOrWhite;
+                var pianoKey = PianoKeys.GetKeyFor(v + leftKey.keyNum);
+                var keyType = pianoKey.blackOrWhite;
                 GameObject obj;
                 Vector3 nextPos;
                 if (keyType == BlackOrWhite.White)
@@ -55,6 +58,7 @@ public class CalibrationScript : MonoBehaviour
                     nextPos = new Vector3(leftThumbPos.x + currentX + blackKeyXOffset, leftThumbPos.y + blackKeyYOffset, leftThumbPos.z + blackKeyZOffset);
                 }
 				obj.transform.localPosition = nextPos;
+                pianoKeys[pianoKey] = obj;
             }
             inited = true;
         }
@@ -63,6 +67,43 @@ public class CalibrationScript : MonoBehaviour
         {
             // MIDI stuff
         }
+    }
+
+    public static void ActivateKey(int keyNum){
+        if (!inited)
+        {
+           Debug.Log("Piano not setup.");
+        } 
+        else 
+        {
+            var pianoKey = PianoKeys.GetKeyFor(keyNum);
+            GameObject gameObject;
+            if(pianoKeys.TryGetValue(pianoKey, out gameObject)) {
+                var newColor = Color.red;
+                var render = gameObject.GetComponent<MeshRenderer>();
+                render.material.color = newColor;
+            }
+
+        }
+    }
+
+
+    public static void DeactiveKey(int keyNum) {
+        if (!inited)
+        {
+           Debug.Log("Piano not setup.");
+        } 
+        else 
+        {
+            var pianoKey = PianoKeys.GetKeyFor(keyNum);
+            GameObject gameObject;
+            if(pianoKeys.TryGetValue(pianoKey, out gameObject)) {
+                var newColor = pianoKey.blackOrWhite == BlackOrWhite.White ? Color.white : Color.black; 
+                var render = gameObject.GetComponent<MeshRenderer>();
+                render.material.color = newColor;
+            }
+        }
+
     }
 
 }

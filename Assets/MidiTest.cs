@@ -62,6 +62,7 @@ public class MidiTest : MonoBehaviour
         Debug.Log(e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + e.Message.Data1.ToString() + '\t' + e.Message.Data2.ToString());
         if (e.Message.Command == ChannelCommand.NoteOn && lastFrame != null)
         {
+            CalibrationScript.ActivateKey(e.Message.Data1);
             if (CalibrationScript.leftKey == null)
             {
                 CalibrationScript.leftKey = PianoKeys.GetKeyFor(e.Message.Data1);
@@ -74,6 +75,8 @@ public class MidiTest : MonoBehaviour
             {
                 CalibrationScript.rightKey = PianoKeys.GetKeyFor(e.Message.Data1);
             }
+        } else if (e.Message.Command == ChannelCommand.NoteOff) {
+            CalibrationScript.DeactiveKey(e.Message.Data1);
         }
     }
 
