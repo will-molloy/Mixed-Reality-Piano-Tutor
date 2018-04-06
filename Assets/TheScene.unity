@@ -1397,8 +1397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3f106a209345c540a528f92e817a848, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inited: 0
-  keyPrefab: {fileID: 1333224359579602, guid: a0ab884623354b745b5e1462e4f14c6e, type: 2}
+  BlackKey: {fileID: 1333224359579602, guid: cefe037a54324e849af042367a912d27, type: 2}
+  WhiteKey: {fileID: 1333224359579602, guid: c681bdf81e3bcac4dbccbdc697882a77, type: 2}
 --- !u!4 &2113433557
 Transform:
   m_ObjectHideFlags: 0
