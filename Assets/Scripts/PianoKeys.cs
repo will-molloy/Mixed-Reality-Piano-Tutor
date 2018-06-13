@@ -8,7 +8,7 @@ using UnityEngine;
 public class PianoKeys
 {
     public readonly static List<PianoKey> keysList;
-    public readonly static float pianoKeyGap = 0.001f; // 0.002 - white key width
+    public readonly static float pianoKeyGap = 0.001f; // 0.02 - white key width
 
     static PianoKeys()
     {
