@@ -49,6 +49,7 @@ public class PianoBuilder : MonoBehaviour
         var blackkeyScale = blackKey.transform.localScale;
         var xOffset = 0f;
         var zOffset = whitekeyScale.z / 4;
+
         for (int i = firstkey.keyNum; i <= lastkey.keyNum; i++)
         {
             var currentKey = PianoKeys.GetKeyFor(i);
@@ -64,7 +65,7 @@ public class PianoBuilder : MonoBehaviour
             {
                 keyObj = Instantiate(blackKey);
                 keyObj.transform.SetParent(this.transform);
-                keyObj.transform.localPosition = new Vector3(xOffset + whitekeyScale.x / 2, yOffset, zOffset);
+                keyObj.transform.localPosition = new Vector3(xOffset - whitekeyScale.x / 2, yOffset, zOffset);
             }
             pianoKeys[currentKey] = keyObj;
         }

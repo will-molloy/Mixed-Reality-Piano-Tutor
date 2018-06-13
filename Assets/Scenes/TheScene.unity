@@ -745,5 +745,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   midiFileName: Assets/MIDI/megalovania_s.mid
   pianoRollSpeed: 0.15
-  dropDownObject: {fileID: 1055867788491200, guid: 89b4e2af7ed9efe49be2d17d7db9ef6a,
+  pianoRollObject: {fileID: 1055867788491200, guid: 89b4e2af7ed9efe49be2d17d7db9ef6a,
     type: 2}
