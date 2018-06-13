@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>  
+/// - Hook ZED camera to Piano Builder
+/// </summary> 
 [RequireComponent(typeof(Camera))]
 public class PianoCameraHookScript : MonoBehaviour
 {

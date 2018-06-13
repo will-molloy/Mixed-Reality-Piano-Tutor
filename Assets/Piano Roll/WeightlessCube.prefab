@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 23077508017843084}
   - component: {fileID: 54777108356263154}
   m_Layer: 0
-  m_Name: CubeMarker
+  m_Name: WeightlessCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -90,7 +90,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1055867788491200}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
   m_AngularDrag: 0
   m_UseGravity: 0

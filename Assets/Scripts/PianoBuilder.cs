@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+/// <summary>  
+/// - Builds piano 
+/// - starts sequencer (TODO change)
+/// - Use keyboard to scale/move/rotate piano
+/// </summary> 
 public class PianoBuilder : MonoBehaviour
 {
 
@@ -12,28 +17,30 @@ public class PianoBuilder : MonoBehaviour
     private GameObject blackKey;
     [SerializeField]
     private GameObject lockedText;
+    private static readonly Color activationColor = Color.red;
 
     public static readonly int CENTRE = (PianoKeys.GetLastKey().keyNum + PianoKeys.GetFirstKey().keyNum) / 2;
 
     internal Dictionary<PianoKey, GameObject> pianoKeys;
 
     internal static readonly float yOffset = 0.001f;
-    // Whether the piano has been locked in placed by the user
     internal bool locked = false;
-    // Whether the piano has been placed into the initial positon
-    internal bool placed = false;
+    internal bool pianoIsBuilt = false;
     internal GameObject lockedTextObj;
 
     public static PianoBuilder instance;
 
-    // Use this for initialization
 
     public void PlacePianoInfrontOfTransform(Transform trf)
     {
-        PlacePianoAt(trf.position + trf.forward * 0.5f);
+        if (!pianoIsBuilt)
+        {
+            BuildPianoAt(trf.position + trf.forward * 0.5f);
+            Sequencer.instance.spawnNotes();
+        }
     }
 
-    public void PlacePianoAt(Vector3 location)
+    private void BuildPianoAt(Vector3 location)
     {
         this.transform.position = location;
         var firstkey = PianoKeys.GetFirstKey();
@@ -61,7 +68,7 @@ public class PianoBuilder : MonoBehaviour
             }
             pianoKeys[currentKey] = keyObj;
         }
-        placed = true;
+        pianoIsBuilt = true;
 
     }
     void Start()
@@ -70,10 +77,9 @@ public class PianoBuilder : MonoBehaviour
         pianoKeys = new Dictionary<PianoKey, GameObject>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (!placed)
+        if (!pianoIsBuilt)
         {
             return;
         }
@@ -107,7 +113,7 @@ public class PianoBuilder : MonoBehaviour
                 position.z -= 0.001f;
             }
             if (Input.GetKey(KeyCode.Z))
-            { 
+            {
                 scale += new Vector3(0.001f, 0f, 0.001f);
             }
             if (Input.GetKey(KeyCode.X))
@@ -128,25 +134,74 @@ public class PianoBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            // Locking the piano in place
             if (lockedTextObj != null)
             {
                 GameObject.Destroy(lockedTextObj);
             }
             if (locked)
             {
-                // Unlock it
                 locked = false;
             }
             else
             {
-                // Lock it in place and set a text
                 locked = true;
                 lockedTextObj = Instantiate(lockedText);
                 lockedTextObj.transform.SetParent(this.transform);
                 lockedTextObj.transform.localPosition = pianoKeys[PianoKeys.GetKeyFor(CENTRE)].transform.localPosition + new Vector3(0f, 0.1f, 0f);
             }
         }
+    }
 
+    public void ActivateKey(int keyNum)
+    {
+        if (!pianoIsBuilt)
+        {
+            Debug.Log("Piano not setup.");
+        }
+        else
+        {
+            var pianoKey = PianoKeys.GetKeyFor(keyNum);
+            GameObject gameObject;
+            if (pianoKeys.TryGetValue(pianoKey, out gameObject))
+            {
+                var render = gameObject.GetComponent<MeshRenderer>();
+                render.material.color = activationColor;
+            }
+        }
+    }
+
+    public void DeactivateKey(int keyNum)
+    {
+        if (!pianoIsBuilt)
+        {
+            Debug.Log("Piano not setup.");
+        }
+        else
+        {
+            var pianoKey = PianoKeys.GetKeyFor(keyNum);
+            GameObject gameObject;
+            if (pianoKeys.TryGetValue(pianoKey, out gameObject))
+            {
+                var render = gameObject.GetComponent<MeshRenderer>();
+                render.material.color = pianoKey.color == KeyColor.White ? Color.white : Color.black;
+            }
+        }
+    }
+
+    public void GetOffsetForKeyNum(int keyNum, out float a, out float b)
+    {
+        if (!pianoIsBuilt)
+        {
+            Debug.Log("Piano not setup.");
+            a = 0;
+            b = 0;
+        }
+        else
+        {
+            var key = PianoKeys.GetKeyFor(keyNum);
+            var pos = pianoKeys[key].transform.position;
+            a = pos.x;
+            b = pos.z;
+        }
     }
 }
