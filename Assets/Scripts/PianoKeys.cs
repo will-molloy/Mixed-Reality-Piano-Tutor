@@ -8,6 +8,7 @@ using UnityEngine;
 public class PianoKeys
 {
     public readonly static List<PianoKey> keysList;
+    public readonly static float pianoKeyGap = 0.001f; // 0.02 - white key width
 
     static PianoKeys()
     {
@@ -79,6 +80,15 @@ public class PianoKeys
     {
         if (keyNum < 36 || keyNum > 96) return null;
         return keysList[keyNum - 36];
+    }
+
+    public static PianoKey GetFirstKey()
+    {
+        return keysList[0];
+    }
+    public static PianoKey GetLastKey()
+    {
+        return keysList[keysList.Count - 1];
     }
 }
 public enum KeyColor

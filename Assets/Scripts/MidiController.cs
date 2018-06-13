@@ -38,11 +38,11 @@ public class MidiController : MonoBehaviour
         Debug.Log(e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + e.Message.Data1.ToString() + '\t' + e.Message.Data2.ToString());
         if (e.Message.Command == ChannelCommand.NoteOn)
         {
-            Piano.ActivateKey(e.Message.Data1);
+            PianoBuilder.instance.ActivateKey(e.Message.Data1);
         }
         else if (e.Message.Command == ChannelCommand.NoteOff)
         {
-            Piano.DeactivateKey(e.Message.Data1);
+            PianoBuilder.instance.DeactivateKey(e.Message.Data1);
         }
     }
 
