@@ -26,6 +26,8 @@ public class Sequencer : MonoBehaviour
     [SerializeField]
     public GameObject dropDowns;
 
+    private List<GameObject> pianoRollObjects = new List<GameObject>();
+
     public static Sequencer instance;
     void Start()
     {
@@ -55,12 +57,17 @@ public class Sequencer : MonoBehaviour
         SpawnNotesDropDown(noteManager.Notes.ToList());
     }
 
-    public void SpawnNotesDropDown(List<Note> notes)
+    private void ClearPianoRoll()
     {
-        Debug.Log("Spawning piano roll notes");
-        List<GameObject> pianoRollObjects = new List<GameObject>();
+        Debug.Log("Clearing piano roll");
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
+    }
+
+    public void SpawnNotesDropDown(List<Note> notes)
+    {
+        ClearPianoRoll();
+        Debug.Log("Spawning piano roll");
         notes.ForEach(e =>
         {
             var number = e.NoteNumber;
