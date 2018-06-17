@@ -7,17 +7,17 @@ using Melanchall.DryWetMidi.Smf.Interaction;
 using Melanchall.DryWetMidi.Common;
 using System.Linq;
 
-[RequireComponent(typeof(Piano))]
+[RequireComponent(typeof(PianoBuilder))]
 public class Sequencer : MonoBehaviour
 {
 
     private static long tick = 0;
 
-    private MidiFile file = MidiFile.Read("C:/Users/qhua948/Documents/New Unity Project (2)/Assets/MIDI/forelise.mid");
+    private MidiFile file = MidiFile.Read("Assets/MIDI/forelise.mid");
 
     private NotesManager noteManager;
 
-    internal Piano piano;
+    internal PianoBuilder piano;
 
     internal const float SPEED = .15f;
     // Use this for initialization
@@ -28,11 +28,11 @@ public class Sequencer : MonoBehaviour
     public static Sequencer instance;
     void Start()
     {
-		this.piano = GetComponent<Piano>();
+		this.piano = GetComponent<PianoBuilder>();
         instance = this;
     }
 
-    public void spawnNotes(){
+    public void SpawnNotes(){
         if (noteManager == null){
         for (int i = 0; i < file.Chunks.Count; i++)
             {
@@ -53,7 +53,7 @@ public class Sequencer : MonoBehaviour
 
     // Update is called once per frame
 
-    public void SpawnNotesDropDown(List<Note> notes) {
+    private void SpawnNotesDropDown(List<Note> notes) {
         Debug.Log("Spawning piano roll notes");
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
@@ -68,16 +68,23 @@ public class Sequencer : MonoBehaviour
             }
             y = start / 1000f;
             var scale = e.Length / 1000f - 0.01f;
-            piano.GetOffsetForKeyNum(number, out x, out z);
             var obj = Instantiate(dropDowns);
+            var awayVector = piano.GetPointingAwayVectorForKey(key);
+            var keyPos = piano.GetKeyPositionForKey(key);
+            var forwardVector = piano.GetForwardVectorForKey(key);
+            var rot = Quaternion.LookRotation(awayVector);
             pianoRollObjects.Add(obj);
             var dropdownScale = obj.transform.localScale;
             obj.transform.localScale = new Vector3(dropdownScale.x, scale, dropdownScale.z);
-            obj.transform.position = new Vector3(x + 0.0015f, y + 1, z);
+            obj.transform.position = keyPos + awayVector * y + forwardVector * 0.05f;
+            //obj.transform.rotation = rot;
+            //obj.transform.localRotation = new Quaternion(-rot.x, -rot.y, -rot.z, -rot.w);
+            var angle = (Mathf.Atan(5f)) * Mathf.Rad2Deg;
+            obj.transform.eulerAngles = new Vector3(angle, 0, 0);
             var renderer = obj.GetComponent<Renderer>();
             renderer.material.color = key.color == KeyColor.Black ? Color.black : Color.white;
             var rb = obj.GetComponent<Rigidbody>();
-            rb.velocity = new Vector3(0, -SPEED, 0);
+            rb.velocity = -awayVector * 0.1f;
         });
 
     }

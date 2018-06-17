@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+[RequireComponent(typeof(Sequencer))]
 public class PianoBuilder : MonoBehaviour {
 
 	[SerializeField]
@@ -24,6 +25,7 @@ public class PianoBuilder : MonoBehaviour {
 	internal GameObject lockedTextObj;
 
 	public static PianoBuilder instance;
+	internal Sequencer sequencer;
 
 	// Use this for initialization
 
@@ -55,11 +57,63 @@ public class PianoBuilder : MonoBehaviour {
 			pianoKeys[currentKey] = keyObj;
 		}
 		placed = true;
+		//up.transform.SetParent(pianoKeys[firstkey].transform);
+		//front.transform.SetParent(pianoKeys[firstkey].transform);
+		var o = pianoKeys[firstkey];
+		var up = o.transform.position + pianoKeys[firstkey].transform.forward * 0.1f;
+		var front = o.transform.position + pianoKeys[firstkey].transform.up * 0.1f;
+		var lookat = o.transform.position + (o.transform.forward * 5f + o.transform.up * 1f);
+		Debug.DrawLine(o.transform.position, front, color: Color.red, duration: 99999f, depthTest: false);
+		Debug.DrawLine(o.transform.position, up, color: Color.red, duration: 99999f, depthTest: false);
+		Debug.DrawLine(o.transform.position, lookat.normalized, color: Color.green, duration: 99999f, depthTest: false);
 
 	}
 	void Start () {
 		instance = this;
 		pianoKeys = new Dictionary<PianoKey, GameObject>();
+		sequencer = GetComponent<Sequencer>();
+	}
+
+	public Vector3 GetScaleForKey(PianoKey key) {
+		if(!pianoKeys.ContainsKey(key)) {
+			throw new System.Exception("Invalid request for key");
+		}
+		return pianoKeys[key].transform.localScale;
+	}
+
+	public Vector3 GetKeyPositionForKey(PianoKey key) {
+		if(!pianoKeys.ContainsKey(key)) {
+			throw new System.Exception("Invalid request for key");
+		}
+		return pianoKeys[key].transform.position;
+
+	}
+
+	public Vector3 GetForwardVectorForKey(PianoKey key) {
+		if(!pianoKeys.ContainsKey(key)) {
+			throw new System.Exception("Invalid request for key");
+		}
+		return pianoKeys[key].transform.forward;
+	}
+
+	public Vector3 GetPointingAwayVectorForKey(PianoKey key) {
+		if(!pianoKeys.ContainsKey(key)) {
+			throw new System.Exception("Invalid request for key");
+		}
+		var o = pianoKeys[key];
+		var edge = o.transform.position + o.transform.forward * (key.color == KeyColor.White ? whiteKey : blackKey).transform.localScale.z/2;
+		var up = o.transform.position + pianoKeys[key].transform.forward * 0.1f;
+		var front = o.transform.position + pianoKeys[key].transform.up * 0.1f;
+		var lookat = o.transform.position + (o.transform.forward * 5f + o.transform.up * 1f);
+		// Angle = tan(up / forward)
+		return (lookat - o.transform.position).normalized;
+	}
+
+	public Vector3 GetHorizontalVectorForKey(PianoKey key) {
+		if(!pianoKeys.ContainsKey(key)) {
+			throw new System.Exception("Invalid request for key");
+		}
+		return pianoKeys[key].transform.right;
 	}
 
     // Update is called once per frame
@@ -122,6 +176,10 @@ public class PianoBuilder : MonoBehaviour {
 				lockedTextObj.transform.SetParent(this.transform);
 				lockedTextObj.transform.localPosition = pianoKeys[PianoKeys.GetKeyFor(CENTRE)].transform.localPosition + new Vector3(0f, 0.1f, 0f);
 			}
+		}
+		if (Input.GetKeyDown(KeyCode.Return)) {
+			// Spawn 
+			sequencer.SpawnNotes();
 		}
 
     }

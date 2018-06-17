@@ -88,7 +88,7 @@ public class Piano : MonoBehaviour
             pianoKeys[pianoKey] = keyObject;
         }
         isInit = true;
-        Sequencer.instance.spawnNotes();
+        Sequencer.instance.SpawnNotes();
     }
 
     public static void ActivateKey(int keyNum)
