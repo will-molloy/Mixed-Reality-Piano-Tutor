@@ -5,12 +5,13 @@ using System.Linq;
 
 /// <summary>  
 /// - Builds piano 
-/// - starts sequencer (TODO change)
 /// - Use keyboard to scale/move/rotate piano
 /// </summary> 
 public class PianoBuilder : MonoBehaviour
 {
 
+    [SerializeField]
+    private bool needsCameraHook; // determine if spawn straight away or with key specified in CameraHook script
     [SerializeField]
     private GameObject whiteKey;
     [SerializeField]
@@ -30,13 +31,25 @@ public class PianoBuilder : MonoBehaviour
 
     public static PianoBuilder instance;
 
-
     public void PlacePianoInfrontOfTransform(Transform trf)
     {
         if (!pianoIsBuilt)
         {
+            Debug.Log("Building Piano.");
             BuildPianoAt(trf.position + trf.forward * 0.5f);
-            Sequencer.instance.spawnNotes();
+            var sequencer = Sequencer.instance;
+            if (sequencer)
+            {
+                sequencer.spawnNotes();
+            }
+            else
+            {
+                Debug.Log("No Sequencer component (you must be in calibration mode)");
+            }
+        }
+        else
+        {
+            Debug.Log("Piano already built.");
         }
     }
 
@@ -76,6 +89,11 @@ public class PianoBuilder : MonoBehaviour
     {
         instance = this;
         pianoKeys = new Dictionary<PianoKey, GameObject>();
+        if (!needsCameraHook)
+        {
+            Debug.Log("Building Piano with saved position. (TODO)");
+            // PlacePianoInfrontOfTransform(); -- TODO save transform location to disk 
+        }
     }
 
     void Update()
