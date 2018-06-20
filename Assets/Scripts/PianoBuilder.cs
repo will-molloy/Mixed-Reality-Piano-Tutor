@@ -88,13 +88,11 @@ public class PianoBuilder : MonoBehaviour
             {
                 keyObj = Instantiate(blackKey);
                 keyObj.transform.SetParent(this.transform);
-                keyObj.transform.localPosition = new Vector3(xOffset + whitekeyScale.x / 2, yOffset, zOffset);
+                keyObj.transform.localPosition = new Vector3(xOffset - whitekeyScale.x / 2, yOffset, zOffset);
             }
             pianoKeys[currentKey] = keyObj;
         }
         pianoIsBuilt = true;
-        //up.transform.SetParent(pianoKeys[firstkey].transform);
-        //front.transform.SetParent(pianoKeys[firstkey].transform);
         var o = pianoKeys[firstkey];
         var up = o.transform.position + pianoKeys[firstkey].transform.forward * 0.1f;
         var front = o.transform.position + pianoKeys[firstkey].transform.up * 0.1f;
@@ -102,7 +100,6 @@ public class PianoBuilder : MonoBehaviour
         Debug.DrawLine(o.transform.position, front, color: Color.red, duration: 99999f, depthTest: false);
         Debug.DrawLine(o.transform.position, up, color: Color.red, duration: 99999f, depthTest: false);
         Debug.DrawLine(o.transform.position, lookat.normalized, color: Color.green, duration: 99999f, depthTest: false);
-
     }
 
 
@@ -145,7 +142,6 @@ public class PianoBuilder : MonoBehaviour
         var up = o.transform.position + pianoKeys[key].transform.forward * 0.1f;
         var front = o.transform.position + pianoKeys[key].transform.up * 0.1f;
         var lookat = o.transform.position + (o.transform.forward * 5f + o.transform.up * 1f);
-        // Angle = tan(up / forward)
         return (lookat - o.transform.position).normalized;
     }
 
@@ -158,7 +154,6 @@ public class PianoBuilder : MonoBehaviour
         return pianoKeys[key].transform.right;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!pianoIsBuilt)
@@ -223,12 +218,10 @@ public class PianoBuilder : MonoBehaviour
             }
             if (locked)
             {
-                // Unlock it
                 locked = false;
             }
             else
             {
-                // Lock it in place and set a text
                 locked = true;
                 lockedTextObj = Instantiate(lockedText);
                 lockedTextObj.transform.SetParent(this.transform);
@@ -237,7 +230,6 @@ public class PianoBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            // Spawn 
             sequencer.SpawnNotes();
         }
 
