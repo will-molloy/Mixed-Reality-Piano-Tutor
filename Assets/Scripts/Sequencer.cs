@@ -10,10 +10,10 @@ using System.Linq;
 /// <summary>  
 /// - Builds piano roll from MIDI file after virtual piano is built
 /// </summary>  
-[RequireComponent(typeof(PianoBuilder))]
 public class Sequencer : MonoBehaviour
 {
-    public string midiFileName;
+    [SerializeField]
+    private string midiFileName;
 
     public float pianoRollSpeed;
 
@@ -21,19 +21,17 @@ public class Sequencer : MonoBehaviour
 
     private NotesManager noteManager;
 
-    internal PianoBuilder piano;
-
     [SerializeField]
-    public GameObject pianoRollObject;
+    private GameObject pianoRollObject;
 
     private List<GameObject> pianoRollObjects = new List<GameObject>();
 
     public static Sequencer instance;
+
     void Start()
     {
-        this.piano = GetComponent<PianoBuilder>();
         instance = this;
-        midiFile = MidiFile.Read(midiFileName);
+        midiFile = MidiFile.Read(midiFileName); // TODO get from MIDISelection instance 
     }
 
     public void spawnNotes()
@@ -53,7 +51,6 @@ public class Sequencer : MonoBehaviour
                 }
             }
         }
-
         SpawnNotesDropDown(noteManager.Notes.ToList());
     }
 
@@ -81,7 +78,7 @@ public class Sequencer : MonoBehaviour
             }
             y = start / 1000f;
             var scale = e.Length / 1000f - 0.01f;
-            piano.GetOffsetForKeyNum(number, out x, out z);
+            PianoBuilder.instance.GetOffsetForKeyNum(number, out x, out z);
             var obj = Instantiate(pianoRollObject);
             pianoRollObjects.Add(obj);
             var dropdownScale = obj.transform.localScale;
