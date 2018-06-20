@@ -16,10 +16,7 @@ public class MidiFolderReader : MonoBehaviour
     [SerializeField]
     private GameObject textObj;
     private const int buttonSpacing = 10; 
-    private float buttonsHeightSpace = 0;
     private Rect thisRect;
-
-    private GameObject scrollBarVertical;
 
     void Start()
     {
@@ -44,21 +41,15 @@ public class MidiFolderReader : MonoBehaviour
     private void processFile(string midiPath)
     {
         var count = this.transform.childCount;
-        Debug.Log("Processing: " + midiPath + ", count: " + count);
-
         var button = Instantiate(scrollButtonObj);
         button.transform.SetParent(this.transform);
+        var buttonScript = button.GetComponent<UnityEngine.UI.Button>();
+        // buttonScript.onClick; TODO
         var buttonRect = button.GetComponent<RectTransform>();
         buttonRect.localPosition = Vector3.zero;
         buttonRect.localScale = Vector3.one;
         var buttonOffSetLeft = (thisRect.width - buttonRect.rect.width) / 2;
         var buttonOffSetTop = count * (buttonSpacing + buttonRect.rect.height);
-        buttonsHeightSpace += buttonOffSetTop;
-        if (buttonsHeightSpace > thisRect.height)
-        {
-            Debug.Log("Increasing canvas height.");
-            // change scrollbar
-        }
         buttonRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, buttonOffSetLeft, buttonRect.rect.width);
         buttonRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, buttonOffSetTop, buttonRect.rect.height);
 
