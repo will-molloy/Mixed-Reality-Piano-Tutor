@@ -18,12 +18,13 @@ public class MidiFolderReader : MonoBehaviour
 
     // UI components
     [SerializeField]
-    private GameObject scrollButtonObj;
+    private GameObject rowPlaceholderObj;
+    [SerializeField]
+    private GameObject statsObj;
     [SerializeField]
     private GameObject nameObj;
     [SerializeField]
-    private GameObject rowPlaceholder;
-
+    private GameObject playButtonObj;
     private const int buttonSpacing = 10;
     private Rect thisRect;
 
@@ -50,7 +51,7 @@ public class MidiFolderReader : MonoBehaviour
     ///</summary>
     private void processFile(string midiPath)
     {
-        placeButton(midiPath);
+        // placeButton(midiPath);
     }
 
     private void placeName(string midiPath)
@@ -73,25 +74,25 @@ public class MidiFolderReader : MonoBehaviour
 
     }
 
-    private void placeButton(string midiPath)
-    {
-        var button = Instantiate(scrollButtonObj);
-        button.transform.SetParent(this.transform);
-        var buttonScript = button.GetComponent<UnityEngine.UI.Button>();
-        buttonScript.onClick.AddListener((delegate { buttonEvent(midiPath); }));
-        var buttonRect = button.GetComponent<RectTransform>();
-        buttonRect.localPosition = Vector3.zero;
-        buttonRect.localScale = Vector3.one;
+    // private void placeButton(string midiPath)
+    // {
+    //     var button = Instantiate(scrollButtonObj);
+    //     button.transform.SetParent(this.transform);
+    //     var buttonScript = button.GetComponent<UnityEngine.UI.Button>();
+    //     buttonScript.onClick.AddListener((delegate { buttonEvent(midiPath); }));
+    //     var buttonRect = button.GetComponent<RectTransform>();
+    //     buttonRect.localPosition = Vector3.zero;
+    //     buttonRect.localScale = Vector3.one;
 
-        var text = Instantiate(nameObj);
-        text.transform.SetParent(button.transform);
-        text.GetComponent<UnityEngine.UI.Text>().text = formatForUi(midiPath);
-        var textRect = text.GetComponent<RectTransform>();
-        textRect.localPosition = Vector3.zero;
-        textRect.localScale = Vector3.one;
-        textRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, buttonRect.rect.width);
-        textRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, buttonRect.rect.height);
-    }
+    //     var text = Instantiate(nameObj);
+    //     text.transform.SetParent(button.transform);
+    //     text.GetComponent<UnityEngine.UI.Text>().text = formatForUi(midiPath);
+    //     var textRect = text.GetComponent<RectTransform>();
+    //     textRect.localPosition = Vector3.zero;
+    //     textRect.localScale = Vector3.one;
+    //     textRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, buttonRect.rect.width);
+    //     textRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, buttonRect.rect.height);
+    // }
 
     private void buttonEvent(string midiPath)
     {
