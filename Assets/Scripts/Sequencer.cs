@@ -13,8 +13,6 @@ using System.Linq;
 [RequireComponent(typeof(PianoBuilder))]
 public class Sequencer : MonoBehaviour
 {
-    [SerializeField]
-    private string midiFileName;
     private MidiFile midiFile;
     private NotesManager noteManager;
     [SerializeField]
@@ -27,7 +25,9 @@ public class Sequencer : MonoBehaviour
     {
         piano = GetComponent<PianoBuilder>();
         instance = this;
-        midiFile = MidiFile.Read(midiFileName); // TODO get from MIDISelection instance 
+        var midiFileName = RuntimeSettings.MIDI_FILE_NAME;
+        Debug.Log("Start with MIDI file: " + midiFileName);
+        midiFile = MidiFile.Read(midiFileName);
     }
 
     public void SpawnNotes()
@@ -57,17 +57,20 @@ public class Sequencer : MonoBehaviour
         pianoRollObjects.Clear();
     }
 
-    private void SpawnNotesDropDown(List<Note> notes) {
+    private void SpawnNotesDropDown(List<Note> notes)
+    {
         Debug.Log("Spawning piano roll notes");
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
-        notes.ForEach(e => {
+        notes.ForEach(e =>
+        {
             var number = e.NoteNumber;
             var start = e.Time;
             var dur = e.Length;
             float x, y, z;
             var key = PianoKeys.GetKeyFor(number);
-            if(key == null) {
+            if (key == null)
+            {
                 return;
             }
             y = start / 1000f;
@@ -81,8 +84,6 @@ public class Sequencer : MonoBehaviour
             var dropdownScale = obj.transform.localScale;
             obj.transform.localScale = new Vector3(dropdownScale.x, scale, dropdownScale.z);
             obj.transform.position = keyPos + awayVector * y + forwardVector * 0.05f;
-            //obj.transform.rotation = rot;
-            //obj.transform.localRotation = new Quaternion(-rot.x, -rot.y, -rot.z, -rot.w);
             var angle = (Mathf.Atan(5f)) * Mathf.Rad2Deg;
             obj.transform.eulerAngles = new Vector3(angle, 0, 0);
             var renderer = obj.GetComponent<Renderer>();
@@ -90,7 +91,6 @@ public class Sequencer : MonoBehaviour
             var rb = obj.GetComponent<Rigidbody>();
             rb.velocity = -awayVector * 0.1f;
         });
-
     }
 
 }

@@ -5,17 +5,17 @@ using System.IO;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using UnityEngine.SceneManagement;
 public class MidiFolderReader : MonoBehaviour
 {
 
     [SerializeField]
-    private string midiFolderPath;
+    private string midiFolderPath; // should probably read from config file or use ~/Documents
     [SerializeField]
     private GameObject scrollButtonObj;
     [SerializeField]
     private GameObject textObj;
-    private const int buttonSpacing = 10; 
+    private const int buttonSpacing = 10;
     private Rect thisRect;
 
     void Start()
@@ -28,10 +28,11 @@ public class MidiFolderReader : MonoBehaviour
     private void processFolder(string midiDir)
     {
         Debug.Log("Reading MIDI directory: " + midiDir);
-        Enumerable.Range(0, 4).ToList().ForEach(_ => { // TODO remove
-        Directory.GetFiles(midiDir)
-        .Where(x => x.EndsWith(".mid")).ToList()
-        .ForEach(x => processFile(x));
+        Enumerable.Range(0, 4).ToList().ForEach(_ =>
+        { // TODO remove
+            Directory.GetFiles(midiDir)
+            .Where(x => x.EndsWith(".mid")).ToList()
+            .ForEach(x => processFile(x));
         });
     }
 
@@ -44,7 +45,7 @@ public class MidiFolderReader : MonoBehaviour
         var button = Instantiate(scrollButtonObj);
         button.transform.SetParent(this.transform);
         var buttonScript = button.GetComponent<UnityEngine.UI.Button>();
-        // buttonScript.onClick; TODO
+        buttonScript.onClick.AddListener((delegate { buttonEvent(midiPath); }));
         var buttonRect = button.GetComponent<RectTransform>();
         buttonRect.localPosition = Vector3.zero;
         buttonRect.localScale = Vector3.one;
@@ -53,10 +54,9 @@ public class MidiFolderReader : MonoBehaviour
         buttonRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, buttonOffSetLeft, buttonRect.rect.width);
         buttonRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, buttonOffSetTop, buttonRect.rect.height);
 
-
         var text = Instantiate(textObj);
         text.transform.SetParent(button.transform);
-        text.GetComponent<UnityEngine.UI.Text>().text = format(midiPath);
+        text.GetComponent<UnityEngine.UI.Text>().text = formatForUi(midiPath);
         var textRect = text.GetComponent<RectTransform>();
         textRect.localPosition = Vector3.zero;
         textRect.localScale = Vector3.one;
@@ -64,7 +64,13 @@ public class MidiFolderReader : MonoBehaviour
         textRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, buttonRect.rect.height);
     }
 
-    private string format(string midiPath)
+    public void buttonEvent(string midiPath)
+    {
+        RuntimeSettings.MIDI_FILE_NAME = midiPath;
+        SceneManager.LoadScene(RuntimeSettings.GAME_MODE);	
+    }
+
+    private string formatForUi(string midiPath)
     {
         return Regex.Replace(midiPath.Replace(midiFolderPath, "").Replace("mid", "").Replace("_", " "), "[^a-zA-Z ]", "");
     }

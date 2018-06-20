@@ -39,7 +39,7 @@ public class PianoBuilder : MonoBehaviour
         if (!needsCameraHook)
         {
             Debug.Log("Building Piano with saved position. (TODO)");
-            // PlacePianoInfrontOfTransform(); -- TODO save transform location to disk 
+            // PlacePianoInfrontOfTransform(); -- TODO save transform location to RunTimeSettings 
         }
     }
 
@@ -49,7 +49,6 @@ public class PianoBuilder : MonoBehaviour
         {
             Debug.Log("Building Piano.");
             PlacePianoAt(trf.position + trf.forward * 0.5f);
-            var sequencer = Sequencer.instance;
             if (sequencer)
             {
                 sequencer.SpawnNotes();
