@@ -122,6 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 41687501}
   - component: {fileID: 41687500}
+  - component: {fileID: 41687502}
   m_Layer: 0
   m_Name: Piano Builder
   m_TagString: Untagged
@@ -137,9 +138,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 41687499}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36cac8d99283b9e4da4a6c94036c0e81, type: 3}
+  m_Script: {fileID: 11500000, guid: 7cef69ec5dca523478cc01dc2094f654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  needsCameraHook: 0
   whiteKey: {fileID: 1333224359579602, guid: c681bdf81e3bcac4dbccbdc697882a77, type: 2}
   blackKey: {fileID: 1333224359579602, guid: cefe037a54324e849af042367a912d27, type: 2}
   lockedText: {fileID: 1048467096307228, guid: 8f68084b04745854c97027867b98ba9a, type: 2}
@@ -156,6 +158,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &41687502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 41687499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 643fae54c3b645a48ba2ebe359232d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  midiFileName: Assets/MIDI/megalovania_s.mid
+  pianoRollObject: {fileID: 1055867788491200, guid: 89b4e2af7ed9efe49be2d17d7db9ef6a,
+    type: 2}
 --- !u!1 &1055870529
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,6 +183,7 @@ GameObject:
   - component: {fileID: 1055870532}
   - component: {fileID: 1055870531}
   - component: {fileID: 1055870530}
+  - component: {fileID: 1055870534}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -237,6 +254,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 33.493, y: 0, z: 0}
+--- !u!114 &1055870534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1055870529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f092cc3cf35c72c43a51a308f9a5fc75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1908095251
 GameObject:
   m_ObjectHideFlags: 0

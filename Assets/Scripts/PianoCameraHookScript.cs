@@ -8,7 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class PianoCameraHookScript : MonoBehaviour
 {
-    public bool isScriptEnabled;
+    private bool isScriptEnabled;
     
     void Update()
     {
