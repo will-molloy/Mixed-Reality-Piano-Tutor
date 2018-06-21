@@ -1,0 +1,30 @@
+[
+  {
+    "FileName": "Assets/MIDI\\forelise.mid",
+    "FormattedTrackName": "forelise",
+    "TrackDifficulty": 2,
+    "GameMode": 0,
+    "Accuracy": 90.0
+  },
+  {
+    "FileName": "Assets/MIDI\\megalovania.mid",
+    "FormattedTrackName": "megalovania",
+    "TrackDifficulty": 1,
+    "GameMode": 0,
+    "Accuracy": 50.0
+  },
+  {
+    "FileName": "Assets/MIDI\\megalovania_s.mid",
+    "FormattedTrackName": "megalovania s",
+    "TrackDifficulty": 1,
+    "GameMode": 0,
+    "Accuracy": 20.0
+  },
+  {
+    "FileName": "Assets/MIDI\\mozart_eine_kleine_easy.mid",
+    "FormattedTrackName": "mozart eine kleine easy",
+    "TrackDifficulty": 0,
+    "GameMode": 0,
+    "Accuracy": 0.0
+  }
+]

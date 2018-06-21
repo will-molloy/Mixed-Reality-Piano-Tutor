@@ -28,6 +28,8 @@ public class MidiFolderReader : MonoBehaviour
     private const int buttonSpacing = 10;
     private Rect thisRect;
 
+    private const double SCORE_TO_PASS = 0.5d;
+
     void Start()
     {
         thisRect = this.GetComponent<RectTransform>().rect;
@@ -38,12 +40,9 @@ public class MidiFolderReader : MonoBehaviour
     private void processFolder(string midiDir)
     {
         Debug.Log("Reading MIDI directory: " + midiDir);
-        Enumerable.Range(0, 4).ToList().ForEach(_ =>
-        { // TODO remove
-            Directory.GetFiles(midiDir)
-            .Where(x => x.EndsWith(".mid")).ToList()
-            .ForEach(x => processFile(x));
-        });
+        Directory.GetFiles(midiDir)
+        .Where(x => x.EndsWith(".mid")).ToList()
+        .ForEach(x => processFile(x));
     }
 
     ///<summary>
@@ -51,7 +50,18 @@ public class MidiFolderReader : MonoBehaviour
     ///</summary>
     private void processFile(string midiPath)
     {
-        // placeButton(midiPath);
+        var sessions = MidiSessionController.getMidiSessions(midiPath);
+        var head = new MidiSessionDto(midiPath); // one with no score etc.
+        if (sessions.Count > 0)
+        {
+            head = sessions.First();
+        }
+        placeName(head.FormattedTrackName);
+        placeDifficulty(head.TrackDifficulty);
+        var bestScore = sessions.OrderByDescending(x => x.Accuracy).First().Accuracy;
+        placeBestAccuracy(bestScore);
+        var passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
+        placeOverallPassAttempts(passes, sessions.Count);
     }
 
     private void placeName(string midiPath)
@@ -59,17 +69,17 @@ public class MidiFolderReader : MonoBehaviour
 
     }
 
-    private void placeDifficulty(string midiPath)
+    private void placeDifficulty(MidiSessionDto.Difficulty difficulty)
     {
         
     }
 
-    private void placeRecentAccuracy(string midiPath)
+    private void placeBestAccuracy(double accuracy)
     {
 
     }
 
-    private void placeOverallPassFail(string midiPath)
+    private void placeOverallPassAttempts(int passes, int attempts)
     {
 
     }
@@ -100,8 +110,4 @@ public class MidiFolderReader : MonoBehaviour
         SceneManager.LoadScene(RuntimeSettings.GAME_MODE);	
     }
 
-    private string formatForUi(string midiPath)
-    {
-        return Regex.Replace(midiPath.Replace(midiFolderPath, "").Replace("mid", "").Replace("_", " "), "[^a-zA-Z ]", "");
-    }
 }
