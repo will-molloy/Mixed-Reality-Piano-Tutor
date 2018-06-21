@@ -55,33 +55,48 @@ public class MidiFolderReader : MonoBehaviour
         if (sessions.Count > 0)
         {
             head = sessions.First();
-        }
-        placeName(head.FormattedTrackName);
-        placeDifficulty(head.TrackDifficulty);
+        }   
+        var parentTransform = Instantiate(rowPlaceholderObj).transform;
+        parentTransform.SetParent(this.transform);    
+
+        placeName(head.FormattedTrackName, parentTransform);
+        placeDifficulty(head.TrackDifficulty, parentTransform);
         var bestScore = sessions.OrderByDescending(x => x.Accuracy).First().Accuracy;
-        placeBestAccuracy(bestScore);
+        placeBestAccuracy(bestScore, parentTransform);
         var passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
-        placeOverallPassAttempts(passes, sessions.Count);
+        placeOverallPassAttempts(passes, sessions.Count, parentTransform);
     }
 
-    private void placeName(string midiPath)
+    private void placeName(string name, Transform parent)
     {
-
+        var nameObj = Instantiate(this.nameObj);
+        nameObj.transform.SetParent(parent);
+        var textObj = nameObj.GetComponent<UnityEngine.UI.Text>();
+        textObj.text = name;
     }
 
-    private void placeDifficulty(MidiSessionDto.Difficulty difficulty)
+    private void placeDifficulty(MidiSessionDto.Difficulty difficulty, Transform parent)
     {
-        
+        var statsObj = Instantiate(this.statsObj);
+        statsObj.transform.SetParent(parent);
+        var textObj = nameObj.GetComponent<UnityEngine.UI.Text>();
+        textObj.text = difficulty + "";
     }
 
-    private void placeBestAccuracy(double accuracy)
+    private void placeBestAccuracy(double accuracy, Transform parent)
     {
-
+        var statsObj = Instantiate(this.statsObj);
+        statsObj.transform.SetParent(parent);
+        var textObj = nameObj.GetComponent<UnityEngine.UI.Text>();
+        textObj.text = accuracy + "";
     }
 
-    private void placeOverallPassAttempts(int passes, int attempts)
+    private void placeOverallPassAttempts(int passes, int attempts, Transform parent)
     {
-
+        var statsObj = Instantiate(this.statsObj);
+        statsObj.transform.SetParent(parent);
+        var textObj = nameObj.GetComponent<UnityEngine.UI.Text>();
+        textObj.text = passes + "/" + attempts;
     }
 
     // private void placeButton(string midiPath)
