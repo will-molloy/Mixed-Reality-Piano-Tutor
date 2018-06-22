@@ -12,29 +12,22 @@ using UnityEngine.SceneManagement;
 ///</summary>
 public class MidiFolderReader : MonoBehaviour
 {
-
     [SerializeField]
     private string midiFolderPath; // should probably read from config file or use ~/Documents
-
-    // UI components
-    [SerializeField]
-    private GameObject rowPlaceholderObj;
-    [SerializeField]
-    private GameObject statsObj;
-    [SerializeField]
-    private GameObject nameObj;
-    [SerializeField]
-    private GameObject playButtonObj;
-    private const int buttonSpacing = 10;
-    private Rect thisRect;
-
     private const double SCORE_TO_PASS = 0.5d;
+
+    [SerializeField]
+    private GameObject rowEntryObj;
+    private const int TEXT_INDEX = 0;
+    private const int NAME_INDEX = 0;
+    private const int DIFFICULTY_INDEX = 1;
+    private const int BEST_SCORE_INDEX = 2;
+    private const int OVERALL_SCORE_INDEX = 3;
+    private const int BUTTON_INDEX = 4;
 
     void Start()
     {
-        thisRect = this.GetComponent<RectTransform>().rect;
         processFolder(midiFolderPath);
-        this.transform.parent.transform.parent.GetChild(1);
     }
 
     private void processFolder(string midiDir)
@@ -45,84 +38,47 @@ public class MidiFolderReader : MonoBehaviour
         .ForEach(x => processFile(x));
     }
 
-    ///<summary>
-    /// Can read database etc. for each tracks scores, difficulty etc.
-    ///</summary>
     private void processFile(string midiPath)
     {
+        // Read previous sessions or create empty one
         var sessions = MidiSessionController.getMidiSessions(midiPath);
-        var head = new MidiSessionDto(midiPath); // one with no score etc.
+        var head = new MidiSessionDto(midiPath);
         if (sessions.Count > 0)
         {
             head = sessions.First();
-        }   
-        var parentTransform = Instantiate(rowPlaceholderObj).transform;
-        parentTransform.SetParent(this.transform);    
+        }
+        // Place UI component
+        var rowObj = Instantiate(rowEntryObj);
+        rowObj.transform.SetParent(this.transform);
+        var rowRect = rowObj.transform.GetComponent<RectTransform>();
+        rowRect.localScale = Vector3.one;
+        rowRect.localPosition = Vector3.zero;
 
-        placeName(head.FormattedTrackName, parentTransform);
-        placeDifficulty(head.TrackDifficulty, parentTransform);
+        setText(head.FormattedTrackName, NAME_INDEX, rowObj);
+        setText(head.TrackDifficulty.ToString(), DIFFICULTY_INDEX, rowObj);
         var bestScore = sessions.OrderByDescending(x => x.Accuracy).First().Accuracy;
-        placeBestAccuracy(bestScore, parentTransform);
+        setText(bestScore * 100 + "%", BEST_SCORE_INDEX, rowObj);
         var passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
-        placeOverallPassAttempts(passes, sessions.Count, parentTransform);
+        setText(passes + "/" + sessions.Count(), OVERALL_SCORE_INDEX, rowObj);
+        setButton(midiPath, rowObj);
     }
 
-    private void placeName(string name, Transform parent)
+    private void setText(string text, int childIndex, GameObject rowObj)
     {
-        var nameObj = Instantiate(this.nameObj);
-        nameObj.transform.SetParent(parent);
-        var textObj = nameObj.GetComponent<UnityEngine.UI.Text>();
-        textObj.text = name;
+        var textObj = rowObj.transform.GetChild(childIndex).transform.GetChild(TEXT_INDEX).GetComponent<UnityEngine.UI.Text>();
+        textObj.text = text;
     }
 
-    private void placeDifficulty(MidiSessionDto.Difficulty difficulty, Transform parent)
+    private void setButton(string midiPath, GameObject rowObj)
     {
-        var statsObj = Instantiate(this.statsObj);
-        statsObj.transform.SetParent(parent);
-        var textObj = nameObj.GetComponent<UnityEngine.UI.Text>();
-        textObj.text = difficulty + "";
+        var button = rowObj.transform.GetChild(BUTTON_INDEX).GetComponent<UnityEngine.UI.Button>();
+        button.onClick.AddListener(delegate { buttonEvent(midiPath); });
     }
-
-    private void placeBestAccuracy(double accuracy, Transform parent)
-    {
-        var statsObj = Instantiate(this.statsObj);
-        statsObj.transform.SetParent(parent);
-        var textObj = nameObj.GetComponent<UnityEngine.UI.Text>();
-        textObj.text = accuracy + "";
-    }
-
-    private void placeOverallPassAttempts(int passes, int attempts, Transform parent)
-    {
-        var statsObj = Instantiate(this.statsObj);
-        statsObj.transform.SetParent(parent);
-        var textObj = nameObj.GetComponent<UnityEngine.UI.Text>();
-        textObj.text = passes + "/" + attempts;
-    }
-
-    // private void placeButton(string midiPath)
-    // {
-    //     var button = Instantiate(scrollButtonObj);
-    //     button.transform.SetParent(this.transform);
-    //     var buttonScript = button.GetComponent<UnityEngine.UI.Button>();
-    //     buttonScript.onClick.AddListener((delegate { buttonEvent(midiPath); }));
-    //     var buttonRect = button.GetComponent<RectTransform>();
-    //     buttonRect.localPosition = Vector3.zero;
-    //     buttonRect.localScale = Vector3.one;
-
-    //     var text = Instantiate(nameObj);
-    //     text.transform.SetParent(button.transform);
-    //     text.GetComponent<UnityEngine.UI.Text>().text = formatForUi(midiPath);
-    //     var textRect = text.GetComponent<RectTransform>();
-    //     textRect.localPosition = Vector3.zero;
-    //     textRect.localScale = Vector3.one;
-    //     textRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, buttonRect.rect.width);
-    //     textRect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, buttonRect.rect.height);
-    // }
 
     private void buttonEvent(string midiPath)
     {
         RuntimeSettings.MIDI_FILE_NAME = midiPath;
-        SceneManager.LoadScene(RuntimeSettings.GAME_MODE);	
+        SceneManager.LoadScene(RuntimeSettings.GAME_MODE);
     }
 
 }
