@@ -4,27 +4,35 @@
     "FormattedTrackName": "forelise",
     "TrackDifficulty": 2,
     "GameMode": 0,
-    "Accuracy": 0.9
+    "Accuracy": 0.45,
+    "SessionDateTime": "2018-06-22T14:16:54.8590012+12:00",
+    "User": "Beethoven"
   },
   {
     "FileName": "Assets/MIDI\\megalovania.mid",
     "FormattedTrackName": "megalovania",
     "TrackDifficulty": 1,
     "GameMode": 0,
-    "Accuracy": 0.5
+    "Accuracy": 0.20,
+    "SessionDateTime": "2018-06-22T14:16:54.9783054+12:00",
+    "User": "Beethoven"
   },
   {
     "FileName": "Assets/MIDI\\megalovania_s.mid",
     "FormattedTrackName": "megalovania s",
     "TrackDifficulty": 1,
     "GameMode": 0,
-    "Accuracy": 0.2
+    "Accuracy": 0.95,
+    "SessionDateTime": "2018-06-22T14:16:55.0133942+12:00",
+    "User": "Beethoven"
   },
   {
     "FileName": "Assets/MIDI\\mozart_eine_kleine_easy.mid",
     "FormattedTrackName": "mozart eine kleine easy",
     "TrackDifficulty": 0,
-    "GameMode": 0,
-    "Accuracy": 0.0
+    "GameMode": 2,
+    "Accuracy": 0.98,
+    "SessionDateTime": "2018-06-22T14:16:55.0209139+12:00",
+    "User": "Beethoven"
   }
 ]

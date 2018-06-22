@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 ///<summary>
 /// Processes MIDI directory and database for MIDI selection UI
 ///</summary>
-public class MidiFolderReader : MonoBehaviour
+public class MidiSelectionService : MonoBehaviour
 {
     [SerializeField]
     private string midiFolderPath; // should probably read from config file or use ~/Documents
@@ -35,19 +35,18 @@ public class MidiFolderReader : MonoBehaviour
         Debug.Log("Reading MIDI directory: " + midiDir);
         Directory.GetFiles(midiDir)
         .Where(x => x.EndsWith(".mid")).ToList()
-        .ForEach(x => processFile(x));
+        .ForEach(x => processSessionsAndPlaceUiEntry(x));
+        // .ForEach(x => MidiSessionController.putDummyMidiSession(x));
     }
 
-    private void processFile(string midiPath)
+    private void processSessionsAndPlaceUiEntry(string midiPath)
     {
-        // Read previous sessions or create empty one
         var sessions = MidiSessionController.getMidiSessions(midiPath);
         var head = new MidiSessionDto(midiPath);
         if (sessions.Count > 0)
         {
             head = sessions.First();
         }
-        // Place UI component
         var rowObj = Instantiate(rowEntryObj);
         rowObj.transform.SetParent(this.transform);
         var rowRect = rowObj.transform.GetComponent<RectTransform>();
@@ -71,8 +70,8 @@ public class MidiFolderReader : MonoBehaviour
 
     private void setButton(string midiPath, GameObject rowObj)
     {
-        var button = rowObj.transform.GetChild(BUTTON_INDEX).GetComponent<UnityEngine.UI.Button>();
-        button.onClick.AddListener(delegate { buttonEvent(midiPath); });
+        var buttonScript = rowObj.transform.GetChild(BUTTON_INDEX).GetComponent<UnityEngine.UI.Button>();
+        buttonScript.onClick.AddListener(delegate { buttonEvent(midiPath); });
     }
 
     private void buttonEvent(string midiPath)

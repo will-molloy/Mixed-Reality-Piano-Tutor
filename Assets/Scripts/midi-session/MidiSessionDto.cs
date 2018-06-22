@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.IO;
+using System;
 
 ///<summary>
 /// Record of a midi track session
@@ -19,6 +20,8 @@ public class MidiSessionDto
         this.TrackDifficulty = TrackDifficulty;
         this.GameMode = GameMode;
         this.Accuracy = Accuracy;
+        this.SessionDateTime = DateTime.Now;
+        this.User = RuntimeSettings.CURRENT_USER;
     }
 
     // Creates a dummy session
@@ -43,6 +46,12 @@ public class MidiSessionDto
 
     [DataMember]  
     public double Accuracy { get; set; }
+
+    [DataMember] 
+    public DateTime SessionDateTime { get; set; }
+
+    [DataMember] 
+    public string User { get; set; }
 
     public enum Difficulty
     {

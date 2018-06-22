@@ -10,7 +10,6 @@ using Newtonsoft.Json;
 ///</summary>
 public class MidiSessionController
 {
-
     private const string JSON_PATH = "Assets/midi-sessions.json";
 
     public static List<MidiSessionDto> getMidiSessions(string midiFileName)
@@ -21,18 +20,22 @@ public class MidiSessionController
 
     private static List<MidiSessionDto> getAllSessions()
     {
-        if (File.Exists(JSON_PATH) && File.ReadAllText(JSON_PATH).Trim().Length > 0)
+
+        if (File.Exists(JSON_PATH))
         {
             var json = File.ReadAllText(JSON_PATH);
-			return JsonConvert.DeserializeObject<List<MidiSessionDto>>(json);
+            if (json.Trim().Length > 0) // empty file cause problems
+            {
+                return JsonConvert.DeserializeObject<List<MidiSessionDto>>(json);
+            }
         }
-		return new List<MidiSessionDto>();
+        return new List<MidiSessionDto>();
     }
 
     public static void putMidiSession(MidiSessionDto midiSession)
     {
         Debug.Log("Writing MIDI session: " + midiSession);
-        // Better way to append into json collection?
+        // Better way than getting all sessions each time to append into json collection?
         var savedSessions = getAllSessions();
         savedSessions.Add(midiSession);
         savedSessions.Sort((a, b) => a.FileName.CompareTo(b.FileName));
@@ -40,7 +43,7 @@ public class MidiSessionController
         File.WriteAllText(JSON_PATH, json);
     }
 
-    // TODO remove once standard game mode is implemented
+    // Useful for testing
     public static void putDummyMidiSession(string midiPath)
     {
         putMidiSession(new MidiSessionDto(midiPath));

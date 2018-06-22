@@ -11,4 +11,6 @@ public class RuntimeSettings {
 
 	public static string GAME_MODE = "PlayStandardMode"; // use the scene names
 
+	public static string CURRENT_USER = "Beethoven"; // can use vr keyboard to set usernames?
+
 }
