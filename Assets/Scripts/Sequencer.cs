@@ -25,7 +25,7 @@ public class Sequencer : MonoBehaviour
     private PianoBuilder piano;
 
     [SerializeField]
-    private readonly float notesScale = 1000f;
+    private readonly float notesScale = 1f;
     [SerializeField]
     private readonly float notesSpeed = 0.2f;
 
@@ -100,13 +100,16 @@ public class Sequencer : MonoBehaviour
             if(key == null) {
                 return;
             }
-            y = start / this.notesScale;
+            var startMusical = (MusicalTimeSpan)e.TimeAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
+            var lengthMusical = e.LengthAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
+            y = ((float)startMusical.Numerator / startMusical.Denominator)* this.notesScale;
+            var delta = (MusicalTimeSpan)lengthMusical;
+            var scale = ((float)delta.Numerator / delta.Denominator) * notesScale;
+            Debug.Log(scale);
             var lmraway = piano.GetLMRAwayVectorsForKey(key);
-            var scale = e.Length / notesScale - 0.01f;
             var obj = Instantiate(pianoRollObject);
             var awayVector = lmraway.away;
-            var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y));
-            
+            var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale));
             var scaled = new Vector3(awayVector.x, awayVector.y, awayVector.z);
             var keyPos = lmraway.centre;
             var actualAway = (awayVector - keyPos).normalized;
