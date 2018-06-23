@@ -115,8 +115,8 @@ public class PianoBuilder : MonoBehaviour
     private void DrawAuxillaryLines() {
         foreach (var item in pianoKeys)
         {
-            var lmraway = GetLMRAwayVectorsForKey(item.Key);
-            DrawLine(lmraway.centre, lmraway.away , Color.grey);
+            var lmraway = GetLMRAwayVectorsForKey(item.Key, 10);
+            this.auxLines.Add(DrawLine(lmraway.centre, lmraway.away, Color.grey));
         }
     }    
 
@@ -125,7 +125,7 @@ public class PianoBuilder : MonoBehaviour
         this.auxLines.Clear();
     }
 
-    public PianoKeyVectors GetLMRAwayVectorsForKey(PianoKey key) {
+    public PianoKeyVectors GetLMRAwayVectorsForKey(PianoKey key, float magnitude = 1f) {
         if (!pianoKeys.ContainsKey(key))
         {
             throw new System.Exception("Invalid request for key");
@@ -137,12 +137,12 @@ public class PianoBuilder : MonoBehaviour
         empty.transform.SetParent(go.transform);
         empty.transform.position = mid;
         empty.transform.SetParent(this.transform);
-        var lookat = MakeAwayVector(empty.transform, 10);
+        var lookat = MakeAwayVector(empty.transform, magnitude);
         Destroy(empty);
-        return new PianoKeyVectors(corners[0], corners[2], corners[1], lookat);
+        return new PianoKeyVectors(corners[0], corners[1], corners[2], lookat, go.transform.forward, go.transform.up);
     }
 
-    public static void DrawLine(Vector3 start, Vector3 end, Color color)
+    public static GameObject DrawLine(Vector3 start, Vector3 end, Color color)
     {
         GameObject myLine = new GameObject();
         myLine.transform.position = start;
@@ -153,6 +153,7 @@ public class PianoBuilder : MonoBehaviour
         lr.SetWidth(0.001f, 0.001f);
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
+        return myLine;
     }
 
     private Vector3 MakeAwayVector(Transform transform, float magnitude) {
@@ -194,8 +195,8 @@ public class PianoBuilder : MonoBehaviour
         topMid.z += height / 2;
 
         List<Vector3> cor_temp = new List<Vector3>();
-        cor_temp.Add(topRight);
         cor_temp.Add(topLeft);
+        cor_temp.Add(topRight);
         cor_temp.Add(topMid);
 
         return cor_temp;
@@ -207,7 +208,7 @@ public class PianoBuilder : MonoBehaviour
         {
             throw new System.Exception("Invalid request for key");
         }
-        return pianoKeys[key].transform.lossyScale;
+        return pianoKeys[key].transform.localScale;
     }
 
     public Vector3 GetKeyPositionForKey(PianoKey key)
@@ -226,21 +227,6 @@ public class PianoBuilder : MonoBehaviour
             throw new System.Exception("Invalid request for key");
         }
         return pianoKeys[key].transform.forward;
-    }
-
-    public Vector3 GetPointingAwayVectorForKey(PianoKey key)
-    {
-        if (!pianoKeys.ContainsKey(key))
-        {
-            throw new System.Exception("Invalid request for key");
-        }
-        var o = pianoKeys[key];
-        var edge = o.transform.position + o.transform.forward * (key.color == KeyColor.White ? whiteKey : blackKey).transform.localScale.z / 2;
-        var up = o.transform.position + pianoKeys[key].transform.forward * 0.1f;
-        var front = o.transform.position + pianoKeys[key].transform.up * 0.1f;
-        var lookat = MakeAwayVector(o.transform);
-        // Angle = tan(up / forward)
-        return (lookat - o.transform.position).normalized;
     }
 
     public Vector3 GetHorizontalVectorForKey(PianoKey key)
@@ -381,16 +367,21 @@ public class PianoBuilder : MonoBehaviour
 }
 
 public struct PianoKeyVectors {
-    public PianoKeyVectors(Vector3 topLeft, Vector3 topRight, Vector3 topMid, Vector3 away) {
+    public PianoKeyVectors(Vector3 topLeft, Vector3 topRight, Vector3 topMid, Vector3 away, Vector3 forward, Vector3 up) {
         this.topLeft = topLeft;
         this.topRight = topRight;
         this.centre = topMid;
         this.away = away;
+        this.forward = forward;
+        this.up = up;
     }
 
     public Vector3 topLeft {get;}
     public Vector3 topRight {get;}
     public Vector3 centre {get;}
-
     public Vector3 away {get;}
+
+    public Vector3 forward{get;}
+    public Vector3 up {get;}
+
 }
