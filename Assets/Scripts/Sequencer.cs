@@ -17,21 +17,45 @@ public class Sequencer : MonoBehaviour
     private string midiFileName;
     private MidiFile midiFile;
     private NotesManager noteManager;
+    private TempoMapManager tempoMapManager;
     [SerializeField]
     private GameObject pianoRollObject;
     private List<GameObject> pianoRollObjects = new List<GameObject>();
     public static Sequencer instance;
     private PianoBuilder piano;
 
+    [SerializeField]
+    private float notesScale = 1000f;
+    [SerializeField]
+    private float notesSpeed = 0.2f;
+
     void Start()
     {
         piano = GetComponent<PianoBuilder>();
         instance = this;
-        midiFile = MidiFile.Read(midiFileName); // TODO get from MIDISelection instance 
+    }
+
+    public void LoadMidiFile(string file) {
+        midiFile = MidiFile.Read(midiFileName);
+    }
+
+    public void LoadMidiFile() {
+        LoadMidiFile(this.midiFileName);
     }
 
     public void SpawnNotes()
     {
+        if (midiFile == null) {
+            throw new System.Exception("No midifile loaded, use LoadMidiFile() to load");
+        }
+        this.tempoMapManager = midiFile.ManageTempoMap();
+
+        var tempomap = tempoMapManager.TempoMap;
+
+        Debug.Log(tempomap.TimeDivision);
+        Debug.Log(tempomap.TimeSignature.ToString());
+        Debug.Log(tempomap.Tempo.ToString());
+
         if (noteManager == null)
         {
             for (int i = 0; i < midiFile.Chunks.Count; i++)
@@ -47,7 +71,8 @@ public class Sequencer : MonoBehaviour
                 }
             }
         }
-        SpawnNotesDropDown(noteManager.Notes.ToList());
+        //SpawnNotesDropDown(noteManager.Notes.ToList());
+        SpawnNotesDropDown(midiFile.GetNotes().ToList());
     }
 
     private void ClearPianoRoll()
@@ -59,36 +84,37 @@ public class Sequencer : MonoBehaviour
 
     private void SpawnNotesDropDown(List<Note> notes) {
         Debug.Log("Spawning piano roll notes");
-        pianoRollObjects.ForEach(o => GameObject.Destroy(o));
-        pianoRollObjects.Clear();
+        ClearPianoRoll();
         notes.ForEach(e => {
             var number = e.NoteNumber;
             var start = e.Time;
             var dur = e.Length;
-            float x, y, z;
+            float y;
             var key = PianoKeys.GetKeyFor(number);
             if(key == null) {
                 return;
             }
-            y = start / 1000f;
-            var scale = e.Length / 1000f - 0.01f;
+            y = start / this.notesScale;
+            var lmraway = piano.GetLMRAwayVectorsForKey(key);
+            var scale = e.Length / notesScale - 0.01f;
             var obj = Instantiate(pianoRollObject);
-            var awayVector = piano.GetPointingAwayVectorForKey(key);
-            var keyPos = piano.GetKeyPositionForKey(key);
-            var forwardVector = piano.GetForwardVectorForKey(key);
+            var awayVector = lmraway.away.normalized;
+            var keyPos = lmraway.centre;
             var rot = Quaternion.LookRotation(awayVector);
+            Debug.Log(number + "  " + keyPos.ToString("F4"));
             pianoRollObjects.Add(obj);
-            var dropdownScale = obj.transform.localScale;
+            var dropdownScale = obj.transform.lossyScale;
             obj.transform.localScale = new Vector3(dropdownScale.x, scale, dropdownScale.z);
-            obj.transform.position = keyPos + awayVector * y + forwardVector * 0.05f;
-            //obj.transform.rotation = rot;
-            //obj.transform.localRotation = new Quaternion(-rot.x, -rot.y, -rot.z, -rot.w);
+            obj.transform.position = keyPos + awayVector * y;
             var angle = (Mathf.Atan(5f)) * Mathf.Rad2Deg;
-            obj.transform.eulerAngles = new Vector3(angle, 0, 0);
+            var rotation = Quaternion.LookRotation(awayVector);
+            obj.transform.rotation = rotation;
+            obj.transform.rotation *= Quaternion.Euler(0, -90,0); 
+            obj.transform.Rotate(0,0,90f);
             var renderer = obj.GetComponent<Renderer>();
             renderer.material.color = key.color == KeyColor.Black ? Color.black : Color.white;
             var rb = obj.GetComponent<Rigidbody>();
-            rb.velocity = -awayVector * 0.1f;
+            rb.velocity = -awayVector * notesSpeed;
         });
 
     }
