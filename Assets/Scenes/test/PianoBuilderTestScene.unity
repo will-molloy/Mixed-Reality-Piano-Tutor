@@ -170,8 +170,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643fae54c3b645a48ba2ebe359232d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  midiFileName: Assets/MIDI/forelise.mid
-  pianoRollObject: {fileID: 1055867788491200, guid: 89b4e2af7ed9efe49be2d17d7db9ef6a,
+  midiFileName: Assets/MIDI/Another_Love.mid
+  pianoRollObject: {fileID: 1978589797169928, guid: 8fd6e3a2e7471ae4f924cd638fc0ced8,
     type: 2}
 --- !u!1 &1055870529
 GameObject:
