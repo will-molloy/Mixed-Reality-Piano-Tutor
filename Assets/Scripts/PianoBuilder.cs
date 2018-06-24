@@ -13,6 +13,8 @@ public class PianoBuilder : MonoBehaviour
     [SerializeField]
     private GameObject blackKey;
     [SerializeField]
+    private GameObject pulser;
+    [SerializeField]
     private GameObject lockedText;
 
     public static readonly int CENTRE = (PianoKeys.GetLastKey().keyNum + PianoKeys.GetFirstKey().keyNum) / 2;
@@ -35,6 +37,7 @@ public class PianoBuilder : MonoBehaviour
     private readonly float adj = 5f;
 
     private List<GameObject> auxLines;
+    private List<GameObject> pulsers;
 
     void Start()
     {
@@ -42,6 +45,7 @@ public class PianoBuilder : MonoBehaviour
         pianoKeys = new Dictionary<PianoKey, GameObject>();
         auxLines = new List<GameObject>();
         sequencer = GetComponent<Sequencer>();
+        pulsers = new List<GameObject>();
         if (!needsCameraHook)
         {
             Debug.Log("Building Piano with saved position. (TODO)");
@@ -110,6 +114,40 @@ public class PianoBuilder : MonoBehaviour
         Debug.DrawLine(o.transform.position, front, color: Color.red, duration: 99999f, depthTest: false);
         Debug.DrawLine(o.transform.position, up, color: Color.red, duration: 99999f, depthTest: false);
         Debug.DrawLine(o.transform.position, lookat.normalized, color: Color.green, duration: 99999f, depthTest: false);
+    }
+
+    private void DrawPulser() {
+        var firstkey = PianoKeys.GetFirstKey();
+        var lastkey = PianoKeys.GetLastKey();
+        var left = this.pianoKeys[firstkey].transform;
+        var right = this.pianoKeys[lastkey].transform;
+        var leftPulserPos = left.transform.position - left.transform.right * 0.1f;
+        var rightPulserPos = right.transform.position + right.transform.right * 0.1f;
+        var lp = Instantiate(pulser);
+        var rp = Instantiate(pulser);
+        lp.transform.position = leftPulserPos;
+        rp.transform.position = rightPulserPos;
+        this.pulsers.Add(lp);
+        this.pulsers.Add(rp);
+    }
+
+    private void DeletePulser() {
+        foreach (var item in this.pulsers)
+        {
+            Destroy(item);
+        }
+
+        pulsers.Clear();
+
+    }
+
+    public void Pulse() {
+        foreach (var pulser in this.pulsers)
+        {
+            var p = pulser.GetComponent<SimpleSonarShader_Object>();
+            p.StartSonarRing(p.transform.position, 10f);
+        }
+
     }
 
     private void DrawAuxillaryLines() {
@@ -309,12 +347,17 @@ public class PianoBuilder : MonoBehaviour
                 // Unlock it
                 locked = false;
                 DeleteAuxillaryLines();
+                DeletePulser();
             }
             else
             {
                 // Lock it in place and set a text
                 locked = true;
                 DrawAuxillaryLines();
+                DrawPulser();
+                var pulser = GameObject.FindGameObjectWithTag("Pulser");
+                var p = pulser.GetComponent<SimpleSonarShader_Object>();
+                p.StartSonarRing(p.transform.position, 10f);
                 lockedTextObj = Instantiate(lockedText);
                 lockedTextObj.transform.SetParent(this.transform);
                 lockedTextObj.transform.localPosition = pianoKeys[PianoKeys.GetKeyFor(CENTRE)].transform.localPosition + new Vector3(0f, 0.1f, 0f);

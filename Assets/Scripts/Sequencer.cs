@@ -32,6 +32,8 @@ public class Sequencer : MonoBehaviour
     private float startTime = -1;
     private float deltaTime;
     private List<NoteDuration> ndrl;
+    private TimeSignature ts;
+    private float ttp;
 
     void Start()
     {
@@ -58,7 +60,8 @@ public class Sequencer : MonoBehaviour
         var tempomap = tempoMapManager.TempoMap;
 
         Debug.Log(tempomap.TimeDivision);
-        Debug.Log(tempomap.TimeSignature.AtTime(0));
+        this.ts = tempomap.TimeSignature.AtTime(0);
+        this.ttp = ((float)ts.Numerator / ts.Denominator) / notesSpeed;
         Debug.Log(tempomap.Tempo.AtTime(0));
 
         if (noteManager == null)
@@ -152,6 +155,10 @@ public class Sequencer : MonoBehaviour
                 piano.ActivateKey(item.key.keyNum);
                 Debug.Log("Activate" + item.key.keyNum);
             }
+        }
+        // TODO: Sync pulse timing
+        if (deltaT % ttp <= 0.5) {
+            piano.Pulse();
         }
     }
 }
