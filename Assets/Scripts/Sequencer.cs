@@ -92,7 +92,7 @@ public class Sequencer : MonoBehaviour
     }
 
     private float calcX(float y) {
-        return Mathf.Sqrt(y * y / 26);
+        return Mathf.Sqrt((y*y) / 26f);
     }
     private void SpawnNotesDropDown(List<Note> notes) {
         Debug.Log("Spawning piano roll notes");
@@ -109,36 +109,33 @@ public class Sequencer : MonoBehaviour
             }
             var startMusical = (MusicalTimeSpan)e.TimeAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
             var lengthMusical = e.LengthAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
-            y = ((float)startMusical.Numerator / startMusical.Denominator)* this.notesScale;
+            y = ((float)startMusical.Numerator / startMusical.Denominator) * this.notesScale;
+            Debug.Log(y);
             var delta = (MusicalTimeSpan)lengthMusical;
-            var scale = ((float)delta.Numerator / delta.Denominator) * notesScale;
-            //Debug.Log(scale);
+            var scale = ((float)delta.Numerator / delta.Denominator) * this.notesScale / 2;
+            Debug.Log(scale);
             var lmraway = piano.GetLMRAwayVectorsForKey(key);
             var obj = Instantiate(pianoRollObject);
             var awayVector = lmraway.away;
             var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale));
-            var scaled = new Vector3(awayVector.x, awayVector.y, awayVector.z);
             var keyPos = lmraway.centre;
-            var rot = Quaternion.LookRotation(awayVector);
             //Debug.Log(number + "  " + keyPos.ToString("F4"));
             pianoRollObjects.Add(obj);
-            var dropdownScale = obj.transform.lossyScale;
+            var dropdownScale = obj.transform.localScale;
             obj.transform.localScale = new Vector3(dropdownScale.x, scale, dropdownScale.z);
             //Debug.DrawLine(keyPos, lmraway2.away, Color.cyan, 99999, false);
-            obj.transform.position = lmraway2.away;
             var rotation = Quaternion.LookRotation(keyPos - awayVector);
             obj.transform.rotation = rotation;
-            obj.transform.rotation *= Quaternion.Euler(0, -90 ,0); 
-            obj.transform.Rotate(0,0,90f);
+            //obj.transform.rotation *= Quaternion.Euler(0, -90 ,0); 
+            obj.transform.Rotate(0,-90f,90f);
+            obj.transform.position = lmraway2.away;
             var renderer = obj.GetComponent<Renderer>();
             renderer.material.color = key.color == KeyColor.Black ? Color.black : Color.white;
             var rb = obj.GetComponent<Rigidbody>();
-            rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
+            //rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
 
             var expectTime = ((lmraway2.away - keyPos).magnitude + scale/2) / rb.velocity.magnitude;
             var expectEnd = scale / rb.velocity.magnitude;
-
-            Debug.Log(expectTime);
 
             this.ndrl.Add(new NoteDuration(expectTime, expectEnd, key));
         });
