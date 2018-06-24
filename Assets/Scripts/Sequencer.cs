@@ -121,7 +121,7 @@ public class Sequencer : MonoBehaviour
             pianoRollObjects.Add(obj);
             var dropdownScale = obj.transform.lossyScale;
             obj.transform.localScale = new Vector3(dropdownScale.x, scale, dropdownScale.z);
-            Debug.DrawLine(keyPos, lmraway2.away, Color.cyan, 99999, false);
+            //Debug.DrawLine(keyPos, lmraway2.away, Color.cyan, 99999, false);
             obj.transform.position = lmraway2.away;
             var rotation = Quaternion.LookRotation(keyPos - awayVector);
             obj.transform.rotation = rotation;
@@ -132,7 +132,7 @@ public class Sequencer : MonoBehaviour
             var rb = obj.GetComponent<Rigidbody>();
             rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
 
-            var expectTime = (lmraway2.away - keyPos).magnitude / rb.velocity.magnitude;
+            var expectTime = ((lmraway2.away - keyPos).magnitude + scale/2) / rb.velocity.magnitude;
             var expectEnd = scale / rb.velocity.magnitude;
 
             Debug.Log(expectTime);
