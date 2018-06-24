@@ -175,7 +175,7 @@ public class PianoBuilder : MonoBehaviour
         empty.transform.SetParent(go.transform);
         empty.transform.position = mid;
         empty.transform.SetParent(this.transform);
-        var lookat = MakeAwayVector(empty.transform, magnitude);
+        var lookat = MakeAwayVector(mid, this.transform, magnitude);
         Destroy(empty);
         return new PianoKeyVectors(corners[0], corners[1], corners[2], lookat, go.transform.forward, go.transform.up);
     }
@@ -192,6 +192,12 @@ public class PianoBuilder : MonoBehaviour
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
         return myLine;
+    }
+
+    private Vector3 MakeAwayVector(Vector3 refV, Transform transform, float magnitude = 1f) {
+        var lookat = refV + (transform.forward * adj * magnitude + transform.up * opposite * magnitude);
+        return lookat;
+
     }
 
     private Vector3 MakeAwayVector(Transform transform, float magnitude) {
@@ -222,15 +228,29 @@ public class PianoBuilder : MonoBehaviour
         float width = go.GetComponent<Renderer>().bounds.size.x;
         float height = go.GetComponent<Renderer>().bounds.size.z;
 
+        var scale = go.transform.lossyScale;
+
         Vector3 topRight = go.transform.position, topLeft = go.transform.position, topMid = go.transform.position;
 
-        topRight.x += width / 2;
-        topRight.z += height / 2;
+        //topRight.x += width / 2;
+        //topRight.z += height / 2;
 
-        topLeft.x -= width / 2;
-        topLeft.z += height / 2;
+        topRight += go.transform.forward * scale.z * 0.5f;
+        topRight += go.transform.up * scale.y * 0.5f;
+        topRight += go.transform.right * scale.x * 0.5f;
 
-        topMid.z += height / 2;
+
+        topLeft += go.transform.forward * scale.z * 0.5f;
+        topLeft += go.transform.up * scale.y * 0.5f;
+        topLeft -= go.transform.right * scale.x * 0.5f;
+
+        topMid += go.transform.forward * scale.z * 0.5f;
+        topMid += go.transform.up * scale.y * 0.5f;
+
+        //topLeft.x -= width / 2;
+        //topLeft.z += height / 2;
+
+        //topMid.z += height / 2;
 
         List<Vector3> cor_temp = new List<Vector3>();
         cor_temp.Add(topLeft);

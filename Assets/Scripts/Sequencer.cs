@@ -132,7 +132,7 @@ public class Sequencer : MonoBehaviour
             var renderer = obj.GetComponent<Renderer>();
             renderer.material.color = key.color == KeyColor.Black ? Color.black : Color.white;
             var rb = obj.GetComponent<Rigidbody>();
-            //rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
+            rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
 
             var expectTime = ((lmraway2.away - keyPos).magnitude + scale/2) / rb.velocity.magnitude;
             var expectEnd = scale / rb.velocity.magnitude;
