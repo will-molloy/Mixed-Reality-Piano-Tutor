@@ -29,11 +29,14 @@ public class Sequencer : MonoBehaviour
     [SerializeField]
     private readonly float notesSpeed = 0.2f;
 
-    private float startTime;
+    private float startTime = -1;
+    private float deltaTime;
+    private List<NoteDuration> ndrl;
 
     void Start()
     {
         piano = GetComponent<PianoBuilder>();
+        ndrl = new List<NoteDuration>();
         instance = this;
     }
 
@@ -82,6 +85,7 @@ public class Sequencer : MonoBehaviour
         Debug.Log("Clearing piano roll");
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
+        ndrl.Clear();
     }
 
     private float calcX(float y) {
@@ -105,14 +109,13 @@ public class Sequencer : MonoBehaviour
             y = ((float)startMusical.Numerator / startMusical.Denominator)* this.notesScale;
             var delta = (MusicalTimeSpan)lengthMusical;
             var scale = ((float)delta.Numerator / delta.Denominator) * notesScale;
-            Debug.Log(scale);
+            //Debug.Log(scale);
             var lmraway = piano.GetLMRAwayVectorsForKey(key);
             var obj = Instantiate(pianoRollObject);
             var awayVector = lmraway.away;
             var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale));
             var scaled = new Vector3(awayVector.x, awayVector.y, awayVector.z);
             var keyPos = lmraway.centre;
-            var actualAway = (awayVector - keyPos).normalized;
             var rot = Quaternion.LookRotation(awayVector);
             //Debug.Log(number + "  " + keyPos.ToString("F4"));
             pianoRollObjects.Add(obj);
@@ -128,7 +131,38 @@ public class Sequencer : MonoBehaviour
             renderer.material.color = key.color == KeyColor.Black ? Color.black : Color.white;
             var rb = obj.GetComponent<Rigidbody>();
             rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
+
+            var expectTime = (lmraway2.away - keyPos).magnitude / rb.velocity.magnitude;
+            var expectEnd = scale / rb.velocity.magnitude;
+
+            Debug.Log(expectTime);
+
+            this.ndrl.Add(new NoteDuration(expectTime, expectEnd, key));
         });
     }
 
+    public void Update() {
+        if (this.startTime < 0f) {
+            return;
+        }
+        var deltaT = Time.time - this.startTime;
+        foreach (var item in ndrl)
+        {
+            if(deltaT > item.start && deltaT < item.end) {
+                piano.ActivateKey(item.key.keyNum);
+                Debug.Log("Activate" + item.key.keyNum);
+            }
+        }
+    }
+}
+
+public struct NoteDuration {
+    public float start {get;}
+    public float end {get;}
+    public PianoKey key {get;}
+    public NoteDuration(float start, float dur, PianoKey key) {
+        this.start = start;
+        this.end = start + dur;
+        this.key = key;
+    }
 }
