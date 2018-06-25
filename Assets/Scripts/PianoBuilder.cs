@@ -22,10 +22,9 @@ public class PianoBuilder : MonoBehaviour
     internal Dictionary<PianoKey, GameObject> pianoKeys;
 
     internal static readonly float yOffset = 0.001f;
-    // Whether the piano has been locked in placed by the user
     internal bool locked = false;
-    // Whether the piano has been placed into the initial positon
     internal bool pianoIsBuilt = false;
+    private bool hidden = false;
     internal GameObject lockedTextObj;
 
     public static PianoBuilder instance;
@@ -384,6 +383,11 @@ public class PianoBuilder : MonoBehaviour
         {
             sequencer.LoadMidiFile();
             sequencer.SpawnNotes();
+        }
+        if (Input.GetKeyDown(KeyCode.H)) // Hide virtual piano keys
+        {
+            pianoKeys.Values.ToList().ForEach(o => o.GetComponent<MeshRenderer>().enabled = hidden);
+            hidden = !hidden;
         }
 
     }
