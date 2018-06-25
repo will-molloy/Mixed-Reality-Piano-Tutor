@@ -39,11 +39,11 @@ public class MidiController : MonoBehaviour
         Debug.Log(e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + keyNum.ToString() + '\t' + e.Message.Data2.ToString());
         if (e.Message.Command == ChannelCommand.NoteOn)
         {
-            PianoBuilder.instance.ChangeKeyColor(keyNum, Color.blue);
+            PianoBuilder.instance.ActivateKey(keyNum, Color.blue);
         }
         else if (e.Message.Command == ChannelCommand.NoteOff)
         {
-            PianoBuilder.instance.ResetKeyColor(keyNum);
+            PianoBuilder.instance.DeactivateKey(keyNum);
         }
     }
 

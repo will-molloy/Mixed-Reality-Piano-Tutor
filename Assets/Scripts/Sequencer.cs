@@ -30,14 +30,14 @@ public class Sequencer : MonoBehaviour
 
     private float startTime = -1;
     private float deltaTime;
-    private List<NoteDuration> noteDurations;
+    private List<NoteDuration> mutableNoteDurations;
     private TimeSignature ts;
     private float ttp;
 
     void Start()
     {
         piano = GetComponent<PianoBuilder>();
-        noteDurations = new List<NoteDuration>();
+        mutableNoteDurations = new List<NoteDuration>();
         instance = this;
     }
 
@@ -56,9 +56,8 @@ public class Sequencer : MonoBehaviour
         }
         else
         {
-            LoadMidiFile("Assets/MIDI/Another_Love.mid");
+            Debug.LogError("No MIDI file set in RuntimeSettings.");
         }
-
     }
 
     public void SpawnNotes()
@@ -100,7 +99,7 @@ public class Sequencer : MonoBehaviour
         Debug.Log("Clearing piano roll");
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
-        noteDurations.Clear();
+        mutableNoteDurations.Clear();
     }
 
     private float calcX(float y)
@@ -155,7 +154,7 @@ public class Sequencer : MonoBehaviour
             var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / rb.velocity.magnitude;
             var expectEnd = scale / rb.velocity.magnitude;
 
-            this.noteDurations.Add(new NoteDuration(expectTime, expectEnd, key));
+            this.mutableNoteDurations.Add(new NoteDuration(expectTime, expectEnd, key));
         });
     }
 
@@ -166,12 +165,14 @@ public class Sequencer : MonoBehaviour
             return;
         }
         var deltaT = Time.time - this.startTime;
-        foreach (var note in noteDurations)
+        for (var i = 0; i < mutableNoteDurations.Count; i++)
         {
-            if (deltaT >= note.start && deltaT < note.end)
+            var note = mutableNoteDurations[i];
+            if (deltaT >= note.start - note.duration && deltaT < note.end - note.duration)
             {
                 // Debug.Log("DeltaT: " + deltaT + "," + "note.start: " + note.start + ", note.end: " + note.end);
-                piano.ChangeKeyColor(note.key.keyNum, Color.red, note.end - note.start);
+                piano.ActivateKey(note.key.keyNum, Color.red, note.duration);// - (deltaT - note.start));
+                mutableNoteDurations.Remove(note);
             }
         }
         // TODO: Sync pulse timing
@@ -184,6 +185,7 @@ public class Sequencer : MonoBehaviour
 
 public struct NoteDuration
 {
+    public float duration { get; }
     public float start { get; }
     public float end { get; }
     public PianoKey key { get; }
@@ -192,5 +194,6 @@ public struct NoteDuration
         this.start = start;
         this.end = start + dur;
         this.key = key;
+        this.duration = dur;
     }
 }

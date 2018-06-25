@@ -53,6 +53,9 @@ public class MidiSessionDto
     [DataMember] 
     public string User { get; set; }
 
+    // Make new DTO for writing scores
+    public Dictionary<int, float> noteAccuracy { get; set; } 
+
     public enum Difficulty
     {
         Easy,

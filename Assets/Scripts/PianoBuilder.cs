@@ -389,7 +389,7 @@ public class PianoBuilder : MonoBehaviour
             }
             else
             {
-                Debug.Log("No sequencer component, you must be in calibration mode.");
+                Debug.LogWarning("No sequencer component, you must be in calibration mode.");
             }
         }
         if (Input.GetKeyDown(KeyCode.H)) // Hide virtual piano keys
@@ -400,7 +400,7 @@ public class PianoBuilder : MonoBehaviour
 
     }
 
-    public void ChangeKeyColor(int keyNum, Color color, float durationMilliSeconds = -1f)
+    public void ActivateKey(int keyNum, Color color, float durationSeconds = -1f)
     {
         if (!pianoIsBuilt)
         {
@@ -412,27 +412,27 @@ public class PianoBuilder : MonoBehaviour
             GameObject gameObject;
             if (pianoKeys.TryGetValue(pianoKey, out gameObject))
             {
-                Debug.Log("Changing key color (" + color + ") for: " + pianoKey.keyNum);
+                Debug.Log("Activating key: " + pianoKey.keyNum + ", for: " + durationSeconds + "s");
                 var render = gameObject.GetComponent<MeshRenderer>();
                 render.material.color = color;
-                if (durationMilliSeconds > 0)
+                if (durationSeconds > 0)
                 {
-                    StartCoroutine(deactivate(gameObject, pianoKey, durationMilliSeconds));
+                    StartCoroutine(DeactivateKey(gameObject, pianoKey, durationSeconds));
                 }
             }
         }
     }
 
-    private IEnumerator deactivate(GameObject keyObj, PianoKey pianoKey, float duration)
+    private IEnumerator DeactivateKey(GameObject keyObj, PianoKey pianoKey, float duration)
     {
         yield return new WaitForSeconds(duration);
         var render = keyObj.GetComponent<MeshRenderer>();
         render.material.color = pianoKey.color == KeyColor.White ? Color.white : Color.black;
     }
 
-    public void ResetKeyColor(int keyNum)
+    public void DeactivateKey(int keyNum)
     {
-        ChangeKeyColor(keyNum, PianoKeys.GetKeyFor(keyNum).color == KeyColor.White ? Color.white : Color.black);
+        ActivateKey(keyNum, PianoKeys.GetKeyFor(keyNum).color == KeyColor.White ? Color.white : Color.black);
     }
 
 }
