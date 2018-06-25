@@ -13,8 +13,7 @@ using System.Linq;
 [RequireComponent(typeof(PianoBuilder))]
 public class Sequencer : MonoBehaviour
 {
-    [SerializeField]
-    private string midiFileName;
+
     private MidiFile midiFile;
     private NotesManager noteManager;
     private TempoMapManager tempoMapManager;
@@ -27,7 +26,7 @@ public class Sequencer : MonoBehaviour
     [SerializeField]
     private readonly float notesScale = 1f;
     [SerializeField]
-    private readonly float notesSpeed = 0.2f;
+    private readonly float notesSpeed = 0.1f;
 
     private float startTime = -1;
     private float deltaTime;
@@ -42,17 +41,30 @@ public class Sequencer : MonoBehaviour
         instance = this;
     }
 
-    public void LoadMidiFile(string file) {
-        midiFile = MidiFile.Read(midiFileName);
+    public void LoadMidiFile(string file)
+    {
+        Debug.Log("Start with MIDI file: " + file);
+        midiFile = MidiFile.Read(file);
     }
 
-    public void LoadMidiFile() {
-        LoadMidiFile(this.midiFileName);
+    public void LoadMidiFile()
+    {
+        var file = RuntimeSettings.MIDI_FILE_NAME;
+        if (file != null)
+        {
+            LoadMidiFile(file);
+        }
+        else
+        {
+            LoadMidiFile("Assets/MIDI/Another_Love.mid");
+        }
+
     }
 
     public void SpawnNotes()
     {
-        if (midiFile == null) {
+        if (midiFile == null)
+        {
             throw new System.Exception("No midifile loaded, use LoadMidiFile() to load");
         }
         this.tempoMapManager = midiFile.ManageTempoMap();
@@ -91,20 +103,25 @@ public class Sequencer : MonoBehaviour
         ndrl.Clear();
     }
 
-    private float calcX(float y) {
-        return Mathf.Sqrt((y*y) / 26f);
+    private float calcX(float y)
+    {
+        return Mathf.Sqrt((y * y) / 26f);
     }
-    private void SpawnNotesDropDown(List<Note> notes) {
+    private void SpawnNotesDropDown(List<Note> notes)
+    {
         Debug.Log("Spawning piano roll notes");
         ClearPianoRoll();
         this.startTime = Time.time;
-        notes.ForEach(e => {
+        notes.ForEach(e =>
+        {
+
             var number = e.NoteNumber;
             var start = e.Time;
             var dur = e.Length;
             float y;
             var key = PianoKeys.GetKeyFor(number);
-            if(key == null) {
+            if (key == null)
+            {
                 return;
             }
             var startMusical = (MusicalTimeSpan)e.TimeAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
@@ -127,44 +144,51 @@ public class Sequencer : MonoBehaviour
             var rotation = Quaternion.LookRotation(keyPos - awayVector);
             obj.transform.rotation = rotation;
             //obj.transform.rotation *= Quaternion.Euler(0, -90 ,0); 
-            obj.transform.Rotate(0,-90f,90f);
+            obj.transform.Rotate(0, -90f, 90f);
             obj.transform.position = lmraway2.away;
+
             var renderer = obj.GetComponent<Renderer>();
             renderer.material.color = key.color == KeyColor.Black ? Color.black : Color.white;
             var rb = obj.GetComponent<Rigidbody>();
             rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
 
-            var expectTime = ((lmraway2.away - keyPos).magnitude + scale/2) / rb.velocity.magnitude;
+            var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / rb.velocity.magnitude;
             var expectEnd = scale / rb.velocity.magnitude;
 
             this.ndrl.Add(new NoteDuration(expectTime, expectEnd, key));
         });
     }
 
-    public void Update() {
-        if (this.startTime < 0f) {
+    public void Update()
+    {
+        if (this.startTime < 0f)
+        {
             return;
         }
         var deltaT = Time.time - this.startTime;
         foreach (var item in ndrl)
         {
-            if(deltaT > item.start && deltaT < item.end) {
+            if (deltaT > item.start && deltaT < item.end)
+            {
                 piano.ActivateKey(item.key.keyNum);
                 Debug.Log("Activate" + item.key.keyNum);
             }
         }
         // TODO: Sync pulse timing
-        if (deltaT % ttp <= 0.5) {
+        if (deltaT % ttp <= 0.5)
+        {
             piano.Pulse();
         }
     }
 }
 
-public struct NoteDuration {
-    public float start {get;}
-    public float end {get;}
-    public PianoKey key {get;}
-    public NoteDuration(float start, float dur, PianoKey key) {
+public struct NoteDuration
+{
+    public float start { get; }
+    public float end { get; }
+    public PianoKey key { get; }
+    public NoteDuration(float start, float dur, PianoKey key)
+    {
         this.start = start;
         this.end = start + dur;
         this.key = key;

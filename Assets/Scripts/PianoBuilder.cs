@@ -49,7 +49,7 @@ public class PianoBuilder : MonoBehaviour
         if (!needsCameraHook)
         {
             Debug.Log("Building Piano with saved position. (TODO)");
-            // PlacePianoInfrontOfTransform(); -- TODO save transform location to disk 
+            // PlacePianoInfrontOfTransform(); -- TODO save transform location to RunTimeSettings 
         }
     }
 
@@ -59,15 +59,6 @@ public class PianoBuilder : MonoBehaviour
         {
             Debug.Log("Building Piano.");
             PlacePianoAt(trf.position + trf.forward * 0.5f);
-            var sequencer = Sequencer.instance;
-            if (sequencer)
-            {
-                sequencer.SpawnNotes();
-            }
-            else
-            {
-                Debug.Log("No Sequencer component (you must be in calibration mode)");
-            }
         }
         else
         {
@@ -99,13 +90,11 @@ public class PianoBuilder : MonoBehaviour
             {
                 keyObj = Instantiate(blackKey);
                 keyObj.transform.SetParent(this.transform);
-                keyObj.transform.localPosition = new Vector3(xOffset + whitekeyScale.x / 2, yOffset, zOffset);
+                keyObj.transform.localPosition = new Vector3(xOffset - whitekeyScale.x / 2, yOffset, zOffset);
             }
             pianoKeys[currentKey] = keyObj;
         }
         pianoIsBuilt = true;
-        //up.transform.SetParent(pianoKeys[firstkey].transform);
-        //front.transform.SetParent(pianoKeys[firstkey].transform);
         var o = pianoKeys[firstkey];
         var l = pianoKeys[lastkey];
         var up = o.transform.position + pianoKeys[firstkey].transform.forward * 0.1f;
@@ -116,7 +105,8 @@ public class PianoBuilder : MonoBehaviour
         Debug.DrawLine(o.transform.position, lookat.normalized, color: Color.green, duration: 99999f, depthTest: false);
     }
 
-    private void DrawPulser() {
+    private void DrawPulser()
+    {
         var firstkey = PianoKeys.GetFirstKey();
         var lastkey = PianoKeys.GetLastKey();
         var left = this.pianoKeys[firstkey].transform;
@@ -131,7 +121,8 @@ public class PianoBuilder : MonoBehaviour
         this.pulsers.Add(rp);
     }
 
-    private void DeletePulser() {
+    private void DeletePulser()
+    {
         foreach (var item in this.pulsers)
         {
             Destroy(item);
@@ -141,7 +132,8 @@ public class PianoBuilder : MonoBehaviour
 
     }
 
-    public void Pulse() {
+    public void Pulse()
+    {
         foreach (var pulser in this.pulsers)
         {
             var p = pulser.GetComponent<SimpleSonarShader_Object>();
@@ -150,20 +142,23 @@ public class PianoBuilder : MonoBehaviour
 
     }
 
-    private void DrawAuxillaryLines() {
+    private void DrawAuxillaryLines()
+    {
         foreach (var item in pianoKeys)
         {
             var lmraway = GetLMRAwayVectorsForKey(item.Key, 10);
             this.auxLines.Add(DrawLine(lmraway.centre, lmraway.away, Color.grey));
         }
-    }    
+    }
 
-    private void DeleteAuxillaryLines() {
+    private void DeleteAuxillaryLines()
+    {
         this.auxLines.ForEach(e => Destroy(e));
         this.auxLines.Clear();
     }
 
-    public PianoKeyVectors GetLMRAwayVectorsForKey(PianoKey key, float magnitude = 1f) {
+    public PianoKeyVectors GetLMRAwayVectorsForKey(PianoKey key, float magnitude = 1f)
+    {
         if (!pianoKeys.ContainsKey(key))
         {
             throw new System.Exception("Invalid request for key");
@@ -194,30 +189,35 @@ public class PianoBuilder : MonoBehaviour
         return myLine;
     }
 
-    private Vector3 MakeAwayVector(Vector3 refV, Transform transform, float magnitude = 1f) {
+    private Vector3 MakeAwayVector(Vector3 refV, Transform transform, float magnitude = 1f)
+    {
         var lookat = refV + (transform.forward * adj * magnitude + transform.up * opposite * magnitude);
         return lookat;
 
     }
 
-    private Vector3 MakeAwayVector(Transform transform, float magnitude) {
+    private Vector3 MakeAwayVector(Transform transform, float magnitude)
+    {
         var lookat = transform.position + (transform.forward * adj * magnitude + transform.up * opposite * magnitude);
         return lookat;
     }
 
-    private Vector3 MakeAwayVector(Transform transform) {
+    private Vector3 MakeAwayVector(Transform transform)
+    {
         var lookat = transform.position + (transform.forward * adj + transform.up * opposite);
         return lookat;
     }
 
 
-    public Vector3 GetLeftEdge() {
+    public Vector3 GetLeftEdge()
+    {
         var obj = pianoKeys[PianoKeys.GetFirstKey()];
         var corners = Corners(obj);
         return corners[1];
     }
 
-    public Vector3 GetRightEdge() {
+    public Vector3 GetRightEdge()
+    {
         var obj = pianoKeys[PianoKeys.GetLastKey()];
         var corners = Corners(obj);
         return corners[0];
@@ -285,6 +285,7 @@ public class PianoBuilder : MonoBehaviour
             throw new System.Exception("Invalid request for key");
         }
         return pianoKeys[key].transform.forward;
+
     }
 
     public Vector3 GetHorizontalVectorForKey(PianoKey key)
@@ -296,7 +297,6 @@ public class PianoBuilder : MonoBehaviour
         return pianoKeys[key].transform.right;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!pianoIsBuilt)
@@ -355,23 +355,20 @@ public class PianoBuilder : MonoBehaviour
             this.transform.localScale = scale;
             this.transform.localEulerAngles = angle;
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space)) // Locking the piano in place
         {
-            // Locking the piano in place
             if (lockedTextObj != null)
             {
                 GameObject.Destroy(lockedTextObj);
             }
             if (locked)
             {
-                // Unlock it
                 locked = false;
                 DeleteAuxillaryLines();
                 DeletePulser();
             }
             else
             {
-                // Lock it in place and set a text
                 locked = true;
                 DrawAuxillaryLines();
                 DrawPulser();
@@ -383,9 +380,8 @@ public class PianoBuilder : MonoBehaviour
                 lockedTextObj.transform.localPosition = pianoKeys[PianoKeys.GetKeyFor(CENTRE)].transform.localPosition + new Vector3(0f, 0.1f, 0f);
             }
         }
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return)) // Restarting MIDI file sequencer
         {
-            // Spawn 
             sequencer.LoadMidiFile();
             sequencer.SpawnNotes();
         }
@@ -429,8 +425,10 @@ public class PianoBuilder : MonoBehaviour
     }
 }
 
-public struct PianoKeyVectors {
-    public PianoKeyVectors(Vector3 topLeft, Vector3 topRight, Vector3 topMid, Vector3 away, Vector3 forward, Vector3 up) {
+public struct PianoKeyVectors
+{
+    public PianoKeyVectors(Vector3 topLeft, Vector3 topRight, Vector3 topMid, Vector3 away, Vector3 forward, Vector3 up)
+    {
         this.topLeft = topLeft;
         this.topRight = topRight;
         this.centre = topMid;
@@ -439,12 +437,11 @@ public struct PianoKeyVectors {
         this.up = up;
     }
 
-    public Vector3 topLeft {get;}
-    public Vector3 topRight {get;}
-    public Vector3 centre {get;}
-    public Vector3 away {get;}
-
-    public Vector3 forward{get;}
-    public Vector3 up {get;}
+    public Vector3 topLeft { get; }
+    public Vector3 topRight { get; }
+    public Vector3 centre { get; }
+    public Vector3 away { get; }
+    public Vector3 forward { get; }
+    public Vector3 up { get; }
 
 }
