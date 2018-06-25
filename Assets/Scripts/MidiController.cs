@@ -34,15 +34,16 @@ public class MidiController : MonoBehaviour
 
     void handleChannelMsg(object sender, ChannelMessageEventArgs e)
     {
+        var keyNum = e.Message.Data1;
         // Handle MIDI event
-        Debug.Log(e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + e.Message.Data1.ToString() + '\t' + e.Message.Data2.ToString());
+        Debug.Log(e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + keyNum.ToString() + '\t' + e.Message.Data2.ToString());
         if (e.Message.Command == ChannelCommand.NoteOn)
         {
-            PianoBuilder.instance.ActivateKey(e.Message.Data1);
+            PianoBuilder.instance.ChangeKeyColor(keyNum, Color.blue);
         }
         else if (e.Message.Command == ChannelCommand.NoteOff)
         {
-            PianoBuilder.instance.DeactivateKey(e.Message.Data1);
+            PianoBuilder.instance.ResetKeyColor(keyNum);
         }
     }
 

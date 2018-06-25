@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.Threading.Tasks;
 
 public class PianoBuilder : MonoBehaviour
 {
@@ -399,7 +400,7 @@ public class PianoBuilder : MonoBehaviour
 
     }
 
-    public void ActivateKey(int keyNum)
+    public void ChangeKeyColor(int keyNum, Color color, float durationMilliSeconds = -1f)
     {
         if (!pianoIsBuilt)
         {
@@ -411,31 +412,29 @@ public class PianoBuilder : MonoBehaviour
             GameObject gameObject;
             if (pianoKeys.TryGetValue(pianoKey, out gameObject))
             {
-                Debug.Log("Activating: " + pianoKey.keyNum);
+                Debug.Log("Changing key color (" + color + ") for: " + pianoKey.keyNum);
                 var render = gameObject.GetComponent<MeshRenderer>();
-                render.material.color = activationColor;
+                render.material.color = color;
+                if (durationMilliSeconds > 0)
+                {
+                    StartCoroutine(deactivate(gameObject, pianoKey, durationMilliSeconds));
+                }
             }
         }
     }
 
-    public void DeactivateKey(int keyNum)
+    private IEnumerator deactivate(GameObject keyObj, PianoKey pianoKey, float duration)
     {
-        if (!pianoIsBuilt)
-        {
-            Debug.Log("Piano not setup.");
-        }
-        else
-        {
-            var pianoKey = PianoKeys.GetKeyFor(keyNum);
-            GameObject gameObject;
-            if (pianoKeys.TryGetValue(pianoKey, out gameObject))
-            {
-                Debug.Log("Deactivating: " + pianoKey.keyNum);
-                var render = gameObject.GetComponent<MeshRenderer>();
-                render.material.color = pianoKey.color == KeyColor.White ? Color.white : Color.black;
-            }
-        }
+        yield return new WaitForSeconds(duration);
+        var render = keyObj.GetComponent<MeshRenderer>();
+        render.material.color = pianoKey.color == KeyColor.White ? Color.white : Color.black;
     }
+
+    public void ResetKeyColor(int keyNum)
+    {
+        ChangeKeyColor(keyNum, PianoKeys.GetKeyFor(keyNum).color == KeyColor.White ? Color.white : Color.black);
+    }
+
 }
 
 public struct PianoKeyVectors

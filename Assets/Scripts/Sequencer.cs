@@ -30,14 +30,14 @@ public class Sequencer : MonoBehaviour
 
     private float startTime = -1;
     private float deltaTime;
-    private List<NoteDuration> ndrl;
+    private List<NoteDuration> noteDurations;
     private TimeSignature ts;
     private float ttp;
 
     void Start()
     {
         piano = GetComponent<PianoBuilder>();
-        ndrl = new List<NoteDuration>();
+        noteDurations = new List<NoteDuration>();
         instance = this;
     }
 
@@ -100,7 +100,7 @@ public class Sequencer : MonoBehaviour
         Debug.Log("Clearing piano roll");
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
-        ndrl.Clear();
+        noteDurations.Clear();
     }
 
     private float calcX(float y)
@@ -148,14 +148,14 @@ public class Sequencer : MonoBehaviour
             obj.transform.position = lmraway2.away;
 
             var renderer = obj.GetComponent<Renderer>();
-            renderer.material.color = key.color == KeyColor.Black ? Color.black : Color.white;
+            renderer.material.color = key.color == KeyColor.Black ? Color.blue : Color.white;
             var rb = obj.GetComponent<Rigidbody>();
             rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
 
             var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / rb.velocity.magnitude;
             var expectEnd = scale / rb.velocity.magnitude;
 
-            this.ndrl.Add(new NoteDuration(expectTime, expectEnd, key));
+            this.noteDurations.Add(new NoteDuration(expectTime, expectEnd, key));
         });
     }
 
@@ -166,12 +166,13 @@ public class Sequencer : MonoBehaviour
             return;
         }
         var deltaT = Time.time - this.startTime;
-        foreach (var item in ndrl)
+        foreach (var note in noteDurations)
         {
-            if (deltaT > item.start && deltaT < item.end)
+            if (deltaT >= note.start && deltaT < note.end)
             {
-                piano.ActivateKey(item.key.keyNum);
-            } // needs deactivate
+                // Debug.Log("DeltaT: " + deltaT + "," + "note.start: " + note.start + ", note.end: " + note.end);
+                piano.ChangeKeyColor(note.key.keyNum, Color.red, note.end - note.start);
+            }
         }
         // TODO: Sync pulse timing
         if (deltaT % ttp <= 0.5)
