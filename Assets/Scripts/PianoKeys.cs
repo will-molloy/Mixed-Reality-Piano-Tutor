@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>  
 public class PianoKeys
 {
-    public readonly static List<PianoKey> keysList;
+    private readonly static List<PianoKey> keysList;
     public readonly static float pianoKeyGap = 0.001f; // 0.02 - white key width
 
     static PianoKeys()
@@ -105,6 +105,10 @@ public class PianoKey
     {
         this.keyNum = keyNum;
         this.color = color;
+    }
+
+    override public string ToString() {
+        return this.keyNum + " " + this.color.ToString();
     }
 
 }

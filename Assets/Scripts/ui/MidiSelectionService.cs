@@ -55,9 +55,13 @@ public class MidiSelectionService : MonoBehaviour
 
         setText(head.FormattedTrackName, NAME_INDEX, rowObj);
         setText(head.TrackDifficulty.ToString(), DIFFICULTY_INDEX, rowObj);
-        var bestScore = sessions.OrderByDescending(x => x.Accuracy).First().Accuracy;
+        var bestScore = 0d;
+        var passes = 0;
+        if (sessions.Count > 0){
+            bestScore = sessions.OrderByDescending(x => x.Accuracy).First().Accuracy;
+            passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
+        }
         setText(bestScore * 100 + "%", BEST_SCORE_INDEX, rowObj);
-        var passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
         setText(passes + "/" + sessions.Count(), OVERALL_SCORE_INDEX, rowObj);
         setButton(midiPath, rowObj);
     }
