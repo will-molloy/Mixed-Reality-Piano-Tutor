@@ -381,8 +381,15 @@ public class PianoBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Return)) // Restarting MIDI file sequencer
         {
-            sequencer.LoadMidiFile();
-            sequencer.SpawnNotes();
+            if (sequencer)
+            {
+                sequencer.LoadMidiFile();
+                sequencer.SpawnNotes();
+            }
+            else
+            {
+                Debug.Log("No sequencer component, you must be in calibration mode.");
+            }
         }
         if (Input.GetKeyDown(KeyCode.H)) // Hide virtual piano keys
         {
@@ -404,6 +411,7 @@ public class PianoBuilder : MonoBehaviour
             GameObject gameObject;
             if (pianoKeys.TryGetValue(pianoKey, out gameObject))
             {
+                Debug.Log("Activating: " + pianoKey.keyNum);
                 var render = gameObject.GetComponent<MeshRenderer>();
                 render.material.color = activationColor;
             }
@@ -422,6 +430,7 @@ public class PianoBuilder : MonoBehaviour
             GameObject gameObject;
             if (pianoKeys.TryGetValue(pianoKey, out gameObject))
             {
+                Debug.Log("Deactivating: " + pianoKey.keyNum);
                 var render = gameObject.GetComponent<MeshRenderer>();
                 render.material.color = pianoKey.color == KeyColor.White ? Color.white : Color.black;
             }

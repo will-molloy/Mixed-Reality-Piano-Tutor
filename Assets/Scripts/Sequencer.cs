@@ -127,10 +127,10 @@ public class Sequencer : MonoBehaviour
             var startMusical = (MusicalTimeSpan)e.TimeAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
             var lengthMusical = e.LengthAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
             y = ((float)startMusical.Numerator / startMusical.Denominator) * this.notesScale;
-            Debug.Log(y);
+            // Debug.Log(y);
             var delta = (MusicalTimeSpan)lengthMusical;
             var scale = ((float)delta.Numerator / delta.Denominator) * this.notesScale / 2;
-            Debug.Log(scale);
+            // Debug.Log(scale);
             var lmraway = piano.GetLMRAwayVectorsForKey(key);
             var obj = Instantiate(pianoRollObject);
             var awayVector = lmraway.away;
@@ -171,8 +171,7 @@ public class Sequencer : MonoBehaviour
             if (deltaT > item.start && deltaT < item.end)
             {
                 piano.ActivateKey(item.key.keyNum);
-                Debug.Log("Activate" + item.key.keyNum);
-            }
+            } // needs deactivate
         }
         // TODO: Sync pulse timing
         if (deltaT % ttp <= 0.5)
