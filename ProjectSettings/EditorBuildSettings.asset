@@ -10,7 +10,7 @@ EditorBuildSettings:
     guid: d8711d10f6b439a478d7b2a00991f44a
   - enabled: 1
     path: Assets/Scenes/MIDISelection.unity
-    guid: d76bbc4ca1d5e6e4b8431ffd418aacb2
+    guid: af1e7585b67a0274d975c1b005bba0d9
   - enabled: 1
     path: Assets/Scenes/Calibration.unity
     guid: e00c80ae10fd8f446a25db3e6078540b

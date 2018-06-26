@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.Threading.Tasks;
 
 public class PianoBuilder : MonoBehaviour
 {
@@ -22,10 +23,9 @@ public class PianoBuilder : MonoBehaviour
     internal Dictionary<PianoKey, GameObject> pianoKeys;
 
     internal static readonly float yOffset = 0.001f;
-    // Whether the piano has been locked in placed by the user
     internal bool locked = false;
-    // Whether the piano has been placed into the initial positon
     internal bool pianoIsBuilt = false;
+    private bool hidden = false;
     internal GameObject lockedTextObj;
 
     public static PianoBuilder instance;
@@ -382,17 +382,29 @@ public class PianoBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Return)) // Restarting MIDI file sequencer
         {
-            sequencer.LoadMidiFile();
-            sequencer.SpawnNotes();
+            if (sequencer)
+            {
+                sequencer.LoadMidiFile();
+                sequencer.SpawnNotes();
+            }
+            else
+            {
+                Debug.LogWarning("No sequencer component, you must be in calibration mode.");
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.H)) // Hide virtual piano keys
+        {
+            pianoKeys.Values.ToList().ForEach(o => o.GetComponent<MeshRenderer>().enabled = hidden);
+            hidden = !hidden;
         }
 
     }
 
-    public void ActivateKey(int keyNum)
+    public void ActivateKey(int keyNum, Color color, float durationSeconds = -1f)
     {
         if (!pianoIsBuilt)
         {
-            Debug.Log("Piano not setup.");
+            Debug.LogWarning("Piano not setup.");
         }
         else
         {
@@ -400,29 +412,29 @@ public class PianoBuilder : MonoBehaviour
             GameObject gameObject;
             if (pianoKeys.TryGetValue(pianoKey, out gameObject))
             {
+                // Debug.Log("Activating key: " + pianoKey.keyNum + ", for: " + durationSeconds + "s");
                 var render = gameObject.GetComponent<MeshRenderer>();
-                render.material.color = activationColor;
+                render.material.color = color;
+                if (durationSeconds > 0)
+                {
+                    StartCoroutine(DeactivateKey(gameObject, pianoKey, durationSeconds));
+                }
             }
         }
+    }
+
+    private IEnumerator DeactivateKey(GameObject keyObj, PianoKey pianoKey, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        var render = keyObj.GetComponent<MeshRenderer>();
+        render.material.color = pianoKey.color == KeyColor.White ? Color.white : Color.black;
     }
 
     public void DeactivateKey(int keyNum)
     {
-        if (!pianoIsBuilt)
-        {
-            Debug.Log("Piano not setup.");
-        }
-        else
-        {
-            var pianoKey = PianoKeys.GetKeyFor(keyNum);
-            GameObject gameObject;
-            if (pianoKeys.TryGetValue(pianoKey, out gameObject))
-            {
-                var render = gameObject.GetComponent<MeshRenderer>();
-                render.material.color = pianoKey.color == KeyColor.White ? Color.white : Color.black;
-            }
-        }
+        ActivateKey(keyNum, PianoKeys.GetKeyFor(keyNum).color == KeyColor.White ? Color.white : Color.black);
     }
+
 }
 
 public struct PianoKeyVectors

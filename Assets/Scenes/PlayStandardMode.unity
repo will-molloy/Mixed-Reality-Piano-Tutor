@@ -502,6 +502,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114711245158774928, guid: e13ee7e0790c7d243b7aa67fe604acac,
+        type: 2}
+      propertyPath: resolution
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e13ee7e0790c7d243b7aa67fe604acac, type: 2}
   m_IsPrefabParent: 0
@@ -629,8 +634,8 @@ MonoBehaviour:
   enableAdaptiveResolution: 0
   minRenderScale: 0.7
   maxRenderScale: 1
-  expandMixedRealityCapturePropertySheet: 1
-  enableMixedReality: 1
+  expandMixedRealityCapturePropertySheet: 0
+  enableMixedReality: 0
   compositionMethod: 0
   extraHiddenLayers:
     serializedVersion: 2
@@ -658,7 +663,7 @@ MonoBehaviour:
   usePositionTracking: 1
   useRotationTracking: 1
   useIPDInPositionTracking: 1
-  resetTrackerOnLoad: 1
+  resetTrackerOnLoad: 0
   AllowRecenter: 1
 --- !u!114 &1765888122
 MonoBehaviour:
@@ -698,6 +703,7 @@ GameObject:
   - component: {fileID: 2113433557}
   - component: {fileID: 2113433556}
   - component: {fileID: 2113433558}
+  - component: {fileID: 2113433559}
   m_Layer: 0
   m_Name: PianoBuilder
   m_TagString: Untagged
@@ -747,3 +753,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pianoRollObject: {fileID: 1055867788491200, guid: 89b4e2af7ed9efe49be2d17d7db9ef6a,
     type: 2}
+--- !u!114 &2113433559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2113433555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66c0c2ace819b88488aac7bc2ca56309, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

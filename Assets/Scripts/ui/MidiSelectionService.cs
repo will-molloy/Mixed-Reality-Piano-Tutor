@@ -42,25 +42,23 @@ public class MidiSelectionService : MonoBehaviour
     private void processSessionsAndPlaceUiEntry(string midiPath)
     {
         var sessions = MidiSessionController.getMidiSessions(midiPath);
-        var head = new MidiSessionDto(midiPath);
-        if (sessions.Count > 0)
-        {
-            head = sessions.First();
-        }
         var rowObj = Instantiate(rowEntryObj);
         rowObj.transform.SetParent(this.transform);
         var rowRect = rowObj.transform.GetComponent<RectTransform>();
         rowRect.localScale = Vector3.one;
         rowRect.localPosition = Vector3.zero;
 
-        setText(head.FormattedTrackName, NAME_INDEX, rowObj);
-        setText(head.TrackDifficulty.ToString(), DIFFICULTY_INDEX, rowObj);
+        var head = new MidiSessionDto(midiPath);
         var bestScore = 0d;
         var passes = 0;
-        if (sessions.Count > 0){
+        if (sessions.Count > 0)
+        {
+            head = sessions.First();
             bestScore = sessions.OrderByDescending(x => x.Accuracy).First().Accuracy;
             passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
         }
+        setText(head.FormattedTrackName, NAME_INDEX, rowObj);
+        setText(head.TrackDifficulty.ToString(), DIFFICULTY_INDEX, rowObj);
         setText(bestScore * 100 + "%", BEST_SCORE_INDEX, rowObj);
         setText(passes + "/" + sessions.Count(), OVERALL_SCORE_INDEX, rowObj);
         setButton(midiPath, rowObj);
