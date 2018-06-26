@@ -404,7 +404,7 @@ public class PianoBuilder : MonoBehaviour
     {
         if (!pianoIsBuilt)
         {
-            Debug.Log("Piano not setup.");
+            Debug.LogWarning("Piano not setup.");
         }
         else
         {
@@ -412,7 +412,7 @@ public class PianoBuilder : MonoBehaviour
             GameObject gameObject;
             if (pianoKeys.TryGetValue(pianoKey, out gameObject))
             {
-                Debug.Log("Activating key: " + pianoKey.keyNum + ", for: " + durationSeconds + "s");
+                // Debug.Log("Activating key: " + pianoKey.keyNum + ", for: " + durationSeconds + "s");
                 var render = gameObject.GetComponent<MeshRenderer>();
                 render.material.color = color;
                 if (durationSeconds > 0)

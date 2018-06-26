@@ -11,6 +11,7 @@ using System.Linq;
 /// - Builds piano roll from MIDI file after virtual piano is built
 /// </summary>  
 [RequireComponent(typeof(PianoBuilder))]
+[RequireComponent(typeof(MidiController))]
 public class Sequencer : MonoBehaviour
 {
 
@@ -30,14 +31,17 @@ public class Sequencer : MonoBehaviour
 
     private float startTime = -1;
     private float deltaTime;
-    private List<NoteDuration> mutableNoteDurations;
+    private List<NoteDuration> noteDurations;
     private TimeSignature ts;
     private float ttp;
+
+    private MidiController MidiController;
 
     void Start()
     {
         piano = GetComponent<PianoBuilder>();
-        mutableNoteDurations = new List<NoteDuration>();
+        MidiController = GetComponent<MidiController>();
+        noteDurations = new List<NoteDuration>();
         instance = this;
     }
 
@@ -67,7 +71,7 @@ public class Sequencer : MonoBehaviour
             throw new System.Exception("No midifile loaded, use LoadMidiFile() to load");
         }
         this.tempoMapManager = midiFile.ManageTempoMap();
-
+        MidiController.clearMidiEventStorage();
         var tempomap = tempoMapManager.TempoMap;
 
         Debug.Log(tempomap.TimeDivision);
@@ -99,7 +103,7 @@ public class Sequencer : MonoBehaviour
         Debug.Log("Clearing piano roll");
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
-        mutableNoteDurations.Clear();
+        noteDurations.Clear();
     }
 
     private float calcX(float y)
@@ -154,7 +158,7 @@ public class Sequencer : MonoBehaviour
             var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / rb.velocity.magnitude;
             var expectEnd = scale / rb.velocity.magnitude;
 
-            this.mutableNoteDurations.Add(new NoteDuration(expectTime, expectEnd, key));
+            this.noteDurations.Add(new NoteDuration(expectTime, expectEnd, key));
         });
     }
 
@@ -165,32 +169,42 @@ public class Sequencer : MonoBehaviour
             return;
         }
         var deltaT = Time.time - this.startTime;
-        for (var i = 0; i < mutableNoteDurations.Count; i++)
+
+        noteDurations.ForEach(note =>
         {
-            var note = mutableNoteDurations[i];
-            if (deltaT >= note.start - note.duration && deltaT < note.end - note.duration)
+            if (!note.hasKeyBeenActivated && deltaT >= note.start - note.duration && deltaT < note.end - note.duration)
             {
-                // Debug.Log("DeltaT: " + deltaT + "," + "note.start: " + note.start + ", note.end: " + note.end);
-                piano.ActivateKey(note.key.keyNum, Color.red, note.duration);// - (deltaT - note.start));
-                mutableNoteDurations.Remove(note);
+                piano.ActivateKey(note.key.keyNum, Color.red, note.duration);
+                note.hasKeyBeenActivated = true;
             }
-        }
+        });
         // TODO: Sync pulse timing
         if (deltaT % ttp <= 0.5)
         {
             piano.Pulse();
+        }
+        if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
+        {
+            var midiEvents = MidiController.GetMidiEvents();
+            // midiEvents.ForEach(midiEvent => {
+                
+            // });
+            Debug.Log("Track finished, " + midiEvents.Count + " events");
+            // midiEvents.ForEach(e => Debug.Log(e.time + "s, " + e.messageEvent));
         }
     }
 }
 
 public struct NoteDuration
 {
+    public bool hasKeyBeenActivated { get; set; }
     public float duration { get; }
     public float start { get; }
     public float end { get; }
     public PianoKey key { get; }
     public NoteDuration(float start, float dur, PianoKey key)
     {
+        this.hasKeyBeenActivated = false;
         this.start = start;
         this.end = start + dur;
         this.key = key;
