@@ -33,16 +33,15 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using Sanford.Multimedia.Timers;
 
 namespace Sanford.Multimedia.Midi
 {
-	/// <summary>
-	/// Generates clock events internally.
-	/// </summary>
-	public class MidiInternalClock : PpqnClock, IComponent
+    /// <summary>
+    /// Generates clock events internally.
+    /// </summary>
+    public class MidiInternalClock : PpqnClock, IComponent
     {
         #region MidiInternalClock Members
 

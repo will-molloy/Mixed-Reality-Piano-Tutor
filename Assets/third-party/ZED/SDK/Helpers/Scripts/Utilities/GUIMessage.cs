@@ -1,7 +1,6 @@
 ﻿//======= Copyright (c) Stereolabs Corporation, All rights reserved. ===============
 
 using UnityEngine;
-using UnityEngine.VR;
 
 /// <summary>
 /// Controls the message displayed during the opening and disconnection of the ZED

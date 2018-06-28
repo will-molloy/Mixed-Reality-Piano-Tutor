@@ -1,6 +1,5 @@
 ﻿namespace VRTK.Examples
 {
-    using System;
     using UnityEngine;
 
     public class FireExtinguisher_Base : VRTK_InteractableObject

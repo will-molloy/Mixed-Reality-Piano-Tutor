@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 using Oculus.Avatar;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 public delegate void specificationCallback(IntPtr specification);
 public delegate void assetLoadedCallback(OvrAvatarAsset asset);

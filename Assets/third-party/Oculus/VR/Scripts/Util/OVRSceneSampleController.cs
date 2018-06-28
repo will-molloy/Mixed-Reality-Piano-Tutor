@@ -20,7 +20,6 @@ limitations under the License.
 ************************************************************************************/
 
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// Sample that allows you to play with various VR settings. 

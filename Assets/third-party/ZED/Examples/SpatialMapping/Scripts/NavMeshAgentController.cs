@@ -1,6 +1,5 @@
 ﻿//======= Copyright (c) Stereolabs Corporation, All rights reserved. ===============
 
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 

@@ -1,11 +1,9 @@
 using UnityEngine;
-using System.Collections;
 using System;
-using System.Runtime.InteropServices;
 
 namespace Oculus.Platform
 {
-  public class MicrophoneInputNative : IMicrophone
+    public class MicrophoneInputNative : IMicrophone
   {
     IntPtr mic;
 

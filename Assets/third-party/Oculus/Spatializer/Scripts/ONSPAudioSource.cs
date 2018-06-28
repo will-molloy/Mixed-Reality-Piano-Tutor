@@ -25,8 +25,6 @@ limitations under the License.
 //#define TEST_READONLY_PARAMETERS
 
 using UnityEngine;
-using System;
-using System.Collections;
 using System.Runtime.InteropServices;
 
 public class ONSPAudioSource : MonoBehaviour

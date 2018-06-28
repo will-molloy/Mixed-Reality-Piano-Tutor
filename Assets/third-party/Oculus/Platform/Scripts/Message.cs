@@ -2,13 +2,11 @@
 
 namespace Oculus.Platform
 {
-  using UnityEngine;
-  using System;
-  using System.Collections;
-  using System.Collections.Generic;
-  using Oculus.Platform.Models;
+    using UnityEngine;
+    using System;
+    using Oculus.Platform.Models;
 
-  public abstract class Message<T> : Message
+    public abstract class Message<T> : Message
   {
     public delegate void Callback(Message<T> message);
     public Message(IntPtr c_message) : base(c_message) {
