@@ -225,12 +225,7 @@ public class Sequencer : MonoBehaviour
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
             scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale);
-            //var midiEvents = MidiController.GetMidiEvents();
-            // midiEvents.ForEach(midiEvent => {
-                
-            // });
-            //Debug.Log("Track finished, " + midiEvents.Count + " events");
-            // midiEvents.ForEach(e => Debug.Log(e.time + "s, " + e.messageEvent));
+            this.ClearPianoRoll();
         }
     }
 }
