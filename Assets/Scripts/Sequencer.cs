@@ -173,8 +173,9 @@ public class Sequencer : MonoBehaviour
         var beatDelta = ((float)1f / lastNoteMusicalLen.Denominator) * this.notesScale;
 
         var midKey = PianoKeys.GetKeyFor(PianoBuilder.CENTRE);
+        var totalBeatsI = (int)(lastBeatY / beatDelta);
 
-        for(int i = 0; i <= (int)(lastBeatY / beatDelta); i++) {
+        for(int i = 0; i <= totalBeatsI; i++) {
             var line = Instantiate(fineLine);
             var v = piano.GetLMRAwayVectorsForKey(midKey, calcX(beatDelta * i));
             this.pianoRollObjects.Add(line);
@@ -183,11 +184,20 @@ public class Sequencer : MonoBehaviour
             line.transform.rotation = rotation;
             line.transform.Rotate(0, 0f, 90f);
             var rb = line.GetComponent<Rigidbody>();
-            rb.velocity = (v.centre - v.away).normalized * notesSpeed;
-
+            rb.velocity = (v.centre - v.away).normalized * this.notesSpeed;
         }
 
-        
+        StartCoroutine(PulseCoroutine(beatDelta / this.notesSpeed, totalBeatsI));
+
+
+    }
+
+    IEnumerator PulseCoroutine(float time, int totalBeats) {
+        for(int i = 0; i <= totalBeats; i++) {
+            piano.Pulse();
+            yield return new WaitForSeconds(time);
+        }
+
 
     }
 
