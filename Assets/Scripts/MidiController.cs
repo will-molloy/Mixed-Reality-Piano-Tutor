@@ -8,14 +8,22 @@ using System.Linq;
 /// <summary>  
 /// - Handles MIDI device 
 /// </summary>  
+
 public class MidiController : MonoBehaviour
 {
     protected InputDevice inputDevice;
+    public static List<MidiEventStorage> mockEvents;
 
     private List<MidiEventStorage> midiEvents;
 
     void Start()
     {
+        mockEvents = new List<MidiEventStorage>();
+        mockEvents.Add(new MidiEventStorage(55, false, 0.5f));
+        mockEvents.Add(new MidiEventStorage(55, true, 0.8f));
+
+        this.midiEvents = new List<MidiEventStorage>();
+
         if (InputDevice.DeviceCount != 1)
         {
             Debug.LogError("Err: No device or too many devices found for MIDI input.");
@@ -27,18 +35,19 @@ public class MidiController : MonoBehaviour
 
         inputDevice.StartRecording();
         Debug.Log("MIDI device inited");
-        clearMidiEventStorage();
+        ClearMidiEventStorage();
     }
 
-    public void clearMidiEventStorage()
+    public void ClearMidiEventStorage()
     {
         Debug.Log("Clearing MIDI events storage");
-        midiEvents = new List<MidiEventStorage>();
+        this.midiEvents.Clear();
     }
 
     public List<MidiEventStorage> GetMidiEvents()
     {
-        return midiEvents;
+        return mockEvents;
+        //return midiEvents;
     }
 
     void OnApplicationQuit()
@@ -83,6 +92,12 @@ public struct MidiEventStorage
         this.time = time;
         this.keyNum = e.Message.Data1;
         this.isEnd = e.Message.Command == ChannelCommand.NoteOff;
+    }
+
+    public MidiEventStorage(int keyNum, bool isEnd, float time){
+        this.time = time;
+        this.keyNum = keyNum;
+        this.isEnd = isEnd;
     }
 }
 

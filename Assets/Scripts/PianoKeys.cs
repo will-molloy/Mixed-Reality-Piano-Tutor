@@ -90,6 +90,10 @@ public class PianoKeys
     {
         return keysList[keysList.Count - 1];
     }
+
+    public static List<PianoKey> GetAllKeys() {
+        return keysList;
+    }
 }
 public enum KeyColor
 {

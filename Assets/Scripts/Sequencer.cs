@@ -12,6 +12,7 @@ using System.Linq;
 /// </summary>  
 [RequireComponent(typeof(PianoBuilder))]
 [RequireComponent(typeof(MidiController))]
+[RequireComponent(typeof(ScoreView))]
 public class Sequencer : MonoBehaviour
 {
 
@@ -37,12 +38,14 @@ public class Sequencer : MonoBehaviour
     private TimeSignature ts;
     private float ttp;
 
-    private MidiController MidiController;
+    private MidiController midiController;
+    private ScoreView scoreView;
 
     void Start()
     {
         piano = GetComponent<PianoBuilder>();
-        MidiController = GetComponent<MidiController>();
+        midiController = GetComponent<MidiController>();
+        scoreView = GetComponent<ScoreView>();
         noteDurations = new List<NoteDuration>();
         instance = this;
     }
@@ -105,9 +108,10 @@ public class Sequencer : MonoBehaviour
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
         noteDurations.Clear();
+        midiController.ClearMidiEventStorage();
     }
 
-    private float calcX(float y)
+    public static float calcX(float y)
     {
         return Mathf.Sqrt((y * y) / 26f);
     }
@@ -118,7 +122,6 @@ public class Sequencer : MonoBehaviour
         this.startTime = Time.time;
         notes.ForEach(e =>
         {
-
             var number = e.NoteNumber;
             var start = e.Time;
             var dur = e.Length;
@@ -189,7 +192,6 @@ public class Sequencer : MonoBehaviour
 
         StartCoroutine(PulseCoroutine(beatDelta / this.notesSpeed, totalBeatsI));
 
-
     }
 
     IEnumerator PulseCoroutine(float time, int totalBeats) {
@@ -197,8 +199,6 @@ public class Sequencer : MonoBehaviour
             piano.Pulse();
             yield return new WaitForSeconds(time);
         }
-
-
     }
 
     public void Update()
@@ -224,6 +224,7 @@ public class Sequencer : MonoBehaviour
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
+            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale);
             //var midiEvents = MidiController.GetMidiEvents();
             // midiEvents.ForEach(midiEvent => {
                 
