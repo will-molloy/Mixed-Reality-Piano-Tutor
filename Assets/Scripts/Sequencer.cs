@@ -20,6 +20,8 @@ public class Sequencer : MonoBehaviour
     private TempoMapManager tempoMapManager;
     [SerializeField]
     private GameObject pianoRollObject;
+    [SerializeField]
+    private GameObject fineLine;
     private List<GameObject> pianoRollObjects = new List<GameObject>();
     public static Sequencer instance;
     private PianoBuilder piano;
@@ -71,7 +73,7 @@ public class Sequencer : MonoBehaviour
             throw new System.Exception("No midifile loaded, use LoadMidiFile() to load");
         }
         this.tempoMapManager = midiFile.ManageTempoMap();
-        MidiController.clearMidiEventStorage();
+        //MidiController.clearMidiEventStorage();
         var tempomap = tempoMapManager.TempoMap;
 
         Debug.Log(tempomap.TimeDivision);
@@ -94,7 +96,6 @@ public class Sequencer : MonoBehaviour
                 }
             }
         }
-        //SpawnNotesDropDown(noteManager.Notes.ToList());
         SpawnNotesDropDown(midiFile.GetNotes().ToList());
     }
 
@@ -132,12 +133,12 @@ public class Sequencer : MonoBehaviour
             y = ((float)startMusical.Numerator / startMusical.Denominator) * this.notesScale;
             // Debug.Log(y);
             var delta = (MusicalTimeSpan)lengthMusical;
-            var scale = ((float)delta.Numerator / delta.Denominator) * this.notesScale / 2;
+            var scale = ((float)delta.Numerator / delta.Denominator) * this.notesScale;
             // Debug.Log(scale);
             var lmraway = piano.GetLMRAwayVectorsForKey(key);
             var obj = Instantiate(pianoRollObject);
             var awayVector = lmraway.away;
-            var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale));
+            var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale / 2f));
             var keyPos = lmraway.centre;
             //Debug.Log(number + "  " + keyPos.ToString("F4"));
             pianoRollObjects.Add(obj);
@@ -157,9 +158,37 @@ public class Sequencer : MonoBehaviour
 
             var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / rb.velocity.magnitude;
             var expectEnd = scale / rb.velocity.magnitude;
+            
+            //Debug.Log("Scale: " + scale + "  y:" + y);
 
             this.noteDurations.Add(new NoteDuration(expectTime, expectEnd, key));
         });
+
+        // Spawn fine lines
+        var lastNoteMusicalStart = (MusicalTimeSpan)notes.Last().TimeAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
+        var lastNoteMusicalLen = (MusicalTimeSpan)notes.Last().LengthAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
+        var lastNoteMuscialEnd = lastNoteMusicalStart + lastNoteMusicalLen;
+
+        var lastBeatY = ((float)lastNoteMuscialEnd.Numerator / lastNoteMusicalLen.Denominator) * this.notesScale;
+        var beatDelta = ((float)1f / lastNoteMusicalLen.Denominator) * this.notesScale;
+
+        var midKey = PianoKeys.GetKeyFor(PianoBuilder.CENTRE);
+
+        for(int i = 0; i <= (int)(lastBeatY / beatDelta); i++) {
+            var line = Instantiate(fineLine);
+            var v = piano.GetLMRAwayVectorsForKey(midKey, calcX(beatDelta * i));
+            this.pianoRollObjects.Add(line);
+            line.transform.position = v.away;
+            var rotation = Quaternion.LookRotation(v.centre - v.away);
+            line.transform.rotation = rotation;
+            line.transform.Rotate(0, 0f, 90f);
+            var rb = line.GetComponent<Rigidbody>();
+            rb.velocity = (v.centre - v.away).normalized * notesSpeed;
+
+        }
+
+        
+
     }
 
     public void Update()
@@ -172,7 +201,7 @@ public class Sequencer : MonoBehaviour
 
         noteDurations.ForEach(note =>
         {
-            if (!note.hasKeyBeenActivated && deltaT >= note.start - note.duration && deltaT < note.end - note.duration)
+            if (!note.hasKeyBeenActivated && deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration))
             {
                 piano.ActivateKey(note.key.keyNum, Color.red, note.duration);
                 note.hasKeyBeenActivated = true;
@@ -185,11 +214,11 @@ public class Sequencer : MonoBehaviour
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            var midiEvents = MidiController.GetMidiEvents();
+            //var midiEvents = MidiController.GetMidiEvents();
             // midiEvents.ForEach(midiEvent => {
                 
             // });
-            Debug.Log("Track finished, " + midiEvents.Count + " events");
+            //Debug.Log("Track finished, " + midiEvents.Count + " events");
             // midiEvents.ForEach(e => Debug.Log(e.time + "s, " + e.messageEvent));
         }
     }
