@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -123,6 +123,8 @@ GameObject:
   - component: {fileID: 41687501}
   - component: {fileID: 41687500}
   - component: {fileID: 41687502}
+  - component: {fileID: 41687504}
+  - component: {fileID: 41687503}
   m_Layer: 0
   m_Name: Piano Builder
   m_TagString: Untagged
@@ -170,9 +172,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643fae54c3b645a48ba2ebe359232d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  midiFileName: Assets/MIDI/Another_Love.mid
-  pianoRollObject: {fileID: 1978589797169928, guid: 8fd6e3a2e7471ae4f924cd638fc0ced8,
+  pianoRollObject: {fileID: 1055867788491200, guid: 89b4e2af7ed9efe49be2d17d7db9ef6a,
     type: 2}
+  fineLine: {fileID: 1129791044277510, guid: 1b01e0cc1de61f34d89a1897641e41fb, type: 2}
+--- !u!114 &41687503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 41687499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35e6f5dadffcd0c4a999b4ff5f184e0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cube: {fileID: 1055867788491200, guid: 89b4e2af7ed9efe49be2d17d7db9ef6a, type: 2}
+  tolerance: 0.1
+--- !u!114 &41687504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 41687499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66c0c2ace819b88488aac7bc2ca56309, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1055870529
 GameObject:
   m_ObjectHideFlags: 0

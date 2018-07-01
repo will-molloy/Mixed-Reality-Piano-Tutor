@@ -226,6 +226,7 @@ public class Sequencer : MonoBehaviour
         {
             scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale);
             this.ClearPianoRoll();
+            this.startTime = -1f;
         }
     }
 }

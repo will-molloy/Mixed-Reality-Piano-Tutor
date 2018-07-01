@@ -8,13 +8,19 @@ using UnityEngine;
 public class ScoreView : MonoBehaviour
 {
 
+    private PianoBuilder piano;
+    private List<GameObject> spawnedSegments;
+
+    [SerializeField]
+    private GameObject cube;
     [SerializeField]
     private float tolerance = 0.1f;
 
     // Use this for initialization
     void Start()
     {
-
+        this.piano = GetComponent<PianoBuilder>();
+        this.spawnedSegments = new List<GameObject>();
     }
 
     // Update is called once per frame
@@ -27,8 +33,51 @@ public class ScoreView : MonoBehaviour
     {
         var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f);
         var res = MakeSegmentsFor(evs, durs);
-        var a = res[PianoKeys.GetKeyFor(55)];
-        a.ForEach(e => Debug.Log(e));
+
+        foreach (var e in res)
+        {
+            var key = e.Key;
+            var list = e.Value;
+
+            foreach (var m in list)
+            {
+                var go = Instantiate(cube);
+                var lmraway = piano.GetLMRAwayVectorsForKey(key, Sequencer.calcX(m.offsetY + m.scaleY / 2f));
+                var rder = go.GetComponent<Renderer>();
+                Color color;
+                switch(m.type) {
+                    case MidiSegment.SegmentType.EXTRA:
+                        color = Color.red;
+                        break;
+                    case MidiSegment.SegmentType.CORRECT:
+                        color = Color.green;
+                        break;
+                    case MidiSegment.SegmentType.MISSED:
+                        color = Color.yellow;
+                        break;
+                    default:
+                        color = Color.black; // WTF C#??
+                        break;
+
+                }
+                rder.material.color = color;
+                spawnedSegments.Add(go);
+                var dropdownScale = go.transform.localScale;
+                go.transform.localScale = new Vector3(dropdownScale.x, m.scaleY, dropdownScale.z);
+                go.transform.position = lmraway.away;
+                var rotation = Quaternion.LookRotation(lmraway.centre - lmraway.away);
+                go.transform.rotation = rotation;
+                go.transform.Rotate(0, -90f, 90f);
+            }
+            
+        }
+
+
+    }
+
+    public void ClearScores() {
+        this.spawnedSegments.ForEach(e => Destroy(e));
+        this.spawnedSegments.Clear();
     }
 
     private List<MidiSegment> FillGaps(List<MidiSegment> seg, List<NoteDuration> refs)
