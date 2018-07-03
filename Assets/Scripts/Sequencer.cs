@@ -218,10 +218,6 @@ public class Sequencer : MonoBehaviour
             }
         });
         // TODO: Sync pulse timing
-        if (deltaT % ttp <= 0.5)
-        {
-            piano.Pulse();
-        }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
             scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, this.notesSpeed);
