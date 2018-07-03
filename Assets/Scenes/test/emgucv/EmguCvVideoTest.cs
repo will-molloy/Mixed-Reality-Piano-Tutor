@@ -45,53 +45,48 @@ public class EmguCvVideoTest : MonoBehaviour
         rawImage.rectTransform.localScale = Vector3.one;
     }
 
-    // void Update()
-    // {
-    //     if (cam == null || !cam.didUpdateThisFrame)
-    //     {
-    //         return;
-    //     }
-    //     // Process frame
-    //     var data = new Color32[cam.width * cam.height];
-    //     var bytes = new byte[data.Length * 3];
-
-    //     cam.GetPixels32(data);
-    //     var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-    //     var resultHandle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-
-    //     using (Mat bgra = new Mat(new Size(cam.width, cam.height), DepthType.Cv8U, 4, handle.AddrOfPinnedObject(), cam.width * 4))
-    //     using (Mat bgr = new Mat(cam.height, cam.width, DepthType.Cv8U, 3, resultHandle.AddrOfPinnedObject(), cam.width * 3))
-    //     {
-    //         CvInvoke.CvtColor(bgra, bgr, ColorConversion.Bgra2Bgr);
-
-    //         #region image processing
-
-    //         bgr.Save("Assets/Scenes/test/emgucv/Resources/bgr-frame.png");
-    //         var corners = new VectorOfVectorOfPointF();
-    //         var ids = new VectorOfInt();
-    //         ArucoInvoke.DetectMarkers(bgr, dictionary, corners, ids, parameters);
-    //         Debug.Log("Markers found: " + ids.Size);
-    //         ArucoInvoke.DrawDetectedMarkers(bgr, corners, ids, borderColor);
-
-    //         #endregion
-    //     }
-    //     handle.Free();
-    //     resultHandle.Free();
-
-    //     if (resultTexture == null || resultTexture.width != cam.width || resultTexture.height != cam.height)
-    //     {
-    //         resultTexture = new Texture2D(cam.width, cam.height, TextureFormat.RGB24, false);
-    //     }
-
-    //     // Update frame
-    //     resultTexture.LoadRawTextureData(bytes);
-    //     resultTexture.Apply();
-    //     rawImage.texture = resultTexture;
-    // }
-
     void Update()
     {
+        if (cam == null || !cam.didUpdateThisFrame)
+        {
+            return;
+        }
+        // Process frame
+        var data = new Color32[cam.width * cam.height];
+        var bytes = new byte[data.Length * 3];
 
+        cam.GetPixels32(data);
+        var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+        var resultHandle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+
+        using (Mat bgra = new Mat(new Size(cam.width, cam.height), DepthType.Cv8U, 4, handle.AddrOfPinnedObject(), cam.width * 4))
+        using (Mat bgr = new Mat(cam.height, cam.width, DepthType.Cv8U, 3, resultHandle.AddrOfPinnedObject(), cam.width * 3))
+        {
+            CvInvoke.CvtColor(bgra, bgr, ColorConversion.Bgra2Bgr);
+
+            #region image processing
+
+            bgr.Save("Assets/Scenes/test/emgucv/Resources/bgr-frame.png");
+            var corners = new VectorOfVectorOfPointF();
+            var ids = new VectorOfInt();
+            ArucoInvoke.DetectMarkers(bgr, dictionary, corners, ids, parameters);
+            Debug.Log("Markers found: " + ids.Size);
+            ArucoInvoke.DrawDetectedMarkers(bgr, corners, ids, borderColor);
+
+            #endregion
+        }
+        handle.Free();
+        resultHandle.Free();
+
+        if (resultTexture == null || resultTexture.width != cam.width || resultTexture.height != cam.height)
+        {
+            resultTexture = new Texture2D(cam.width, cam.height, TextureFormat.RGB24, false);
+        }
+
+        // Update frame
+        resultTexture.LoadRawTextureData(bytes);
+        resultTexture.Apply();
+        rawImage.texture = resultTexture;
     }
 
 }
