@@ -21,11 +21,12 @@ public class ScoreView : MonoBehaviour
         this.spawnedSegments = new List<GameObject>();
     }
 
-    public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale)
+    public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocity_in)
     {
         Debug.Log("Displaying scores");
         var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f);
         var res = MakeSegmentsFor(evs, durs);
+        var velocity = 1f / velocity_in * noteScale;
 
         foreach (var e in res)
         {
@@ -35,7 +36,7 @@ public class ScoreView : MonoBehaviour
             foreach (var m in list)
             {
                 var go = Instantiate(cube);
-                var lmraway = piano.GetLMRAwayVectorsForKey(key, Sequencer.calcX(m.offsetY + m.scaleY / 2f));
+                var lmraway = piano.GetLMRAwayVectorsForKey(key, Sequencer.calcX(m.offsetY / velocity + m.scaleY / 2f / velocity));
                 var rder = go.GetComponent<Renderer>();
                 Color color;
                 switch (m.type)
@@ -56,7 +57,7 @@ public class ScoreView : MonoBehaviour
                 rder.material.color = color;
                 spawnedSegments.Add(go);
                 var dropdownScale = go.transform.localScale;
-                go.transform.localScale = new Vector3(dropdownScale.x, m.scaleY, dropdownScale.z);
+                go.transform.localScale = new Vector3(dropdownScale.x, m.scaleY / velocity, dropdownScale.z);
                 go.transform.position = lmraway.away;
                 var rotation = Quaternion.LookRotation(lmraway.centre - lmraway.away);
                 go.transform.rotation = rotation;
@@ -74,9 +75,12 @@ public class ScoreView : MonoBehaviour
     private List<MidiSegment> FillGaps(List<MidiSegment> seg, List<NoteDuration> refs)
     {
         List<MidiSegment> temp = new List<MidiSegment>();
-        if (seg.Count <= 1)
+        if (seg.Count < 1)
         {
-            return seg;
+            refs.ForEach(e => {
+                temp.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e));
+            });
+            return temp;
         }
         var key = seg[0].key;
         for (int i = 1; i < seg.Count; i++)
