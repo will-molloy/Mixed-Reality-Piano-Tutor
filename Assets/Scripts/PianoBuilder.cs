@@ -127,10 +127,9 @@ public class PianoBuilder : MonoBehaviour
     {
         foreach (var pulser in this.pulsers)
         {
-            var p = pulser.GetComponent<SimpleSonarShader_Object>();
-            p.StartSonarRing(p.transform.position, 10f);
+            var p = pulser.GetComponent<Pulser>();
+            p.Pulse();
         }
-
     }
 
     private void DrawAuxillaryLines()

@@ -146,7 +146,7 @@ MonoBehaviour:
   needsCameraHook: 0
   whiteKey: {fileID: 1333224359579602, guid: c681bdf81e3bcac4dbccbdc697882a77, type: 2}
   blackKey: {fileID: 1333224359579602, guid: cefe037a54324e849af042367a912d27, type: 2}
-  pulser: {fileID: 1120993792932012, guid: 4fe73133ad33bae4fb59f5441fb31973, type: 2}
+  pulser: {fileID: 1597585344781728, guid: 6bd76e4ccccc3e348abacaf033cf73db, type: 2}
   lockedText: {fileID: 1048467096307228, guid: 8f68084b04745854c97027867b98ba9a, type: 2}
 --- !u!4 &41687501
 Transform:
@@ -187,7 +187,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 1055867788491200, guid: 89b4e2af7ed9efe49be2d17d7db9ef6a, type: 2}
-  tolerance: 0.1
 --- !u!114 &41687504
 MonoBehaviour:
   m_ObjectHideFlags: 0
