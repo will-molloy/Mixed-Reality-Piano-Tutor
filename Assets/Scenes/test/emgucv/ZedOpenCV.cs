@@ -22,8 +22,9 @@ public class ZedOpenCV : MonoBehaviour
         var zedMat = new ZEDMat(new sl.Resolution((uint)zedCam.ImageWidth, (uint)zedCam.ImageHeight), ZEDMat.MAT_TYPE.MAT_32F_C1);
         zedCam.RetrieveImage(zedMat, VIEW.LEFT);
 		var cvMat = new Mat();
+		// https://github.com/stereolabs/zed-unity/issues/15
 		// Marshal.Copy(zedMat.MatPtr, cvMat.Ptr, 0, zedMat.GetWidth() * zedMat.GetHeight() * 4);
-        var bgra = new Mat(new Size(zedMat.GetWidth(), zedMat.GetHeight()), DepthType.Cv8U, 4, zedMat.MatPtr, zedMat.GetWidth() * 4);
+        var bgra = new Mat(new Size(zedMat.GetWidth(), zedMat.GetHeight()), DepthType.Cv8U, 3, zedMat.MatPtr, zedMat.GetWidth() * 3);
         bgra.Save("Assets/Scenes/test/emgucv/Resources/zed-frame-converted.png");
 
     }

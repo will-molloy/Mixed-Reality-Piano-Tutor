@@ -21,12 +21,12 @@ public class ScoreView : MonoBehaviour
         this.spawnedSegments = new List<GameObject>();
     }
 
-    public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocity_in)
+    public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn)
     {
         Debug.Log("Displaying scores");
         var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f);
         var res = MakeSegmentsFor(evs, durs);
-        var velocity = 1f / velocity_in * noteScale;
+        var velocity = 1f / velocityIn * noteScale;
 
         foreach (var e in res)
         {
@@ -74,12 +74,10 @@ public class ScoreView : MonoBehaviour
 
     private List<MidiSegment> FillGaps(List<MidiSegment> seg, List<NoteDuration> refs)
     {
-        List<MidiSegment> temp = new List<MidiSegment>();
+        var temp = new List<MidiSegment>();
         if (seg.Count < 1)
         {
-            refs.ForEach(e => {
-                temp.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e));
-            });
+            refs.ForEach(e => temp.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e)));
             return temp;
         }
         var key = seg[0].key;
@@ -90,7 +88,7 @@ public class ScoreView : MonoBehaviour
 
             for (int j = 0; j < refs.Count; j++)
             {
-                var _ref = refs[i];
+                var _ref = refs[j];
                 if (gapStart > _ref.start)
                 {
                     var m = Mathf.Min(_ref.end, gapEnd);
@@ -101,7 +99,6 @@ public class ScoreView : MonoBehaviour
         seg.AddRange(temp);
         return seg;
     }
-
 
     private List<NoteDuration> ConvertToNoteDurationFromMidiEventStorage(List<MidiEventStorage> midiEvents, float defaultEndTiming)
     {
@@ -147,6 +144,7 @@ public class ScoreView : MonoBehaviour
     {
         var segMap = new Dictionary<PianoKey, List<MidiSegment>>();
         var premadeMap = midiNotesFromFile.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
+        // var premadeMap = PianoKeys.GetAllKeys().ToDictionary(e => e, e => midiNotesFromFile.Where(x => x.key.keyNum == e.keyNum).ToList());
 
         if (midiEvents == null || midiNotesFromFile == null)
         {
@@ -183,21 +181,6 @@ public class ScoreView : MonoBehaviour
                     {
                         // Early end
                         segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, userEvent));
-                        /* 
-                        // Peek
-                        if (n < midiEvents.Count - 1) {
-                            var nextEvent = midiEvents[n+1];
-                            if(nextEvent.start > refEvent.start - tolerance && nextEvent.start < refEvent.end + tolerance) {
-                                // User has a break in the keys and the next key is within the note
-                                segments.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, userEvent, nextEvent));
-                            } else if(nextEvent.start > refEvent.end + tolerance) {
-                                // User did not press this key again in the duration of ref note
-                                segments.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, refEvent.end - userEvent.end, userEvent.end));
-                            } else {
-                                throw new System.Exception("this shouldnt happen!");
-                            }
-                        }
-                        */
                     }
                     else
                     {
