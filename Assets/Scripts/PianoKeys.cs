@@ -89,7 +89,8 @@ public class PianoKeys
         return keysList[keysList.Count - 1];
     }
 
-    public static List<PianoKey> GetAllKeys() {
+    public static List<PianoKey> GetAllKeys()
+    {
         return keysList;
     }
 }
@@ -109,8 +110,20 @@ public class PianoKey
         this.color = color;
     }
 
-    override public string ToString() {
+    override public string ToString()
+    {
         return this.keyNum + " " + this.color.ToString();
+    }
+
+    override public bool Equals(object obj)
+    {
+        var x = obj as PianoKey;
+        if (x == null)
+        {
+            return false;
+        }
+
+        return this.keyNum == x.keyNum;
     }
 
 }

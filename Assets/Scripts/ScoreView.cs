@@ -52,7 +52,6 @@ public class ScoreView : MonoBehaviour
                     default:
                         color = Color.black; // WTF C#??
                         break;
-
                 }
                 rder.material.color = color;
                 spawnedSegments.Add(go);
