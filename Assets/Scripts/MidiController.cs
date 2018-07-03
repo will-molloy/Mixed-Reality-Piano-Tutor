@@ -18,6 +18,12 @@ public class MidiController : MonoBehaviour
         mockEvents = new List<MidiEventStorage>();
         mockEvents.Add(new MidiEventStorage(55, false, 0.5f));
         mockEvents.Add(new MidiEventStorage(55, true, 0.8f));
+        mockEvents.Add(new MidiEventStorage(74, false, 1f));
+        mockEvents.Add(new MidiEventStorage(74, true, 5f));
+        mockEvents.Add(new MidiEventStorage(75, false, 1f));
+        mockEvents.Add(new MidiEventStorage(75, true, 5f));
+        mockEvents.Add(new MidiEventStorage(76, false, 2f));
+        mockEvents.Add(new MidiEventStorage(76, true, 2.5f));
 
         this.midiEvents = new List<MidiEventStorage>();
 
