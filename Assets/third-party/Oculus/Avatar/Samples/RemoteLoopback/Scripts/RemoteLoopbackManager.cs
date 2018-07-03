@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 using System.IO;
 using Oculus.Avatar;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 public class RemoteLoopbackManager : MonoBehaviour

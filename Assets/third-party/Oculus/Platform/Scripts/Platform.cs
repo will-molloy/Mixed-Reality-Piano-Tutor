@@ -5,13 +5,12 @@ using System.Runtime.CompilerServices;
 
 namespace Oculus.Platform
 {
-  using UnityEngine;
-  using System;
-  using System.Collections;
-  using System.Collections.Generic;
-  using System.Runtime.InteropServices;
+    using UnityEngine;
+    using System;
+    using System.Collections.Generic;
+    using System.Runtime.InteropServices;
 
-  public sealed class Core {
+    public sealed class Core {
     private static bool IsPlatformInitialized = false;
     public static bool IsInitialized()
     {

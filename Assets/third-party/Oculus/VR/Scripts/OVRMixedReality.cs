@@ -18,10 +18,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ************************************************************************************/
-using System;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
 using UnityEngine;
 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN

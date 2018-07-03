@@ -21,7 +21,6 @@ limitations under the License.
 
 using UnityEngine;
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 /// <summary>

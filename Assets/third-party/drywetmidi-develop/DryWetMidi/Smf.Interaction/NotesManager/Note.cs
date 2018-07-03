@@ -1,7 +1,5 @@
 ﻿using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.MusicTheory;
-using System;
-using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Melanchall.DryWetMidi.Smf.Interaction

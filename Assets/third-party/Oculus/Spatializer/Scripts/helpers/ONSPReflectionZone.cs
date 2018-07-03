@@ -22,7 +22,6 @@ limitations under the License.
 ************************************************************************************/
 using UnityEngine;
 using UnityEngine.Audio;
-using System.Collections;
 using System.Collections.Generic;
 
 public struct ReflectionSnapshot

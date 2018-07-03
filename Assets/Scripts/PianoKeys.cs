@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 /// <summary>  
 /// - Hardcoded keys for 61 key piano
@@ -89,6 +87,10 @@ public class PianoKeys
     public static PianoKey GetLastKey()
     {
         return keysList[keysList.Count - 1];
+    }
+
+    public static List<PianoKey> GetAllKeys() {
+        return keysList;
     }
 }
 public enum KeyColor

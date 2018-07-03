@@ -20,7 +20,6 @@ limitations under the License.
 ************************************************************************************/
 
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// This is a simple behavior that can be attached to a parent of the CameraRig in order

@@ -33,7 +33,6 @@
 #endregion
 
 using System;
-using System.Threading;
 using Sanford.Threading;
 
 namespace Sanford.Multimedia.Midi

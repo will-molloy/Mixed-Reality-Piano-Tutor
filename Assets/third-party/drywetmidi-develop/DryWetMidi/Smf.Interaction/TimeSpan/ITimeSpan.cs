@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Melanchall.DryWetMidi.Smf.Interaction
+﻿namespace Melanchall.DryWetMidi.Smf.Interaction
 {
     /// <summary>
     /// Time span that represents time or length.

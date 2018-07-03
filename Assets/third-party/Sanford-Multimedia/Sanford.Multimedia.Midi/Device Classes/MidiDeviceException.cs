@@ -32,14 +32,13 @@
 
 #endregion
 
-using System;
 
 namespace Sanford.Multimedia.Midi
 {
-	/// <summary>
-	/// The base class for all MIDI device exception classes.
-	/// </summary>
-	public class MidiDeviceException : DeviceException
+    /// <summary>
+    /// The base class for all MIDI device exception classes.
+    /// </summary>
+    public class MidiDeviceException : DeviceException
 	{
         #region Error Codes
 

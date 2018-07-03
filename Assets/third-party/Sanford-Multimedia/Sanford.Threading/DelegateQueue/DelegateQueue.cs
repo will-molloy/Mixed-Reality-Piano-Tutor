@@ -33,7 +33,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace Melanchall.DryWetMidi.Smf
+﻿namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
     /// Represents an unknown chunk.
