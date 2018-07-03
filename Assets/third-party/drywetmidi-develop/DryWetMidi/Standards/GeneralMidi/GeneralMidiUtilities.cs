@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Melanchall.DryWetMidi.Common;
+﻿using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Smf;
 
 namespace Melanchall.DryWetMidi.Standards

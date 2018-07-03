@@ -2,7 +2,6 @@
 namespace VRTK
 {
     using UnityEngine;
-    using UnityEngine.VR;
 #if UNITY_EDITOR
     using UnityEditor;
     using UnityEditor.Callbacks;

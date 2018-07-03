@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System;
-using System.IO;
 using System.Collections.Generic;
-using Oculus.Avatar;
 using Oculus.Platform;
 using Oculus.Platform.Models;
 

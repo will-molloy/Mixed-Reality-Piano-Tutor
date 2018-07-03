@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
-using System.Linq;
 using Oculus.Avatar;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;

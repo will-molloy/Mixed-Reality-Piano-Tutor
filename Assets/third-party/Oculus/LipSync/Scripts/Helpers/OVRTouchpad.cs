@@ -12,7 +12,6 @@ otherwise accompanies this software in either electronic or hard copy form.
 
 ************************************************************************************/
 using UnityEngine;
-using System;
 
 //-------------------------------------------------------------------------------------
 // ***** OVRTouchpad

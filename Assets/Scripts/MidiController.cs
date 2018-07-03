@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using Sanford.Multimedia;
 using Sanford.Multimedia.Midi;
-using System.Linq;
 
 /// <summary>  
 /// - Handles MIDI device 

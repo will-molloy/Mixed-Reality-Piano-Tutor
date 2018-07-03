@@ -32,14 +32,13 @@
 
 #endregion
 
-using System;
 using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Sanford.Multimedia.Midi
 {
     #region System Realtime Message Types
-    
+
     /// <summary>
     /// Defines constants representing the various system realtime message types.
     /// </summary>
