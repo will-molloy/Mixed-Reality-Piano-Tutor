@@ -26,9 +26,9 @@ public class Sequencer : MonoBehaviour
     private PianoBuilder piano;
 
     [SerializeField]
-    private readonly float notesScale = 1f;
+    public readonly float notesScale = 1f;
     [SerializeField]
-    private readonly float notesSpeed = 0.1f;
+    public readonly float notesSpeed = 0.1f;
 
     private float startTime = -1;
     private float deltaTime;
@@ -218,13 +218,9 @@ public class Sequencer : MonoBehaviour
             }
         });
         // TODO: Sync pulse timing
-        if (deltaT % ttp <= 0.5)
-        {
-            piano.Pulse();
-        }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale);
+            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, this.notesSpeed);
             this.ClearPianoRoll();
             this.startTime = -1f;
         }

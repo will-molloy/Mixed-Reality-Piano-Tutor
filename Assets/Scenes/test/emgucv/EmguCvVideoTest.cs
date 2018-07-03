@@ -10,7 +10,6 @@ using Emgu.CV.Aruco;
 using Emgu.CV.Util;
 using Emgu.CV.Structure;
 
-
 public class EmguCvVideoTest : MonoBehaviour
 {
     [SerializeField]

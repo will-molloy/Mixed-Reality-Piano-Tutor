@@ -5,20 +5,14 @@ using Sanford.Multimedia.Midi;
 /// <summary>  
 /// - Handles MIDI device 
 /// </summary>  
-
 public class MidiController : MonoBehaviour
 {
     protected InputDevice inputDevice;
-    public static List<MidiEventStorage> mockEvents;
 
     private List<MidiEventStorage> midiEvents;
 
     void Start()
     {
-        mockEvents = new List<MidiEventStorage>();
-        mockEvents.Add(new MidiEventStorage(55, false, 0.5f));
-        mockEvents.Add(new MidiEventStorage(55, true, 0.8f));
-
         this.midiEvents = new List<MidiEventStorage>();
 
         if (InputDevice.DeviceCount < 1)
@@ -48,8 +42,7 @@ public class MidiController : MonoBehaviour
 
     public List<MidiEventStorage> GetMidiEvents()
     {
-        return mockEvents;
-        //return midiEvents;
+        return midiEvents;
     }
 
     void OnApplicationQuit()
@@ -61,7 +54,6 @@ public class MidiController : MonoBehaviour
     void handleChannelMsg(object sender, ChannelMessageEventArgs e)
     {
         var keyNum = e.Message.Data1;
-        // Handle MIDI event
 
         Debug.Log(e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + keyNum.ToString() + '\t' + e.Message.Data2.ToString());
         if (e.Message.Command == ChannelCommand.NoteOn)

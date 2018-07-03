@@ -21,11 +21,12 @@ public class ScoreView : MonoBehaviour
         this.spawnedSegments = new List<GameObject>();
     }
 
-    public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale)
+    public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn)
     {
         Debug.Log("Displaying scores");
         var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f);
         var res = MakeSegmentsFor(evs, durs);
+        var velocity = 1f / velocityIn * noteScale;
 
         foreach (var e in res)
         {
@@ -35,7 +36,7 @@ public class ScoreView : MonoBehaviour
             foreach (var m in list)
             {
                 var go = Instantiate(cube);
-                var lmraway = piano.GetLMRAwayVectorsForKey(key, Sequencer.calcX(m.offsetY + m.scaleY / 2f));
+                var lmraway = piano.GetLMRAwayVectorsForKey(key, Sequencer.calcX(m.offsetY / velocity + m.scaleY / 2f / velocity));
                 var rder = go.GetComponent<Renderer>();
                 Color color;
                 switch (m.type)
@@ -52,12 +53,11 @@ public class ScoreView : MonoBehaviour
                     default:
                         color = Color.black; // WTF C#??
                         break;
-
                 }
                 rder.material.color = color;
                 spawnedSegments.Add(go);
                 var dropdownScale = go.transform.localScale;
-                go.transform.localScale = new Vector3(dropdownScale.x, m.scaleY, dropdownScale.z);
+                go.transform.localScale = new Vector3(dropdownScale.x, m.scaleY / velocity, dropdownScale.z);
                 go.transform.position = lmraway.away;
                 var rotation = Quaternion.LookRotation(lmraway.centre - lmraway.away);
                 go.transform.rotation = rotation;
@@ -74,10 +74,11 @@ public class ScoreView : MonoBehaviour
 
     private List<MidiSegment> FillGaps(List<MidiSegment> seg, List<NoteDuration> refs)
     {
-        List<MidiSegment> temp = new List<MidiSegment>();
-        if (seg.Count <= 1)
+        var temp = new List<MidiSegment>();
+        if (seg.Count < 1)
         {
-            return seg;
+            refs.ForEach(e => temp.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e)));
+            return temp;
         }
         var key = seg[0].key;
         for (int i = 1; i < seg.Count; i++)
@@ -87,7 +88,7 @@ public class ScoreView : MonoBehaviour
 
             for (int j = 0; j < refs.Count; j++)
             {
-                var _ref = refs[i];
+                var _ref = refs[j];
                 if (gapStart > _ref.start)
                 {
                     var m = Mathf.Min(_ref.end, gapEnd);
@@ -98,7 +99,6 @@ public class ScoreView : MonoBehaviour
         seg.AddRange(temp);
         return seg;
     }
-
 
     private List<NoteDuration> ConvertToNoteDurationFromMidiEventStorage(List<MidiEventStorage> midiEvents, float defaultEndTiming)
     {
@@ -144,6 +144,7 @@ public class ScoreView : MonoBehaviour
     {
         var segMap = new Dictionary<PianoKey, List<MidiSegment>>();
         var premadeMap = midiNotesFromFile.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
+        // var premadeMap = PianoKeys.GetAllKeys().ToDictionary(e => e, e => midiNotesFromFile.Where(x => x.key.keyNum == e.keyNum).ToList());
 
         if (midiEvents == null || midiNotesFromFile == null)
         {
@@ -180,21 +181,6 @@ public class ScoreView : MonoBehaviour
                     {
                         // Early end
                         segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, userEvent));
-                        /* 
-                        // Peek
-                        if (n < midiEvents.Count - 1) {
-                            var nextEvent = midiEvents[n+1];
-                            if(nextEvent.start > refEvent.start - tolerance && nextEvent.start < refEvent.end + tolerance) {
-                                // User has a break in the keys and the next key is within the note
-                                segments.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, userEvent, nextEvent));
-                            } else if(nextEvent.start > refEvent.end + tolerance) {
-                                // User did not press this key again in the duration of ref note
-                                segments.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, refEvent.end - userEvent.end, userEvent.end));
-                            } else {
-                                throw new System.Exception("this shouldnt happen!");
-                            }
-                        }
-                        */
                     }
                     else
                     {
