@@ -32,14 +32,13 @@
 
 #endregion
 
-using System;
 using System.Collections;
 
 namespace Sanford.Multimedia.Midi
 {
-	/// <summary>
-	/// Provides functionality for building ChannelMessages.
-	/// </summary>
+    /// <summary>
+    /// Provides functionality for building ChannelMessages.
+    /// </summary>
     public class ChannelMessageBuilder : IMessageBuilder
     {
         #region ChannelMessageBuilder Members

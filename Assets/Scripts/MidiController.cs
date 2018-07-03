@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using Sanford.Multimedia;
 using Sanford.Multimedia.Midi;
-using System.Linq;
 
 /// <summary>  
 /// - Handles MIDI device 
@@ -24,10 +21,15 @@ public class MidiController : MonoBehaviour
 
         this.midiEvents = new List<MidiEventStorage>();
 
-        if (InputDevice.DeviceCount != 1)
+        if (InputDevice.DeviceCount < 1)
         {
-            Debug.LogError("Err: No device or too many devices found for MIDI input.");
-            throw new System.Exception();
+            Debug.LogError("No device found for MIDI input.");
+            return;
+        }
+        if (InputDevice.DeviceCount > 1)
+        {
+            Debug.LogError("Too many devices found for MIDI input.");
+            return;
         }
         inputDevice = new InputDevice(0);
         inputDevice.ChannelMessageReceived += handleChannelMsg;
@@ -52,7 +54,7 @@ public class MidiController : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        Debug.LogWarning("MIDI closed");
+        Debug.Log("Closing MIDI device.");
         inputDevice.Dispose();
     }
 
@@ -94,7 +96,8 @@ public struct MidiEventStorage
         this.isEnd = e.Message.Command == ChannelCommand.NoteOff;
     }
 
-    public MidiEventStorage(int keyNum, bool isEnd, float time){
+    public MidiEventStorage(int keyNum, bool isEnd, float time)
+    {
         this.time = time;
         this.keyNum = keyNum;
         this.isEnd = isEnd;

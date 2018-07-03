@@ -1,10 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.IO;
-using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
 
 ///<summary>

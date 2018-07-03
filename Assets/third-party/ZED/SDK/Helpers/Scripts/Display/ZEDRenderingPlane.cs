@@ -1179,7 +1179,3 @@ public class ZEDRenderingPlane : MonoBehaviour
     }
 
 }
-
-
-
-

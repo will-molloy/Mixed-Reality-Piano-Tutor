@@ -704,8 +704,9 @@ GameObject:
   - component: {fileID: 2113433556}
   - component: {fileID: 2113433558}
   - component: {fileID: 2113433559}
+  - component: {fileID: 2113433560}
   m_Layer: 0
-  m_Name: PianoBuilder
+  m_Name: Piano
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -753,6 +754,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pianoRollObject: {fileID: 1055867788491200, guid: 89b4e2af7ed9efe49be2d17d7db9ef6a,
     type: 2}
+  fineLine: {fileID: 1129791044277510, guid: 1b01e0cc1de61f34d89a1897641e41fb, type: 2}
 --- !u!114 &2113433559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -764,3 +766,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66c0c2ace819b88488aac7bc2ca56309, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2113433560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2113433555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35e6f5dadffcd0c4a999b4ff5f184e0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cube: {fileID: 1055867788491200, guid: 89b4e2af7ed9efe49be2d17d7db9ef6a, type: 2}

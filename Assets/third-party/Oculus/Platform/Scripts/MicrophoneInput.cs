@@ -1,11 +1,9 @@
 using UnityEngine;
-using System.Collections;
-using System;
 
 namespace Oculus.Platform
 {
 
-  public class MicrophoneInput : IMicrophone
+    public class MicrophoneInput : IMicrophone
   {
     AudioClip microphoneClip;
     int lastMicrophoneSample;

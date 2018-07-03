@@ -1,7 +1,6 @@
 ﻿using Melanchall.DryWetMidi.Common;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace Melanchall.DryWetMidi.Smf
 {

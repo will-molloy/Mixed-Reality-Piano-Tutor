@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using System.Threading.Tasks;
 
 public class PianoBuilder : MonoBehaviour
 {
@@ -17,25 +16,17 @@ public class PianoBuilder : MonoBehaviour
     private GameObject pulser;
     [SerializeField]
     private GameObject lockedText;
-
     public static readonly int CENTRE = (PianoKeys.GetLastKey().keyNum + PianoKeys.GetFirstKey().keyNum) / 2;
-
     internal Dictionary<PianoKey, GameObject> pianoKeys;
-
     internal static readonly float yOffset = 0.001f;
     internal bool locked = false;
     internal bool pianoIsBuilt = false;
     private bool hidden = false;
     internal GameObject lockedTextObj;
-
     public static PianoBuilder instance;
     internal Sequencer sequencer;
-
-    private readonly Color activationColor = Color.red;
-
     private readonly float opposite = 1f;
     private readonly float adj = 5f;
-
     private List<GameObject> auxLines;
     private List<GameObject> pulsers;
 

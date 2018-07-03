@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using Oculus.Avatar;
 using System.Collections.Generic;
 
 public class OvrAvatarMeshInstance : MonoBehaviour

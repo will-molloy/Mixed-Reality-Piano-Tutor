@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using Melanchall.DryWetMidi;
 using Melanchall.DryWetMidi.Smf;
 using Melanchall.DryWetMidi.Smf.Interaction;
-using Melanchall.DryWetMidi.Common;
 using System.Linq;
+using System.Collections;
 
 /// <summary>  
 /// - Builds piano roll from MIDI file after virtual piano is built
@@ -161,7 +159,7 @@ public class Sequencer : MonoBehaviour
 
             var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / rb.velocity.magnitude;
             var expectEnd = scale / rb.velocity.magnitude;
-            
+
             //Debug.Log("Scale: " + scale + "  y:" + y);
 
             this.noteDurations.Add(new NoteDuration(expectTime, expectEnd, key));
@@ -178,7 +176,8 @@ public class Sequencer : MonoBehaviour
         var midKey = PianoKeys.GetKeyFor(PianoBuilder.CENTRE);
         var totalBeatsI = (int)(lastBeatY / beatDelta);
 
-        for(int i = 0; i <= totalBeatsI; i++) {
+        for (int i = 0; i <= totalBeatsI; i++)
+        {
             var line = Instantiate(fineLine);
             var v = piano.GetLMRAwayVectorsForKey(midKey, calcX(beatDelta * i));
             this.pianoRollObjects.Add(line);
@@ -191,11 +190,12 @@ public class Sequencer : MonoBehaviour
         }
 
         StartCoroutine(PulseCoroutine(beatDelta / this.notesSpeed, totalBeatsI));
-
     }
 
-    IEnumerator PulseCoroutine(float time, int totalBeats) {
-        for(int i = 0; i <= totalBeats; i++) {
+    private IEnumerator PulseCoroutine(float time, int totalBeats)
+    {
+        for (int i = 0; i <= totalBeats; i++)
+        {
             piano.Pulse();
             yield return new WaitForSeconds(time);
         }

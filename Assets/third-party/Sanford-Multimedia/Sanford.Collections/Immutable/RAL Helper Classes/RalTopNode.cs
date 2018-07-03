@@ -6,16 +6,15 @@
  * Contact: jabberdabber@hotmail.com
  */
 
-using System;
 using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Sanford.Collections.Immutable
 {
-	/// <summary>
-	/// Represents the top nodes in a RandomAccessList.
-	/// </summary>
-	[ImmutableObject(true)]
+    /// <summary>
+    /// Represents the top nodes in a RandomAccessList.
+    /// </summary>
+    [ImmutableObject(true)]
 	internal class RalTopNode
 	{
         #region RalTopNode Members

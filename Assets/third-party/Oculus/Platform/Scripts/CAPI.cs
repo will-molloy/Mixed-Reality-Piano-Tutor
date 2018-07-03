@@ -1,6 +1,5 @@
 // This file was @generated with LibOVRPlatform/codegen/main. Do not modify it!
 
-using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -9,7 +8,7 @@ using System.Text;
 #pragma warning disable 414
 namespace Oculus.Platform
 {
-  public class CAPI
+    public class CAPI
   {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
   #if UNITY_64 || UNITY_EDITOR_64

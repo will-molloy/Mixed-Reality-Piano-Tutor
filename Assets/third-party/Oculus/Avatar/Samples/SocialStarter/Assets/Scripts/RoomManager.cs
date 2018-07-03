@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using Oculus.Platform;
 using Oculus.Platform.Models;
 

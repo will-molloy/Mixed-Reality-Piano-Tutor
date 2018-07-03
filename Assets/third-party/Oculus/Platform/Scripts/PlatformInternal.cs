@@ -5,12 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace Oculus.Platform
 {
-  using UnityEngine;
-  using System;
-  using System.Collections;
-  using System.Collections.Generic;
+    using System;
 
-  public static class PlatformInternal
+    public static class PlatformInternal
   {
     // Keep this enum in sync with ovrMessageTypeInternal in OVR_Platform_Internal.h
     public enum MessageTypeInternal : uint { //TODO - rename this to type; it's already in Message class

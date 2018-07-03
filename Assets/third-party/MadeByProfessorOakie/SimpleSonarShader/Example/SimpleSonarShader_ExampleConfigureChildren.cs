@@ -1,7 +1,5 @@
 ﻿// SimpleSonarShader scripts and shaders were written by Drew Okenfuss.
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SimpleSonarShader_ExampleConfigureChildren : MonoBehaviour {

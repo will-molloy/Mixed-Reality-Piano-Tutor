@@ -36,15 +36,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading;
 using System.Timers;
 using Sanford.Collections;
 
 namespace Sanford.Threading
 {
-	/// <summary>
-	/// Provides functionality for timestamped delegate invocation.
-	/// </summary>
+    /// <summary>
+    /// Provides functionality for timestamped delegate invocation.
+    /// </summary>
     public partial class DelegateScheduler : IDisposable, IComponent
     {
         #region DelegateScheduler Members
