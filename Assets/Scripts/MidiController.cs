@@ -46,6 +46,7 @@ public class MidiController : MonoBehaviour
         ClearMidiEventStorage();
     }
 
+
     public void ClearMidiEventStorage()
     {
         Debug.Log("Clearing MIDI events storage");
@@ -73,10 +74,12 @@ public class MidiController : MonoBehaviour
         if (e.Message.Command == ChannelCommand.NoteOn)
         {
             PianoBuilder.instance.ActivateKey(keyNum, Color.green);
+            PianoBuilder.instance.SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(keyNum), true);
         }
         else if (e.Message.Command == ChannelCommand.NoteOff)
         {
             PianoBuilder.instance.DeactivateKey(keyNum);
+            PianoBuilder.instance.SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(keyNum), false);
         }
     }
 
