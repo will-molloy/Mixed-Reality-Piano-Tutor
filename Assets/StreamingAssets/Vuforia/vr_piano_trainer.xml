@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
-    <ImageTarget name="queen-spades" size="0.050000 0.069750" />
-    <ImageTarget name="king-dia" size="0.050000 0.069750" />
+    <ImageTarget name="catan-sheep" size="0.054000 0.080367" />
+    <ImageTarget name="catan-wheat" size="0.054000 0.080367" />
   </Tracking>
 </QCARConfig>
