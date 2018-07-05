@@ -29,6 +29,10 @@ public class PianoBuilder : MonoBehaviour
     private readonly float adj = 5f;
     private List<GameObject> auxLines;
     private List<GameObject> pulsers;
+    private Dictionary<PianoKey, GameObject> particleSystems;
+
+    [SerializeField]
+    private GameObject particleSystem;
 
     void Start()
     {
@@ -37,6 +41,7 @@ public class PianoBuilder : MonoBehaviour
         auxLines = new List<GameObject>();
         sequencer = GetComponent<Sequencer>();
         pulsers = new List<GameObject>();
+        particleSystems = new Dictionary<PianoKey, GameObject>();
         if (!needsCameraHook)
         {
             Debug.Log("Building Piano with saved position. (TODO)");
@@ -55,6 +60,33 @@ public class PianoBuilder : MonoBehaviour
         {
             Debug.Log("Piano already built.");
         }
+    }
+
+    private void PlaceParticleSystems() {
+        foreach (var item in pianoKeys)
+        {
+            var lmraway = GetLMRAwayVectorsForKey(item.Key);
+            var obj = Instantiate(particleSystem);
+            obj.transform.position = lmraway.centre;
+            obj.GetComponent<ParticleSystem>().enableEmission = false;
+            particleSystems.Add(item.Key, obj);
+        }
+    }
+
+    private void DestoryParticleSystems() {
+        foreach (var item in particleSystems) {
+            Destroy(item.Value);
+        }
+        particleSystems.Clear();
+    }
+
+    public void SetParticleSystemStatusForKey(PianoKey key, bool status) {
+        var o = particleSystems[key];
+        if(o != null) {
+        var ps = o.GetComponent<ParticleSystem>();
+            ps.enableEmission = status;
+        }
+
     }
 
     public void PlacePianoAt(Vector3 location)
@@ -357,12 +389,14 @@ public class PianoBuilder : MonoBehaviour
                 locked = false;
                 DeleteAuxillaryLines();
                 DeletePulser();
+                DestoryParticleSystems();
             }
             else
             {
                 locked = true;
                 DrawAuxillaryLines();
                 DrawPulser();
+                PlaceParticleSystems();
                 var pulser = GameObject.FindGameObjectWithTag("Pulser");
                 var p = pulser.GetComponent<SimpleSonarShader_Object>();
                 p.StartSonarRing(p.transform.position, 10f);
@@ -387,6 +421,9 @@ public class PianoBuilder : MonoBehaviour
         {
             pianoKeys.Values.ToList().ForEach(o => o.GetComponent<MeshRenderer>().enabled = hidden);
             hidden = !hidden;
+        }
+        if (Input.GetKeyDown(KeyCode.O)) {
+            SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(52), true);
         }
 
     }

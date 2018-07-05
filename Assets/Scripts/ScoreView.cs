@@ -59,6 +59,7 @@ public class ScoreView : MonoBehaviour
                 var dropdownScale = go.transform.localScale;
                 go.transform.localScale = new Vector3(dropdownScale.x, m.scaleY / velocity, dropdownScale.z);
                 go.transform.position = lmraway.away;
+                go.transform.localScale += m.type == MidiSegment.SegmentType.MISSED ? Vector3.zero : new Vector3(.001f, .001f, .001f);
                 var rotation = Quaternion.LookRotation(lmraway.centre - lmraway.away);
                 go.transform.rotation = rotation;
                 go.transform.Rotate(0, -90f, 90f);
@@ -74,7 +75,14 @@ public class ScoreView : MonoBehaviour
 
     private List<MidiSegment> FillGaps(List<MidiSegment> seg, List<NoteDuration> refs)
     {
-        var temp = new List<MidiSegment>();
+        List<MidiSegment> temp = new List<MidiSegment>();
+        refs.ForEach(e =>
+        {
+            temp.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e));
+        });
+        seg.AddRange(temp);
+        return seg;
+
         if (seg.Count < 1)
         {
             refs.ForEach(e => temp.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e)));
