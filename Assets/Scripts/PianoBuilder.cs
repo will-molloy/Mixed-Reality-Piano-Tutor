@@ -7,8 +7,6 @@ public class PianoBuilder : MonoBehaviour
 {
 
     [SerializeField]
-    private bool needsCameraHook; // determine if spawn straight away or with key specified in CameraHook script
-    [SerializeField]
     private GameObject whiteKey;
     [SerializeField]
     private GameObject blackKey;
@@ -37,11 +35,6 @@ public class PianoBuilder : MonoBehaviour
         auxLines = new List<GameObject>();
         sequencer = GetComponent<Sequencer>();
         pulsers = new List<GameObject>();
-        if (!needsCameraHook)
-        {
-            Debug.Log("Building Piano with saved position. (TODO)");
-            // PlacePianoInfrontOfTransform(); -- TODO save transform location to RunTimeSettings 
-        }
     }
 
     public void PlacePianoInfrontOfTransform(Transform trf)
@@ -57,9 +50,14 @@ public class PianoBuilder : MonoBehaviour
         }
     }
 
-    public void PlacePianoAt(Vector3 location)
+    public void SetPosition(Vector3 location)
     {
         this.transform.position = location;
+    }
+
+    private void PlacePianoAt(Vector3 location)
+    {
+        SetPosition(location);
         var firstkey = PianoKeys.GetFirstKey();
         var lastkey = PianoKeys.GetLastKey();
         var whitekeyScale = whiteKey.transform.localScale;
