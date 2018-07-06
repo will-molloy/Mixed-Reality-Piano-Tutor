@@ -264,6 +264,7 @@ PlayerSettings:
   - m_BuildTarget: Standalone
     m_Enabled: 1
     m_Devices:
+    - Vuforia
     - Oculus
   - m_BuildTarget: Android
     m_Enabled: 0
@@ -304,7 +305,9 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Enabled: 0
     m_Devices: []
-  m_BuildTargetEnableVuforiaSettings: []
+  m_BuildTargetEnableVuforiaSettings:
+  - m_BuildTarget: Standalone
+    m_Enabled: 1
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
   m_TemplateCustomTags: {}

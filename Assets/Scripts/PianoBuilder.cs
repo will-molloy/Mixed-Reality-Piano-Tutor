@@ -7,8 +7,6 @@ public class PianoBuilder : MonoBehaviour
 {
 
     [SerializeField]
-    private bool needsCameraHook; // determine if spawn straight away or with key specified in CameraHook script
-    [SerializeField]
     private GameObject whiteKey;
     [SerializeField]
     private GameObject blackKey;
@@ -42,11 +40,7 @@ public class PianoBuilder : MonoBehaviour
         sequencer = GetComponent<Sequencer>();
         pulsers = new List<GameObject>();
         particleSystems = new Dictionary<PianoKey, GameObject>();
-        if (!needsCameraHook)
-        {
-            Debug.Log("Building Piano with saved position. (TODO)");
-            // PlacePianoInfrontOfTransform(); -- TODO save transform location to RunTimeSettings 
-        }
+
     }
 
     public void PlacePianoInfrontOfTransform(Transform trf)
@@ -62,7 +56,8 @@ public class PianoBuilder : MonoBehaviour
         }
     }
 
-    private void PlaceParticleSystems() {
+    private void PlaceParticleSystems()
+    {
         foreach (var item in pianoKeys)
         {
             var lmraway = GetLMRAwayVectorsForKey(item.Key);
@@ -73,25 +68,34 @@ public class PianoBuilder : MonoBehaviour
         }
     }
 
-    private void DestoryParticleSystems() {
-        foreach (var item in particleSystems) {
+    private void DestoryParticleSystems()
+    {
+        foreach (var item in particleSystems)
+        {
             Destroy(item.Value);
         }
         particleSystems.Clear();
     }
 
-    public void SetParticleSystemStatusForKey(PianoKey key, bool status) {
+    public void SetParticleSystemStatusForKey(PianoKey key, bool status)
+    {
         var o = particleSystems[key];
-        if(o != null) {
-        var ps = o.GetComponent<ParticleSystem>();
+        if (o != null)
+        {
+            var ps = o.GetComponent<ParticleSystem>();
             ps.enableEmission = status;
         }
 
     }
 
-    public void PlacePianoAt(Vector3 location)
+    public void SetPosition(Vector3 location)
     {
         this.transform.position = location;
+    }
+
+    private void PlacePianoAt(Vector3 location)
+    {
+        SetPosition(location);
         var firstkey = PianoKeys.GetFirstKey();
         var lastkey = PianoKeys.GetLastKey();
         var whitekeyScale = whiteKey.transform.localScale;
@@ -255,9 +259,6 @@ public class PianoBuilder : MonoBehaviour
 
         Vector3 topRight = go.transform.position, topLeft = go.transform.position, topMid = go.transform.position;
 
-        //topRight.x += width / 2;
-        //topRight.z += height / 2;
-
         topRight += go.transform.forward * scale.z * 0.5f;
         topRight += go.transform.up * scale.y * 0.5f;
         topRight += go.transform.right * scale.x * 0.5f;
@@ -269,11 +270,6 @@ public class PianoBuilder : MonoBehaviour
 
         topMid += go.transform.forward * scale.z * 0.5f;
         topMid += go.transform.up * scale.y * 0.5f;
-
-        //topLeft.x -= width / 2;
-        //topLeft.z += height / 2;
-
-        //topMid.z += height / 2;
 
         List<Vector3> cor_temp = new List<Vector3>();
         cor_temp.Add(topLeft);
@@ -422,7 +418,8 @@ public class PianoBuilder : MonoBehaviour
             pianoKeys.Values.ToList().ForEach(o => o.GetComponent<MeshRenderer>().enabled = hidden);
             hidden = !hidden;
         }
-        if (Input.GetKeyDown(KeyCode.O)) {
+        if (Input.GetKeyDown(KeyCode.O))
+        {
             SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(52), true);
         }
 
