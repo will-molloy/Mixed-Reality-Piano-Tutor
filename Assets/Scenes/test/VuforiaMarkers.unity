@@ -915,3 +915,5 @@ MonoBehaviour:
   blackKey: {fileID: 1333224359579602, guid: cefe037a54324e849af042367a912d27, type: 2}
   pulser: {fileID: 1120993792932012, guid: 4fe73133ad33bae4fb59f5441fb31973, type: 2}
   lockedText: {fileID: 1048467096307228, guid: 8f68084b04745854c97027867b98ba9a, type: 2}
+  particleSystem: {fileID: 1956794768317474, guid: 6ba818cd48a16e34bafd79702ff2b5d3,
+    type: 2}

@@ -10,9 +10,19 @@ public class MidiController : MonoBehaviour
     protected InputDevice inputDevice;
 
     private List<MidiEventStorage> midiEvents;
+    private List<MidiEventStorage> mockEvents;
 
     void Start()
     {
+        mockEvents = new List<MidiEventStorage>();
+        mockEvents.Add(new MidiEventStorage(55, false, 0.5f));
+        mockEvents.Add(new MidiEventStorage(55, true, 0.8f));
+        mockEvents.Add(new MidiEventStorage(74, false, 1f));
+        mockEvents.Add(new MidiEventStorage(74, true, 5f));
+        mockEvents.Add(new MidiEventStorage(75, false, 1f));
+        mockEvents.Add(new MidiEventStorage(75, true, 5f));
+        mockEvents.Add(new MidiEventStorage(76, false, 2f));
+        mockEvents.Add(new MidiEventStorage(76, true, 2.5f));
         this.midiEvents = new List<MidiEventStorage>();
 
         if (InputDevice.DeviceCount < 1)
@@ -34,6 +44,7 @@ public class MidiController : MonoBehaviour
         ClearMidiEventStorage();
     }
 
+
     public void ClearMidiEventStorage()
     {
         Debug.Log("Clearing MIDI events storage");
@@ -42,6 +53,7 @@ public class MidiController : MonoBehaviour
 
     public List<MidiEventStorage> GetMidiEvents()
     {
+        return mockEvents;
         return midiEvents;
     }
 
@@ -59,10 +71,12 @@ public class MidiController : MonoBehaviour
         if (e.Message.Command == ChannelCommand.NoteOn)
         {
             PianoBuilder.instance.ActivateKey(keyNum, Color.green);
+            PianoBuilder.instance.SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(keyNum), true);
         }
         else if (e.Message.Command == ChannelCommand.NoteOff)
         {
             PianoBuilder.instance.DeactivateKey(keyNum);
+            PianoBuilder.instance.SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(keyNum), false);
         }
     }
 
