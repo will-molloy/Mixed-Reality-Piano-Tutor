@@ -85,7 +85,7 @@ public class SpaceCraftControl : MonoBehaviour {
 		obj.GetComponent<ParticleSystem>().enableEmission = true;
 		obj.transform.SetParent(this.transform);
 		obj.transform.localPosition = Vector3.zero;
-		StartCoroutine(SetDelayedDestory(obj, 3));
+		StartCoroutine(SetDelayedDestory(obj, 2));
 	}
 
 	private IEnumerator SetDelayedDestory(GameObject go, float time) {
