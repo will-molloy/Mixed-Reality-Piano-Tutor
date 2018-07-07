@@ -14,6 +14,8 @@ public class PianoBuilder : MonoBehaviour
     private GameObject pulser;
     [SerializeField]
     private GameObject lockedText;
+    [SerializeField]
+    private GameObject spaceCraft;
     public static readonly int CENTRE = (PianoKeys.GetLastKey().keyNum + PianoKeys.GetFirstKey().keyNum) / 2;
     internal Dictionary<PianoKey, GameObject> pianoKeys;
     internal static readonly float yOffset = 0.001f;
