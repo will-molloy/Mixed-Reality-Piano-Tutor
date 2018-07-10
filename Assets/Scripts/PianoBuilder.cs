@@ -3,19 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class PianoBuilder : MonoBehaviour
+sealed public class PianoBuilder : MonoBehaviour
 {
-
-    [SerializeField]
-    private GameObject whiteKey;
-    [SerializeField]
-    private GameObject blackKey;
-    [SerializeField]
-    private GameObject pulser;
-    [SerializeField]
-    private GameObject lockedText;
-    [SerializeField]
-    private GameObject spaceCraft;
+    [SerializeField] private GameObject textObj;
+    [SerializeField] private GameObject whiteKey;
+    [SerializeField] private GameObject blackKey;
+    [SerializeField] private GameObject pulser;
+    [SerializeField] private GameObject lockedText;
+    [SerializeField] private GameObject spaceCraft;
     public static readonly int CENTRE = (PianoKeys.GetLastKey().keyNum + PianoKeys.GetFirstKey().keyNum) / 2;
     internal Dictionary<PianoKey, GameObject> pianoKeys;
     internal static readonly float yOffset = 0.001f;
@@ -29,6 +24,8 @@ public class PianoBuilder : MonoBehaviour
     private readonly float adj = 5f;
     private List<GameObject> auxLines;
     private List<GameObject> pulsers;
+
+    private GameObject spaceCraftObj;
     private Dictionary<PianoKey, GameObject> particleSystems;
 
     [SerializeField]
@@ -134,6 +131,22 @@ public class PianoBuilder : MonoBehaviour
         Debug.DrawLine(o.transform.position, lookat.normalized, color: Color.green, duration: 99999f, depthTest: false);
     }
 
+    private void PlaceSpacecraft() {
+
+        spaceCraftObj = Instantiate(spaceCraft);
+        var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
+        var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.2f);
+        spaceCraftObj.transform.position = lmr.away + new Vector3(0f, 0.5f, 0f);
+        var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
+        spaceCraftObj.transform.rotation = rotation;
+        spaceCraftObj.transform.Rotate(-90f, 180f, 0f);
+    }
+
+    private void DestroySpacecraft() {
+        DestroyObject(spaceCraftObj);
+        spaceCraftObj = null;
+    }
+
     private void DrawPulser()
     {
         var firstkey = PianoKeys.GetFirstKey();
@@ -169,6 +182,40 @@ public class PianoBuilder : MonoBehaviour
             p.Pulse();
         }
     }
+
+    public void PutInstantFeedback(int total, int totalmiss) {
+        float missPercentage = totalmiss / (float)total;
+
+        var obj = Instantiate(textObj);
+        //obj.transform.SetParent(this.transform);
+        //obj.transform.localPosition = pianoKeys[PianoKeys.GetKeyFor(CENTRE)].transform.localPosition + new Vector3(0f, 0.1f, 0f);
+        string text;
+        if(missPercentage > 0.9f) {
+            text = "PURRFECT";
+        } else if(missPercentage > 0.6f) {
+            text = "GURRET";
+        } else if(missPercentage > 0.4f) {
+            text = "GUUUD";
+        } else {
+            text = "SH!T";
+        }
+        obj.GetComponent<TextMesh>().text = text;
+        var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
+        var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.1f);
+        obj.transform.position = lmr.away + new Vector3(0f, 0.05f, 0f);
+        var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
+        obj.transform.rotation = rotation;
+        obj.transform.Rotate(0, 180f, 0f);
+
+        StartCoroutine(SetDelayedDestory(obj, 0.3f));
+    }
+
+	private IEnumerator SetDelayedDestory(GameObject go, float time) {
+		yield return new WaitForSeconds(time);
+        DestroyObject(go);
+		//DestroyImmediate(go);
+	}
+
 
     private void DrawAuxillaryLines()
     {
@@ -388,6 +435,7 @@ public class PianoBuilder : MonoBehaviour
                 DeleteAuxillaryLines();
                 DeletePulser();
                 DestoryParticleSystems();
+                DestroySpacecraft();
             }
             else
             {
@@ -395,6 +443,7 @@ public class PianoBuilder : MonoBehaviour
                 DrawAuxillaryLines();
                 DrawPulser();
                 PlaceParticleSystems();
+                PlaceSpacecraft();
                 var pulser = GameObject.FindGameObjectWithTag("Pulser");
                 var p = pulser.GetComponent<SimpleSonarShader_Object>();
                 p.StartSonarRing(p.transform.position, 10f);
@@ -483,4 +532,8 @@ public struct PianoKeyVectors
     public Vector3 forward { get; }
     public Vector3 up { get; }
 
+}
+
+public enum Goodness {
+    PERFECT, GREAT, GOOD, BAD, POOR, EXXDEE
 }

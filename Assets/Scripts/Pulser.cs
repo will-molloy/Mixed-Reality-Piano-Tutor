@@ -39,7 +39,7 @@ public class Pulser : MonoBehaviour {
 			alpha -= 0.05f;
 			scale += 0.01f;
 		}
-		Destroy(obj);
+		DestroyObject(obj);
 		
 	}
 }

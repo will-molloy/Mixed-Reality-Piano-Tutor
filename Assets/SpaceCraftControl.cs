@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpaceCraftControl : MonoBehaviour {
 
@@ -44,8 +45,13 @@ public class SpaceCraftControl : MonoBehaviour {
 	private GameObject smoke;
     [SerializeField]
 	private GameObject fire;
+    [SerializeField]
+	private Image hpBarFill;
 	private List<GameObject> lefts;
 	private List<GameObject> rights;
+
+	private List<GameObject> smokeObjs;
+	private List<GameObject> fireObjs;
 
 
 	public readonly int MAX_DESOTRY_STAGE = 5;
@@ -53,6 +59,8 @@ public class SpaceCraftControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		this.smokeObjs = new List<GameObject>();
+		this.fireObjs= new List<GameObject>();
 		this.lefts = new List<GameObject>();
 		this.rights = new List<GameObject>();
 
@@ -77,7 +85,26 @@ public class SpaceCraftControl : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.N)) {
 			this.StagedDestory();
 		}
-		
+	}
+
+	private void SetHpBarAt(float percentage) {
+		hpBarFill.fillAmount = percentage;
+	}
+
+	private void PlaceFireAt(GameObject go) {
+		var obj = Instantiate(fire);
+		obj.GetComponent<ParticleSystem>().enableEmission = true;
+		obj.transform.SetParent(go.transform);
+		obj.transform.localPosition = Vector3.zero;
+		this.fireObjs.Add(obj);
+	}
+
+	private void PlaceSmokeAt(GameObject go) {
+		var obj = Instantiate(smoke);
+		obj.GetComponent<ParticleSystem>().enableEmission = true;
+		obj.transform.SetParent(go.transform);
+		obj.transform.localPosition = Vector3.zero;
+		this.smokeObjs.Add(obj);
 	}
 
 	public void Explode(bool plasma = false) {
@@ -94,11 +121,11 @@ public class SpaceCraftControl : MonoBehaviour {
 	}
 
 	public void DestoryLeftWing() {
-		this.lefts.ForEach( e=> e.GetComponent<Renderer>().enabled = false);
+		this.lefts.ForEach(e=> e.GetComponent<Renderer>().enabled = false);
 	}
 
 	public void DestoryRightWing() {
-		this.rights.ForEach( e=> e.GetComponent<Renderer>().enabled = false);
+		this.rights.ForEach(e=> e.GetComponent<Renderer>().enabled = false);
 	}
 
 	public void DestoryLeftEngine() {
@@ -127,23 +154,30 @@ public class SpaceCraftControl : MonoBehaviour {
 			case 5: 
 				this.DestoryLeftWing();
 				this.Explode();
+				this.SetHpBarAt(0.8f);
 				break;
 			case 4: 
 				this.DestoryLeftEngine();
 				this.Explode(true);
+				this.PlaceSmokeAt(whereToPutSmoke1);
+				this.SetHpBarAt(0.65f);
 				break;
 			case 3: 
 				this.DestoryRightEngine();
 				this.Explode();
+				this.SetHpBarAt(0.40f);
 				break;
 			case 2: 
 				this.DestoryRightWing();
 				this.Explode(true);
+				this.PlaceFireAt(whereToPutSmoke2);
+				this.SetHpBarAt(0.2f);
 				break;
 			case 1: 
 				this.DestoryMidEngine();
 				this.Explode(true);
 				this.Explode(false);
+				this.SetHpBarAt(0f);
 				break;
 		}
 		this.destoryStage--;
@@ -153,12 +187,17 @@ public class SpaceCraftControl : MonoBehaviour {
 
 	public void RestoreAll() {
 		this.destoryStage = MAX_DESOTRY_STAGE;
+		this.SetHpBarAt(1f);
 		RestoreEngine(this.destoryableLeftEngine);
 		RestoreEngine(this.destoryableRightEngine);
 		RestoreEngine(this.destoryableMiddleEngine);
 		
 		this.lefts.ForEach(e => e.GetComponent<Renderer>().enabled = true);
 		this.rights.ForEach(e => e.GetComponent<Renderer>().enabled = true);
+		this.smokeObjs.ForEach(e => Destroy(e));
+		this.fireObjs.ForEach(e => Destroy(e));
+		this.smokeObjs.Clear();
+		this.fireObjs.Clear();
 
 	}
 

@@ -1,19 +1,22 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Sanford.Multimedia.Midi;
+using System.Linq;
 
 /// <summary>  
 /// - Handles MIDI device 
 /// </summary>  
-public class MidiController : MonoBehaviour
+sealed public class MidiController : MonoBehaviour
 {
     protected InputDevice inputDevice;
 
     private List<MidiEventStorage> midiEvents;
     private List<MidiEventStorage> mockEvents;
+    private HashSet<PianoKey> notesOn;
 
     void Start()
     {
+        notesOn= new HashSet<PianoKey>();
         mockEvents = new List<MidiEventStorage>();
         mockEvents.Add(new MidiEventStorage(55, false, 0.5f));
         mockEvents.Add(new MidiEventStorage(55, true, 0.8f));
@@ -72,17 +75,27 @@ public class MidiController : MonoBehaviour
         {
             PianoBuilder.instance.ActivateKey(keyNum, Color.green);
             PianoBuilder.instance.SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(keyNum), true);
+            notesOn.Add(PianoKeys.GetKeyFor(keyNum));
         }
         else if (e.Message.Command == ChannelCommand.NoteOff)
         {
             PianoBuilder.instance.DeactivateKey(keyNum);
             PianoBuilder.instance.SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(keyNum), false);
+            notesOn.Remove(PianoKeys.GetKeyFor(keyNum));
         }
     }
 
     void storeMidiEvent(object sender, ChannelMessageEventArgs e)
     {
         midiEvents.Add(new MidiEventStorage(e, Time.time));
+    }
+
+    public bool IsThisKeyOn(PianoKey key) {
+        return notesOn.Contains(key);
+    }
+
+    public HashSet<PianoKey> GetOnKeys() {
+        return notesOn;
     }
 
 }
