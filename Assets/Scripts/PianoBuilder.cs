@@ -15,7 +15,7 @@ public class PianoBuilder : MonoBehaviour
     [SerializeField]
     private GameObject lockedText;
     public static readonly int CENTRE = (PianoKeys.GetLastKey().keyNum + PianoKeys.GetFirstKey().keyNum) / 2;
-    internal Dictionary<PianoKey, GameObject> pianoKeys;
+    private Dictionary<PianoKey, GameObject> pianoKeys = new Dictionary<PianoKey, GameObject>();
     internal static readonly float yOffset = 0.001f;
     internal bool locked = false;
     internal bool pianoIsBuilt = false;
@@ -25,8 +25,8 @@ public class PianoBuilder : MonoBehaviour
     internal Sequencer sequencer;
     private readonly float opposite = 1f;
     private readonly float adj = 5f;
-    private List<GameObject> auxLines;
-    private List<GameObject> pulsers;
+    private List<GameObject> auxLines = new List<GameObject>();
+    private List<GameObject> pulsers = new List<GameObject>();
     private Dictionary<PianoKey, GameObject> particleSystems;
 
     [SerializeField]
@@ -35,12 +35,8 @@ public class PianoBuilder : MonoBehaviour
     void Start()
     {
         instance = this;
-        pianoKeys = new Dictionary<PianoKey, GameObject>();
-        auxLines = new List<GameObject>();
         sequencer = GetComponent<Sequencer>();
-        pulsers = new List<GameObject>();
         particleSystems = new Dictionary<PianoKey, GameObject>();
-
     }
 
     public void PlacePianoInfrontOfTransform(Transform trf)
@@ -85,12 +81,16 @@ public class PianoBuilder : MonoBehaviour
             var ps = o.GetComponent<ParticleSystem>();
             ps.enableEmission = status;
         }
-
     }
 
     public void SetPosition(Vector3 location)
     {
         this.transform.position = location;
+    }
+
+    public void SetParentTransform(Transform parent)
+    {
+        this.transform.parent = parent;
     }
 
     private void PlacePianoAt(Vector3 location)
@@ -119,6 +119,8 @@ public class PianoBuilder : MonoBehaviour
                 keyObj.transform.SetParent(this.transform);
                 keyObj.transform.localPosition = new Vector3(xOffset - whitekeyScale.x / 2, yOffset, zOffset);
             }
+            Debug.Log(pianoKeys);
+            Debug.Log(keyObj);
             pianoKeys[currentKey] = keyObj;
         }
         pianoIsBuilt = true;
