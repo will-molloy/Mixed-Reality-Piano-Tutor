@@ -1,0 +1,138 @@
+fileFormatVersion: 2
+guid: c9b3d1ee538a9e649acda3363ad265d7
+timeCreated: 1516202051
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: StarSparrow_Core
+    100002: StarSparrow_Engine
+    100004: StarSparrow_Plasma
+    100006: StarSparrow_Thruster
+    100008: StarSparrow_Weapon_Left
+    100010: StarSparrow_Weapon_Right
+    100012: StarSparrow_Wing_1_Left
+    100014: StarSparrow_Wing_1_Right
+    100016: StarSparrow_Wing_2_Left
+    100018: StarSparrow_Wing_2_Right
+    100020: StarSparrow_Wing_3_Left
+    100022: StarSparrow_Wing_3_Right
+    100024: //RootNode
+    400000: StarSparrow_Core
+    400002: StarSparrow_Engine
+    400004: StarSparrow_Plasma
+    400006: StarSparrow_Thruster
+    400008: StarSparrow_Weapon_Left
+    400010: StarSparrow_Weapon_Right
+    400012: StarSparrow_Wing_1_Left
+    400014: StarSparrow_Wing_1_Right
+    400016: StarSparrow_Wing_2_Left
+    400018: StarSparrow_Wing_2_Right
+    400020: StarSparrow_Wing_3_Left
+    400022: StarSparrow_Wing_3_Right
+    400024: //RootNode
+    2300000: StarSparrow_Core
+    2300002: StarSparrow_Engine
+    2300004: StarSparrow_Plasma
+    2300006: StarSparrow_Thruster
+    2300008: StarSparrow_Weapon_Left
+    2300010: StarSparrow_Weapon_Right
+    2300012: StarSparrow_Wing_1_Left
+    2300014: StarSparrow_Wing_1_Right
+    2300016: StarSparrow_Wing_2_Left
+    2300018: StarSparrow_Wing_2_Right
+    2300020: StarSparrow_Wing_3_Left
+    2300022: StarSparrow_Wing_3_Right
+    3300000: StarSparrow_Core
+    3300002: StarSparrow_Engine
+    3300004: StarSparrow_Plasma
+    3300006: StarSparrow_Thruster
+    3300008: StarSparrow_Weapon_Left
+    3300010: StarSparrow_Weapon_Right
+    3300012: StarSparrow_Wing_1_Left
+    3300014: StarSparrow_Wing_1_Right
+    3300016: StarSparrow_Wing_2_Left
+    3300018: StarSparrow_Wing_2_Right
+    3300020: StarSparrow_Wing_3_Left
+    3300022: StarSparrow_Wing_3_Right
+    4300000: StarSparrow_Plasma
+    4300002: StarSparrow_Core
+    4300004: StarSparrow_Engine
+    4300006: StarSparrow_Weapon_Left
+    4300008: StarSparrow_Wing_1_Left
+    4300010: StarSparrow_Wing_2_Left
+    4300012: StarSparrow_Wing_3_Left
+    4300014: StarSparrow_Thruster
+    4300016: StarSparrow_Weapon_Right
+    4300018: StarSparrow_Wing_1_Right
+    4300020: StarSparrow_Wing_2_Right
+    4300022: StarSparrow_Wing_3_Right
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

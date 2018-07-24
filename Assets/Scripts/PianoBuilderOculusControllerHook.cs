@@ -10,12 +10,6 @@ public class PianoBuilderOculusControllerHook : MonoBehaviour
     [SerializeField]
     private GameObject Marker;
 
-    private Vector3 savedPos;
-
-    private Quaternion savedRot;
-
-    private Vector3 initialScale;
-
     public Transform GetMarkerTransform()
     {
         return Marker.transform;
@@ -26,13 +20,13 @@ public class PianoBuilderOculusControllerHook : MonoBehaviour
         PianoBuilder = GetComponent<PianoBuilder>();
         Marker.GetComponent<MeshRenderer>().enabled = false;
         PianoBuilder.BuildPianoAsChildOfTransform(Marker.transform);
-        PianoBuilder.transform.localPosition += new Vector3(-0.5f, 0.5f, 0);
-        initialScale = Marker.transform.localScale;
     }
 
     void Update()
     {
         var scale = Marker.transform.localScale;
+        var position = Marker.transform.position;
+
         if (Input.GetKey(KeyCode.Plus))
         {
             scale *= 1.001f;
@@ -41,16 +35,6 @@ public class PianoBuilderOculusControllerHook : MonoBehaviour
         {
             scale /= 1.001f;
         }
-        if (Input.GetKey(KeyCode.R))
-        {
-            Marker.transform.localScale = initialScale;
-        }
-        Marker.transform.localScale = scale;
-        var position = Marker.transform.position;
-        var angle = Marker.transform.localEulerAngles;
-        var forward = Marker.transform.forward;
-        var up = Marker.transform.up;
-        var right = Marker.transform.right;
         if (Input.GetKey(KeyCode.A))
         {
             position -= Marker.transform.right * 0.001f;
@@ -77,30 +61,40 @@ public class PianoBuilderOculusControllerHook : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            angle += new Vector3(0f, 0.1f, 0f);
+            Marker.transform.Rotate(Vector3.right * 0.1f);
         }
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            angle -= new Vector3(0f, 0.1f, 0f);
+            Marker.transform.Rotate(Vector3.left * 0.1f);
         }
         if (Input.GetKey(KeyCode.Z))
         {
-            angle += new Vector3(0f, 0f, 0.1f);
+            Marker.transform.Rotate(Vector3.down * 0.1f);
         }
         if (Input.GetKey(KeyCode.X))
         {
-            angle -= new Vector3(0f, 0f, 0.1f);
+            Marker.transform.Rotate(Vector3.up * 0.1f);
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            angle += new Vector3(0.1f, 0f, 0f);
+            Marker.transform.Rotate(Vector3.forward * 0.1f);
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            angle -= new Vector3(0.1f, 0f, 0f);
+            Marker.transform.Rotate(Vector3.back * 0.1f);
         }
+        Marker.transform.localScale = scale;
         Marker.transform.position = position;
-        Marker.transform.localEulerAngles = angle;
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            reset();
+        }
+    }
 
+    private void reset()
+    {
+        Marker.transform.localPosition = Vector3.zero;
+        Marker.transform.localEulerAngles = Vector3.zero;
+        Marker.transform.localScale = Vector3.one;
     }
 }

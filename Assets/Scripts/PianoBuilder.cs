@@ -3,26 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class PianoBuilder : MonoBehaviour
+sealed public class PianoBuilder : MonoBehaviour
 {
-
-    [SerializeField]
-    private GameObject whiteKey;
-    [SerializeField]
-    private GameObject blackKey;
-    [SerializeField]
-    private GameObject pulser;
-    [SerializeField]
-    private GameObject lockedText;
+    [SerializeField] private GameObject textObj;
+    [SerializeField] private GameObject whiteKey;
+    [SerializeField] private GameObject blackKey;
+    [SerializeField] private GameObject pulser;
+    [SerializeField] private GameObject spaceCraft;
     public static readonly int CENTRE = (PianoKeys.Last().keyNum + PianoKeys.First().keyNum) / 2;
-    private Dictionary<PianoKey, GameObject> pianoKeys = new Dictionary<PianoKey, GameObject>();
-    private bool locked = false;
-    private bool hidden = false;
-    internal GameObject lockedTextObj;
+    internal Dictionary<PianoKey, GameObject> pianoKeys;
+    internal static readonly float yOffset = 0.001f;
+    internal bool locked;
+    private bool hidden;
     public static PianoBuilder instance;
     internal Sequencer sequencer;
     private readonly float opposite = 1f;
     private readonly float adj = 5f;
+    private GameObject spaceCraftObj;
     private List<GameObject> auxLines = new List<GameObject>();
     private List<GameObject> pulsers = new List<GameObject>();
     private Dictionary<PianoKey, GameObject> particleSystems;
@@ -30,33 +27,39 @@ public class PianoBuilder : MonoBehaviour
     private GameObject particleSystem;
     [SerializeField]
     private float pianoKeyGap = 0.001f; // 1mm or so
+    private Transform firstKeyReference;
 
     void Start()
     {
         instance = this;
         sequencer = GetComponent<Sequencer>();
+        pianoKeys = new Dictionary<PianoKey, GameObject>();
         particleSystems = new Dictionary<PianoKey, GameObject>();
     }
 
-    private void PlaceParticleSystems()
+    void Update()
     {
-        foreach (var item in pianoKeys)
+        if (Input.GetKeyDown(KeyCode.Return)) // Restarting MIDI file sequencer
         {
-            var lmraway = GetLMRAwayVectorsForKey(item.Key);
-            var obj = Instantiate(particleSystem);
-            obj.transform.position = lmraway.centre;
-            obj.GetComponent<ParticleSystem>().enableEmission = false;
-            particleSystems.Add(item.Key, obj);
+            if (sequencer)
+            {
+                sequencer.LoadMidiFile();
+                sequencer.SpawnNotes();
+            }
+            else
+            {
+                Debug.LogWarning("No sequencer component, you must be in calibration mode.");
+            }
         }
-    }
-
-    private void DestoryParticleSystems()
-    {
-        foreach (var item in particleSystems)
+        if (Input.GetKeyDown(KeyCode.H)) // Hide virtual piano keys
         {
-            Destroy(item.Value);
+            pianoKeys.Values.ToList().ForEach(o => o.GetComponent<MeshRenderer>().enabled = hidden);
+            hidden = !hidden;
         }
-        particleSystems.Clear();
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(52), true);
+        }
     }
 
     public void SetParticleSystemStatusForKey(PianoKey key, bool status)
@@ -69,19 +72,21 @@ public class PianoBuilder : MonoBehaviour
         }
     }
 
-    private bool pianoIsBuilt;
+    private bool isPianoBuilt;
 
     public void BuildPianoAsChildOfTransform(Transform trf)
     {
-        if (!pianoIsBuilt)
+        if (isPianoBuilt)
         {
-            Debug.Log("Building Piano.");
-            BuildPianoAt(trf.position);
-            this.transform.parent = trf;
+            Debug.LogWarning("Piano already built");
         }
         else
         {
-            Debug.LogWarning("Piano already built.");
+            isPianoBuilt = true;
+            Debug.Log("Building Piano.");
+            BuildPianoAt(trf.position);
+            this.transform.parent = trf;
+            spawnGameElements();
         }
     }
 
@@ -111,11 +116,11 @@ public class PianoBuilder : MonoBehaviour
             else
             {
                 float xOffset = -(whitekeyScale.x + pianoKeyGap) / 2; // Unity measures from midpoint of white key
-                if (PianoKeys.leftOffsetBlackKeyNums.Contains(keyNum)) 
+                if (PianoKeys.leftOffsetBlackKeyNums.Contains(keyNum))
                 {
                     xOffset += leftBlackKeyXOffset;
                 }
-                else if (PianoKeys.rightOffsetBlackKeyNums.Contains(keyNum)) 
+                else if (PianoKeys.rightOffsetBlackKeyNums.Contains(keyNum))
                 {
                     xOffset += rightBlackKeyXOffset;
                 }
@@ -135,6 +140,40 @@ public class PianoBuilder : MonoBehaviour
         Debug.DrawLine(o.transform.position, lookat.normalized, color: Color.green, duration: 99999f, depthTest: false);
     }
 
+    private void spawnGameElements()
+    {
+        this.firstKeyReference = pianoKeys.First().Value.transform;
+        DrawAuxillaryLines();
+        DrawPulser();
+        PlaceParticleSystems();
+        PlaceSpacecraft();
+    }
+
+    private void PlaceSpacecraft()
+    {
+        spaceCraftObj = Instantiate(spaceCraft);
+        var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
+        var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.2f);
+        spaceCraftObj.transform.position = lmr.away + new Vector3(0f, 0.5f, 0f);
+        var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
+        spaceCraftObj.transform.rotation = rotation;
+        spaceCraftObj.transform.Rotate(-90f, 180f, 0f);
+        spaceCraftObj.transform.SetParent(firstKeyReference);
+    }
+
+    private void PlaceParticleSystems()
+    {
+        foreach (var item in pianoKeys)
+        {
+            var lmraway = GetLMRAwayVectorsForKey(item.Key);
+            var obj = Instantiate(particleSystem);
+            obj.transform.position = lmraway.centre;
+            obj.GetComponent<ParticleSystem>().enableEmission = false;
+            particleSystems.Add(item.Key, obj);
+            obj.transform.SetParent(firstKeyReference);
+        }
+    }
+
     private void DrawPulser()
     {
         var firstkey = PianoKeys.First();
@@ -149,17 +188,8 @@ public class PianoBuilder : MonoBehaviour
         rp.transform.position = rightPulserPos;
         this.pulsers.Add(lp);
         this.pulsers.Add(rp);
-    }
-
-    private void DeletePulser()
-    {
-        foreach (var item in this.pulsers)
-        {
-            Destroy(item);
-        }
-
-        pulsers.Clear();
-
+        lp.transform.SetParent(firstKeyReference);
+        rp.transform.SetParent(firstKeyReference);
     }
 
     public void Pulse()
@@ -171,6 +201,45 @@ public class PianoBuilder : MonoBehaviour
         }
     }
 
+    public void PutInstantFeedback(int total, int totalmiss)
+    {
+        float missPercentage = totalmiss / (float)total;
+
+        var obj = Instantiate(textObj);
+        string text;
+        if (missPercentage > 0.9f)
+        {
+            text = "PURRFECT";
+        }
+        else if (missPercentage > 0.6f)
+        {
+            text = "GURRET";
+        }
+        else if (missPercentage > 0.4f)
+        {
+            text = "GUUUD";
+        }
+        else
+        {
+            text = "SH!T";
+        }
+        obj.GetComponent<TextMesh>().text = text;
+        var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
+        var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.1f);
+        obj.transform.position = lmr.away + new Vector3(0f, 0.05f, 0f);
+        var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
+        obj.transform.rotation = rotation;
+        obj.transform.Rotate(0, 180f, 0f);
+
+        StartCoroutine(SetDelayedDestory(obj, 0.3f));
+    }
+
+    private IEnumerator SetDelayedDestory(GameObject go, float time)
+    {
+        yield return new WaitForSeconds(time);
+        DestroyObject(go);
+    }
+
     private void DrawAuxillaryLines()
     {
         foreach (var item in pianoKeys)
@@ -178,12 +247,6 @@ public class PianoBuilder : MonoBehaviour
             var lmraway = GetLMRAwayVectorsForKey(item.Key, 10);
             this.auxLines.Add(DrawLine(lmraway.centre, lmraway.away, Color.grey));
         }
-    }
-
-    private void DeleteAuxillaryLines()
-    {
-        this.auxLines.ForEach(e => Destroy(e));
-        this.auxLines.Clear();
     }
 
     public PianoKeyVectors GetLMRAwayVectorsForKey(PianoKey key, float magnitude = 1f)
@@ -205,17 +268,18 @@ public class PianoBuilder : MonoBehaviour
     }
 
 
-    public static GameObject DrawLine(Vector3 start, Vector3 end, Color color)
+    public GameObject DrawLine(Vector3 start, Vector3 end, Color color)
     {
-        GameObject myLine = new GameObject();
+        var myLine = new GameObject();
         myLine.transform.position = start;
         myLine.AddComponent<LineRenderer>();
-        LineRenderer lr = myLine.GetComponent<LineRenderer>();
+        var lr = myLine.GetComponent<LineRenderer>();
         lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
         lr.SetColors(color, color);
         lr.SetWidth(0.001f, 0.001f);
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
+        myLine.transform.SetParent(firstKeyReference);
         return myLine;
     }
 
@@ -226,31 +290,10 @@ public class PianoBuilder : MonoBehaviour
 
     }
 
-    private Vector3 MakeAwayVector(Transform transform, float magnitude)
-    {
-        var lookat = transform.position + (transform.forward * adj * magnitude + transform.up * opposite * magnitude);
-        return lookat;
-    }
-
     private Vector3 MakeAwayVector(Transform transform)
     {
         var lookat = transform.position + (transform.forward * adj + transform.up * opposite);
         return lookat;
-    }
-
-
-    public Vector3 GetLeftEdge()
-    {
-        var obj = pianoKeys[PianoKeys.First()];
-        var corners = Corners(obj);
-        return corners[1];
-    }
-
-    public Vector3 GetRightEdge()
-    {
-        var obj = pianoKeys[PianoKeys.Last()];
-        var corners = Corners(obj);
-        return corners[0];
     }
 
     private static List<Vector3> Corners(GameObject go)
@@ -280,99 +323,6 @@ public class PianoBuilder : MonoBehaviour
         cor_temp.Add(topMid);
 
         return cor_temp;
-    }
-
-    public Vector3 GetScaleForKey(PianoKey key)
-    {
-        if (!pianoKeys.ContainsKey(key))
-        {
-            throw new System.Exception("Invalid request for key");
-        }
-        return pianoKeys[key].transform.localScale;
-    }
-
-    public Vector3 GetKeyPositionForKey(PianoKey key)
-    {
-        if (!pianoKeys.ContainsKey(key))
-        {
-            throw new System.Exception("Invalid request for key");
-        }
-        return pianoKeys[key].transform.position;
-    }
-
-    public Vector3 GetForwardVectorForKey(PianoKey key)
-    {
-        if (!pianoKeys.ContainsKey(key))
-        {
-            throw new System.Exception("Invalid request for key");
-        }
-        return pianoKeys[key].transform.forward;
-
-    }
-
-    public Vector3 GetHorizontalVectorForKey(PianoKey key)
-    {
-        if (!pianoKeys.ContainsKey(key))
-        {
-            throw new System.Exception("Invalid request for key");
-        }
-        return pianoKeys[key].transform.right;
-    }
-
-    void Update()
-    {
-        if (!pianoIsBuilt)
-        {
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.Space)) // Locking the piano in place
-        {
-            if (lockedTextObj != null)
-            {
-                GameObject.Destroy(lockedTextObj);
-            }
-            if (locked)
-            {
-                locked = false;
-                DeleteAuxillaryLines();
-                DeletePulser();
-                DestoryParticleSystems();
-            }
-            else
-            {
-                locked = true;
-                DrawAuxillaryLines();
-                DrawPulser();
-                PlaceParticleSystems();
-                var pulser = GameObject.FindGameObjectWithTag("Pulser");
-                var p = pulser.GetComponent<SimpleSonarShader_Object>();
-                p.StartSonarRing(p.transform.position, 10f);
-                lockedTextObj = Instantiate(lockedText);
-                lockedTextObj.transform.SetParent(this.transform);
-                lockedTextObj.transform.localPosition = pianoKeys[PianoKeys.GetKeyFor(CENTRE)].transform.localPosition + new Vector3(0f, 0.1f, 0f);
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Return)) // Restarting MIDI file sequencer
-        {
-            if (sequencer)
-            {
-                sequencer.LoadMidiFile();
-                sequencer.SpawnNotes();
-            }
-            else
-            {
-                Debug.LogWarning("No sequencer component, you must be in calibration mode.");
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.H)) // Hide virtual piano keys
-        {
-            pianoKeys.Values.ToList().ForEach(o => o.GetComponent<MeshRenderer>().enabled = hidden);
-            hidden = !hidden;
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(52), true);
-        }
     }
 
     public void ActivateKey(int keyNum, Color color, float durationSeconds = -1f)

@@ -203,6 +203,10 @@
         </e>
         <e p="Util.cs" t="Include" />
       </e>
+      <e p="Assets\SpaceCraftControl.cs" t="Include" />
+      <e p="Assets\StarSparrow" t="Include">
+        <e p="Readme.txt" t="Include" />
+      </e>
       <e p="Assets\third-party" t="Include">
         <e p="ArucoUnity" t="Include">
           <e p="CameraParameters" t="Include">

@@ -11,11 +11,10 @@ using System.Collections;
 [RequireComponent(typeof(PianoBuilder))]
 [RequireComponent(typeof(MidiController))]
 [RequireComponent(typeof(ScoreView))]
-public class Sequencer : MonoBehaviour
+sealed public class Sequencer : MonoBehaviour
 {
 
     private MidiFile midiFile;
-    private NotesManager noteManager;
     private TempoMapManager tempoMapManager;
     [SerializeField]
     private GameObject pianoRollObject;
@@ -28,7 +27,7 @@ public class Sequencer : MonoBehaviour
     [SerializeField]
     public readonly float notesScale = 1f;
     [SerializeField]
-    public readonly float notesSpeed = 0.1f;
+    public readonly float notesSpeed = 0.5f;
 
     private float startTime = -1;
     private float deltaTime;
@@ -39,9 +38,16 @@ public class Sequencer : MonoBehaviour
     private MidiController midiController;
     private ScoreView scoreView;
 
+    private int totalChecked;
+    private int totalMissed;
+
+    private List<Coroutine> crtHolder;
+
+
     void Start()
     {
         piano = GetComponent<PianoBuilder>();
+        crtHolder = new List<Coroutine>();
         midiController = GetComponent<MidiController>();
         scoreView = GetComponent<ScoreView>();
         noteDurations = new List<NoteDuration>();
@@ -81,22 +87,6 @@ public class Sequencer : MonoBehaviour
         this.ts = tempomap.TimeSignature.AtTime(0);
         this.ttp = ((float)ts.Numerator / ts.Denominator) / notesSpeed;
         Debug.Log(tempomap.Tempo.AtTime(0));
-
-        if (noteManager == null)
-        {
-            for (int i = 0; i < midiFile.Chunks.Count; i++)
-            {
-                MidiChunk chunk = midiFile.Chunks[i];
-                if (chunk.GetType().Equals(typeof(TrackChunk)))
-                {
-                    using (var nm = new NotesManager(((TrackChunk)chunk).Events))
-                    {
-                        this.noteManager = nm;
-                    }
-                    break;
-                }
-            }
-        }
         SpawnNotesDropDown(midiFile.GetNotes().ToList());
     }
 
@@ -107,6 +97,7 @@ public class Sequencer : MonoBehaviour
         pianoRollObjects.Clear();
         noteDurations.Clear();
         midiController.ClearMidiEventStorage();
+        crtHolder.ForEach(e => StopCoroutine(e));
     }
 
     public static float calcX(float y)
@@ -171,7 +162,7 @@ public class Sequencer : MonoBehaviour
         var lastNoteMuscialEnd = lastNoteMusicalStart + lastNoteMusicalLen;
 
         var lastBeatY = ((float)lastNoteMuscialEnd.Numerator / lastNoteMusicalLen.Denominator) * this.notesScale;
-        var beatDelta = ((float)1f / lastNoteMusicalLen.Denominator) * this.notesScale;
+        var beatDelta = ((float)1f) * this.notesScale;
 
         var midKey = PianoKeys.GetKeyFor(PianoBuilder.CENTRE);
         var totalBeatsI = (int)(lastBeatY / beatDelta);
@@ -187,9 +178,37 @@ public class Sequencer : MonoBehaviour
             line.transform.Rotate(0, 0f, 90f);
             var rb = line.GetComponent<Rigidbody>();
             rb.velocity = (v.centre - v.away).normalized * this.notesSpeed;
+
+            var ext = (line.transform.position - v.centre).magnitude / this.notesSpeed; 
         }
 
-        StartCoroutine(PulseCoroutine(beatDelta / this.notesSpeed, totalBeatsI));
+
+        crtHolder.Add(StartCoroutine(PulseCoroutine(beatDelta / this.notesSpeed, totalBeatsI)));
+        crtHolder.Add(StartCoroutine(TriggerChecks(beatDelta / this.notesSpeed, totalBeatsI)));
+    }
+
+    private IEnumerator TriggerChecks(float time, int totalBeats)
+    {
+        const int freq = 8;
+        for (int i = 0; i <= totalBeats; i++)
+        {
+            var total = 0;
+            var totalMiss = 0;
+            for (int j = 0; j < freq; j++) {
+                // Check for accuracy
+                var ons = midiController.GetOnKeys();
+                var eligible = this.noteDurations.FindAll(e => e.start >= Time.time && e.end <= Time.time);
+                eligible.ForEach(e => {
+                    total++;
+                    if(!ons.Contains(e.key)) {
+                        totalMiss++;
+                    }
+                });
+                yield return new WaitForSeconds(time / (float)freq);
+            }
+
+            piano.PutInstantFeedback(total, totalMiss);
+        }
     }
 
     private IEnumerator PulseCoroutine(float time, int totalBeats)
