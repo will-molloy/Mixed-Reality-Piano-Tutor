@@ -47,7 +47,6 @@ sealed public class MidiController : MonoBehaviour
         ClearMidiEventStorage();
     }
 
-
     public void ClearMidiEventStorage()
     {
         Debug.Log("Clearing MIDI events storage");

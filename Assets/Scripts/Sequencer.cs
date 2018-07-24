@@ -87,24 +87,6 @@ sealed public class Sequencer : MonoBehaviour
         this.ts = tempomap.TimeSignature.AtTime(0);
         this.ttp = ((float)ts.Numerator / ts.Denominator) / notesSpeed;
         Debug.Log(tempomap.Tempo.AtTime(0));
-
-/*
-        if (noteManager == null)
-        {
-            for (int i = 0; i < midiFile.Chunks.Count; i++)
-            {
-                MidiChunk chunk = midiFile.Chunks[i];
-                if (chunk.GetType().Equals(typeof(TrackChunk)))
-                {
-                    using (var nm = new NotesManager(((TrackChunk)chunk).Events))
-                    {
-                        this.noteManager = nm;
-                    }
-                    break;
-                }
-            }
-        }
-        */
         SpawnNotesDropDown(midiFile.GetNotes().ToList());
     }
 
