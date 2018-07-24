@@ -8,16 +8,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -2067402452, guid: 1e108ae5f2133934f948edded555f03e, type: 3}
+  m_Script: {fileID: -2067402452, guid: bab6fa851cf5a1a4bba3cec5f191cb8e, type: 3}
   m_Name: VuforiaConfiguration
   m_EditorClassIdentifier: 
   vuforia:
-    vuforiaLicenseKey: Af7c8a3/////AAABmb5YPWbCOkTHkFbZ2I3MaSaMv//gjyBX9bHqFDI49CsyMz2dcjpyeThcqc6JjO3RruEj33rCANrFCOFwVTg5mYYeIRxtxTue6gldSXEmeXOdJx8pq+L73hJl6+o8AYbpnU3YwUNlmm69eYw3RgULn1DiCFHB7oZJhlR00lKW9QDUiTZmF4vj8zvULeCLj5ckbzlRfhMPMo3AXnoPJoXCRSVBWz56aIvmSXzJVn06fiCiLWfoil/Yd75+U9RKrReNA6Kd2q/ZoBlVe8susYNnGwdRF8zPSOoeIlr4jDIP5S2lcfbuLlsg0bVJWMh3NJ9QFwFsBUku/9xDpoVgAppByFnmTuOSjB0GMOESmt7pa8JV
-    ufoLicenseKey: QWN2Y1pHZi8vLy8vQUFBQUtOWEpUVTF6VzBKOW55TVFzbHB3dHBJTFkwMjF2dnhRVE5Kc2wxeVJKYzlORkI4VFI3bW1WRFJtbkFpNy9ZU1BjUk56WG8zZHB2VnRyeW11T1RVZ2pLTDZhR0ZPSklUVHNEd2t3RUpYbmJlMUozSFBENzUvR0FTNkpjbmtRaXVXTGZFNlpDOENwQlljdlZua2paTmFGYTQxeWZSNXBES2tHbEtMZFpQdktqckJqb0sraXF2Uk0rZmNlUlk4bzIzS2UyUXJPSy9WU0RPell6Uzg4bWp3eHFvcmVsbXZLSFl3WXVmbFF5d2srSVdNWDlrK3Azb0EzY2QvTWR1ejY2eWE3dDBhL0xoVFNBSmFhTmpuMDd6WDJVTkRJOStPdkV3YzMxNHV0b3hseU8zVjlIRTVnckYzR3ExaEF1UkVUdGVCNjl5M0dXZXprcklGcmozTDIxTlFWV3M2M0l6TXBBNXdMdkJtMDl5bEswQ0E=
+    vuforiaLicenseKey: 
+    ufoLicenseKey: QVp3U2JTZi8vLy8vQUFBQUtCSXhjcGZyWFVRSmhCOVAzbVFEVm5FWGJXTFhZVTVYeDA2NDBYdUtlckZXdmx1VWh5R1JoK3BPV0lTaE5UMGNmQ0kzUFlPK0lUQVlISUQraHpMdU1FMVJHVTZWK0RiKytRNVFDOEFyQ0d1ajBHeDdZTFY1UXVVZXBwb04xQVl3ZGdHT2VSMGYwNUcrQW5KTlJjWTFyYlpOTUQwVS9pYzhVclg4VmxDdlQ3dDlxb1RNWnJHblIrZmMwMDV5MElRNWNxTldreFdTclNuNkRWUldPazZNclhHWHEyWmJxTWhUTGRDVU54VHZFSXdVMHRaeUJYNW5ramN5VWthR3RkL0lCUW1ycGM0QTNHbTN0Y3d2Z1RzRldGZnlpVUswWWFPRU53VXhZVHI4QnYyNE5Va0RSZWV1Rml1QlFtOEhGUjU3Q0N6dXUwMDlaekdjNGtYbzlORURjZDdXTk51RXZLUjFuNEJrN2hsVHhIMTE=
     delayedInitialization: 0
     cameraDeviceModeSetting: -1
-    maxSimultaneousImageTargets: 2
-    maxSimultaneousObjectTargets: 0
+    maxSimultaneousImageTargets: 1
+    maxSimultaneousObjectTargets: 1
     useDelayedLoadingObjectTargets: 0
     cameraDirection: 0
     mirrorVideoBackground: 0
@@ -43,10 +43,8 @@ MonoBehaviour:
       FieldOfView: {x: 0, y: 0, z: 0, w: 0}
       ContainsMagnet: 0
   databaseLoad:
-    dataSetsToLoad:
-    - vr_piano_trainer
-    dataSetsToActivate:
-    - vr_piano_trainer
+    dataSetsToLoad: []
+    dataSetsToActivate: []
   videoBackground:
     clippingMode: 0
     numDivisions: 2
