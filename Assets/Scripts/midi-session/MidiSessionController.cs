@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 ///</summary>
 public class MidiSessionController
 {
+    [SerializeField]
     private const string JSON_PATH = "Assets/Resources/midi-sessions.json";
 
     public static List<MidiSessionDto> getMidiSessions(string midiFileName)

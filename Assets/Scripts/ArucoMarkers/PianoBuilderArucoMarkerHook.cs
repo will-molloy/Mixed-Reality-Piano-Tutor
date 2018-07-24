@@ -15,8 +15,7 @@ public class PianoBuilderArucoMarkerHook : MonoBehaviour
         leftMarker = GameObject.Find("CubeLeft");
         rightMarker = GameObject.Find("CubeRight");
         PianoBuilder = GetComponent<PianoBuilder>();
-        PianoBuilder.PlacePianoInfrontOfTransform(leftMarker.transform);
-		PianoBuilder.SetParentTransform(leftMarker.transform);
+        PianoBuilder.BuildPianoAsChildOfTransform(leftMarker.transform);
     }
 
 }
