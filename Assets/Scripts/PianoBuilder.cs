@@ -11,48 +11,31 @@ sealed public class PianoBuilder : MonoBehaviour
     [SerializeField] private GameObject pulser;
     [SerializeField] private GameObject lockedText;
     [SerializeField] private GameObject spaceCraft;
-    public static readonly int CENTRE = (PianoKeys.GetLastKey().keyNum + PianoKeys.GetFirstKey().keyNum) / 2;
+    public static readonly int CENTRE = (PianoKeys.Last().keyNum + PianoKeys.First().keyNum) / 2;
     internal Dictionary<PianoKey, GameObject> pianoKeys;
     internal static readonly float yOffset = 0.001f;
-    internal bool locked = false;
-    internal bool pianoIsBuilt = false;
-    private bool hidden = false;
+    internal bool locked;
+    private bool hidden;
     internal GameObject lockedTextObj;
     public static PianoBuilder instance;
     internal Sequencer sequencer;
     private readonly float opposite = 1f;
     private readonly float adj = 5f;
-    private List<GameObject> auxLines;
-    private List<GameObject> pulsers;
-
     private GameObject spaceCraftObj;
+    private List<GameObject> auxLines = new List<GameObject>();
+    private List<GameObject> pulsers = new List<GameObject>();
     private Dictionary<PianoKey, GameObject> particleSystems;
-
     [SerializeField]
     private GameObject particleSystem;
+    [SerializeField]
+    private float pianoKeyGap = 0.001f; // 1mm or so
 
     void Start()
     {
         instance = this;
-        pianoKeys = new Dictionary<PianoKey, GameObject>();
-        auxLines = new List<GameObject>();
         sequencer = GetComponent<Sequencer>();
-        pulsers = new List<GameObject>();
+        pianoKeys = new Dictionary<PianoKey, GameObject>();
         particleSystems = new Dictionary<PianoKey, GameObject>();
-
-    }
-
-    public void PlacePianoInfrontOfTransform(Transform trf)
-    {
-        if (!pianoIsBuilt)
-        {
-            Debug.Log("Building Piano.");
-            PlacePianoAt(trf.position + trf.forward * 0.5f);
-        }
-        else
-        {
-            Debug.Log("Piano already built.");
-        }
     }
 
     private void PlaceParticleSystems()
@@ -84,43 +67,55 @@ sealed public class PianoBuilder : MonoBehaviour
             var ps = o.GetComponent<ParticleSystem>();
             ps.enableEmission = status;
         }
-
     }
 
-    public void SetPosition(Vector3 location)
+    public void BuildPianoAsChildOfTransform(Transform trf)
+    {
+        Debug.Log("Building Piano.");
+        BuildPianoAt(trf.position);
+        this.transform.parent = trf;
+    }
+
+    private void BuildPianoAt(Vector3 location)
     {
         this.transform.position = location;
-    }
-
-    private void PlacePianoAt(Vector3 location)
-    {
-        SetPosition(location);
-        var firstkey = PianoKeys.GetFirstKey();
-        var lastkey = PianoKeys.GetLastKey();
+        var firstkey = PianoKeys.First();
+        var lastkey = PianoKeys.Last();
         var whitekeyScale = whiteKey.transform.localScale;
-        var blackkeyScale = blackKey.transform.localScale;
-        var xOffset = 0f;
-        var zOffset = whitekeyScale.z / 4;
-        for (int i = firstkey.keyNum; i <= lastkey.keyNum; i++)
+        var blackKeyScale = blackKey.transform.localScale;
+        var currentX = 0f;
+        var blackKeyYOffset = (whitekeyScale.y + blackKeyScale.y) / 2;
+        var blackKeyZOffset = (whitekeyScale.z - blackKeyScale.z) / 2;
+        var rightBlackKeyXOffset = 141f / 550 * (blackKeyScale.x / 2); // http://www.rwgiangiulio.com/construction/manual/
+        var leftBlackKeyXOffset = -rightBlackKeyXOffset;
+        for (int keyNum = firstkey.keyNum; keyNum <= lastkey.keyNum; keyNum++)
         {
-            var currentKey = PianoKeys.GetKeyFor(i);
+            var currentKey = PianoKeys.GetKeyFor(keyNum);
             GameObject keyObj;
             if (currentKey.color == KeyColor.White)
             {
                 keyObj = Instantiate(whiteKey);
                 keyObj.transform.SetParent(this.transform);
-                keyObj.transform.localPosition = new Vector3(xOffset, 0f, 0);
-                xOffset += whitekeyScale.x + PianoKeys.pianoKeyGap;
+                keyObj.transform.localPosition = new Vector3(currentX, 0, 0);
+                currentX += whitekeyScale.x + pianoKeyGap;
             }
             else
             {
+                float xOffset = -(whitekeyScale.x + pianoKeyGap) / 2; // Unity measures from midpoint of white key
+                if (PianoKeys.leftOffsetBlackKeyNums.Contains(keyNum)) 
+                {
+                    xOffset += leftBlackKeyXOffset;
+                }
+                else if (PianoKeys.rightOffsetBlackKeyNums.Contains(keyNum)) 
+                {
+                    xOffset += rightBlackKeyXOffset;
+                }
                 keyObj = Instantiate(blackKey);
                 keyObj.transform.SetParent(this.transform);
-                keyObj.transform.localPosition = new Vector3(xOffset - whitekeyScale.x / 2, yOffset, zOffset);
+                keyObj.transform.localPosition = new Vector3(currentX + xOffset, blackKeyYOffset, blackKeyZOffset);
             }
             pianoKeys[currentKey] = keyObj;
         }
-        pianoIsBuilt = true;
         var o = pianoKeys[firstkey];
         var l = pianoKeys[lastkey];
         var up = o.transform.position + pianoKeys[firstkey].transform.forward * 0.1f;
@@ -149,8 +144,8 @@ sealed public class PianoBuilder : MonoBehaviour
 
     private void DrawPulser()
     {
-        var firstkey = PianoKeys.GetFirstKey();
-        var lastkey = PianoKeys.GetLastKey();
+        var firstkey = PianoKeys.First();
+        var lastkey = PianoKeys.Last();
         var left = this.pianoKeys[firstkey].transform;
         var right = this.pianoKeys[lastkey].transform;
         var leftPulserPos = left.transform.position - left.transform.right * 0.1f;
@@ -287,14 +282,14 @@ sealed public class PianoBuilder : MonoBehaviour
 
     public Vector3 GetLeftEdge()
     {
-        var obj = pianoKeys[PianoKeys.GetFirstKey()];
+        var obj = pianoKeys[PianoKeys.First()];
         var corners = Corners(obj);
         return corners[1];
     }
 
     public Vector3 GetRightEdge()
     {
-        var obj = pianoKeys[PianoKeys.GetLastKey()];
+        var obj = pianoKeys[PianoKeys.Last()];
         var corners = Corners(obj);
         return corners[0];
     }
@@ -367,62 +362,6 @@ sealed public class PianoBuilder : MonoBehaviour
 
     void Update()
     {
-        if (!pianoIsBuilt)
-        {
-            return;
-        }
-        if (!locked)
-        {
-            var position = this.transform.position;
-            var scale = this.transform.localScale;
-            var angle = this.transform.localEulerAngles;
-            var forward = this.transform.forward;
-            var up = this.transform.up;
-            var right = this.transform.right;
-            if (Input.GetKey(KeyCode.A))
-            {
-                position -= this.transform.right * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                position += this.transform.right * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.W))
-            {
-                position += this.transform.forward * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                position -= this.transform.forward * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.Q))
-            {
-                position += this.transform.up * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.E))
-            {
-                position -= this.transform.up * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.Z))
-            {
-                scale += new Vector3(0.001f, 0f, 0.001f);
-            }
-            if (Input.GetKey(KeyCode.X))
-            {
-                scale -= new Vector3(0.001f, 0f, 0.001f);
-            }
-            if (Input.GetKey(KeyCode.C))
-            {
-                angle += new Vector3(0f, 1f, 0f);
-            }
-            if (Input.GetKey(KeyCode.V))
-            {
-                angle -= new Vector3(0f, 1f, 0f);
-            }
-            this.transform.position = position;
-            this.transform.localScale = scale;
-            this.transform.localEulerAngles = angle;
-        }
         if (Input.GetKeyDown(KeyCode.Space)) // Locking the piano in place
         {
             if (lockedTextObj != null)
@@ -473,28 +412,19 @@ sealed public class PianoBuilder : MonoBehaviour
         {
             SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(52), true);
         }
-
     }
 
     public void ActivateKey(int keyNum, Color color, float durationSeconds = -1f)
     {
-        if (!pianoIsBuilt)
+        var pianoKey = PianoKeys.GetKeyFor(keyNum);
+        GameObject gameObject;
+        if (pianoKeys.TryGetValue(pianoKey, out gameObject))
         {
-            Debug.LogWarning("Piano not setup.");
-        }
-        else
-        {
-            var pianoKey = PianoKeys.GetKeyFor(keyNum);
-            GameObject gameObject;
-            if (pianoKeys.TryGetValue(pianoKey, out gameObject))
+            var render = gameObject.GetComponent<MeshRenderer>();
+            render.material.color = color;
+            if (durationSeconds > 0)
             {
-                // Debug.Log("Activating key: " + pianoKey.keyNum + ", for: " + durationSeconds + "s");
-                var render = gameObject.GetComponent<MeshRenderer>();
-                render.material.color = color;
-                if (durationSeconds > 0)
-                {
-                    StartCoroutine(DeactivateKey(gameObject, pianoKey, durationSeconds));
-                }
+                StartCoroutine(DeactivateKey(gameObject, pianoKey, durationSeconds));
             }
         }
     }
