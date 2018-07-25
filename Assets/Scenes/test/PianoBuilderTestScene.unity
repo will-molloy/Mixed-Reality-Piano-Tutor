@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -125,6 +125,8 @@ GameObject:
   - component: {fileID: 41687502}
   - component: {fileID: 41687504}
   - component: {fileID: 41687503}
+  - component: {fileID: 41687506}
+  - component: {fileID: 41687505}
   m_Layer: 0
   m_Name: Piano Builder
   m_TagString: Untagged
@@ -147,10 +149,12 @@ MonoBehaviour:
   whiteKey: {fileID: 1333224359579602, guid: c681bdf81e3bcac4dbccbdc697882a77, type: 2}
   blackKey: {fileID: 1333224359579602, guid: cefe037a54324e849af042367a912d27, type: 2}
   pulser: {fileID: 1597585344781728, guid: 6bd76e4ccccc3e348abacaf033cf73db, type: 2}
-  lockedText: {fileID: 1048467096307228, guid: 8f68084b04745854c97027867b98ba9a, type: 2}
   spaceCraft: {fileID: 1443980954828034, guid: fcff00ddd33203048bc26da4fffd032b, type: 2}
+  fineLine: {fileID: 1129791044277510, guid: 1b01e0cc1de61f34d89a1897641e41fb, type: 2}
   particleSystem: {fileID: 1956794768317474, guid: 6ba818cd48a16e34bafd79702ff2b5d3,
     type: 2}
+  pianoKeyGap: 0.001
+  worldAnchor: {fileID: 0}
 --- !u!4 &41687501
 Transform:
   m_ObjectHideFlags: 0
@@ -199,6 +203,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66c0c2ace819b88488aac7bc2ca56309, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &41687505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 41687499}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f42dd09820b18194da8385eb779aba70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &41687506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 41687499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab89e7f33406b2d4895bf5e228284e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &117961822

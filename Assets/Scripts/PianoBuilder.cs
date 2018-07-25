@@ -10,6 +10,7 @@ sealed public class PianoBuilder : MonoBehaviour
     [SerializeField] private GameObject blackKey;
     [SerializeField] private GameObject pulser;
     [SerializeField] private GameObject spaceCraft;
+    [SerializeField] private GameObject fineLine;
     public static readonly int CENTRE = (PianoKeys.Last().keyNum + PianoKeys.First().keyNum) / 2;
     internal Dictionary<PianoKey, GameObject> pianoKeys;
     internal static readonly float yOffset = 0.001f;
@@ -242,17 +243,25 @@ sealed public class PianoBuilder : MonoBehaviour
         DestroyObject(go);
     }
 
+    public static float calcX(float y)
+    {
+        return Mathf.Sqrt((y * y) / 26f);
+    }
     private void DrawAuxillaryLines()
     {
         foreach (var item in pianoKeys)
         {
-            var lmraway = GetLMRAwayVectorsForKey(item.Key, 10);
-            var line = DrawLine(lmraway.centre, lmraway.away, Color.grey);
-            line.transform.SetParent(item.Value.transform);
-            line.GetComponent<LineRenderer>().useWorldSpace = false;
-            line.transform.localScale = new Vector3(0, 1, 1);
-            line.transform.localPosition = new Vector3(line.transform.localPosition.x, 0.5f, 0.35f);
+            var line = Instantiate(fineLine);
+            line.name = "Aux line";
+            var v = GetLMRAwayVectorsForKey(item.Key, calcX(2f));
+            line.transform.position = v.away;
+            var rotation = Quaternion.LookRotation(v.centre - v.away);
+            line.transform.rotation = rotation;
+            line.transform.Rotate(90f, 0f, 0f);
             this.auxLines.Add(line);
+            var dummy = new GameObject();
+            dummy.transform.SetParent(item.Value.transform);
+            line.transform.SetParent(dummy.transform);
         }
     }
 
@@ -349,6 +358,10 @@ sealed public class PianoBuilder : MonoBehaviour
     public void DeactivateKey(int keyNum)
     {
         ActivateKey(keyNum, PianoKeys.GetKeyFor(keyNum).color == KeyColor.White ? Color.white : Color.black);
+    }
+
+    public GameObject GetKeyObj(PianoKey key) {
+        return pianoKeys[key];
     }
 
 }

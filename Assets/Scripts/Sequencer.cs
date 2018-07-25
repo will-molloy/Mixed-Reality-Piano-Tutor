@@ -24,6 +24,8 @@ sealed public class Sequencer : MonoBehaviour
     public static Sequencer instance;
     private PianoBuilder piano;
 
+    private Dictionary<PianoKey, List<GameObject>> pianoRollDict = new Dictionary<PianoKey, List<GameObject>>();
+
     [SerializeField]
     public readonly float notesScale = 1f;
     [SerializeField]
@@ -52,6 +54,9 @@ sealed public class Sequencer : MonoBehaviour
         scoreView = GetComponent<ScoreView>();
         noteDurations = new List<NoteDuration>();
         instance = this;
+        foreach(var item in PianoKeys.GetAllKeys()) {
+            pianoRollDict.Add(item, new List<GameObject>());
+        }
     }
 
     public void LoadMidiFile(string file)
@@ -95,6 +100,10 @@ sealed public class Sequencer : MonoBehaviour
         Debug.Log("Clearing piano roll");
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
+        foreach(var i in pianoRollDict) {
+            i.Value.ForEach(o => GameObject.Destroy(o));
+            i.Value.Clear();
+        }
         noteDurations.Clear();
         midiController.ClearMidiEventStorage();
         crtHolder.ForEach(e => StopCoroutine(e));
@@ -129,10 +138,14 @@ sealed public class Sequencer : MonoBehaviour
             // Debug.Log(scale);
             var lmraway = piano.GetLMRAwayVectorsForKey(key);
             var obj = Instantiate(pianoRollObject);
-            obj.transform.SetParent(PianoBuilder.instance.worldAnchor);
+            var dummy = new GameObject();
             var awayVector = lmraway.away;
             var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale / 2f));
+            var lmraway3 = piano.GetLMRAwayVectorsForKey(key, 100);
             var keyPos = lmraway.centre;
+            dummy.transform.position = lmraway3.away;
+            dummy.transform.SetParent(piano.GetKeyObj(key).transform);
+            obj.transform.SetParent(dummy.transform);
             //Debug.Log(number + "  " + keyPos.ToString("F4"));
             pianoRollObjects.Add(obj);
             var dropdownScale = obj.transform.localScale;
@@ -147,13 +160,13 @@ sealed public class Sequencer : MonoBehaviour
             var renderer = obj.GetComponent<Renderer>();
             renderer.material.color = key.color == KeyColor.Black ? Color.blue : Color.white;
             var rb = obj.GetComponent<Rigidbody>();
-            rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
+            //rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
 
-            var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / rb.velocity.magnitude;
-            var expectEnd = scale / rb.velocity.magnitude;
+            var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / notesSpeed;
+            var expectEnd = scale / notesSpeed;
 
             //Debug.Log("Scale: " + scale + "  y:" + y);
-
+            this.pianoRollDict[key].Add(dummy);
             this.noteDurations.Add(new NoteDuration(expectTime, expectEnd, key));
         });
 
@@ -220,7 +233,6 @@ sealed public class Sequencer : MonoBehaviour
             yield return new WaitForSeconds(time);
         }
     }
-
     public void Update()
     {
         if (this.startTime < 0f)
@@ -244,6 +256,20 @@ sealed public class Sequencer : MonoBehaviour
             this.ClearPianoRoll();
             this.startTime = -1f;
         }
+
+        foreach(var item in pianoRollDict) {
+            if (item.Value.Count == 0) {
+                continue;
+            }
+            var lmr = piano.GetLMRAwayVectorsForKey(item.Key);
+            float step = notesSpeed * Time.deltaTime;
+            foreach(var obj in item.Value) {
+                obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
+            }
+        }
+
+
+
     }
 }
 
