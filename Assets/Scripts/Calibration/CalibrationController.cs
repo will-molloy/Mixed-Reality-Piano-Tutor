@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Runtime.Serialization;
 
+[RequireComponent(typeof(PianoBuilder))]
 [RequireComponent(typeof(PianoBuilderOculusControllerHook))]
 public class CalibrationController : MonoBehaviour
 {
@@ -15,9 +16,12 @@ public class CalibrationController : MonoBehaviour
 
     private PianoBuilderOculusControllerHook cameraHook;
 
+    private PianoBuilder builder;
+
     void Start()
     {
         cameraHook = GetComponent<PianoBuilderOculusControllerHook>();
+        builder = GetComponent<PianoBuilder>();
         LoadMarker();
     }
 
@@ -34,6 +38,7 @@ public class CalibrationController : MonoBehaviour
 
     void Update()
     {
+        builder.transform.localEulerAngles = Vector3.zero;
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             SaveMarker();

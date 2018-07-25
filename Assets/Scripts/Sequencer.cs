@@ -129,6 +129,7 @@ sealed public class Sequencer : MonoBehaviour
             // Debug.Log(scale);
             var lmraway = piano.GetLMRAwayVectorsForKey(key);
             var obj = Instantiate(pianoRollObject);
+            obj.transform.SetParent(PianoBuilder.instance.worldAnchor);
             var awayVector = lmraway.away;
             var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale / 2f));
             var keyPos = lmraway.centre;
@@ -156,7 +157,7 @@ sealed public class Sequencer : MonoBehaviour
             this.noteDurations.Add(new NoteDuration(expectTime, expectEnd, key));
         });
 
-        // Spawn fine lines
+        // Spawn fine lines (horizontal)
         var lastNoteMusicalStart = (MusicalTimeSpan)notes.Last().TimeAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
         var lastNoteMusicalLen = (MusicalTimeSpan)notes.Last().LengthAs(TimeSpanType.Musical, this.tempoMapManager.TempoMap);
         var lastNoteMuscialEnd = lastNoteMusicalStart + lastNoteMusicalLen;
@@ -167,7 +168,7 @@ sealed public class Sequencer : MonoBehaviour
         var midKey = PianoKeys.GetKeyFor(PianoBuilder.CENTRE);
         var totalBeatsI = (int)(lastBeatY / beatDelta);
 
-        for (int i = 0; i <= totalBeatsI; i++)
+        for (int i = 1; i <= totalBeatsI; i++)
         {
             var line = Instantiate(fineLine);
             var v = piano.GetLMRAwayVectorsForKey(midKey, calcX(beatDelta * i));

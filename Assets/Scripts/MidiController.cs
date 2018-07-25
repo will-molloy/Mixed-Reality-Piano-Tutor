@@ -55,7 +55,7 @@ sealed public class MidiController : MonoBehaviour
 
     public List<MidiEventStorage> GetMidiEvents()
     {
-        return mockEvents;
+        // return mockEvents;
         return midiEvents;
     }
 

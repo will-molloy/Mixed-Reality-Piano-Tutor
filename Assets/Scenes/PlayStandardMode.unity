@@ -118,6 +118,11 @@ GameObject:
   m_PrefabParentObject: {fileID: 1175467483869550, guid: e13ee7e0790c7d243b7aa67fe604acac,
     type: 2}
   m_PrefabInternal: {fileID: 960543046}
+--- !u!4 &11046298 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4327115905062700, guid: e13ee7e0790c7d243b7aa67fe604acac,
+    type: 2}
+  m_PrefabInternal: {fileID: 960543046}
 --- !u!114 &11046301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,7 +285,6 @@ GameObject:
   - component: {fileID: 588414630}
   - component: {fileID: 588414629}
   - component: {fileID: 588414628}
-  - component: {fileID: 588414627}
   m_Layer: 0
   m_Name: RHA Cube
   m_TagString: Untagged
@@ -288,40 +292,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!23 &588414627
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 588414626}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 1
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
 --- !u!65 &588414628
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -818,6 +788,7 @@ MonoBehaviour:
   particleSystem: {fileID: 1956794768317474, guid: 6ba818cd48a16e34bafd79702ff2b5d3,
     type: 2}
   pianoKeyGap: 0.001
+  worldAnchor: {fileID: 2113433557}
 --- !u!4 &2113433557
 Transform:
   m_ObjectHideFlags: 0
@@ -825,7 +796,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2113433555}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.2, y: -1.57, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -892,3 +863,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Marker: {fileID: 588414626}
+  transform: {fileID: 11046298}
