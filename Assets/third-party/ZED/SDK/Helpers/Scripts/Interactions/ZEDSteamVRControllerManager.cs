@@ -1,6 +1,8 @@
 ﻿//======= Copyright (c) Stereolabs Corporation, All rights reserved. ===============
 
+using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 #if ZED_STEAM_VR
 using Valve.VR;
 #elif ZED_OVR

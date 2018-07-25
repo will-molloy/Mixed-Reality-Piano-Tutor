@@ -138,7 +138,7 @@ sealed public class Sequencer : MonoBehaviour
             // Debug.Log(scale);
             var lmraway = piano.GetLMRAwayVectorsForKey(key);
             var obj = Instantiate(pianoRollObject);
-            var dummy = new GameObject();
+            var dummy = new GameObject("dummy");
             var awayVector = lmraway.away;
             var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale / 2f));
             var lmraway3 = piano.GetLMRAwayVectorsForKey(key, 100);
@@ -195,8 +195,6 @@ sealed public class Sequencer : MonoBehaviour
 
             var ext = (line.transform.position - v.centre).magnitude / this.notesSpeed; 
         }
-
-
         crtHolder.Add(StartCoroutine(PulseCoroutine(beatDelta / this.notesSpeed, totalBeatsI)));
         crtHolder.Add(StartCoroutine(TriggerChecks(beatDelta / this.notesSpeed, totalBeatsI)));
     }
@@ -267,9 +265,6 @@ sealed public class Sequencer : MonoBehaviour
                 obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
             }
         }
-
-
-
     }
 }
 
