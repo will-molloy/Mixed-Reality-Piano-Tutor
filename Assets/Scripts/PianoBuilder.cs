@@ -10,6 +10,7 @@ sealed public class PianoBuilder : MonoBehaviour
     [SerializeField] private GameObject blackKey;
     [SerializeField] private GameObject pulser;
     [SerializeField] private GameObject spaceCraft;
+    [SerializeField] private GameObject fineLine;
     public static readonly int CENTRE = (PianoKeys.Last().keyNum + PianoKeys.First().keyNum) / 2;
     internal Dictionary<PianoKey, GameObject> pianoKeys;
     internal static readonly float yOffset = 0.001f;
@@ -27,7 +28,10 @@ sealed public class PianoBuilder : MonoBehaviour
     private GameObject particleSystem;
     [SerializeField]
     private float pianoKeyGap = 0.001f; // 1mm or so
-    private Transform firstKeyReference;
+    [SerializeField]
+    internal Transform worldAnchor;
+
+
 
     void Start()
     {
@@ -74,7 +78,7 @@ sealed public class PianoBuilder : MonoBehaviour
 
     private bool isPianoBuilt;
 
-    public void BuildPianoAsChildOfTransform(Transform trf)
+    public void BuildPianoAsChildOfTransform(Transform transform)
     {
         if (isPianoBuilt)
         {
@@ -84,8 +88,8 @@ sealed public class PianoBuilder : MonoBehaviour
         {
             isPianoBuilt = true;
             Debug.Log("Building Piano.");
-            BuildPianoAt(trf.position);
-            this.transform.parent = trf;
+            BuildPianoAt(transform.position);
+            base.transform.SetParent(transform);
             spawnGameElements();
         }
     }
@@ -142,7 +146,6 @@ sealed public class PianoBuilder : MonoBehaviour
 
     private void spawnGameElements()
     {
-        this.firstKeyReference = pianoKeys.First().Value.transform;
         DrawAuxillaryLines();
         DrawPulser();
         PlaceParticleSystems();
@@ -158,7 +161,7 @@ sealed public class PianoBuilder : MonoBehaviour
         var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
         spaceCraftObj.transform.rotation = rotation;
         spaceCraftObj.transform.Rotate(-90f, 180f, 0f);
-        spaceCraftObj.transform.SetParent(firstKeyReference);
+        spaceCraftObj.transform.SetParent(worldAnchor);
     }
 
     private void PlaceParticleSystems()
@@ -170,7 +173,7 @@ sealed public class PianoBuilder : MonoBehaviour
             obj.transform.position = lmraway.centre;
             obj.GetComponent<ParticleSystem>().enableEmission = false;
             particleSystems.Add(item.Key, obj);
-            obj.transform.SetParent(firstKeyReference);
+            obj.transform.SetParent(worldAnchor);
         }
     }
 
@@ -188,8 +191,8 @@ sealed public class PianoBuilder : MonoBehaviour
         rp.transform.position = rightPulserPos;
         this.pulsers.Add(lp);
         this.pulsers.Add(rp);
-        lp.transform.SetParent(firstKeyReference);
-        rp.transform.SetParent(firstKeyReference);
+        lp.transform.SetParent(worldAnchor);
+        rp.transform.SetParent(worldAnchor);
     }
 
     public void Pulse()
@@ -240,12 +243,25 @@ sealed public class PianoBuilder : MonoBehaviour
         DestroyObject(go);
     }
 
+    public static float calcX(float y)
+    {
+        return Mathf.Sqrt((y * y) / 26f);
+    }
     private void DrawAuxillaryLines()
     {
         foreach (var item in pianoKeys)
         {
-            var lmraway = GetLMRAwayVectorsForKey(item.Key, 10);
-            this.auxLines.Add(DrawLine(lmraway.centre, lmraway.away, Color.grey));
+            var line = Instantiate(fineLine);
+            line.name = "Aux line";
+            var v = GetLMRAwayVectorsForKey(item.Key, calcX(2f));
+            line.transform.position = v.away;
+            var rotation = Quaternion.LookRotation(v.centre - v.away);
+            line.transform.rotation = rotation;
+            line.transform.Rotate(90f, 0f, 0f);
+            this.auxLines.Add(line);
+            var dummy = new GameObject();
+            dummy.transform.SetParent(item.Value.transform);
+            line.transform.SetParent(dummy.transform);
         }
     }
 
@@ -258,20 +274,14 @@ sealed public class PianoBuilder : MonoBehaviour
         var go = pianoKeys[key];
         var corners = Corners(pianoKeys[key]);
         var mid = corners[2];
-        var empty = new GameObject();
-        empty.transform.SetParent(go.transform);
-        empty.transform.position = mid;
-        empty.transform.SetParent(this.transform);
         var lookat = MakeAwayVector(mid, this.transform, magnitude);
-        Destroy(empty);
         return new PianoKeyVectors(corners[0], corners[1], corners[2], lookat, go.transform.forward, go.transform.up);
     }
 
-
     public GameObject DrawLine(Vector3 start, Vector3 end, Color color)
     {
-        var myLine = new GameObject();
-        myLine.transform.position = start;
+        var myLine = new GameObject("Auxillary line");
+        myLine.transform.localPosition = start;
         myLine.AddComponent<LineRenderer>();
         var lr = myLine.GetComponent<LineRenderer>();
         lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
@@ -279,7 +289,6 @@ sealed public class PianoBuilder : MonoBehaviour
         lr.SetWidth(0.001f, 0.001f);
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
-        myLine.transform.SetParent(firstKeyReference);
         return myLine;
     }
 
@@ -287,7 +296,6 @@ sealed public class PianoBuilder : MonoBehaviour
     {
         var lookat = refV + (transform.forward * adj * magnitude + transform.up * opposite * magnitude);
         return lookat;
-
     }
 
     private Vector3 MakeAwayVector(Transform transform)
@@ -350,6 +358,10 @@ sealed public class PianoBuilder : MonoBehaviour
     public void DeactivateKey(int keyNum)
     {
         ActivateKey(keyNum, PianoKeys.GetKeyFor(keyNum).color == KeyColor.White ? Color.white : Color.black);
+    }
+
+    public GameObject GetKeyObj(PianoKey key) {
+        return pianoKeys[key];
     }
 
 }
