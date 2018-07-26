@@ -18,16 +18,22 @@ public class Pulser : MonoBehaviour
         var scale = 0.01f;
         var color = renderer.material.color;
         color = new Color(color.r, color.g, color.b, 1f);
-        for (int i = 0; i < 1000; i++)
+        for (int i = 0; i < 50; i++)
         {
             yield return new WaitForSeconds(0.001f);
             renderer.material.color = new Color(color.r, color.g, color.b, Mathf.Max(alpha, 0.0f));
             var lscale = obj.transform.localScale;
-            obj.transform.localScale = lscale + new Vector3(scale, scale, scale);
 
-            alpha -= 0.05f;
-            scale += 0.01f;
+            if(i < 25) {
+                alpha -= 0.08f;
+                //scale += 0.01f;
+                obj.transform.localScale = lscale + new Vector3(scale, scale, scale);
+            } else {
+                alpha += 0.08f;
+                //scale -= 0.01f;
+                obj.transform.localScale = lscale - new Vector3(scale, scale, scale);
+            }
         }
-        Destroy(obj);
+        GameObject.DestroyObject(obj);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PianoBuilder))]
+[RequireComponent(typeof(Sequencer))]
 public class PianoBuilderTester : MonoBehaviour {
 
 	// Use this for initialization

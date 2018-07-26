@@ -21,6 +21,7 @@ sealed public class Sequencer : MonoBehaviour
     [SerializeField]
     private GameObject fineLine;
     private List<GameObject> pianoRollObjects = new List<GameObject>();
+    private List<GameObject> fineLines = new List<GameObject>();
     public static Sequencer instance;
     private PianoBuilder piano;
 
@@ -33,6 +34,7 @@ sealed public class Sequencer : MonoBehaviour
 
     private float startTime = -1;
     private float deltaTime;
+    private readonly float offsetStart = (0.5f * 1f) / 0.5f;
     private List<NoteDuration> noteDurations;
     private TimeSignature ts;
     private float ttp;
@@ -44,6 +46,12 @@ sealed public class Sequencer : MonoBehaviour
     private int totalMissed;
 
     private List<Coroutine> crtHolder;
+
+    private bool gameStarted;
+
+    private float timeBetweenBeats;
+    private int totalBeats;
+
 
 
     void Start()
@@ -63,6 +71,7 @@ sealed public class Sequencer : MonoBehaviour
     {
         Debug.Log("Start with MIDI file: " + file);
         midiFile = MidiFile.Read(file);
+        SpawnNotes();
     }
 
     public void LoadMidiFile()
@@ -109,6 +118,15 @@ sealed public class Sequencer : MonoBehaviour
         crtHolder.ForEach(e => StopCoroutine(e));
     }
 
+    public void StartGame() {
+        if(!gameStarted) {
+            gameStarted = true;
+            this.startTime = Time.time;
+            crtHolder.Add(StartCoroutine(PulseCoroutine(timeBetweenBeats, totalBeats)));
+            crtHolder.Add(StartCoroutine(TriggerChecks(timeBetweenBeats, totalBeats)));
+        }
+    }
+
     public static float calcX(float y)
     {
         return Mathf.Sqrt((y * y) / 26f);
@@ -117,7 +135,6 @@ sealed public class Sequencer : MonoBehaviour
     {
         Debug.Log("Spawning piano roll notes");
         ClearPianoRoll();
-        this.startTime = Time.time;
         notes.ForEach(e =>
         {
             var number = e.NoteNumber;
@@ -185,18 +202,19 @@ sealed public class Sequencer : MonoBehaviour
         {
             var line = Instantiate(fineLine);
             var v = piano.GetLMRAwayVectorsForKey(midKey, calcX(beatDelta * i));
-            this.pianoRollObjects.Add(line);
+            var lmraway3 = piano.GetLMRAwayVectorsForKey(midKey, 100);
+            var dummy = new GameObject("dummy Fineline");
+            dummy.transform.position = lmraway3.away;
+            dummy.transform.SetParent(piano.GetKeyObj(midKey).transform);
+            line.transform.SetParent(dummy.transform);
             line.transform.position = v.away;
             var rotation = Quaternion.LookRotation(v.centre - v.away);
             line.transform.rotation = rotation;
             line.transform.Rotate(0, 0f, 90f);
-            var rb = line.GetComponent<Rigidbody>();
-            rb.velocity = (v.centre - v.away).normalized * this.notesSpeed;
-
-            var ext = (line.transform.position - v.centre).magnitude / this.notesSpeed; 
+            this.fineLines.Add(dummy);
         }
-        crtHolder.Add(StartCoroutine(PulseCoroutine(beatDelta / this.notesSpeed, totalBeatsI)));
-        crtHolder.Add(StartCoroutine(TriggerChecks(beatDelta / this.notesSpeed, totalBeatsI)));
+        timeBetweenBeats = beatDelta / this.notesSpeed;
+        totalBeats = totalBeatsI;
     }
 
     private IEnumerator TriggerChecks(float time, int totalBeats)
@@ -255,14 +273,25 @@ sealed public class Sequencer : MonoBehaviour
             this.startTime = -1f;
         }
 
-        foreach(var item in pianoRollDict) {
-            if (item.Value.Count == 0) {
-                continue;
-            }
-            var lmr = piano.GetLMRAwayVectorsForKey(item.Key);
+        if (gameStarted) {
+
             float step = notesSpeed * Time.deltaTime;
-            foreach(var obj in item.Value) {
-                obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
+            foreach (var item in pianoRollDict)
+            {
+                if (item.Value.Count == 0)
+                {
+                    continue;
+                }
+                var lmr = piano.GetLMRAwayVectorsForKey(item.Key);
+                foreach (var obj in item.Value)
+                {
+                    obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
+                }
+            }
+            var lmr2 = piano.GetLMRAwayVectorsForKey((PianoKeys.GetKeyFor(PianoBuilder.CENTRE)));
+
+            foreach (var obj in fineLines) {
+                    obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr2.centre, step);
             }
         }
     }

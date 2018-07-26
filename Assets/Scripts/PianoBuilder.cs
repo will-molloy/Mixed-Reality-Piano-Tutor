@@ -47,8 +47,7 @@ sealed public class PianoBuilder : MonoBehaviour
         {
             if (sequencer)
             {
-                sequencer.LoadMidiFile();
-                sequencer.SpawnNotes();
+                sequencer.StartGame();
             }
             else
             {
@@ -91,6 +90,7 @@ sealed public class PianoBuilder : MonoBehaviour
             BuildPianoAt(transform.position);
             base.transform.SetParent(transform);
             spawnGameElements();
+            sequencer.LoadMidiFile();
         }
     }
 
