@@ -150,6 +150,7 @@ MonoBehaviour:
   pulser: {fileID: 1597585344781728, guid: 6bd76e4ccccc3e348abacaf033cf73db, type: 2}
   spaceCraft: {fileID: 1443980954828034, guid: fcff00ddd33203048bc26da4fffd032b, type: 2}
   fineLine: {fileID: 1129791044277510, guid: 1b01e0cc1de61f34d89a1897641e41fb, type: 2}
+  energyBar: {fileID: 0}
   particleSystem: {fileID: 1956794768317474, guid: 6ba818cd48a16e34bafd79702ff2b5d3,
     type: 2}
   pianoKeyGap: 0.001

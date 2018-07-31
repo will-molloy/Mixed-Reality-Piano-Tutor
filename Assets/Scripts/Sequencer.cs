@@ -236,8 +236,7 @@ sealed public class Sequencer : MonoBehaviour
                 });
                 yield return new WaitForSeconds(time / (float)freq);
             }
-
-            piano.PutInstantFeedback(total, totalMiss);
+            piano.PutInstantFeedback(total, totalMiss, totalBeats);
         }
     }
 
