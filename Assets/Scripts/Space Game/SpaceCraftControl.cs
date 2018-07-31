@@ -82,9 +82,6 @@ public class SpaceCraftControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.N)) {
-			this.StagedDestory();
-		}
 	}
 
 	private void SetHpBarAt(float percentage) {

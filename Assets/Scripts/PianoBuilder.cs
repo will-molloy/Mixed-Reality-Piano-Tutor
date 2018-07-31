@@ -63,6 +63,12 @@ sealed public class PianoBuilder : MonoBehaviour
         {
             SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(52), true);
         }
+        if (Input.GetKeyDown(KeyCode.N)) {
+            pulsers.ForEach(e => {
+                e.GetComponent<Pulser>().FillUp(0.55f);
+            }
+            );
+        }
     }
 
     public void SetParticleSystemStatusForKey(PianoKey key, bool status)
@@ -161,7 +167,9 @@ sealed public class PianoBuilder : MonoBehaviour
         var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
         spaceCraftObj.transform.rotation = rotation;
         spaceCraftObj.transform.Rotate(-90f, 180f, 0f);
-        spaceCraftObj.transform.SetParent(worldAnchor);
+        var dummy = new GameObject();
+        dummy.transform.SetParent(this.transform);
+        spaceCraftObj.transform.SetParent(dummy.transform);
     }
 
     private void PlaceParticleSystems()
@@ -173,7 +181,9 @@ sealed public class PianoBuilder : MonoBehaviour
             obj.transform.position = lmraway.centre;
             obj.GetComponent<ParticleSystem>().enableEmission = false;
             particleSystems.Add(item.Key, obj);
-            obj.transform.SetParent(worldAnchor);
+            var dummy = new GameObject();
+            dummy.transform.SetParent(this.transform);
+            obj.transform.SetParent(this.transform);
         }
     }
 
@@ -191,8 +201,10 @@ sealed public class PianoBuilder : MonoBehaviour
         rp.transform.position = rightPulserPos;
         this.pulsers.Add(lp);
         this.pulsers.Add(rp);
-        lp.transform.SetParent(worldAnchor);
-        rp.transform.SetParent(worldAnchor);
+        var dummy = new GameObject();
+        dummy.transform.SetParent(this.transform);
+        lp.transform.SetParent(dummy.transform);
+        rp.transform.SetParent(dummy.transform);
     }
 
     public void Pulse()

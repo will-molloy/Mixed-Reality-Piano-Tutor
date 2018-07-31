@@ -126,7 +126,6 @@ GameObject:
   - component: {fileID: 41687504}
   - component: {fileID: 41687503}
   - component: {fileID: 41687506}
-  - component: {fileID: 41687505}
   m_Layer: 0
   m_Name: Piano Builder
   m_TagString: Untagged
@@ -203,17 +202,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66c0c2ace819b88488aac7bc2ca56309, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &41687505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 41687499}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f42dd09820b18194da8385eb779aba70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &41687506
