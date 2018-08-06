@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 sealed public class PianoBuilder : MonoBehaviour
 {
@@ -11,11 +12,13 @@ sealed public class PianoBuilder : MonoBehaviour
     [SerializeField] private GameObject pulser;
     [SerializeField] private GameObject spaceCraft;
     [SerializeField] private GameObject fineLine;
+    [SerializeField] private GameObject energyBar;
     public static readonly int CENTRE = (PianoKeys.Last().keyNum + PianoKeys.First().keyNum) / 2;
     internal Dictionary<PianoKey, GameObject> pianoKeys;
     internal static readonly float yOffset = 0.001f;
     internal bool locked;
     private bool hidden;
+    private GameObject energyBarObj;
     public static PianoBuilder instance;
     internal Sequencer sequencer;
     private readonly float opposite = 1f;
@@ -31,7 +34,7 @@ sealed public class PianoBuilder : MonoBehaviour
     [SerializeField]
     internal Transform worldAnchor;
 
-
+    private float fillUpPercent = 0f;
 
     void Start()
     {
@@ -47,8 +50,7 @@ sealed public class PianoBuilder : MonoBehaviour
         {
             if (sequencer)
             {
-                sequencer.LoadMidiFile();
-                sequencer.SpawnNotes();
+                sequencer.StartGame();
             }
             else
             {
@@ -64,6 +66,37 @@ sealed public class PianoBuilder : MonoBehaviour
         {
             SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(52), true);
         }
+        if (Input.GetKeyDown(KeyCode.N)) {
+            FillUp(0.55f);
+        }
+    }
+
+    public void FillUp(float percent) {
+        Debug.Log("Fill up" + percent);
+        var newPercent = fillUpPercent + percent;
+        if (newPercent > 1.0f) {
+            spaceCraftObj.GetComponent<SpaceCraftControl>().StagedDestory(); // TODO: Fire lasers
+            newPercent = newPercent - 1f;
+        }
+        var obs = energyBarObj.GetComponentsInChildren<Image>();
+        foreach ( var i in obs) {
+            if ( i.name == "FG") {
+                i.fillAmount = newPercent;
+                break;
+            }
+        }
+        fillUpPercent = newPercent;
+    }
+
+    private IEnumerator AnimateScale(float newPercent, float speed, GameObject obj) {
+        var obs = obj.GetComponentsInChildren<Image>();
+        foreach ( var i in obs) {
+            if ( i.name == "FG") {
+                i.fillAmount = newPercent;
+                break;
+            }
+        }
+        return null;
     }
 
     public void SetParticleSystemStatusForKey(PianoKey key, bool status)
@@ -94,6 +127,7 @@ sealed public class PianoBuilder : MonoBehaviour
             obj.transform.SetParent(transform);
             base.transform.SetParent(obj.transform);
             spawnGameElements();
+            sequencer.LoadMidiFile();
         }
     }
 
@@ -155,6 +189,11 @@ sealed public class PianoBuilder : MonoBehaviour
         PlaceSpacecraft();
     }
 
+    private void DrawEnergyBar() {
+        energyBarObj = Instantiate(energyBar);
+
+    }
+
     private void PlaceSpacecraft()
     {
         spaceCraftObj = Instantiate(spaceCraft);
@@ -164,7 +203,14 @@ sealed public class PianoBuilder : MonoBehaviour
         var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
         spaceCraftObj.transform.rotation = rotation;
         spaceCraftObj.transform.Rotate(-90f, 180f, 0f);
-        spaceCraftObj.transform.SetParent(worldAnchor);
+        var dummy = new GameObject();
+        dummy.transform.SetParent(this.transform);
+        spaceCraftObj.transform.SetParent(dummy.transform);
+
+        energyBarObj = Instantiate(energyBar);
+        energyBarObj.transform.position = lmr.away + new Vector3(0f, 0.3f, 0.05f);
+        energyBarObj.transform.rotation = rotation;
+        energyBarObj.transform.SetParent(dummy.transform);
     }
 
     private void PlaceParticleSystems()
@@ -176,7 +222,9 @@ sealed public class PianoBuilder : MonoBehaviour
             obj.transform.position = lmraway.centre;
             obj.GetComponent<ParticleSystem>().enableEmission = false;
             particleSystems.Add(item.Key, obj);
-            obj.transform.SetParent(worldAnchor);
+            var dummy = new GameObject();
+            dummy.transform.SetParent(this.transform);
+            obj.transform.SetParent(this.transform);
         }
     }
 
@@ -194,8 +242,10 @@ sealed public class PianoBuilder : MonoBehaviour
         rp.transform.position = rightPulserPos;
         this.pulsers.Add(lp);
         this.pulsers.Add(rp);
-        lp.transform.SetParent(worldAnchor);
-        rp.transform.SetParent(worldAnchor);
+        var dummy = new GameObject();
+        dummy.transform.SetParent(this.transform);
+        lp.transform.SetParent(dummy.transform);
+        rp.transform.SetParent(dummy.transform);
     }
 
     public void Pulse()
@@ -207,7 +257,7 @@ sealed public class PianoBuilder : MonoBehaviour
         }
     }
 
-    public void PutInstantFeedback(int total, int totalmiss)
+    public void PutInstantFeedback(int total, int totalmiss, int totalBeats)
     {
         float missPercentage = totalmiss / (float)total;
 
@@ -216,14 +266,17 @@ sealed public class PianoBuilder : MonoBehaviour
         if (missPercentage > 0.9f)
         {
             text = "PURRFECT";
+            FillUp(0.45f);
         }
         else if (missPercentage > 0.6f)
         {
             text = "GURRET";
+            FillUp(0.25f);
         }
         else if (missPercentage > 0.4f)
         {
             text = "GUUUD";
+            FillUp(0.15f);
         }
         else
         {
