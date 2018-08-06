@@ -88,8 +88,11 @@ sealed public class PianoBuilder : MonoBehaviour
         {
             isPianoBuilt = true;
             Debug.Log("Building Piano.");
-            BuildPianoAt(transform.position);
-            base.transform.SetParent(transform);
+            var obj = new GameObject("Piano wrapper");
+            obj.transform.position = Vector3.zero;
+            BuildPianoAt(obj.transform.position);
+            obj.transform.SetParent(transform);
+            base.transform.SetParent(obj.transform);
             spawnGameElements();
         }
     }
@@ -360,7 +363,8 @@ sealed public class PianoBuilder : MonoBehaviour
         ActivateKey(keyNum, PianoKeys.GetKeyFor(keyNum).color == KeyColor.White ? Color.white : Color.black);
     }
 
-    public GameObject GetKeyObj(PianoKey key) {
+    public GameObject GetKeyObj(PianoKey key)
+    {
         return pianoKeys[key];
     }
 

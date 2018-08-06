@@ -1,22 +1,17 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-///<summary>
-/// Controls Main-UI Canvas
-///</summary>
-public class MainUIService : MonoBehaviour
+public class InGameUIService : MonoBehaviour
 {
-    [SerializeField] private GameObject playButton;
+    [SerializeField] private GameObject quitButton;
 
-    [SerializeField] private GameObject trainButton;
-
-    [SerializeField] private GameObject scoresButton;
+    [SerializeField] private GameObject zed;
 
     void Start()
     {
-        setButton(playButton, "TrackAndGameSelectionUI");
-        setButton(trainButton, "PracticeModeSelectionUI");
-        setButton(scoresButton, "ScoresUI");
+        setButton(quitButton, "MainUI");
     }
 
     private void setButton(GameObject buttonObj, string sceneToload)
@@ -27,6 +22,8 @@ public class MainUIService : MonoBehaviour
 
     private void buttonEvent(string sceneName)
     {
+        Debug.Log("Killing ZED");
+        DestroyImmediate(zed);
         Debug.Log("loading: " + sceneName);
         SceneManager.LoadScene(sceneName);
     }
