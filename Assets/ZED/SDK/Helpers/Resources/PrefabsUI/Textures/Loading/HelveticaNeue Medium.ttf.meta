@@ -1,7 +1,8 @@
 fileFormatVersion: 2
-guid: 5f8aa1e079059a9418d3e2b6abc5ac86
+guid: f0347d4b40918f74aba41da870e47183
+timeCreated: 1507206039
+licenseType: Free
 TrueTypeFontImporter:
-  externalObjects: {}
   serializedVersion: 4
   fontSize: 32
   forceTextureCase: -2
@@ -11,12 +12,10 @@ TrueTypeFontImporter:
   fontName: HelveticaNeue
   fontNames:
   - HelveticaNeue
-  fallbackFontReferences:
-  - {fileID: 12800000, guid: 15220b5ac2c7ffe4d86931fa5e40ceef, type: 3}
+  fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
-  useLegacyBoundsCalculation: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

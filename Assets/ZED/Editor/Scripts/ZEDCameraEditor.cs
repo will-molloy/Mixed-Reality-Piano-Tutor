@@ -18,9 +18,12 @@ public class ZEDCameraEditor : Editor
     bool usepostprocessing;
 
     bool pendingchange = false;
+ 
 
     private void OnEnable()
     {
+
+
         manager = (ZEDManager)target;
 
         resolution = manager.resolution;
@@ -60,7 +63,6 @@ public class ZEDCameraEditor : Editor
                 resolution = manager.resolution;
                 depthmode = manager.depthMode;
                 usespatialmemory = manager.enableSpatialMemory;
-                usedepthocclusion = manager.depthOcclusion;
                 usepostprocessing = manager.postProcessing;
 
                 pendingchange = false;
@@ -68,6 +70,10 @@ public class ZEDCameraEditor : Editor
 
 
         }
+
+		GUIStyle standardStyle = new GUIStyle(EditorStyles.textField);
+		GUIStyle errorStyle = new GUIStyle(EditorStyles.textField);
+		errorStyle.normal.textColor = Color.red;
 
         GUILayout.Space(10);
 
@@ -77,8 +83,24 @@ public class ZEDCameraEditor : Editor
         EditorGUILayout.TextField("SDK Version:", manager.versionZED);
         EditorGUILayout.TextField("Engine FPS:", manager.engineFPS);
         EditorGUILayout.TextField("Camera FPS:", manager.cameraFPS);
-        EditorGUILayout.TextField("HMD Device:", manager.HMDDevice);
-        EditorGUILayout.TextField("Tracking State:", manager.trackingState);
+
+		if (manager.IsCameraTracked) 
+			EditorGUILayout.TextField ("Tracking State:", manager.trackingState, standardStyle);	
+		else 
+			EditorGUILayout.TextField ("Tracking State:", manager.trackingState,errorStyle);
+		
+
+		if (Application.isPlaying)
+			EditorGUILayout.TextField ("HMD Device:", manager.HMDDevice);
+		else {
+			//Detect through USB
+			if (sl.ZEDCamera.CheckUSBDeviceConnected(sl.USB_DEVICE.USB_DEVICE_OCULUS))
+				EditorGUILayout.TextField ("HMD Device:", "Oculus USB Detected");
+			else if (sl.ZEDCamera.CheckUSBDeviceConnected(sl.USB_DEVICE.USB_DEVICE_OCULUS))
+				EditorGUILayout.TextField ("HMD Device:", "HTC USB Detected");
+			else
+				EditorGUILayout.TextField ("HMD Device:", "-");
+		}
         EditorGUI.EndDisabledGroup();
 
         GUILayout.Space(20);
@@ -91,12 +113,16 @@ public class ZEDCameraEditor : Editor
 
     }
 
+    /// <summary>
+    /// Check if something has changed that requires restarting the camera
+    /// </summary>
+    /// <returns></returns>
     private bool CheckChange()
     {
         if (resolution != manager.resolution ||
             depthmode != manager.depthMode ||
             usespatialmemory != manager.enableSpatialMemory ||
-            usedepthocclusion != manager.depthOcclusion ||
+            //usedepthocclusion != manager.depthOcclusion ||
             usepostprocessing != manager.postProcessing)
         {
             return true;

@@ -6,6 +6,13 @@ using UnityEngine;
 
 namespace sl
 {
+
+	public struct Matrix3x3
+	{
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+		public float[] m; //3x3 matrix
+	};
+
     /// <summary>
     /// Resolution of the current camera
     /// </summary>
@@ -22,7 +29,9 @@ namespace sl
     };
 
 
-
+	/// <summary>
+	/// Pose structure 
+	/// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct Pose
     {
@@ -31,8 +40,23 @@ namespace sl
         public Quaternion rotation;
         public Vector3 translation;
         public int pose_confidence;
-    }
+	};
 	 
+	/// <summary>
+	/// Full IMU data structure
+	/// </summary>
+	[StructLayout(LayoutKind.Sequential)]
+	public struct IMUData
+	{
+		public Vector3 angularVelocity; //gyroscope raw data in deg/s
+		public Vector3 linearAcceleration; //accelerometer raw data  in m/s²
+		public Quaternion fusedOrientation; //orientation from gyro/acc fusion
+		public Matrix3x3 orientationCovariance; //covariance matrix of quaternion
+		public Matrix3x3 angularVelocityCovariance; //gyroscope raw data covariance matrix
+		public Matrix3x3 linearAccelerationCovariance; //accelerometer raw data covariance matrix
+		public int imu_image_sync_val; //rfu
+	};
+
 
     [StructLayout(LayoutKind.Sequential)]
     public struct CameraParameters
@@ -896,6 +920,15 @@ namespace sl
 		LEFT_EYE,
 		CENTER_EYE,
 		RIGHT_EYE
+	};
+
+	/// <summary>
+	/// List of specific usb device
+	/// </summary>
+	public enum USB_DEVICE {
+		USB_DEVICE_OCULUS,
+		USB_DEVICE_HTC,
+		USB_DEVICE_STEREOLABS
 	};
 
 
