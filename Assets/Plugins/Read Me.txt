@@ -1,0 +1,41 @@
+Plugin Supports only Windows x64.
+
+1) CONFIGURE STEAMVR TO RUN WITHOUT HMD
+
+Edit: steamvr.vrsettings json file by adding the text between pipe symbols |"requireHmd" : false,| under steamvr.
+This should look something like below.
+
+
+"steamvr" : {
+      "requireHmd" : false,
+      ....
+      ....
+}
+
+
+The File Location is something like below.
+C:\Program Files (x86)\Steam\config\steamvr.vrsettings
+
+Start SteamVR with a tracker connected via USB and it should be seen.
+If Connecting via Wireless Watchman Dongle, SteamVR->Devices->PairController should allow you to add the tracker after running.
+
+2) AFTER ADDING PACKAGE TO UNITY, CREATE A TRACKER CALIBRATION
+
+Run "Calibrate Tracker" from unity plugins folder.(running from windows explorer won't generate the cfg in the right location)
+This will gernate a calibration with the 1st tracker position and rotation as the orgin of the world.
+This is the first tracker in the steamvr list.
+Sometimes it's easy to just calibrate with 1 tracker connected then add the others afterwards.
+Aslong as the lighthouses do not move, this calibrated position and rotation will remain consistent.
+The original tracker and additional trackers can then be moved reletive to this location when running.
+
+3) TRACKING OBJECTS IN UNITY
+
+Add "ViveTrackerObject" Unity Script to Objects you want to tie to trackers.
+This Script converts the Tracker information which is a right handed coordinate system to Unity's Left Handed system.
+
+The Tracker Index Defaults to 1 which should be consistently where a single tracker is indexed with SteamVR.
+Additional Trackers Can be found on indicies 2-15.  This isn't always consistent but they are usually found on Indices 2-5.
+Validity of Tracking Info can be checked as seen in the script update function.
+
+Enjoy!
+
