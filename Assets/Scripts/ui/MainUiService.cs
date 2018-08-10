@@ -10,13 +10,13 @@ public class MainUIService : MonoBehaviour
 
     [SerializeField] private GameObject trainButton;
 
-    [SerializeField] private GameObject scoresButton;
+    [SerializeField] private GameObject historyButton;
 
     void Start()
     {
         setButton(playButton, "TrackAndGameSelectionUI");
         setButton(trainButton, "PracticeModeSelectionUI");
-        setButton(scoresButton, "ScoresUI");
+        setButton(historyButton, "HistoryUI");
     }
 
     private void setButton(GameObject buttonObj, string sceneToload)

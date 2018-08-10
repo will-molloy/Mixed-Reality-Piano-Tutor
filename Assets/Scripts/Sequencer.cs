@@ -42,7 +42,6 @@ sealed public class Sequencer : MonoBehaviour
 
     private MidiController midiController;
     private ScoreView scoreView;
-
     private int totalChecked;
     private int totalMissed;
 
@@ -52,8 +51,6 @@ sealed public class Sequencer : MonoBehaviour
 
     private float timeBetweenBeats;
     private int totalBeats;
-
-
 
     void Start()
     {
@@ -70,7 +67,7 @@ sealed public class Sequencer : MonoBehaviour
 
     public void LoadMidiFile(string file)
     {
-        Debug.Log("Start with MIDI file: " + file);
+        Debug.Log("Loading MIDI file: " + file);
         midiFile = MidiFile.Read(file);
         SpawnNotes();
     }

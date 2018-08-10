@@ -86,6 +86,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
     private void playButtonEvent(string midiPath)
     {
         RuntimeSettings.MIDI_FILE_NAME = midiPath;
+        SceneManager.LoadScene("PlayStandardMode");
     }
 
 }
