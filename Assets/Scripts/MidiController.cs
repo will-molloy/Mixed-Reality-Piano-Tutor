@@ -59,7 +59,7 @@ sealed public class MidiController : MonoBehaviour
         return midiEvents;
     }
 
-    void OnApplicationQuit()
+    void OnDestroy()
     {
         Debug.Log("Closing MIDI device.");
         inputDevice.Dispose();

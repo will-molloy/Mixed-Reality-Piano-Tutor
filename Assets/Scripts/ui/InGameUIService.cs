@@ -7,8 +7,6 @@ public class InGameUIService : MonoBehaviour
 {
     [SerializeField] private GameObject quitButton;
 
-    [SerializeField] private GameObject zed;
-
     void Start()
     {
         setButton(quitButton, "MainUI");
@@ -22,8 +20,6 @@ public class InGameUIService : MonoBehaviour
 
     private void buttonEvent(string sceneName)
     {
-        Debug.Log("Killing ZED");
-        DestroyImmediate(zed);
         Debug.Log("loading: " + sceneName);
         SceneManager.LoadScene(sceneName);
     }

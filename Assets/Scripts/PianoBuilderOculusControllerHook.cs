@@ -10,8 +10,6 @@ public class PianoBuilderOculusControllerHook : MonoBehaviour
     [SerializeField]
     private GameObject Marker;
 
-    public Transform transform;
-
     public Transform GetMarkerTransform()
     {
         return Marker.transform;

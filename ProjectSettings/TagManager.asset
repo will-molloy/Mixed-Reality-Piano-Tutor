@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - HelpObject
+  - projectile
+  - FxTemporaire
   - Pulser
   layers:
   - Default
@@ -15,9 +17,9 @@ TagManager:
   - UI
   - 
   - 
-  - ArucoCameraBackground
-  - ArucoCameraStereoBackground1
-  - ArucoCameraStereoBackground2
+  - 
+  - 
+  - 
   - 
   - 
   - 

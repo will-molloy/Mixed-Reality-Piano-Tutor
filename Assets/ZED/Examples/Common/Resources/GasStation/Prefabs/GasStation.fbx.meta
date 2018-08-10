@@ -1,7 +1,9 @@
 fileFormatVersion: 2
-guid: 51f1235540fd70646bcec8c5a1c71c87
+guid: a08b16a2d04d9a14bb2142aca8d1b629
+timeCreated: 1509029012
+licenseType: Free
 ModelImporter:
-  serializedVersion: 22
+  serializedVersion: 21
   fileIDToRecycleName:
     100000: //RootNode
     400000: //RootNode
@@ -9,27 +11,10 @@ ModelImporter:
     3300000: //RootNode
     4300000: polySurface1
     9500000: //RootNode
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: GasStation_Rock1
-    second: {fileID: 2100000, guid: 532afb383553dfb428812c56c6076cf6, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: GasStation_domik1
-    second: {fileID: 2100000, guid: ee7d7b9cb66b7374694c32b88bafca0e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: GasStation_gasStation1
-    second: {fileID: 2100000, guid: c4179f9825782c44f9ea23e57e980daf, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
-    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -42,7 +27,6 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    importAnimatedCustomProperties: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -67,8 +51,6 @@ ModelImporter:
     optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
-    preserveHierarchy: 0
-    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88

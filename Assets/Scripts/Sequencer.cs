@@ -26,6 +26,7 @@ sealed public class Sequencer : MonoBehaviour
     private PianoBuilder piano;
 
     private Dictionary<PianoKey, List<GameObject>> pianoRollDict = new Dictionary<PianoKey, List<GameObject>>();
+    private Dictionary<PianoKey,GameObject> keyAwayDir = new Dictionary<PianoKey,GameObject>();
 
     [SerializeField]
     public readonly float notesScale = 1f;
@@ -41,7 +42,6 @@ sealed public class Sequencer : MonoBehaviour
 
     private MidiController midiController;
     private ScoreView scoreView;
-
     private int totalChecked;
     private int totalMissed;
 
@@ -51,8 +51,6 @@ sealed public class Sequencer : MonoBehaviour
 
     private float timeBetweenBeats;
     private int totalBeats;
-
-
 
     void Start()
     {
@@ -69,7 +67,7 @@ sealed public class Sequencer : MonoBehaviour
 
     public void LoadMidiFile(string file)
     {
-        Debug.Log("Start with MIDI file: " + file);
+        Debug.Log("Loading MIDI file: " + file);
         midiFile = MidiFile.Read(file);
         SpawnNotes();
     }
@@ -158,9 +156,15 @@ sealed public class Sequencer : MonoBehaviour
             var dummy = new GameObject("dummy");
             var awayVector = lmraway.away;
             var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale / 2f));
-            var lmraway3 = piano.GetLMRAwayVectorsForKey(key, 100);
+            var lmraway3 = piano.GetLMRAwayVectorsForKey(key, -1);
+            if (!keyAwayDir.ContainsKey(key)) {
+                var newO = new GameObject();
+                newO.transform.position = piano.GetLMRAwayVectorsForKey(key, -1).away;
+                newO.transform.SetParent(piano.GetKeyObj(key).transform);
+                keyAwayDir[key] = newO;
+            }
             var keyPos = lmraway.centre;
-            dummy.transform.position = lmraway3.away;
+            dummy.transform.position = lmraway2.away;
             dummy.transform.SetParent(piano.GetKeyObj(key).transform);
             obj.transform.SetParent(dummy.transform);
             //Debug.Log(number + "  " + keyPos.ToString("F4"));
@@ -202,9 +206,8 @@ sealed public class Sequencer : MonoBehaviour
         {
             var line = Instantiate(fineLine);
             var v = piano.GetLMRAwayVectorsForKey(midKey, calcX(beatDelta * i));
-            var lmraway3 = piano.GetLMRAwayVectorsForKey(midKey, 100);
             var dummy = new GameObject("dummy Fineline");
-            dummy.transform.position = lmraway3.away;
+            dummy.transform.position = v.away;
             dummy.transform.SetParent(piano.GetKeyObj(midKey).transform);
             line.transform.SetParent(dummy.transform);
             line.transform.position = v.away;
@@ -264,7 +267,6 @@ sealed public class Sequencer : MonoBehaviour
                 note.hasKeyBeenActivated = true;
             }
         });
-        // TODO: Sync pulse timing
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
             scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, this.notesSpeed);
@@ -284,13 +286,16 @@ sealed public class Sequencer : MonoBehaviour
                 var lmr = piano.GetLMRAwayVectorsForKey(item.Key);
                 foreach (var obj in item.Value)
                 {
-                    obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
+                    //obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
+                    obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[item.Key].transform.position, step);
+
                 }
             }
             var lmr2 = piano.GetLMRAwayVectorsForKey((PianoKeys.GetKeyFor(PianoBuilder.CENTRE)));
 
             foreach (var obj in fineLines) {
-                    obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr2.centre, step);
+                    obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[PianoKeys.GetKeyFor(PianoBuilder.CENTRE)].transform.position, step);
+                    //obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr2.centre, step);
             }
         }
     }
