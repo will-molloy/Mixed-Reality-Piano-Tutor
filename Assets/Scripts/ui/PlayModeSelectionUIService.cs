@@ -7,9 +7,9 @@ using System.Linq;
 
 public class PlayModeSelectionUIService : MonoBehaviour
 {
-    [SerializeField] private GameObject backButton;
-
     [SerializeField] private string midiFolderPath = "Assets/MIDI";
+
+    [SerializeField] private string PlayModeSceneName;
 
     [SerializeField] private GameObject rowEntryObj;
 
@@ -24,21 +24,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     void Start()
     {
-        // setButton(playButton, "PlayStandardMode");
-        setBackButton(backButton, "MainUI");
         processFolder(midiFolderPath);
-    }
-
-    private void setBackButton(GameObject buttonObj, string sceneToload)
-    {
-        var button = buttonObj.GetComponent<UnityEngine.UI.Button>();
-        button.onClick.AddListener(delegate { backButtonEvent(sceneToload); });
-    }
-
-    private void backButtonEvent(string sceneName)
-    {
-        Debug.Log("loading: " + sceneName);
-        SceneManager.LoadScene(sceneName);
     }
 
     private void processFolder(string midiDir)
@@ -86,7 +72,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
     private void playButtonEvent(string midiPath)
     {
         RuntimeSettings.MIDI_FILE_NAME = midiPath;
-        SceneManager.LoadScene("PlayStandardMode");
+        SceneManager.LoadScene(PlayModeSceneName);
     }
 
 }

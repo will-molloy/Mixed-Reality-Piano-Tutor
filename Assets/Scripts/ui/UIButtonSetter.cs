@@ -2,21 +2,25 @@
 using UnityEngine.SceneManagement;
 
 ///<summary>
-/// Controls Main-UI Canvas
+/// Match buttons and scenes to load for UI
 ///</summary>
-public class MainUIService : MonoBehaviour
+public class UIButtonSetter : MonoBehaviour
 {
-    [SerializeField] private GameObject playButton;
+    [SerializeField] private GameObject[] buttons;
 
-    [SerializeField] private GameObject trainButton;
-
-    [SerializeField] private GameObject historyButton;
+    [SerializeField] private string[] sceneNames;
 
     void Start()
     {
-        setButton(playButton, "TrackAndGameSelectionUI");
-        setButton(trainButton, "PracticeModeSelectionUI");
-        setButton(historyButton, "HistoryUI");
+        if (buttons.Length != sceneNames.Length)
+        {
+            Debug.LogError("Buttons don't match scene names");
+            return;
+        }
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            setButton(buttons[i], sceneNames[i]);
+        }
     }
 
     private void setButton(GameObject buttonObj, string sceneToload)
