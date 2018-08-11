@@ -15,6 +15,8 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     [SerializeField] private Transform scrollViewParent;
 
+    [SerializeField] private GameObject nameField;
+
     private const double SCORE_TO_PASS = 0.5d;
     private const int TEXT_INDEX = 0;
     private const int NAME_INDEX = 0;
@@ -71,6 +73,11 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     private void playButtonEvent(string midiPath)
     {
+        var name = nameField.GetComponent<UnityEngine.UI.InputField>().text;
+        if (!name.Equals(""))
+        {
+            RuntimeSettings.CURRENT_USER = name;
+        }
         RuntimeSettings.MIDI_FILE_NAME = midiPath;
         SceneManager.LoadScene(PlayModeSceneName);
     }
