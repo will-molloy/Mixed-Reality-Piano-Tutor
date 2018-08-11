@@ -23,7 +23,7 @@ sealed public class PianoBuilder : MonoBehaviour
     internal Sequencer sequencer;
     private readonly float opposite = 1f;
     private readonly float adj = 5f;
-    private GameObject spaceCraftObj;
+    private List<GameObject> spaceCraftObj = new List<GameObject>();
     private List<GameObject> auxLines = new List<GameObject>();
     private List<GameObject> pulsers = new List<GameObject>();
     private Dictionary<PianoKey, GameObject> particleSystems;
@@ -35,6 +35,7 @@ sealed public class PianoBuilder : MonoBehaviour
     internal Transform worldAnchor;
 
     private float fillUpPercent = 0f;
+    private int totalNumberOfSpeaceShips = 0;
 
     void Start()
     {
@@ -75,7 +76,21 @@ sealed public class PianoBuilder : MonoBehaviour
         Debug.Log("Fill up" + percent);
         var newPercent = fillUpPercent + percent;
         if (newPercent > 1.0f) {
-            spaceCraftObj.GetComponent<SpaceCraftControl>().StagedDestory(); // TODO: Fire lasers
+            var didDestroy = false;
+            for (int i = 0; i < spaceCraftObj.Count; i++) {
+                var o = spaceCraftObj[i].GetComponent<SpaceCraftControl>();
+                if (o.isDestoryed()) {
+                    continue;
+                } else {
+                    o.StagedDestory();
+                    didDestroy = true;
+                    break;
+                }
+            }
+            if (!didDestroy)
+            {
+                PlaceSpacecraft();
+            }
             newPercent = newPercent - 1f;
         }
         var obs = energyBarObj.GetComponentsInChildren<Image>();
@@ -196,16 +211,27 @@ sealed public class PianoBuilder : MonoBehaviour
 
     private void PlaceSpacecraft()
     {
-        spaceCraftObj = Instantiate(spaceCraft);
+        var o = Instantiate(spaceCraft);
         var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
         var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.2f);
-        spaceCraftObj.transform.position = lmr.away + new Vector3(0f, 0.5f, 0f);
+        if (spaceCraftObj.Count == 0) {
+            o.transform.position = lmr.away + new Vector3(0f, 0.5f, 0f);
+        } else if (spaceCraftObj.Count == 1) {
+            spaceCraftObj.ForEach( e => e.GetComponent<SpaceCraftControl>().RestoreAll());
+            o.transform.position = lmr.away + new Vector3(0.2f, 0.5f, 0.0f);
+        } else if (spaceCraftObj.Count == 2) {
+            spaceCraftObj.ForEach( e => e.GetComponent<SpaceCraftControl>().RestoreAll());
+            o.transform.position = lmr.away + new Vector3(-0.2f, 0.5f, 0.0f);
+        } else {
+            spaceCraftObj.ForEach( e => e.GetComponent<SpaceCraftControl>().RestoreAll());
+        }
         var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
-        spaceCraftObj.transform.rotation = rotation;
-        spaceCraftObj.transform.Rotate(-90f, 180f, 0f);
+        o.transform.rotation = rotation;
+        o.transform.Rotate(-90f, 180f, 0f);
         var dummy = new GameObject();
         dummy.transform.SetParent(this.transform);
-        spaceCraftObj.transform.SetParent(dummy.transform);
+        o.transform.SetParent(dummy.transform);
+        spaceCraftObj.Add(o);
 
         energyBarObj = Instantiate(energyBar);
         energyBarObj.transform.position = lmr.away + new Vector3(0f, 0.3f, 0.05f);

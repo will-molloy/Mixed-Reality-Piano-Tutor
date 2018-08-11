@@ -57,6 +57,10 @@ public class SpaceCraftControl : MonoBehaviour {
 	public readonly int MAX_DESOTRY_STAGE = 5;
 	private int destoryStage;
 
+	public static readonly float twopirad = 2 * Mathf.PI;
+	private float floatingVar = 0f;
+	private float savedY;
+
 	// Use this for initialization
 	void Start () {
 		this.smokeObjs = new List<GameObject>();
@@ -77,11 +81,21 @@ public class SpaceCraftControl : MonoBehaviour {
 		this.rights.Add(destoryableRightWingObj5);
 
 		this.destoryStage = MAX_DESOTRY_STAGE;
-		
+		this.savedY = transform.localPosition.y;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		var floatY = Mathf.Sin(floatingVar) * 0.01f;
+		transform.localPosition = new Vector3(transform.localPosition.x, savedY + floatY, transform.localPosition.z);
+		floatingVar += 0.1f;
+		if (floatingVar > twopirad) {
+			floatingVar = 0f;
+		}
+	}
+
+	public bool isDestoryed() {
+		return this.destoryStage == 0;
 	}
 
 	private void SetHpBarAt(float percentage) {
