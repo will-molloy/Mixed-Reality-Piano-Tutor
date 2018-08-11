@@ -17,6 +17,10 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     [SerializeField] private GameObject nameField;
 
+    [SerializeField] private GameObject canvas;
+
+    [SerializeField] private GameObject rowHeader;
+
     private const double SCORE_TO_PASS = 0.5d;
     private const int TEXT_INDEX = 0;
     private const int NAME_INDEX = 0;
@@ -24,9 +28,23 @@ public class PlayModeSelectionUIService : MonoBehaviour
     private const int BEST_SCORE_INDEX = 2;
     private const int OVERALL_SCORE_INDEX = 3;
 
+    private List<GameObject> scrollViewRows;
+
     void Start()
     {
+        scrollViewRows = new List<GameObject>();
+        scrollViewRows.Add(rowHeader);
         processFolder(midiFolderPath);
+    }
+
+    void Update()
+    {
+        var canvasWidth = canvas.GetComponent<RectTransform>().rect.width;
+        scrollViewRows.ForEach(x =>
+        {
+            var rect = x.transform.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(canvasWidth, rect.rect.height);
+        });
     }
 
     private void processFolder(string midiDir)
@@ -63,6 +81,9 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
         // Setup button
         row.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playButtonEvent(midiPath); });
+
+        // Add to list to fix sizing
+        scrollViewRows.Add(row);
     }
 
     private void setText(string text, int childIndex, GameObject rowObj)
