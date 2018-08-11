@@ -21,6 +21,8 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     [SerializeField] private GameObject rowHeader;
 
+    [SerializeField] private UnityEngine.UI.Text progressField;
+
     private const double SCORE_TO_PASS = 0.5d;
     private const int TEXT_INDEX = 0;
     private const int NAME_INDEX = 0;
@@ -28,10 +30,15 @@ public class PlayModeSelectionUIService : MonoBehaviour
     private const int BEST_SCORE_INDEX = 2;
     private const int OVERALL_SCORE_INDEX = 3;
 
+    [SerializeField] private string midiSessionResourcePath;
+
+    private MidiSessionController MidiSessionController;
+
     private List<GameObject> scrollViewRows;
 
     void Start()
     {
+        MidiSessionController = new MidiSessionController(midiSessionResourcePath);
         scrollViewRows = new List<GameObject>();
         scrollViewRows.Add(rowHeader);
         processFolder(midiFolderPath);
@@ -47,12 +54,19 @@ public class PlayModeSelectionUIService : MonoBehaviour
         });
     }
 
+    private int tracksCompleted;
+
+    private int totalTracks;
+
     private void processFolder(string midiDir)
     {
         Debug.Log("Reading MIDI directory: " + midiDir);
         Directory.GetFiles(midiDir)
         .Where(x => x.EndsWith(".mid")).ToList()
         .ForEach(x => processSessionsAndPlaceUiEntry(x));
+
+        // Set progress count
+        progressField.text = "Completed: " + tracksCompleted + "/" + totalTracks;
     }
 
     private void processSessionsAndPlaceUiEntry(string midiPath)
@@ -82,7 +96,13 @@ public class PlayModeSelectionUIService : MonoBehaviour
         // Setup button
         row.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playButtonEvent(midiPath); });
 
-        // Add to list to fix sizing
+        if (passes > 0)
+        {
+            this.tracksCompleted++;
+        }
+        this.totalTracks++;
+
+        // Add to list to fix sizing in update()
         scrollViewRows.Add(row);
     }
 
