@@ -7,20 +7,20 @@ using System;
 using System.Runtime.Serialization;
 
 [RequireComponent(typeof(PianoBuilder))]
-[RequireComponent(typeof(PianoBuilderOculusControllerHook))]
+[RequireComponent(typeof(PianoBuilderMarkerHook))]
 public class CalibrationController : MonoBehaviour
 {
 
     [SerializeField]
     private string JSON_PATH = "Assets/Resources/piano-calibration.json";
 
-    private PianoBuilderOculusControllerHook cameraHook;
+    private PianoBuilderMarkerHook cameraHook;
 
     private PianoBuilder builder;
 
     void Start()
     {
-        cameraHook = GetComponent<PianoBuilderOculusControllerHook>();
+        cameraHook = GetComponent<PianoBuilderMarkerHook>();
         builder = GetComponent<PianoBuilder>();
         LoadMarker();
     }

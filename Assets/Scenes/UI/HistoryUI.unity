@@ -337,8 +337,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 852713857}
-  - component: {fileID: 852713856}
   - component: {fileID: 852713858}
+  - component: {fileID: 852713856}
   m_Layer: 0
   m_Name: Button script
   m_TagString: Untagged
@@ -354,10 +354,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 852713855}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 097260bb6d047c84ca8a9c5c93d1cbeb, type: 3}
+  m_Script: {fileID: 11500000, guid: c1bc9724fe5914f4ca9eee4741fa5073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backButton: {fileID: 929407585}
+  buttons:
+  - {fileID: 929407585}
+  sceneNames:
+  - MainUI
 --- !u!4 &852713857
 Transform:
   m_ObjectHideFlags: 0
@@ -471,7 +474,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectColor: {r: 1, g: 1, b: 1, a: 0.5}
-  m_EffectDistance: {x: 4, y: -4}
+  m_EffectDistance: {x: 1, y: 1}
   m_UseGraphicAlpha: 1
 --- !u!1 &929407585
 GameObject:

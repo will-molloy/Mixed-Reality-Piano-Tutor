@@ -6,17 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/UI/HistoryUI.unity
-    guid: ee38d318d3874ea40a564c056341ad92
-  - enabled: 1
     path: Assets/Scenes/UI/MainUI.unity
     guid: 5964275cb06de0e419b1fc1f74de1119
+  - enabled: 1
+    path: Assets/Scenes/UI/PlayModeSelectionUI.unity
+    guid: e05b9327eba154647bda8766027b2ed8
   - enabled: 1
     path: Assets/Scenes/UI/PracticeModeSelectionUI.unity
     guid: 7b3f9293ed03b2d4b95063ce301a9a37
   - enabled: 1
-    path: Assets/Scenes/UI/TrackAndGameSelectionUI.unity
-    guid: e05b9327eba154647bda8766027b2ed8
+    path: Assets/Scenes/UI/HistoryUI.unity
+    guid: ee38d318d3874ea40a564c056341ad92
   - enabled: 1
-    path: Assets/Scenes/PlayStandardMode.unity
+    path: Assets/Scenes/PlayMode.unity
     guid: bc3c6575268b2214a83e5b61163d86c6
+  - enabled: 1
+    path: Assets/Scenes/PracticeMode.unity
+    guid: 18fe5e275e6eeb14db263609754f0c1f

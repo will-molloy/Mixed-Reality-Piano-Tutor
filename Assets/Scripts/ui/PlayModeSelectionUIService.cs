@@ -7,13 +7,21 @@ using System.Linq;
 
 public class PlayModeSelectionUIService : MonoBehaviour
 {
-    [SerializeField] private GameObject backButton;
-
     [SerializeField] private string midiFolderPath = "Assets/MIDI";
+
+    [SerializeField] private string PlayModeSceneName;
 
     [SerializeField] private GameObject rowEntryObj;
 
     [SerializeField] private Transform scrollViewParent;
+
+    [SerializeField] private GameObject nameField;
+
+    [SerializeField] private GameObject canvas;
+
+    [SerializeField] private GameObject rowHeader;
+
+    [SerializeField] private UnityEngine.UI.Text progressField;
 
     private const double SCORE_TO_PASS = 0.5d;
     private const int TEXT_INDEX = 0;
@@ -22,24 +30,33 @@ public class PlayModeSelectionUIService : MonoBehaviour
     private const int BEST_SCORE_INDEX = 2;
     private const int OVERALL_SCORE_INDEX = 3;
 
+    [SerializeField] private string midiSessionResourcePath;
+
+    private MidiSessionController MidiSessionController;
+
+    private List<GameObject> scrollViewRows;
+
     void Start()
     {
-        // setButton(playButton, "PlayStandardMode");
-        setBackButton(backButton, "MainUI");
+        MidiSessionController = new MidiSessionController(midiSessionResourcePath);
+        scrollViewRows = new List<GameObject>();
+        scrollViewRows.Add(rowHeader);
         processFolder(midiFolderPath);
     }
 
-    private void setBackButton(GameObject buttonObj, string sceneToload)
+    void Update()
     {
-        var button = buttonObj.GetComponent<UnityEngine.UI.Button>();
-        button.onClick.AddListener(delegate { backButtonEvent(sceneToload); });
+        var canvasWidth = canvas.GetComponent<RectTransform>().rect.width;
+        scrollViewRows.ForEach(x =>
+        {
+            var rect = x.transform.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(canvasWidth, rect.rect.height);
+        });
     }
 
-    private void backButtonEvent(string sceneName)
-    {
-        Debug.Log("loading: " + sceneName);
-        SceneManager.LoadScene(sceneName);
-    }
+    private int tracksCompleted;
+
+    private int totalTracks;
 
     private void processFolder(string midiDir)
     {
@@ -47,6 +64,9 @@ public class PlayModeSelectionUIService : MonoBehaviour
         Directory.GetFiles(midiDir)
         .Where(x => x.EndsWith(".mid")).ToList()
         .ForEach(x => processSessionsAndPlaceUiEntry(x));
+
+        // Set progress count
+        progressField.text = "Completed: " + tracksCompleted + "/" + totalTracks;
     }
 
     private void processSessionsAndPlaceUiEntry(string midiPath)
@@ -75,6 +95,15 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
         // Setup button
         row.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playButtonEvent(midiPath); });
+
+        if (passes > 0)
+        {
+            this.tracksCompleted++;
+        }
+        this.totalTracks++;
+
+        // Add to list to fix sizing in update()
+        scrollViewRows.Add(row);
     }
 
     private void setText(string text, int childIndex, GameObject rowObj)
@@ -85,8 +114,13 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     private void playButtonEvent(string midiPath)
     {
+        var name = nameField.GetComponent<UnityEngine.UI.InputField>().text;
+        if (!name.Equals(""))
+        {
+            RuntimeSettings.CURRENT_USER = name;
+        }
         RuntimeSettings.MIDI_FILE_NAME = midiPath;
-        SceneManager.LoadScene("PlayStandardMode");
+        SceneManager.LoadScene(PlayModeSceneName);
     }
 
 }
