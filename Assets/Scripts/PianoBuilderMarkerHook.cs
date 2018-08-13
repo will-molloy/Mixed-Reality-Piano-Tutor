@@ -22,14 +22,15 @@ public class PianoBuilderMarkerHook : MonoBehaviour
 
     void Start()
     {
+        marker = new GameObject("Marker");
+
         if (twoMarkers)
         {
-            marker = new GameObject("Marker");
             updatePosition();
         }
         else
         {
-            marker = LeftMarker;
+            marker.transform.SetParent(LeftMarker.transform);
         }
         PianoBuilder = GetComponent<PianoBuilder>();
         PianoBuilder.BuildPianoAsChildOfTransform(marker.transform);
@@ -39,7 +40,8 @@ public class PianoBuilderMarkerHook : MonoBehaviour
     {
         var leftPos = LeftMarker.transform.position;
         var rightPos = RightMarker.transform.position;
-        marker.transform.position = new Vector3((rightPos.x + leftPos.x) / 2, (rightPos.y + leftPos.y) / 2, (rightPos.z + leftPos.z) / 2);
+        var markerPos = marker.transform.position;
+        marker.transform.position = new Vector3((rightPos.x + leftPos.x) / 2, markerPos.y, (rightPos.z + leftPos.z) / 2);
     }
 
     void Update()
@@ -48,46 +50,43 @@ public class PianoBuilderMarkerHook : MonoBehaviour
         {
             updatePosition();
         }
-        else
-        {
-            var scale = marker.transform.localScale;
-            var position = marker.transform.position;
+        var scale = marker.transform.localScale;
+        var position = marker.transform.position;
 
-            if (Input.GetKey(KeyCode.Plus))
-            {
-                scale *= 1.001f;
-            }
-            if (Input.GetKey(KeyCode.Minus))
-            {
-                scale /= 1.001f;
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                position -= marker.transform.right * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                position += marker.transform.right * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.W))
-            {
-                position += marker.transform.forward * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                position -= marker.transform.forward * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.Q))
-            {
-                position += marker.transform.up * 0.001f;
-            }
-            if (Input.GetKey(KeyCode.E))
-            {
-                position -= marker.transform.up * 0.001f;
-            }
-            marker.transform.localScale = scale;
-            marker.transform.position = position;
+        if (Input.GetKey(KeyCode.Plus))
+        {
+            scale *= 1.001f;
         }
+        if (Input.GetKey(KeyCode.Minus))
+        {
+            scale /= 1.001f;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            position -= marker.transform.right * 0.001f;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            position += marker.transform.right * 0.001f;
+        }
+        if (Input.GetKey(KeyCode.W))
+        {
+            position += marker.transform.forward * 0.001f;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            position -= marker.transform.forward * 0.001f;
+        }
+        if (Input.GetKey(KeyCode.Q))
+        {
+            position += marker.transform.up * 0.001f;
+        }
+        if (Input.GetKey(KeyCode.E))
+        {
+            position -= marker.transform.up * 0.001f;
+        }
+        marker.transform.localScale = scale;
+        marker.transform.position = position;
 
         // Rotation enabled even if two marker
         if (Input.GetKey(KeyCode.UpArrow))

@@ -18,11 +18,12 @@ public class CalibrationController : MonoBehaviour
 
     private PianoBuilder builder;
 
+    private bool loadedMarker;
+
     void Start()
     {
         cameraHook = GetComponent<PianoBuilderMarkerHook>();
         builder = GetComponent<PianoBuilder>();
-        LoadMarker();
     }
 
     private void LoadMarker()
@@ -38,11 +39,22 @@ public class CalibrationController : MonoBehaviour
 
     void Update()
     {
+        if (!loadedMarker)
+        {
+            LoadMarker();
+            loadedMarker = true;
+        }
+
         builder.transform.localEulerAngles = Vector3.zero;
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             SaveMarker();
         }
+    }
+
+    void OnDestory()
+    {
+        SaveMarker();
     }
 
     private void SaveMarker()
