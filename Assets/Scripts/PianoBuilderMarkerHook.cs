@@ -23,12 +23,7 @@ public class PianoBuilderMarkerHook : MonoBehaviour
     void Start()
     {
         marker = new GameObject("Marker");
-
-        if (twoMarkers)
-        {
-            updatePosition();
-        }
-        else
+        if (!twoMarkers)
         {
             marker.transform.SetParent(LeftMarker.transform);
         }
@@ -41,7 +36,9 @@ public class PianoBuilderMarkerHook : MonoBehaviour
         var leftPos = LeftMarker.transform.position;
         var rightPos = RightMarker.transform.position;
         var markerPos = marker.transform.position;
-        marker.transform.position = new Vector3((rightPos.x + leftPos.x) / 2, markerPos.y, (rightPos.z + leftPos.z) / 2);
+        var whiteKeyWidth = PianoBuilder.GetKeyObj(PianoKeys.First()).transform.localScale.x;
+        var pianoCenterXOffset = (whiteKeyWidth + PianoBuilder.pianoKeyGap) * 12;
+        marker.transform.position = new Vector3((rightPos.x + leftPos.x) / 2 + pianoCenterXOffset, markerPos.y, (rightPos.z + leftPos.z) / 2);
     }
 
     void Update()

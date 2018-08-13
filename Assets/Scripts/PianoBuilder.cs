@@ -31,7 +31,7 @@ sealed public class PianoBuilder : MonoBehaviour
     [SerializeField]
     private GameObject particleSystem;
     [SerializeField]
-    private float pianoKeyGap = 0.001f; // 1mm or so
+    public float pianoKeyGap = 0.001f; // 1mm or so
     [SerializeField]
     internal Transform worldAnchor;
 
@@ -389,7 +389,6 @@ sealed public class PianoBuilder : MonoBehaviour
         topRight += go.transform.up * scale.y * 0.5f;
         topRight += go.transform.right * scale.x * 0.5f;
 
-
         topLeft += go.transform.forward * scale.z * 0.5f;
         topLeft += go.transform.up * scale.y * 0.5f;
         topLeft -= go.transform.right * scale.x * 0.5f;
@@ -436,7 +435,6 @@ sealed public class PianoBuilder : MonoBehaviour
     {
         return pianoKeys[key];
     }
-
 }
 
 public struct PianoKeyVectors
