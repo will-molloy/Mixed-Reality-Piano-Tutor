@@ -580,6 +580,52 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 508990225}
+--- !u!1 &776551675
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 776551677}
+  - component: {fileID: 776551676}
+  m_Layer: 0
+  m_Name: Button Runtime Settings Sender
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &776551676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 776551675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 482b34ac0c981ca46b89f8ed79f00ef4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playModeButton: {fileID: 929407585}
+  practiceModeButton: {fileID: 59309699}
+  PlayModeMidiDir: Assets/MIDI
+  PracticeModeMidiDir: Assets/MIDI/exercises
+  PlayModeSessions: Resources/play-sessions.json
+  PracticeModeSessions: Resources/practice-sessions.json
+--- !u!4 &776551677
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 776551675}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.5921632, y: -0.34720898, z: 0.8352113}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &871838046
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,7 +904,7 @@ GameObject:
   - component: {fileID: 1745291837}
   - component: {fileID: 1745291839}
   m_Layer: 0
-  m_Name: UI Button Script
+  m_Name: UI Button Scene Loader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -880,8 +926,8 @@ MonoBehaviour:
   - {fileID: 59309699}
   - {fileID: 281374319}
   sceneNames:
-  - PlayModeSelectionUI
-  - PracticeModeSelectionUI
+  - SelectionUI
+  - SelectionUI
   - HistoryUI
 --- !u!4 &1745291838
 Transform:
@@ -894,7 +940,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1745291839
 MonoBehaviour:
@@ -1087,7 +1133,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4309805032874704, guid: e13ee7e0790c7d243b7aa67fe604acac, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 114711245158774928, guid: e13ee7e0790c7d243b7aa67fe604acac,
         type: 2}

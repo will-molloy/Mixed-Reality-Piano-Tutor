@@ -7,8 +7,6 @@ using System.Linq;
 
 public class PlayModeSelectionUIService : MonoBehaviour
 {
-    [SerializeField] private string midiFolderPath = "Assets/MIDI";
-
     [SerializeField] private string PlayModeSceneName;
 
     [SerializeField] private GameObject rowEntryObj;
@@ -23,6 +21,8 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     [SerializeField] private UnityEngine.UI.Text progressField;
 
+    [SerializeField] private UnityEngine.UI.Text headerText;
+
     private const double SCORE_TO_PASS = 0.5d;
     private const int TEXT_INDEX = 0;
     private const int NAME_INDEX = 0;
@@ -30,18 +30,17 @@ public class PlayModeSelectionUIService : MonoBehaviour
     private const int BEST_SCORE_INDEX = 2;
     private const int OVERALL_SCORE_INDEX = 3;
 
-    [SerializeField] private string midiSessionResourcePath;
-
     private MidiSessionController MidiSessionController;
 
     private List<GameObject> scrollViewRows;
 
     void Start()
     {
-        MidiSessionController = new MidiSessionController(midiSessionResourcePath);
+        MidiSessionController = new MidiSessionController(RuntimeSettings.midiSessionResourcePath);
         scrollViewRows = new List<GameObject>();
         scrollViewRows.Add(rowHeader);
-        processFolder(midiFolderPath);
+        processFolder(RuntimeSettings.MIDI_DIR);
+        headerText.text = RuntimeSettings.isPlayMode ? "Track" : "Exercise";
     }
 
     void Update()

@@ -838,7 +838,7 @@ GameObject:
   - component: {fileID: 602785379}
   - component: {fileID: 602785378}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Name header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1258,7 +1258,7 @@ GameObject:
   - component: {fileID: 1042010879}
   - component: {fileID: 1042010878}
   m_Layer: 5
-  m_Name: Text
+  m_Name: 'Completed x/x '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2041,7 +2041,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d993dc71d564fc44b94308cfc586954b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  midiFolderPath: Assets/MIDI
   PlayModeSceneName: PlayMode
   rowEntryObj: {fileID: 1638276875}
   scrollViewParent: {fileID: 1218354754}
@@ -2049,7 +2048,7 @@ MonoBehaviour:
   canvas: {fileID: 51523485}
   rowHeader: {fileID: 1262812753}
   progressField: {fileID: 1042010878}
-  midiSessionResourcePath: Assets/Resources/midi-sessions.json
+  headerText: {fileID: 602785378}
 --- !u!4 &1753910361
 Transform:
   m_ObjectHideFlags: 0

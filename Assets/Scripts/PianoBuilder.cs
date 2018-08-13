@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 sealed public class PianoBuilder : MonoBehaviour
 {
-    [SerializeField] private bool isPlayMode;
     [SerializeField] private GameObject textObj;
     [SerializeField] private GameObject whiteKey;
     [SerializeField] private GameObject blackKey;
@@ -135,7 +134,7 @@ sealed public class PianoBuilder : MonoBehaviour
             BuildPianoAt(obj.transform.position);
             obj.transform.SetParent(transform);
             base.transform.SetParent(obj.transform);
-            if (isPlayMode)
+            if (RuntimeSettings.isPlayMode)
             {
                 spawnGameElements();
             }
@@ -271,7 +270,7 @@ sealed public class PianoBuilder : MonoBehaviour
 
     public void PutInstantFeedback(int total, int totalmiss, int totalBeats)
     {
-        if (!isPlayMode)
+        if (!RuntimeSettings.isPlayMode)
         {
             return;
         }

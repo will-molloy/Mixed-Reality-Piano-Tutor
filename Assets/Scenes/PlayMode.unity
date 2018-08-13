@@ -268,7 +268,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &327131808
+--- !u!43 &432798753
 Mesh:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -542,11 +542,11 @@ Prefab:
     - target: {fileID: 3380982, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 327131808}
+      objectReference: {fileID: 432798753}
     - target: {fileID: 2348914, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 1124290495}
+      objectReference: {fileID: 1521570995}
     - target: {fileID: 155680, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_IsActive
       value: 0
@@ -559,10 +559,6 @@ Prefab:
     - {fileID: 11420968, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &708349472 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 159396, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_PrefabInternal: {fileID: 708349471}
 --- !u!1 &708349473 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 124034, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
@@ -773,7 +769,7 @@ RectTransform:
 Transform:
   m_PrefabParentObject: {fileID: 420908, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
   m_PrefabInternal: {fileID: 708349471}
---- !u!21 &1124290495
+--- !u!21 &1521570995
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -974,7 +970,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cef69ec5dca523478cc01dc2094f654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlayMode: 1
   textObj: {fileID: 1568087283819384, guid: 8f1924d8a5b4afa44a5f9bc484e1c107, type: 2}
   whiteKey: {fileID: 1333224359579602, guid: c681bdf81e3bcac4dbccbdc697882a77, type: 2}
   blackKey: {fileID: 1333224359579602, guid: cefe037a54324e849af042367a912d27, type: 2}
@@ -1060,5 +1055,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LeftMarker: {fileID: 708349473}
-  RightMarker: {fileID: 708349472}
-  twoMarkers: 1
+  RightMarker: {fileID: 708349473}
+  twoMarkers: 0
