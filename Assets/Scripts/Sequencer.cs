@@ -161,7 +161,6 @@ sealed public class Sequencer : MonoBehaviour
             var dummy = new GameObject("dummy");
             var awayVector = lmraway.away;
             var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale / 2f));
-            var lmraway3 = piano.GetLMRAwayVectorsForKey(key, -1);
             if (!keyAwayDir.ContainsKey(key))
             {
                 var newO = new GameObject();
@@ -287,6 +286,7 @@ sealed public class Sequencer : MonoBehaviour
         {
 
             float step = notesSpeed * Time.deltaTime;
+            var minDistDict = new Dictionary<PianoKey, float>();
             foreach (var item in pianoRollDict)
             {
                 if (item.Value.Count == 0)
@@ -298,8 +298,19 @@ sealed public class Sequencer : MonoBehaviour
                 {
                     //obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
                     obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[item.Key].transform.position, step);
-
+                    var newD = obj.transform.position - lmr.centre;
+                    if(!minDistDict.ContainsKey(item.Key)) {
+                        minDistDict[item.Key] = 10000f;
+                    }
+                    if (newD.magnitude < minDistDict[item.Key]) {
+                        minDistDict[item.Key] = newD.magnitude;
+                    }
                 }
+            }
+            foreach (var item in minDistDict) {
+                if (item.Value < 1f) 
+                    piano.UpdateDiskColor(item.Key, 1 - item.Value);
+
             }
             var lmr2 = piano.GetLMRAwayVectorsForKey((PianoKeys.GetKeyFor(PianoBuilder.CENTRE)));
 
@@ -311,6 +322,7 @@ sealed public class Sequencer : MonoBehaviour
         }
     }
 }
+
 
 public struct NoteDuration
 {
