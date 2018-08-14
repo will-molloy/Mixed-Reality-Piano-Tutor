@@ -13,6 +13,7 @@ sealed public class PianoBuilder : MonoBehaviour
     [SerializeField] private GameObject spaceCraft;
     [SerializeField] private GameObject fineLine;
     [SerializeField] private GameObject energyBar;
+    [SerializeField] private GameObject disk;
     public static readonly int CENTRE = (PianoKeys.Last().keyNum + PianoKeys.First().keyNum) / 2;
     internal Dictionary<PianoKey, GameObject> pianoKeys;
     internal static readonly float yOffset = 0.001f;
@@ -34,6 +35,7 @@ sealed public class PianoBuilder : MonoBehaviour
     [SerializeField]
     internal Transform worldAnchor;
 
+    private Dictionary<PianoKey, GameObject> diskDict = new Dictionary<PianoKey, GameObject>();
     private float fillUpPercent = 0f;
 
     void Start()
@@ -330,10 +332,21 @@ sealed public class PianoBuilder : MonoBehaviour
             line.transform.rotation = rotation;
             line.transform.Rotate(90f, 0f, 0f);
             this.auxLines.Add(line);
+            if (item.Key.color == KeyColor.Black) {
+                line.GetComponent<MeshRenderer>().material.color = Color.blue;
+            }
+            var di = Instantiate(disk);
+            di.transform.position = v.centre;
+            diskDict[item.Key] = di;
             var dummy = new GameObject();
             dummy.transform.SetParent(item.Value.transform);
             line.transform.SetParent(dummy.transform);
+            di.transform.SetParent(dummy.transform);
         }
+    }
+
+    public void UpdateDiskColor(PianoKey key, float maxDist) {
+        diskDict[key].GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(1f, maxDist, 1f);
     }
 
     public PianoKeyVectors GetLMRAwayVectorsForKey(PianoKey key, float magnitude = 1f)
