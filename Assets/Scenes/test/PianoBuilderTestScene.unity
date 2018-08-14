@@ -151,6 +151,7 @@ MonoBehaviour:
   spaceCraft: {fileID: 1443980954828034, guid: fcff00ddd33203048bc26da4fffd032b, type: 2}
   fineLine: {fileID: 1129791044277510, guid: 1b01e0cc1de61f34d89a1897641e41fb, type: 2}
   energyBar: {fileID: 1339604551041866, guid: abb9d276685bb9c458d6ab307c0776b8, type: 2}
+  disk: {fileID: 1463195157636300, guid: 08fa9f2b810f66f46b1e91cc3ef64b39, type: 2}
   particleSystem: {fileID: 1956794768317474, guid: 6ba818cd48a16e34bafd79702ff2b5d3,
     type: 2}
   pianoKeyGap: 0.001
@@ -369,7 +370,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1055870529}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f092cc3cf35c72c43a51a308f9a5fc75, type: 3}
   m_Name: 
