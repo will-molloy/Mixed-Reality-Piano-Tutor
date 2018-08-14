@@ -30,7 +30,7 @@ sealed public class PianoBuilder : MonoBehaviour
     [SerializeField]
     private GameObject particleSystem;
     [SerializeField]
-    private float pianoKeyGap = 0.001f; // 1mm or so
+    public float pianoKeyGap = 0.001f; // 1mm or so
     [SerializeField]
     internal Transform worldAnchor;
 
@@ -67,12 +67,14 @@ sealed public class PianoBuilder : MonoBehaviour
         {
             SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(52), true);
         }
-        if (Input.GetKeyDown(KeyCode.N)) {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
             FillUp(0.55f);
         }
     }
 
-    public void FillUp(float percent) {
+    public void FillUp(float percent)
+    {
         Debug.Log("Fill up" + percent);
         var newPercent = fillUpPercent + percent;
         if (newPercent > 1.0f) {
@@ -94,8 +96,10 @@ sealed public class PianoBuilder : MonoBehaviour
             newPercent = newPercent - 1f;
         }
         var obs = energyBarObj.GetComponentsInChildren<Image>();
-        foreach ( var i in obs) {
-            if ( i.name == "FG") {
+        foreach (var i in obs)
+        {
+            if (i.name == "FG")
+            {
                 i.fillAmount = newPercent;
                 break;
             }
@@ -103,10 +107,13 @@ sealed public class PianoBuilder : MonoBehaviour
         fillUpPercent = newPercent;
     }
 
-    private IEnumerator AnimateScale(float newPercent, float speed, GameObject obj) {
+    private IEnumerator AnimateScale(float newPercent, float speed, GameObject obj)
+    {
         var obs = obj.GetComponentsInChildren<Image>();
-        foreach ( var i in obs) {
-            if ( i.name == "FG") {
+        foreach (var i in obs)
+        {
+            if (i.name == "FG")
+            {
                 i.fillAmount = newPercent;
                 break;
             }
@@ -141,7 +148,10 @@ sealed public class PianoBuilder : MonoBehaviour
             BuildPianoAt(obj.transform.position);
             obj.transform.SetParent(transform);
             base.transform.SetParent(obj.transform);
-            spawnGameElements();
+            if (RuntimeSettings.isPlayMode)
+            {
+                spawnGameElements();
+            }
             sequencer.LoadMidiFile();
         }
     }
@@ -204,9 +214,9 @@ sealed public class PianoBuilder : MonoBehaviour
         PlaceSpacecraft();
     }
 
-    private void DrawEnergyBar() {
+    private void DrawEnergyBar()
+    {
         energyBarObj = Instantiate(energyBar);
-
     }
 
     private void PlaceSpacecraft()
@@ -285,6 +295,10 @@ sealed public class PianoBuilder : MonoBehaviour
 
     public void PutInstantFeedback(int total, int totalmiss, int totalBeats)
     {
+        if (!RuntimeSettings.isPlayMode)
+        {
+            return;
+        }
         float missPercentage = totalmiss / (float)total;
 
         var obj = Instantiate(textObj);
@@ -399,7 +413,6 @@ sealed public class PianoBuilder : MonoBehaviour
         topRight += go.transform.up * scale.y * 0.5f;
         topRight += go.transform.right * scale.x * 0.5f;
 
-
         topLeft += go.transform.forward * scale.z * 0.5f;
         topLeft += go.transform.up * scale.y * 0.5f;
         topLeft -= go.transform.right * scale.x * 0.5f;
@@ -446,7 +459,6 @@ sealed public class PianoBuilder : MonoBehaviour
     {
         return pianoKeys[key];
     }
-
 }
 
 public struct PianoKeyVectors
