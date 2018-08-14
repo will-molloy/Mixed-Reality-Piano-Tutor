@@ -13,7 +13,6 @@ using System.Collections;
 [RequireComponent(typeof(ScoreView))]
 sealed public class Sequencer : MonoBehaviour
 {
-
     private MidiFile midiFile;
     private TempoMapManager tempoMapManager;
     [SerializeField]
