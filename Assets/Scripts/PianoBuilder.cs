@@ -65,10 +65,6 @@ sealed public class PianoBuilder : MonoBehaviour
             pianoKeys.Values.ToList().ForEach(o => o.GetComponent<MeshRenderer>().enabled = hidden);
             hidden = !hidden;
         }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(52), true);
-        }
         if (Input.GetKeyDown(KeyCode.N))
         {
             FillUp(0.55f);
@@ -213,15 +209,10 @@ sealed public class PianoBuilder : MonoBehaviour
         DrawAuxillaryLines();
         DrawPulser();
         PlaceParticleSystems();
-        PlaceSpacecraft();
+        PlaceSpacecraft(true);
     }
 
-    private void DrawEnergyBar()
-    {
-        energyBarObj = Instantiate(energyBar);
-    }
-
-    private void PlaceSpacecraft()
+    private void PlaceSpacecraft(bool drawBar = false)
     {
         var o = Instantiate(spaceCraft);
         var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
@@ -245,10 +236,12 @@ sealed public class PianoBuilder : MonoBehaviour
         o.transform.SetParent(dummy.transform);
         spaceCraftObj.Add(o);
 
-        energyBarObj = Instantiate(energyBar);
-        energyBarObj.transform.position = lmr.away + new Vector3(0f, 0.3f, 0.05f);
-        energyBarObj.transform.rotation = rotation;
-        energyBarObj.transform.SetParent(dummy.transform);
+        if(drawBar) {
+            energyBarObj = Instantiate(energyBar);
+            energyBarObj.transform.position = lmr.away + new Vector3(0f, 0.3f, 0.05f);
+            energyBarObj.transform.rotation = rotation;
+            energyBarObj.transform.SetParent(dummy.transform);
+        }
     }
 
     private void PlaceParticleSystems()

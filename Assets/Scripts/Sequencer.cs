@@ -103,8 +103,13 @@ sealed public class Sequencer : MonoBehaviour
         SpawnNotesDropDown(midiFile.GetNotes().ToList());
     }
 
+    public float GetStartTime() {
+        return this.startTime;
+    }
+
     private void ClearPianoRoll()
     {
+        gameStarted = false;
         Debug.Log("Clearing piano roll");
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
@@ -250,6 +255,10 @@ sealed public class Sequencer : MonoBehaviour
         }
     }
 
+    public bool IsGamedStarted() {
+        return this.gameStarted;
+    }
+
     private IEnumerator PulseCoroutine(float time, int totalBeats)
     {
         for (int i = 0; i <= totalBeats; i++)
@@ -266,6 +275,10 @@ sealed public class Sequencer : MonoBehaviour
         }
         var deltaT = Time.time - this.startTime;
 
+        var minDistDict = new Dictionary<PianoKey, float>();
+        foreach ( var i in PianoKeys.GetAllKeys()) {
+            minDistDict[i] = 1f;
+        }
         noteDurations.ForEach(note =>
         {
             if (!note.hasKeyBeenActivated && deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration))
@@ -273,10 +286,25 @@ sealed public class Sequencer : MonoBehaviour
                 piano.ActivateKey(note.key.keyNum, Color.red, note.duration);
                 note.hasKeyBeenActivated = true;
             }
+            if (deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration)) {
+                minDistDict[note.key] = 0;
+                return;
+            }
+            else if (deltaT > note.end) {
+                return;
+            }
+
+            if (deltaT >= (note.start - 1f) && deltaT <= note.start) {
+                minDistDict[note.key] = Mathf.Min(deltaT - note.start, minDistDict[note.key]);
+            }
         });
+        foreach (var item in minDistDict)
+        {
+            piano.UpdateDiskColor(item.Key, 1 - item.Value);
+        }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, this.notesSpeed);
+            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, this.notesSpeed, this.startTime);
             this.ClearPianoRoll();
             this.startTime = -1f;
         }
@@ -285,7 +313,6 @@ sealed public class Sequencer : MonoBehaviour
         {
 
             float step = notesSpeed * Time.deltaTime;
-            var minDistDict = new Dictionary<PianoKey, float>();
             foreach (var item in pianoRollDict)
             {
                 if (item.Value.Count == 0)
@@ -298,18 +325,7 @@ sealed public class Sequencer : MonoBehaviour
                     //obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
                     obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[item.Key].transform.position, step);
                     var newD = obj.transform.position - lmr.centre;
-                    if(!minDistDict.ContainsKey(item.Key)) {
-                        minDistDict[item.Key] = 10000f;
-                    }
-                    if (newD.magnitude < minDistDict[item.Key]) {
-                        minDistDict[item.Key] = newD.magnitude;
-                    }
                 }
-            }
-            foreach (var item in minDistDict) {
-                if (item.Value < 1f) 
-                    piano.UpdateDiskColor(item.Key, 1 - item.Value);
-
             }
             var lmr2 = piano.GetLMRAwayVectorsForKey((PianoKeys.GetKeyFor(PianoBuilder.CENTRE)));
 
@@ -327,8 +343,8 @@ public struct NoteDuration
 {
     public bool hasKeyBeenActivated { get; set; }
     public float duration { get; }
-    public float start { get; }
-    public float end { get; }
+    public float start { get; set; }
+    public float end { get; set; }
     public PianoKey key { get; }
     public NoteDuration(float start, float dur, PianoKey key)
     {
