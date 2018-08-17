@@ -6,6 +6,7 @@ using System.Linq;
 /// <summary>  
 /// - Handles MIDI device 
 /// </summary>  
+[RequireComponent(typeof(Sequencer))]
 sealed public class MidiController : MonoBehaviour
 {
     protected InputDevice inputDevice;
@@ -13,6 +14,9 @@ sealed public class MidiController : MonoBehaviour
     private List<MidiEventStorage> midiEvents;
     private List<MidiEventStorage> mockEvents;
     private HashSet<PianoKey> notesOn;
+    private Sequencer seq;
+
+    public float startTime;
 
     void Start()
     {
@@ -27,6 +31,7 @@ sealed public class MidiController : MonoBehaviour
         mockEvents.Add(new MidiEventStorage(76, false, 2f));
         mockEvents.Add(new MidiEventStorage(76, true, 2.5f));
         this.midiEvents = new List<MidiEventStorage>();
+        seq = GetComponent<Sequencer>();
 
         if (InputDevice.DeviceCount < 1)
         {
@@ -86,7 +91,8 @@ sealed public class MidiController : MonoBehaviour
 
     void storeMidiEvent(object sender, ChannelMessageEventArgs e)
     {
-        midiEvents.Add(new MidiEventStorage(e, Time.time));
+        if(seq.IsGamedStarted())
+            midiEvents.Add(new MidiEventStorage(e, Time.time - seq.GetStartTime()));
     }
 
     public bool IsThisKeyOn(PianoKey key) {
