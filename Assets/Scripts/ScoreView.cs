@@ -21,10 +21,10 @@ public class ScoreView : MonoBehaviour
         this.spawnedSegments = new List<GameObject>();
     }
 
-    public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn)
+    public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
     {
         Debug.Log("Displaying scores");
-        var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f);
+        var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f, offsetStartTime);
         var res = MakeSegmentsFor(evs, durs);
         var velocity = 1f / velocityIn * noteScale;
 
@@ -56,6 +56,10 @@ public class ScoreView : MonoBehaviour
                 }
                 rder.material.color = color;
                 spawnedSegments.Add(go);
+                var dummy = new GameObject();
+                var k = piano.GetKeyObj(m.key);
+                dummy.transform.SetParent(k.transform);
+                go.transform.SetParent(piano.transform);
                 var dropdownScale = go.transform.localScale;
                 go.transform.localScale = new Vector3(dropdownScale.x, m.scaleY / velocity, dropdownScale.z);
                 go.transform.position = lmraway.away;
@@ -108,7 +112,7 @@ public class ScoreView : MonoBehaviour
         return seg;
     }
 
-    private List<NoteDuration> ConvertToNoteDurationFromMidiEventStorage(List<MidiEventStorage> midiEvents, float defaultEndTiming)
+    private List<NoteDuration> ConvertToNoteDurationFromMidiEventStorage(List<MidiEventStorage> midiEvents, float defaultEndTiming, float timeOffset)
     {
         var list = new List<NoteDuration>();
         for (; ; )
@@ -128,6 +132,7 @@ public class ScoreView : MonoBehaviour
                     if (!midiEvents[i].isEnd)
                     {
                         Debug.LogError("Double Start of a note");
+                        return list;
                     }
                     else
                     {

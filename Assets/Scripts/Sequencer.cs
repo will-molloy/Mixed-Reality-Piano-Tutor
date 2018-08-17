@@ -105,6 +105,7 @@ sealed public class Sequencer : MonoBehaviour
 
     private void ClearPianoRoll()
     {
+        gameStarted = false;
         Debug.Log("Clearing piano roll");
         pianoRollObjects.ForEach(o => GameObject.Destroy(o));
         pianoRollObjects.Clear();
@@ -126,6 +127,10 @@ sealed public class Sequencer : MonoBehaviour
             this.startTime = Time.time;
             crtHolder.Add(StartCoroutine(PulseCoroutine(timeBetweenBeats, totalBeats)));
             crtHolder.Add(StartCoroutine(TriggerChecks(timeBetweenBeats, totalBeats)));
+            this.noteDurations.ForEach(e => {
+                e.end += this.startTime;
+                e.start += this.startTime;
+            });
         }
     }
 
@@ -276,7 +281,7 @@ sealed public class Sequencer : MonoBehaviour
         });
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, this.notesSpeed);
+            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, this.notesSpeed, this.startTime);
             this.ClearPianoRoll();
             this.startTime = -1f;
         }
@@ -327,8 +332,8 @@ public struct NoteDuration
 {
     public bool hasKeyBeenActivated { get; set; }
     public float duration { get; }
-    public float start { get; }
-    public float end { get; }
+    public float start { get; set; }
+    public float end { get; set; }
     public PianoKey key { get; }
     public NoteDuration(float start, float dur, PianoKey key)
     {
