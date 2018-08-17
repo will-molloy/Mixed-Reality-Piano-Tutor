@@ -30,7 +30,7 @@ sealed public class Sequencer : MonoBehaviour
     [SerializeField]
     public readonly float notesScale = 1f;
     [SerializeField]
-    public readonly float notesSpeed = 0.5f;
+    public readonly float notesSpeed = 0.2f;
 
     private float startTime = -1;
     private float deltaTime;

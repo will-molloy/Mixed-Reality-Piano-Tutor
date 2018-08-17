@@ -11,4 +11,7 @@ AudioManager:
   m_DSPBufferSize: 0
   m_VirtualVoiceCount: 512
   m_RealVoiceCount: 32
+  m_SpatializerPlugin: VIVE 3DSP Spatializer
+  m_AmbisonicDecoderPlugin: VIVE 3DSP Spatializer
   m_DisableAudio: 0
+  m_VirtualizeEffects: 1

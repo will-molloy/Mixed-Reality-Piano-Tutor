@@ -626,7 +626,7 @@ PlayerSettings:
   webGLUseWasm: 0
   webGLCompressionFormat: 1
   scriptingDefineSymbols:
-    1: ZED_STEAM_VR
+    1: ZED_STEAM_VR;VIU_PLUGIN;VIU_STEAMVR;VIU_STEAMVR_1_2_0_OR_NEWER;VIU_STEAMVR_1_2_1_OR_NEWER;VIU_STEAMVR_1_2_2_OR_NEWER;VIU_STEAMVR_1_2_3_OR_NEWER
   platformArchitecture: {}
   scriptingBackend:
     Standalone: 0
