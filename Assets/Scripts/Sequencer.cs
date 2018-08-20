@@ -165,6 +165,7 @@ sealed public class Sequencer : MonoBehaviour
             var dummy = new GameObject("dummy");
             var awayVector = lmraway.away;
             var lmraway2 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale / 2f));
+            var lmraway3 = piano.GetLMRAwayVectorsForKey(key, calcX(y + scale));
             if (!keyAwayDir.ContainsKey(key))
             {
                 var newO = new GameObject();
@@ -173,8 +174,8 @@ sealed public class Sequencer : MonoBehaviour
                 keyAwayDir[key] = newO;
             }
             var keyPos = lmraway.centre;
-            dummy.transform.position = lmraway2.away;
-            dummy.transform.SetParent(piano.GetKeyObj(key).transform);
+            dummy.transform.position = lmraway3.away;
+            dummy.transform.SetParent(piano.transform);
             obj.transform.SetParent(dummy.transform);
             //Debug.Log(number + "  " + keyPos.ToString("F4"));
             pianoRollObjects.Add(obj);
@@ -311,7 +312,6 @@ sealed public class Sequencer : MonoBehaviour
 
         if (gameStarted)
         {
-
             float step = notesSpeed * Time.deltaTime;
             foreach (var item in pianoRollDict)
             {
@@ -325,14 +325,25 @@ sealed public class Sequencer : MonoBehaviour
                     //obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
                     obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[item.Key].transform.position, step);
                     var newD = obj.transform.position - lmr.centre;
+                    if (obj.transform.childCount > 0) {
+                        var co = obj.transform.GetChild(0);
+                        var childScale = co.transform.localScale;
+                        if ((obj.transform.position - lmr.centre).magnitude < childScale.y)
+                        {
+                            obj.transform.GetChild(0).transform.localScale = new Vector3(co.transform.localScale.x, (obj.transform.position - lmr.centre).magnitude, co.transform.localScale.z);
+                        }
+                        if (co.transform.localScale.y < 0.01f)
+                        {
+                            DestroyImmediate(co.gameObject);
+                        }
+                    }
                 }
+                
             }
-            var lmr2 = piano.GetLMRAwayVectorsForKey((PianoKeys.GetKeyFor(PianoBuilder.CENTRE)));
 
             foreach (var obj in fineLines)
             {
                 obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[PianoKeys.GetKeyFor(PianoBuilder.CENTRE)].transform.position, step);
-                //obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr2.centre, step);
             }
         }
     }
