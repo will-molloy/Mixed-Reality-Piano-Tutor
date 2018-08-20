@@ -52,11 +52,6 @@ public class CalibrationController : MonoBehaviour
         }
     }
 
-    void OnDestory()
-    {
-        SaveMarker();
-    }
-
     private void SaveMarker()
     {
         var marker = cameraHook.GetMarkerTransform();

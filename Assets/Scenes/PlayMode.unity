@@ -611,6 +611,10 @@ Mesh:
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshOptimized: 0
+--- !u!1 &810730296 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 159396, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
+  m_PrefabInternal: {fileID: 708349471}
 --- !u!1001 &824852324
 Prefab:
   m_ObjectHideFlags: 0
@@ -677,6 +681,12 @@ GameObject:
   m_PrefabParentObject: {fileID: 1603769914748404, guid: e13ee7e0790c7d243b7aa67fe604acac,
     type: 2}
   m_PrefabInternal: {fileID: 824852324}
+--- !u!114 &824852326 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114711245158774928, guid: e13ee7e0790c7d243b7aa67fe604acac,
+    type: 2}
+  m_PrefabInternal: {fileID: 824852324}
+  m_Script: {fileID: 11500000, guid: 75b2a3ff7b847ca4490808f4c0432cd4, type: 3}
 --- !u!1 &828553256
 GameObject:
   m_ObjectHideFlags: 0
@@ -1068,6 +1078,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66c0c2ace819b88488aac7bc2ca56309, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startTime: 0
 --- !u!114 &2113433560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1103,6 +1114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9952781e182e1bb4c967fa2d6ef3a45a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LeftMarker: {fileID: 708349473}
+  ZEDManager: {fileID: 824852326}
+  LeftMarker: {fileID: 810730296}
   RightMarker: {fileID: 708349473}
   twoMarkers: 0

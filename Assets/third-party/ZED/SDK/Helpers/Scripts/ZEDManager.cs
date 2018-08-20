@@ -739,6 +739,11 @@ public class ZEDManager : MonoBehaviour
         }
     }
 
+    public void setRenderingSettingsPublic()
+    {
+        setRenderingSettings();
+    }
+
 
 	/// <summary>
 	/// Set the rendering settings (rendering path, shaders values) for camera Left and right

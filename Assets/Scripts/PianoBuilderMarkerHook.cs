@@ -7,6 +7,8 @@ public class PianoBuilderMarkerHook : MonoBehaviour
 {
     private PianoBuilder PianoBuilder;
 
+    [SerializeField] private ZEDManager ZEDManager;
+
     [SerializeField] private GameObject LeftMarker;
 
     [SerializeField] private GameObject RightMarker;
@@ -110,10 +112,14 @@ public class PianoBuilderMarkerHook : MonoBehaviour
         {
             marker.transform.Rotate(Vector3.back * 0.1f);
         }
-
         if (Input.GetKeyDown(KeyCode.R))
         {
             reset();
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            ZEDManager.depthOcclusion = !ZEDManager.depthOcclusion;
+            ZEDManager.setRenderingSettingsPublic();
         }
     }
 
