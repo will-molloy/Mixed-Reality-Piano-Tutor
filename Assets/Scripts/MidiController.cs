@@ -74,7 +74,7 @@ sealed public class MidiController : MonoBehaviour
     {
         var keyNum = e.Message.Data1;
 
-        Debug.Log(e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + keyNum.ToString() + '\t' + e.Message.Data2.ToString());
+        //Debug.Log(e.Message.Command.ToString() + '\t' + '\t' + e.Message.MidiChannel.ToString() + '\t' + keyNum.ToString() + '\t' + e.Message.Data2.ToString());
         if (e.Message.Command == ChannelCommand.NoteOn)
         {
             PianoBuilder.instance.ActivateKey(keyNum, Color.green);

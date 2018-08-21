@@ -216,7 +216,7 @@ sealed public class PianoBuilder : MonoBehaviour
     {
         var o = Instantiate(spaceCraft);
         var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
-        var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.2f);
+        var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.1f);
         if (spaceCraftObj.Count == 0) {
             o.transform.position = lmr.away + new Vector3(0f, 0.5f, 0f);
         } else if (spaceCraftObj.Count == 1) {
@@ -290,6 +290,9 @@ sealed public class PianoBuilder : MonoBehaviour
 
     public void PutInstantFeedback(int total, int totalmiss, int totalBeats)
     {
+
+        Debug.Log(total + " " +totalmiss);
+
         if (!RuntimeSettings.isPlayMode)
         {
             return;
@@ -298,24 +301,24 @@ sealed public class PianoBuilder : MonoBehaviour
 
         var obj = Instantiate(textObj);
         string text;
-        if (missPercentage > 0.9f)
+        if (missPercentage < 0.1f)
         {
-            text = "PURRFECT";
+            text = "Perfect";
             FillUp(0.45f);
         }
-        else if (missPercentage > 0.6f)
+        else if (missPercentage < 0.4f)
         {
-            text = "GURRET";
+            text = "Great";
             FillUp(0.25f);
         }
-        else if (missPercentage > 0.4f)
+        else if (missPercentage < 0.6f)
         {
-            text = "GUUUD";
+            text = "Good";
             FillUp(0.15f);
         }
         else
         {
-            text = "SH!T";
+            text = "Poor";
         }
         obj.GetComponent<TextMesh>().text = text;
         var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];

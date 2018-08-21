@@ -232,7 +232,15 @@ sealed public class Sequencer : MonoBehaviour
 
     private IEnumerator TriggerChecks(float time, int totalBeats)
     {
-        const int freq = 8;
+        /*
+        this.noteDurations.ForEach(e => {
+            Debug.Log("Start");
+            Debug.Log(e.start);
+            Debug.Log(e.end);
+            Debug.Log("END");
+        });
+        */
+        const int freq = 16;
         for (int i = 0; i <= totalBeats; i++)
         {
             var total = 0;
@@ -241,7 +249,10 @@ sealed public class Sequencer : MonoBehaviour
             {
                 // Check for accuracy
                 var ons = midiController.GetOnKeys();
-                var eligible = this.noteDurations.FindAll(e => e.start >= Time.time && e.end <= Time.time);
+                var deltaTime = Time.time - startTime;
+                var eligible = this.noteDurations.FindAll(e => e.start <= deltaTime && e.end >= deltaTime);
+                Debug.Log(eligible.Count);
+                Debug.Log(Time.time - startTime);
                 eligible.ForEach(e =>
                 {
                     total++;
