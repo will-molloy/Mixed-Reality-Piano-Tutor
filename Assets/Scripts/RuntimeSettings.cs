@@ -9,8 +9,10 @@ public class RuntimeSettings {
 
 	public static bool isPlayMode = true; // false = practice mode
 
-	public static string CURRENT_USER = "Beethoven"; 
+	public static string USER = "Beethoven"; 
 
     public static string midiSessionResourcePath = "Resources/midi-sessions";
+
+	public static float GAME_SPEED = 0.2f;
 
 }

@@ -29,8 +29,6 @@ sealed public class Sequencer : MonoBehaviour
 
     [SerializeField]
     public readonly float notesScale = 1f;
-    [SerializeField]
-    public readonly float notesSpeed = 0.2f;
 
     private float startTime = -1;
     private float deltaTime;
@@ -67,14 +65,14 @@ sealed public class Sequencer : MonoBehaviour
 
     public void LoadMidiFile(string file)
     {
-        Debug.Log("Loading MIDI file: " + file);
+        Debug.Log("Loading MIDI file: " + file + ", Mode: " + (RuntimeSettings.isPlayMode ? "Play" : "Practice") + ", GameSpeed: " + RuntimeSettings.GAME_SPEED + ", User: " + RuntimeSettings.USER);
         midiFile = MidiFile.Read(file);
         SpawnNotes();
     }
 
     public void LoadMidiFile()
     {
-        Debug.Log("User: " + RuntimeSettings.CURRENT_USER);
+        Debug.Log("User: " + RuntimeSettings.USER);
         var file = RuntimeSettings.MIDI_FILE_NAME;
         if (file != null)
         {
@@ -98,7 +96,7 @@ sealed public class Sequencer : MonoBehaviour
 
         Debug.Log(tempomap.TimeDivision);
         this.ts = tempomap.TimeSignature.AtTime(0);
-        this.ttp = ((float)ts.Numerator / ts.Denominator) / notesSpeed;
+        this.ttp = ((float)ts.Numerator / ts.Denominator) / RuntimeSettings.GAME_SPEED;
         Debug.Log(tempomap.Tempo.AtTime(0));
         SpawnNotesDropDown(midiFile.GetNotes().ToList());
     }
@@ -194,8 +192,8 @@ sealed public class Sequencer : MonoBehaviour
             var rb = obj.GetComponent<Rigidbody>();
             //rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
 
-            var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / notesSpeed;
-            var expectEnd = scale / notesSpeed;
+            var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / RuntimeSettings.GAME_SPEED;
+            var expectEnd = scale / RuntimeSettings.GAME_SPEED;
 
             //Debug.Log("Scale: " + scale + "  y:" + y);
             this.pianoRollDict[key].Add(dummy);
@@ -227,7 +225,7 @@ sealed public class Sequencer : MonoBehaviour
             line.transform.Rotate(0, 0f, 90f);
             this.fineLines.Add(dummy);
         }
-        timeBetweenBeats = beatDelta / this.notesSpeed;
+        timeBetweenBeats = beatDelta / RuntimeSettings.GAME_SPEED;
         totalBeats = totalBeatsI;
     }
 
@@ -322,14 +320,14 @@ sealed public class Sequencer : MonoBehaviour
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, this.notesSpeed, this.startTime);
+            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
             this.ClearPianoRoll();
             this.startTime = -1f;
         }
 
         if (gameStarted)
         {
-            float step = notesSpeed * Time.deltaTime;
+            float step = RuntimeSettings.GAME_SPEED * Time.deltaTime;
             foreach (var item in pianoRollDict)
             {
                 if (item.Value.Count == 0)
