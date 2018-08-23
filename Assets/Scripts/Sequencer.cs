@@ -29,8 +29,6 @@ sealed public class Sequencer : MonoBehaviour
 
     [SerializeField]
     public readonly float notesScale = 1f;
-    [SerializeField]
-    public readonly float notesSpeed = 0.2f;
 
     private float startTime = -1;
     private float deltaTime;
@@ -67,14 +65,14 @@ sealed public class Sequencer : MonoBehaviour
 
     public void LoadMidiFile(string file)
     {
-        Debug.Log("Loading MIDI file: " + file);
+        Debug.Log("Loading MIDI file: " + file + ", Mode: " + (RuntimeSettings.isPlayMode ? "Play" : "Practice") + ", GameSpeed: " + RuntimeSettings.GAME_SPEED + ", User: " + RuntimeSettings.USER);
         midiFile = MidiFile.Read(file);
         SpawnNotes();
     }
 
     public void LoadMidiFile()
     {
-        Debug.Log("User: " + RuntimeSettings.CURRENT_USER);
+        Debug.Log("User: " + RuntimeSettings.USER);
         var file = RuntimeSettings.MIDI_FILE_NAME;
         if (file != null)
         {
@@ -98,12 +96,13 @@ sealed public class Sequencer : MonoBehaviour
 
         Debug.Log(tempomap.TimeDivision);
         this.ts = tempomap.TimeSignature.AtTime(0);
-        this.ttp = ((float)ts.Numerator / ts.Denominator) / notesSpeed;
+        this.ttp = ((float)ts.Numerator / ts.Denominator) / RuntimeSettings.GAME_SPEED;
         Debug.Log(tempomap.Tempo.AtTime(0));
         SpawnNotesDropDown(midiFile.GetNotes().ToList());
     }
 
-    public float GetStartTime() {
+    public float GetStartTime()
+    {
         return this.startTime;
     }
 
@@ -193,8 +192,8 @@ sealed public class Sequencer : MonoBehaviour
             var rb = obj.GetComponent<Rigidbody>();
             //rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
 
-            var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / notesSpeed;
-            var expectEnd = scale / notesSpeed;
+            var expectTime = ((lmraway2.away - keyPos).magnitude + scale / 2) / RuntimeSettings.GAME_SPEED;
+            var expectEnd = scale / RuntimeSettings.GAME_SPEED;
 
             //Debug.Log("Scale: " + scale + "  y:" + y);
             this.pianoRollDict[key].Add(dummy);
@@ -226,7 +225,7 @@ sealed public class Sequencer : MonoBehaviour
             line.transform.Rotate(0, 0f, 90f);
             this.fineLines.Add(dummy);
         }
-        timeBetweenBeats = beatDelta / this.notesSpeed;
+        timeBetweenBeats = beatDelta / RuntimeSettings.GAME_SPEED;
         totalBeats = totalBeatsI;
     }
 
@@ -267,7 +266,8 @@ sealed public class Sequencer : MonoBehaviour
         }
     }
 
-    public bool IsGamedStarted() {
+    public bool IsGamedStarted()
+    {
         return this.gameStarted;
     }
 
@@ -288,7 +288,8 @@ sealed public class Sequencer : MonoBehaviour
         var deltaT = Time.time - this.startTime;
 
         var minDistDict = new Dictionary<PianoKey, float>();
-        foreach ( var i in PianoKeys.GetAllKeys()) {
+        foreach (var i in PianoKeys.GetAllKeys())
+        {
             minDistDict[i] = 1f;
         }
         noteDurations.ForEach(note =>
@@ -298,15 +299,18 @@ sealed public class Sequencer : MonoBehaviour
                 piano.ActivateKey(note.key.keyNum, Color.red, note.duration);
                 note.hasKeyBeenActivated = true;
             }
-            if (deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration)) {
+            if (deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration))
+            {
                 minDistDict[note.key] = 0;
                 return;
             }
-            else if (deltaT > note.end) {
+            else if (deltaT > note.end)
+            {
                 return;
             }
 
-            if (deltaT >= (note.start - 1f) && deltaT <= note.start) {
+            if (deltaT >= (note.start - 1f) && deltaT <= note.start)
+            {
                 minDistDict[note.key] = Mathf.Min(deltaT - note.start, minDistDict[note.key]);
             }
         });
@@ -316,14 +320,14 @@ sealed public class Sequencer : MonoBehaviour
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, this.notesSpeed, this.startTime);
+            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
             this.ClearPianoRoll();
             this.startTime = -1f;
         }
 
         if (gameStarted)
         {
-            float step = notesSpeed * Time.deltaTime;
+            float step = RuntimeSettings.GAME_SPEED * Time.deltaTime;
             foreach (var item in pianoRollDict)
             {
                 if (item.Value.Count == 0)
@@ -336,7 +340,8 @@ sealed public class Sequencer : MonoBehaviour
                     //obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
                     obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[item.Key].transform.position, step);
                     var newD = obj.transform.position - lmr.centre;
-                    if (obj.transform.childCount > 0) {
+                    if (obj.transform.childCount > 0)
+                    {
                         var co = obj.transform.GetChild(0);
                         var childScale = co.transform.localScale;
                         if ((obj.transform.position - lmr.centre).magnitude < childScale.y)
@@ -349,12 +354,13 @@ sealed public class Sequencer : MonoBehaviour
                         }
                     }
                 }
-                
-            }
 
+            }
             foreach (var obj in fineLines)
             {
-                obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[PianoKeys.GetKeyFor(PianoBuilder.CENTRE)].transform.position, step);
+                var center = PianoKeys.GetKeyFor(PianoBuilder.CENTRE);
+                var centerAway = keyAwayDir[center];
+                obj.transform.position = Vector3.MoveTowards(obj.transform.position, centerAway.transform.position, step);
             }
         }
     }

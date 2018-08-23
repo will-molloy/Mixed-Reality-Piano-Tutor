@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System.Linq;
+using System.Globalization;
 
 public class PlayModeSelectionUIService : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class PlayModeSelectionUIService : MonoBehaviour
     [SerializeField] private Transform scrollViewParent;
 
     [SerializeField] private GameObject nameField;
+
+    [SerializeField] private GameObject speedField;
+
+    [SerializeField] private UnityEngine.UI.Text speedFieldPlaceHolderText;
 
     [SerializeField] private GameObject canvas;
 
@@ -41,6 +46,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
         scrollViewRows.Add(rowHeader);
         processFolder(RuntimeSettings.MIDI_DIR);
         headerText.text = RuntimeSettings.isPlayMode ? "Track" : "Exercise";
+        speedFieldPlaceHolderText.text = "Game speed: " + RuntimeSettings.GAME_SPEED.ToString("0.00");
     }
 
     void Update()
@@ -116,7 +122,12 @@ public class PlayModeSelectionUIService : MonoBehaviour
         var name = nameField.GetComponent<UnityEngine.UI.InputField>().text;
         if (!name.Equals(""))
         {
-            RuntimeSettings.CURRENT_USER = name;
+            RuntimeSettings.USER = name;
+        }
+        var speed = speedField.GetComponent<UnityEngine.UI.InputField>().text;
+        if (!speed.Equals(""))
+        {
+            RuntimeSettings.GAME_SPEED = float.Parse(speed, CultureInfo.InvariantCulture.NumberFormat);
         }
         RuntimeSettings.MIDI_FILE_NAME = midiPath;
         SceneManager.LoadScene(PlayModeSceneName);

@@ -18,7 +18,7 @@ public class MidiSessionDto
         this.GameMode = GameMode;
         this.Accuracy = Accuracy;
         this.SessionDateTime = DateTime.Now;
-        this.User = RuntimeSettings.CURRENT_USER;
+        this.User = RuntimeSettings.USER;
     }
 
     // Creates a dummy session

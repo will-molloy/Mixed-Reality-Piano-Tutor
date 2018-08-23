@@ -57,7 +57,7 @@ sealed public class PianoBuilder : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("No sequencer component, you must be in calibration mode.");
+                Debug.LogWarning("No sequencer component.");
             }
         }
         if (Input.GetKeyDown(KeyCode.H)) // Hide virtual piano keys
@@ -75,13 +75,18 @@ sealed public class PianoBuilder : MonoBehaviour
     {
         Debug.Log("Fill up" + percent);
         var newPercent = fillUpPercent + percent;
-        if (newPercent > 1.0f) {
+        if (newPercent > 1.0f)
+        {
             var didDestroy = false;
-            for (int i = 0; i < spaceCraftObj.Count; i++) {
+            for (int i = 0; i < spaceCraftObj.Count; i++)
+            {
                 var o = spaceCraftObj[i].GetComponent<SpaceCraftControl>();
-                if (o.isDestoryed()) {
+                if (o.isDestoryed())
+                {
                     continue;
-                } else {
+                }
+                else
+                {
                     o.StagedDestory();
                     didDestroy = true;
                     break;
@@ -150,6 +155,7 @@ sealed public class PianoBuilder : MonoBehaviour
             {
                 spawnGameElements();
             }
+            DrawAuxillaryLines();
             sequencer.LoadMidiFile();
         }
     }
@@ -206,7 +212,6 @@ sealed public class PianoBuilder : MonoBehaviour
 
     private void spawnGameElements()
     {
-        DrawAuxillaryLines();
         DrawPulser();
         PlaceParticleSystems();
         PlaceSpacecraft(true);
@@ -214,29 +219,37 @@ sealed public class PianoBuilder : MonoBehaviour
 
     private void PlaceSpacecraft(bool drawBar = false)
     {
-        var o = Instantiate(spaceCraft);
+        var obj = Instantiate(spaceCraft);
         var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
         var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.1f);
-        if (spaceCraftObj.Count == 0) {
-            o.transform.position = lmr.away + new Vector3(0f, 0.5f, 0f);
-        } else if (spaceCraftObj.Count == 1) {
-            spaceCraftObj.ForEach( e => e.GetComponent<SpaceCraftControl>().RestoreAll());
-            o.transform.position = lmr.away + new Vector3(0.2f, 0.5f, 0.0f);
-        } else if (spaceCraftObj.Count == 2) {
-            spaceCraftObj.ForEach( e => e.GetComponent<SpaceCraftControl>().RestoreAll());
-            o.transform.position = lmr.away + new Vector3(-0.2f, 0.5f, 0.0f);
-        } else {
-            spaceCraftObj.ForEach( e => e.GetComponent<SpaceCraftControl>().RestoreAll());
+        if (spaceCraftObj.Count == 0)
+        {
+            obj.transform.position = lmr.away + new Vector3(0f, 0.5f, 0f);
+        }
+        else if (spaceCraftObj.Count == 1)
+        {
+            spaceCraftObj.ForEach(e => e.GetComponent<SpaceCraftControl>().RestoreAll());
+            obj.transform.position = lmr.away + new Vector3(0.2f, 0.5f, 0.0f);
+        }
+        else if (spaceCraftObj.Count == 2)
+        {
+            spaceCraftObj.ForEach(e => e.GetComponent<SpaceCraftControl>().RestoreAll());
+            obj.transform.position = lmr.away + new Vector3(-0.2f, 0.5f, 0.0f);
+        }
+        else
+        {
+            spaceCraftObj.ForEach(e => e.GetComponent<SpaceCraftControl>().RestoreAll());
         }
         var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
-        o.transform.rotation = rotation;
-        o.transform.Rotate(-90f, 180f, 0f);
+        obj.transform.rotation = rotation;
+        obj.transform.Rotate(-90f, 180f, 0f);
         var dummy = new GameObject();
         dummy.transform.SetParent(this.transform);
-        o.transform.SetParent(dummy.transform);
-        spaceCraftObj.Add(o);
+        obj.transform.SetParent(dummy.transform);
+        spaceCraftObj.Add(obj);
 
-        if(drawBar) {
+        if (drawBar)
+        {
             energyBarObj = Instantiate(energyBar);
             energyBarObj.transform.position = lmr.away + new Vector3(0f, 0.3f, 0.05f);
             energyBarObj.transform.rotation = rotation;
@@ -291,7 +304,7 @@ sealed public class PianoBuilder : MonoBehaviour
     public void PutInstantFeedback(int total, int totalmiss, int totalBeats)
     {
 
-        Debug.Log(total + " " +totalmiss);
+        Debug.Log(total + " " + totalmiss);
 
         if (!RuntimeSettings.isPlayMode)
         {
@@ -353,7 +366,8 @@ sealed public class PianoBuilder : MonoBehaviour
             line.transform.rotation = rotation;
             line.transform.Rotate(90f, 0f, 0f);
             this.auxLines.Add(line);
-            if (item.Key.color == KeyColor.Black) {
+            if (item.Key.color == KeyColor.Black)
+            {
                 line.GetComponent<MeshRenderer>().material.color = Color.blue;
             }
             var di = Instantiate(disk);
@@ -366,7 +380,8 @@ sealed public class PianoBuilder : MonoBehaviour
         }
     }
 
-    public void UpdateDiskColor(PianoKey key, float maxDist) {
+    public void UpdateDiskColor(PianoKey key, float maxDist)
+    {
         diskDict[key].GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(1f, maxDist, 1f);
     }
 
@@ -399,14 +414,12 @@ sealed public class PianoBuilder : MonoBehaviour
 
     private Vector3 MakeAwayVector(Vector3 refV, Transform transform, float magnitude = 1f)
     {
-        var lookat = refV + (transform.forward * adj * magnitude + transform.up * opposite * magnitude);
-        return lookat;
+        return refV + (transform.forward * adj * magnitude + transform.up * opposite * magnitude);
     }
 
     private Vector3 MakeAwayVector(Transform transform)
     {
-        var lookat = transform.position + (transform.forward * adj + transform.up * opposite);
-        return lookat;
+        return transform.position + (transform.forward * adj + transform.up * opposite);
     }
 
     private static List<Vector3> Corners(GameObject go)
