@@ -103,7 +103,8 @@ sealed public class Sequencer : MonoBehaviour
         SpawnNotesDropDown(midiFile.GetNotes().ToList());
     }
 
-    public float GetStartTime() {
+    public float GetStartTime()
+    {
         return this.startTime;
     }
 
@@ -267,7 +268,8 @@ sealed public class Sequencer : MonoBehaviour
         }
     }
 
-    public bool IsGamedStarted() {
+    public bool IsGamedStarted()
+    {
         return this.gameStarted;
     }
 
@@ -288,7 +290,8 @@ sealed public class Sequencer : MonoBehaviour
         var deltaT = Time.time - this.startTime;
 
         var minDistDict = new Dictionary<PianoKey, float>();
-        foreach ( var i in PianoKeys.GetAllKeys()) {
+        foreach (var i in PianoKeys.GetAllKeys())
+        {
             minDistDict[i] = 1f;
         }
         noteDurations.ForEach(note =>
@@ -298,15 +301,18 @@ sealed public class Sequencer : MonoBehaviour
                 piano.ActivateKey(note.key.keyNum, Color.red, note.duration);
                 note.hasKeyBeenActivated = true;
             }
-            if (deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration)) {
+            if (deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration))
+            {
                 minDistDict[note.key] = 0;
                 return;
             }
-            else if (deltaT > note.end) {
+            else if (deltaT > note.end)
+            {
                 return;
             }
 
-            if (deltaT >= (note.start - 1f) && deltaT <= note.start) {
+            if (deltaT >= (note.start - 1f) && deltaT <= note.start)
+            {
                 minDistDict[note.key] = Mathf.Min(deltaT - note.start, minDistDict[note.key]);
             }
         });
@@ -336,7 +342,8 @@ sealed public class Sequencer : MonoBehaviour
                     //obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
                     obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[item.Key].transform.position, step);
                     var newD = obj.transform.position - lmr.centre;
-                    if (obj.transform.childCount > 0) {
+                    if (obj.transform.childCount > 0)
+                    {
                         var co = obj.transform.GetChild(0);
                         var childScale = co.transform.localScale;
                         if ((obj.transform.position - lmr.centre).magnitude < childScale.y)
@@ -349,12 +356,13 @@ sealed public class Sequencer : MonoBehaviour
                         }
                     }
                 }
-                
-            }
 
+            }
             foreach (var obj in fineLines)
             {
-                obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[PianoKeys.GetKeyFor(PianoBuilder.CENTRE)].transform.position, step);
+                var center = PianoKeys.GetKeyFor(PianoBuilder.CENTRE);
+                var centerAway = keyAwayDir[center];
+                obj.transform.position = Vector3.MoveTowards(obj.transform.position, centerAway.transform.position, step);
             }
         }
     }
