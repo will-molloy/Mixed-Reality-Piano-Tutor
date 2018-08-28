@@ -314,24 +314,25 @@ sealed public class PianoBuilder : MonoBehaviour
 
         var obj = Instantiate(textObj);
         string text;
-        if (missPercentage < 0.1f)
+        if (missPercentage < 0.3f)
         {
             text = "Perfect";
             FillUp(0.45f);
         }
-        else if (missPercentage < 0.4f)
+        else if (missPercentage < 0.5f)
         {
             text = "Great";
             FillUp(0.25f);
         }
-        else if (missPercentage < 0.6f)
+        else if (missPercentage < 0.7f)
         {
-            text = "Good";
+            text = "Decent";
             FillUp(0.15f);
         }
         else
         {
-            text = "Poor";
+            text = "Good";
+            FillUp(0.05f);
         }
         obj.GetComponent<TextMesh>().text = text;
         var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
@@ -380,9 +381,9 @@ sealed public class PianoBuilder : MonoBehaviour
         }
     }
 
-    public void UpdateDiskColor(PianoKey key, float maxDist)
+    public void UpdateDiskColor(PianoKey key, Color color)
     {
-        diskDict[key].GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(1f, maxDist, 1f);
+        diskDict[key].GetComponent<MeshRenderer>().material.color = color;
     }
 
     public PianoKeyVectors GetLMRAwayVectorsForKey(PianoKey key, float magnitude = 1f)

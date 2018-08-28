@@ -13,6 +13,8 @@ using System.Collections;
 [RequireComponent(typeof(ScoreView))]
 sealed public class Sequencer : MonoBehaviour
 {
+
+    static public readonly Color[] GAY = {MakeColorFromHex(0xcf0202), MakeColorFromHex(0xc57905), MakeColorFromHex(0xc5b805), MakeColorFromHex(0x17be17), MakeColorFromHex(0x0cbe9b), MakeColorFromHex(0xc5fbe), MakeColorFromHex(0x7d0ec2)};
     private MidiFile midiFile;
     private TempoMapManager tempoMapManager;
     [SerializeField]
@@ -26,6 +28,8 @@ sealed public class Sequencer : MonoBehaviour
 
     private Dictionary<PianoKey, List<GameObject>> pianoRollDict = new Dictionary<PianoKey, List<GameObject>>();
     private Dictionary<PianoKey, GameObject> keyAwayDir = new Dictionary<PianoKey, GameObject>();
+
+    private Dictionary<PianoKey, Color> colorDict = new Dictionary<PianoKey, Color>();
 
     [SerializeField]
     public readonly float notesScale = 1f;
@@ -49,6 +53,13 @@ sealed public class Sequencer : MonoBehaviour
     private float timeBetweenBeats;
     private int totalBeats;
 
+    public static Color MakeColorFromHex(int hex) {
+        byte R = (byte)((hex >> 16) & 0xFF);
+        byte G = (byte)((hex >> 8) & 0xFF);
+        byte B = (byte)((hex ) & 0xFF);
+        return new Color32(R, G, B, 255);
+    }
+
     void Start()
     {
         piano = GetComponent<PianoBuilder>();
@@ -61,6 +72,12 @@ sealed public class Sequencer : MonoBehaviour
         {
             pianoRollDict.Add(item, new List<GameObject>());
         }
+        var ws = PianoKeys.GetAllKeys().Where(e => e.color == KeyColor.White).ToList();
+        for(int i = 0; i < ws.Count(); i++) {
+            colorDict[ws[i]] = GAY[i%7];
+        }
+        PianoKeys.GetAllKeys().Where(e => e.color == KeyColor.Black).ToList().ForEach(e => colorDict[e] = MakeColorFromHex(0xcf02c1));
+
     }
 
     public void LoadMidiFile(string file)
@@ -174,6 +191,8 @@ sealed public class Sequencer : MonoBehaviour
             }
             var keyPos = lmraway.centre;
             dummy.transform.position = lmraway3.away;
+            dummy.transform.rotation = Quaternion.LookRotation(keyPos - awayVector);
+            dummy.transform.Rotate(0, -90f, 90f);
             dummy.transform.SetParent(piano.transform);
             obj.transform.SetParent(dummy.transform);
             //Debug.Log(number + "  " + keyPos.ToString("F4"));
@@ -188,7 +207,8 @@ sealed public class Sequencer : MonoBehaviour
             obj.transform.position = lmraway2.away;
 
             var renderer = obj.GetComponent<Renderer>();
-            renderer.material.color = key.color == KeyColor.Black ? Color.blue : Color.white;
+            //renderer.material.color = key.color == KeyColor.Black ? Color.blue : Color.white;
+            renderer.material.color = colorDict[key];
             var rb = obj.GetComponent<Rigidbody>();
             //rb.velocity = (keyPos - lmraway2.away).normalized * notesSpeed;
 
@@ -311,12 +331,20 @@ sealed public class Sequencer : MonoBehaviour
 
             if (deltaT >= (note.start - 1f) && deltaT <= note.start)
             {
-                minDistDict[note.key] = Mathf.Min(deltaT - note.start, minDistDict[note.key]);
+                minDistDict[note.key] = Mathf.Min(Mathf.Abs(note.start - deltaT), minDistDict[note.key]);
             }
         });
         foreach (var item in minDistDict)
         {
-            piano.UpdateDiskColor(item.Key, 1 - item.Value);
+            float h,s,v;
+            Color.RGBToHSV(colorDict[item.Key],out h,out s,out v);
+            if (item.Value == 2f) {
+                s = 0f;
+            }
+            else {
+                s = (1-item.Value) * s;
+            }
+            piano.UpdateDiskColor(item.Key, Color.HSVToRGB(h,s,v));
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
@@ -344,11 +372,16 @@ sealed public class Sequencer : MonoBehaviour
                     {
                         var co = obj.transform.GetChild(0);
                         var childScale = co.transform.localScale;
-                        if ((obj.transform.position - lmr.centre).magnitude < childScale.y)
+                        var mag = (obj.transform.position - lmr.centre).magnitude;
+                        if (mag < childScale.y)
                         {
-                            obj.transform.GetChild(0).transform.localScale = new Vector3(co.transform.localScale.x, (obj.transform.position - lmr.centre).magnitude, co.transform.localScale.z);
+                            //obj.transform.GetChild(0).transform.localScale = new Vector3(co.transform.localScale.x, (obj.transform.position - lmr.centre).magnitude, co.transform.localScale.z);
+                            var cs = co.transform.localScale.y;
+                            var cur = obj.transform.localScale.y;
+
+                            obj.transform.localScale = new Vector3(1f, mag / cs, 1f);
                         }
-                        if (co.transform.localScale.y < 0.01f)
+                        if (mag < 0.01f)
                         {
                             DestroyImmediate(co.gameObject);
                         }
