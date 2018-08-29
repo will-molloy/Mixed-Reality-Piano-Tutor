@@ -25,8 +25,12 @@ public class ScoreView : MonoBehaviour
     {
         Debug.Log("Displaying scores");
         var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f, offsetStartTime);
-        var res = MakeSegmentsFor(evs, durs);
+        var res = MakeSegmentsFor_(evs, durs);
         var velocity = 1f / velocityIn * noteScale;
+
+        Debug.Log(evs.First().start);
+        Debug.Log(durs.First().start);
+
 
         foreach (var e in res)
         {
@@ -37,24 +41,6 @@ public class ScoreView : MonoBehaviour
             {
                 var go = Instantiate(cube);
                 var lmraway = piano.GetLMRAwayVectorsForKey(key, Sequencer.calcX(m.offsetY / velocity + m.scaleY / 2f / velocity));
-                var rder = go.GetComponent<Renderer>();
-                Color color;
-                switch (m.type)
-                {
-                    case MidiSegment.SegmentType.EXTRA:
-                        color = Color.red;
-                        break;
-                    case MidiSegment.SegmentType.CORRECT:
-                        color = Color.green;
-                        break;
-                    case MidiSegment.SegmentType.MISSED:
-                        color = Color.yellow;
-                        break;
-                    default:
-                        color = Color.black; // WTF C#??
-                        break;
-                }
-                rder.material.color = color;
                 spawnedSegments.Add(go);
                 var dummy = new GameObject();
                 var k = piano.GetKeyObj(m.key);
@@ -63,7 +49,27 @@ public class ScoreView : MonoBehaviour
                 var dropdownScale = go.transform.localScale;
                 go.transform.localScale = new Vector3(dropdownScale.x, m.scaleY / velocity, dropdownScale.z);
                 go.transform.position = lmraway.away;
-                go.transform.localScale += m.type == MidiSegment.SegmentType.MISSED ? Vector3.zero : new Vector3(.001f, .001f, .001f);
+
+                Color color;
+                switch (m.type)
+                {
+                    case MidiSegment.SegmentType.EXTRA:
+                        color = Color.red;
+                        go.transform.localScale += new Vector3(.0001f, .0001f, .0001f);
+                        break;
+                    case MidiSegment.SegmentType.CORRECT:
+                        color = Color.green;
+                        go.transform.localScale += new Vector3(.0002f, .0002f, .0002f);
+                        break;
+                    case MidiSegment.SegmentType.MISSED:
+                        color = Color.yellow;
+                        break;
+                    default:
+                        color = Color.black; // WTF C#??
+                        break;
+                }
+                var rder = go.GetComponent<Renderer>();
+                rder.material.color = color;
                 var rotation = Quaternion.LookRotation(lmraway.centre - lmraway.away);
                 go.transform.rotation = rotation;
                 go.transform.Rotate(0, -90f, 90f);
@@ -151,6 +157,53 @@ public class ScoreView : MonoBehaviour
     private bool WithInTolerance(float a, float of)
     {
         return of + tolerance >= a && of - tolerance <= a;
+    }
+
+    private Dictionary<PianoKey, List<MidiSegment>> MakeSegmentsFor_(List<NoteDuration> midiEvents, List<NoteDuration> midiNotesFromFile)
+    {
+        var segMap = new Dictionary<PianoKey, List<MidiSegment>>();
+        var premadeMap = midiNotesFromFile.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
+        var userMap = midiEvents.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
+        if (midiEvents == null || midiNotesFromFile == null)
+        {
+            Debug.LogError("Null Args recved at MakeSegmentsFor()");
+        }
+
+        foreach (var item in premadeMap)
+        {
+            var segments = new List<MidiSegment>();
+            segMap[item.Key] = segments;
+            var currMidiEvents = midiEvents.Where(e => e.key == item.Key).ToList();
+            var currMidiNoteFromFile = item.Value;
+            item.Value.ForEach(e => segments.Add(new MidiSegment(MidiSegment.SegmentType.MISSED,e)));
+
+            if (!userMap.ContainsKey(item.Key)) {
+                continue;
+            }
+
+            foreach (var userSeg in userMap[item.Key]) {
+                segments.Add(new MidiSegment(MidiSegment.SegmentType.EXTRA, userSeg));
+            }
+
+            item.Value.ForEach(e => {
+                userMap[item.Key].ForEach(u => {
+                    if (u.start >= e.start && u.end < e.end && u.start < e.end) {
+                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT,e,u));
+                    }
+                    else if (u.start >= e.start && u.end > e.end && u.start < e.end) {
+                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT,u,e));
+                    }
+                    else if (u.start <= e.start && u.end >= e.end) {
+                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT,e));
+                    }
+                    else if (u.start <= e.start && u.end <= e.end && u.end > e.start) {
+                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT,e,u));
+                    }
+                });
+            });
+
+        }
+        return segMap;
     }
 
     private Dictionary<PianoKey, List<MidiSegment>> MakeSegmentsFor(List<NoteDuration> midiEvents, List<NoteDuration> midiNotesFromFile)

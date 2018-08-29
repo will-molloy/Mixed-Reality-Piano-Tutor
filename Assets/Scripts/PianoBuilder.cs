@@ -367,12 +367,10 @@ sealed public class PianoBuilder : MonoBehaviour
             line.transform.rotation = rotation;
             line.transform.Rotate(90f, 0f, 0f);
             this.auxLines.Add(line);
-            if (item.Key.color == KeyColor.Black)
-            {
-                line.GetComponent<MeshRenderer>().material.color = Color.blue;
-            }
+            line.GetComponent<MeshRenderer>().material.color = Sequencer.colorDict[item.Key];
             var di = Instantiate(disk);
             di.transform.position = v.centre;
+            di.transform.Rotate(-45f, 0, 0);
             diskDict[item.Key] = di;
             var dummy = new GameObject();
             dummy.transform.SetParent(item.Value.transform);

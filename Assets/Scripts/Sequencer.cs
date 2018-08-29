@@ -29,7 +29,7 @@ sealed public class Sequencer : MonoBehaviour
     private Dictionary<PianoKey, List<GameObject>> pianoRollDict = new Dictionary<PianoKey, List<GameObject>>();
     private Dictionary<PianoKey, GameObject> keyAwayDir = new Dictionary<PianoKey, GameObject>();
 
-    private Dictionary<PianoKey, Color> colorDict = new Dictionary<PianoKey, Color>();
+    public static Dictionary<PianoKey, Color> colorDict = new Dictionary<PianoKey, Color>();
 
     [SerializeField]
     public readonly float notesScale = 1f;
@@ -270,8 +270,6 @@ sealed public class Sequencer : MonoBehaviour
                 var ons = midiController.GetOnKeys();
                 var deltaTime = Time.time - startTime;
                 var eligible = this.noteDurations.FindAll(e => e.start <= deltaTime && e.end >= deltaTime);
-                Debug.Log(eligible.Count);
-                Debug.Log(Time.time - startTime);
                 eligible.ForEach(e =>
                 {
                     total++;
@@ -310,7 +308,7 @@ sealed public class Sequencer : MonoBehaviour
         var minDistDict = new Dictionary<PianoKey, float>();
         foreach (var i in PianoKeys.GetAllKeys())
         {
-            minDistDict[i] = 1f;
+            minDistDict[i] = 2f;
         }
         noteDurations.ForEach(note =>
         {
@@ -329,7 +327,7 @@ sealed public class Sequencer : MonoBehaviour
                 return;
             }
 
-            if (deltaT >= (note.start - 1f) && deltaT <= note.start)
+            if (deltaT >= (note.start - 2f) && deltaT <= note.start)
             {
                 minDistDict[note.key] = Mathf.Min(Mathf.Abs(note.start - deltaT), minDistDict[note.key]);
             }
@@ -342,9 +340,11 @@ sealed public class Sequencer : MonoBehaviour
                 s = 0f;
             }
             else {
-                s = (1-item.Value) * s;
+                s = ((2-item.Value)/2) * s;
             }
-            piano.UpdateDiskColor(item.Key, Color.HSVToRGB(h,s,v));
+            var newc = Color.HSVToRGB(h,s,v);
+            newc.a = (2-item.Value)/2;
+            piano.UpdateDiskColor(item.Key, newc);
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
