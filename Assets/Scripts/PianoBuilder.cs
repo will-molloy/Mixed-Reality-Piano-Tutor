@@ -251,8 +251,9 @@ sealed public class PianoBuilder : MonoBehaviour
         if (drawBar)
         {
             energyBarObj = Instantiate(energyBar);
-            energyBarObj.transform.position = lmr.away + new Vector3(0f, 0.3f, 0.05f);
-            energyBarObj.transform.rotation = rotation;
+            energyBarObj.transform.position = lmr.away + new Vector3(0.0f, -0.1f, -0.7f);
+            energyBarObj.transform.Rotate(-45f, 0, 0);
+            //energyBarObj.transform.rotation = rotation;
             energyBarObj.transform.SetParent(dummy.transform);
         }
     }
