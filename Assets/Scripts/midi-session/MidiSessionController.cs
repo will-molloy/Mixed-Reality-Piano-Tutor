@@ -10,12 +10,12 @@ using Newtonsoft.Json;
 public class MidiSessionController
 {
 
+    private string jsonPath;
+
     public MidiSessionController(string jsonPath)
     {
         this.jsonPath = jsonPath;
     }
-
-    private string jsonPath;
 
     public List<MidiSessionDto> getMidiSessions(string midiFileName)
     {

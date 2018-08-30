@@ -611,8 +611,8 @@ MonoBehaviour:
   practiceModeButton: {fileID: 59309699}
   PlayModeMidiDir: Assets/MIDI
   PracticeModeMidiDir: Assets/MIDI/exercises
-  PlayModeSessions: Resources/play-sessions.json
-  PracticeModeSessions: Resources/practice-sessions.json
+  PlayModeSessions: Assets/Resources/play-sessions.json
+  PracticeModeSessions: Assets/Resources/practice-sessions.json
 --- !u!4 &776551677
 Transform:
   m_ObjectHideFlags: 0
