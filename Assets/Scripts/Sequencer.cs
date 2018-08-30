@@ -14,7 +14,15 @@ using System.Collections;
 sealed public class Sequencer : MonoBehaviour
 {
 
-    static public readonly Color[] GAY = {MakeColorFromHex(0xcf0202), MakeColorFromHex(0xc57905), MakeColorFromHex(0xc5b805), MakeColorFromHex(0x17be17), MakeColorFromHex(0x0cbe9b), MakeColorFromHex(0xc5fbe), MakeColorFromHex(0x7d0ec2)};
+    static public readonly Color[] GAY = {
+        MakeColorFromHex(0xcf0202), 
+        MakeColorFromHex(0xc57905), 
+        MakeColorFromHex(0xc5b805), 
+        MakeColorFromHex(0x17be17), 
+        MakeColorFromHex(0x0cbe9b), 
+        MakeColorFromHex(0xc5fbe), 
+        MakeColorFromHex(0x7d0ec2)};
+
     private MidiFile midiFile;
     private TempoMapManager tempoMapManager;
     [SerializeField]
@@ -74,9 +82,9 @@ sealed public class Sequencer : MonoBehaviour
         }
         var ws = PianoKeys.GetAllKeys().Where(e => e.color == KeyColor.White).ToList();
         for(int i = 0; i < ws.Count(); i++) {
-            colorDict[ws[i]] = GAY[i%7];
+            colorDict[ws[i]] =MakeColorFromHex(0xffffff);
         }
-        PianoKeys.GetAllKeys().Where(e => e.color == KeyColor.Black).ToList().ForEach(e => colorDict[e] = MakeColorFromHex(0xcf02c1));
+        PianoKeys.GetAllKeys().Where(e => e.color == KeyColor.Black).ToList().ForEach(e => colorDict[e] = MakeColorFromHex(0x0000ff));
 
     }
 
