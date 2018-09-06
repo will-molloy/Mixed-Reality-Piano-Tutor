@@ -20,7 +20,7 @@ sealed public class MidiController : MonoBehaviour
 
     void Start()
     {
-        notesOn= new HashSet<PianoKey>();
+        notesOn = new HashSet<PianoKey>();
         mockEvents = new List<MidiEventStorage>();
         mockEvents.Add(new MidiEventStorage(55, false, 0.5f));
         mockEvents.Add(new MidiEventStorage(55, true, 0.8f));
@@ -35,12 +35,12 @@ sealed public class MidiController : MonoBehaviour
 
         if (InputDevice.DeviceCount < 1)
         {
-            Debug.LogError("No device found for MIDI input.");
+            Debug.LogWarning("No device found for MIDI input.");
             return;
         }
         if (InputDevice.DeviceCount > 1)
         {
-            Debug.LogError("Too many devices found for MIDI input.");
+            Debug.LogWarning("Too many devices found for MIDI input.");
             return;
         }
         inputDevice = new InputDevice(0);
@@ -67,7 +67,10 @@ sealed public class MidiController : MonoBehaviour
     void OnDestroy()
     {
         Debug.Log("Closing MIDI device.");
-        inputDevice.Dispose();
+        if (inputDevice != null)
+        {
+            inputDevice.Dispose();
+        }
     }
 
     void handleChannelMsg(object sender, ChannelMessageEventArgs e)
@@ -91,18 +94,19 @@ sealed public class MidiController : MonoBehaviour
 
     void storeMidiEvent(object sender, ChannelMessageEventArgs e)
     {
-        if(seq.IsGamedStarted())
+        if (seq.IsGamedStarted())
             midiEvents.Add(new MidiEventStorage(e, Time.time - seq.GetStartTime()));
     }
 
-    public bool IsThisKeyOn(PianoKey key) {
+    public bool IsThisKeyOn(PianoKey key)
+    {
         return notesOn.Contains(key);
     }
 
-    public HashSet<PianoKey> GetOnKeys() {
+    public HashSet<PianoKey> GetOnKeys()
+    {
         return notesOn;
     }
-
 }
 
 public struct MidiEventStorage

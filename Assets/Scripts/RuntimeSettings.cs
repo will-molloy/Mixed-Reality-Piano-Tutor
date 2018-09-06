@@ -7,11 +7,11 @@ public class RuntimeSettings {
 
 	public static string MIDI_DIR = "Assets/MIDI";
 
-	public static bool isPlayMode = true; // false = practice mode
+	public static bool IS_PLAY_MODE = true; // false = practice mode
+
+    public static MidiDifficultyDto.Difficulty DIFFICULTY = MidiDifficultyDto.Difficulty.Medium;
 
 	public static string USER = "Beethoven"; 
-
-    public static string midiSessionResourcePath = "Resources/play-sessions";
 
 	public static float GAME_SPEED = 0.2f;
 

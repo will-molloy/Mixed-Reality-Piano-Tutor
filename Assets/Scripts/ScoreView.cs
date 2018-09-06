@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,38 +28,37 @@ public class ScoreView : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.PageDown))
         {
-            moveTowardsPiano();
+            move(Vector3.down); // towards
         }
         if (Input.GetKey(KeyCode.PageUp))
         {
-            moveAwayFromPiano();
+            move(Vector3.up); // away
         }
     }
 
-    void moveTowardsPiano()
+    private void move(Vector3 direction)
     {
-        Debug.Log("Move towards");
-        var towards = piano.GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(PianoBuilder.CENTRE)).away * -1;
-        spawnedSegments.ForEach(x => x.transform.Translate(Vector3.down * 0.1f));
+        spawnedSegments.ForEach(x => x.transform.Translate(direction * 0.1f));
     }
 
-    void moveAwayFromPiano()
-    {
-        Debug.Log("Move away");
-        var away = piano.GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(PianoBuilder.CENTRE)).away;
-        spawnedSegments.ForEach(x => x.transform.Translate(Vector3.up * 0.1f));
-    }
-
-    public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
+    public void SaveScoresAndViewFeedback(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
     {
         Debug.Log("Displaying scores");
         var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f, offsetStartTime);
         var res = MakeSegmentsFor_(evs, durs);
         var velocity = 1f / velocityIn * noteScale;
+        var total = 0d;
+        var correct = 0d;
 
-        Debug.Log(evs.First().start);
-        Debug.Log(durs.First().start);
-
+        if (evs.Count > 0)
+        {
+            Debug.Log(evs.First().start);
+            Debug.Log(durs.First().start);
+        }
+        else
+        {
+            Debug.LogWarning("No midievents recorded");
+        }
 
         foreach (var e in res)
         {
@@ -67,6 +67,7 @@ public class ScoreView : MonoBehaviour
 
             foreach (var m in list)
             {
+                total++;
                 var go = Instantiate(cube);
                 var lmraway = piano.GetLMRAwayVectorsForKey(key, Sequencer.calcX(m.offsetY / velocity + m.scaleY / 2f / velocity));
                 spawnedSegments.Add(go);
@@ -88,6 +89,7 @@ public class ScoreView : MonoBehaviour
                     case MidiSegment.SegmentType.CORRECT:
                         color = Color.green;
                         go.transform.localScale += new Vector3(.0002f, .0002f, .0002f);
+                        correct++;
                         break;
                     case MidiSegment.SegmentType.MISSED:
                         color = Color.yellow;
@@ -103,6 +105,19 @@ public class ScoreView : MonoBehaviour
                 go.transform.Rotate(0, -90f, 90f);
             }
         }
+        var accuracy = correct / total;
+        SaveScores(accuracy, midiEvents, durs, noteScale, velocityIn, offsetStartTime);
+    }
+
+    private void SaveScores(double accuracy, List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
+    {
+        var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, midiEvents, durs, noteScale, velocityIn, offsetStartTime);
+
+        Debug.Log("Displaying end feedback text");
+        piano.showText(midiSessionDTO.FormattedTrackName + ": " + midiSessionDTO.Accuracy * 100 + "%", 50,  false);
+
+        Debug.Log("Saving session - accuracy = " + accuracy);
+        new MidiSessionController().putMidiSession(midiSessionDTO);
     }
 
     public void ClearScores()

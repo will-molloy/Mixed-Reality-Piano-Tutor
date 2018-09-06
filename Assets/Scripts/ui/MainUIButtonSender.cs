@@ -13,10 +13,6 @@ public class MainUIButtonSender : MonoBehaviour
 
     [SerializeField] private string PracticeModeMidiDir;
 
-	[SerializeField] private string PlayModeSessions;
-
-    [SerializeField] private string PracticeModeSessions;
-
     void Start()
     {
         playModeButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playModeMessage(); });
@@ -27,16 +23,14 @@ public class MainUIButtonSender : MonoBehaviour
     {
 		Debug.Log("Setting up play mode");
         RuntimeSettings.MIDI_DIR = PlayModeMidiDir;
-		RuntimeSettings.midiSessionResourcePath = PlayModeSessions;
-        RuntimeSettings.isPlayMode = true;
+        RuntimeSettings.IS_PLAY_MODE = true;
     }
 
     private void practiceModeMessage()
     {
 		Debug.Log("Setting up practice mode");
         RuntimeSettings.MIDI_DIR = PracticeModeMidiDir;
-		RuntimeSettings.midiSessionResourcePath = PracticeModeSessions;
-        RuntimeSettings.isPlayMode = false;
+        RuntimeSettings.IS_PLAY_MODE = false;
     }
 
 }

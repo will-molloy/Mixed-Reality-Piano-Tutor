@@ -73,7 +73,7 @@ sealed public class PianoBuilder : MonoBehaviour
 
     public void FillUp(float percent)
     {
-        Debug.Log("Fill up" + percent);
+        Debug.Log("Fill up " + percent);
         var newPercent = fillUpPercent + percent;
         if (newPercent > 1.0f)
         {
@@ -151,7 +151,7 @@ sealed public class PianoBuilder : MonoBehaviour
             BuildPianoAt(obj.transform.position);
             obj.transform.SetParent(transform);
             base.transform.SetParent(obj.transform);
-            if (RuntimeSettings.isPlayMode)
+            if (RuntimeSettings.IS_PLAY_MODE)
             {
                 spawnGameElements();
             }
@@ -304,56 +304,62 @@ sealed public class PianoBuilder : MonoBehaviour
 
     public void PutInstantFeedback(int total, int totalmiss, int totalBeats)
     {
+        Debug.Log("Total: " + total + ", misses: " + totalmiss);
 
-        Debug.Log(total + " " + totalmiss);
-
-        if (!RuntimeSettings.isPlayMode)
+        if (!RuntimeSettings.IS_PLAY_MODE)
         {
             return;
         }
-        float missPercentage = totalmiss / (float)total;
+        var missPercentage = totalmiss / (double)total;
 
-        var obj = Instantiate(textObj);
-        string text;
-        if (missPercentage < 0.15f)
+        if (missPercentage < 0.15d)
         {
-            text = "Perfection!";
+            showText("Perfection!");
             FillUp(0.5f);
         }
-        else if (missPercentage < 0.3f)
+        else if (missPercentage < 0.3d)
         {
-            text = "Godlike";
+            showText("Godlike");
             FillUp(0.3f);
         }
-        else if (missPercentage < 0.4f)
+        else if (missPercentage < 0.4d)
         {
-            text = "Impressive";
+            showText("Impressive");
             FillUp(0.2f);
         }
-        else if (missPercentage < 0.55f)
+        else if (missPercentage < 0.55d)
         {
-            text = "Great";
+            showText("Great");
             FillUp(0.15f);
         }
-        else if (missPercentage < 0.8f)
+        else if (missPercentage < 0.8d)
         {
-            text = "Good";
+            showText("Good");
             FillUp(0.1f);
         }
         else
         {
-            text = "Decent";
+            showText("Decent");
             FillUp(0.05f);
         }
+    }
+
+    public void showText(string text, int fontSize = 100, bool destroy = true)
+    {
+        var obj = Instantiate(textObj);
         obj.GetComponent<TextMesh>().text = text;
+        obj.GetComponent<TextMesh>().fontSize = fontSize;
         var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
         var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.1f);
-        obj.transform.position = lmr.away + new Vector3(0, 0.05f, 30);
+        obj.transform.position = lmr.away + new Vector3(0, 0.05f, 2.5f);
         var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
         obj.transform.rotation = rotation;
         obj.transform.Rotate(0, 180f, 0f);
 
-        StartCoroutine(SetDelayedDestory(obj, 0.25f));
+        if (destroy)
+        {
+            StartCoroutine(SetDelayedDestory(obj, 0.25f));
+        }
     }
 
     private IEnumerator SetDelayedDestory(GameObject go, float time)
@@ -395,7 +401,7 @@ sealed public class PianoBuilder : MonoBehaviour
         diskDict[key].GetComponent<MeshRenderer>().material.color = color;
     }
 
-    
+
 
     public PianoKeyVectors GetLMRAwayVectorsForKey(PianoKey key, float magnitude = 1f)
     {

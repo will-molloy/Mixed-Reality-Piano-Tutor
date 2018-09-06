@@ -41,11 +41,11 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     void Start()
     {
-        MidiSessionController = new MidiSessionController(RuntimeSettings.midiSessionResourcePath);
+        MidiSessionController = new MidiSessionController();
         scrollViewRows = new List<GameObject>();
         scrollViewRows.Add(rowHeader);
         processFolder(RuntimeSettings.MIDI_DIR);
-        headerText.text = RuntimeSettings.isPlayMode ? "Track" : "Exercise";
+        headerText.text = RuntimeSettings.IS_PLAY_MODE ? "Track" : "Exercise";
         speedFieldPlaceHolderText.text = "Game speed: " + RuntimeSettings.GAME_SPEED.ToString("0.00");
     }
 
@@ -95,12 +95,14 @@ public class PlayModeSelectionUIService : MonoBehaviour
             passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
         }
         setText(head.FormattedTrackName, NAME_INDEX, row);
-        setText(head.TrackDifficulty.ToString(), DIFFICULTY_INDEX, row);
         setText(bestScore * 100 + "%", BEST_SCORE_INDEX, row);
         setText(passes + "/" + sessions.Count(), OVERALL_SCORE_INDEX, row);
 
+        var difficulty = MidiSessionController.GetDifficultyFor(midiPath);
+        setText(difficulty.ToString(), DIFFICULTY_INDEX, row);
+
         // Setup button
-        row.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playButtonEvent(midiPath); });
+        row.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playButtonEvent(midiPath, difficulty); });
 
         if (passes > 0)
         {
@@ -118,7 +120,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
         textObj.text = text;
     }
 
-    private void playButtonEvent(string midiPath)
+    private void playButtonEvent(string midiPath, MidiDifficultyDto.Difficulty difficulty)
     {
         var name = nameField.GetComponent<UnityEngine.UI.InputField>().text;
         if (!name.Equals(""))
@@ -131,6 +133,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
             RuntimeSettings.GAME_SPEED = float.Parse(speed, CultureInfo.InvariantCulture.NumberFormat);
         }
         RuntimeSettings.MIDI_FILE_NAME = midiPath;
+        RuntimeSettings.DIFFICULTY = difficulty;
         SceneManager.LoadScene(PlayModeSceneName);
     }
 

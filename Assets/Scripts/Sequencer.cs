@@ -15,12 +15,12 @@ sealed public class Sequencer : MonoBehaviour
 {
 
     static public readonly Color[] GAY = {
-        MakeColorFromHex(0xcf0202), 
-        MakeColorFromHex(0xc57905), 
-        MakeColorFromHex(0xc5b805), 
-        MakeColorFromHex(0x17be17), 
-        MakeColorFromHex(0x0cbe9b), 
-        MakeColorFromHex(0xc5fbe), 
+        MakeColorFromHex(0xcf0202),
+        MakeColorFromHex(0xc57905),
+        MakeColorFromHex(0xc5b805),
+        MakeColorFromHex(0x17be17),
+        MakeColorFromHex(0x0cbe9b),
+        MakeColorFromHex(0xc5fbe),
         MakeColorFromHex(0x7d0ec2)};
 
     private MidiFile midiFile;
@@ -61,10 +61,11 @@ sealed public class Sequencer : MonoBehaviour
     private float timeBetweenBeats;
     private int totalBeats;
 
-    public static Color MakeColorFromHex(int hex) {
+    public static Color MakeColorFromHex(int hex)
+    {
         byte R = (byte)((hex >> 16) & 0xFF);
         byte G = (byte)((hex >> 8) & 0xFF);
-        byte B = (byte)((hex ) & 0xFF);
+        byte B = (byte)((hex) & 0xFF);
         return new Color32(R, G, B, 255);
     }
 
@@ -81,8 +82,9 @@ sealed public class Sequencer : MonoBehaviour
             pianoRollDict.Add(item, new List<GameObject>());
         }
         var ws = PianoKeys.GetAllKeys().Where(e => e.color == KeyColor.White).ToList();
-        for(int i = 0; i < ws.Count(); i++) {
-            colorDict[ws[i]] =MakeColorFromHex(0xffffff);
+        for (int i = 0; i < ws.Count(); i++)
+        {
+            colorDict[ws[i]] = MakeColorFromHex(0xffffff);
         }
         PianoKeys.GetAllKeys().Where(e => e.color == KeyColor.Black).ToList().ForEach(e => colorDict[e] = MakeColorFromHex(0x0000ff));
 
@@ -90,7 +92,7 @@ sealed public class Sequencer : MonoBehaviour
 
     public void LoadMidiFile(string file)
     {
-        Debug.Log("Loading MIDI file: " + file + ", Mode: " + (RuntimeSettings.isPlayMode ? "Play" : "Practice") + ", GameSpeed: " + RuntimeSettings.GAME_SPEED + ", User: " + RuntimeSettings.USER);
+        Debug.Log("Loading MIDI file: " + file + ", Mode: " + (RuntimeSettings.IS_PLAY_MODE ? "Play" : "Practice") + ", Difficulty: " + RuntimeSettings.DIFFICULTY + ", GameSpeed: " + RuntimeSettings.GAME_SPEED + ", User: " + RuntimeSettings.USER);
         midiFile = MidiFile.Read(file);
         SpawnNotes();
     }
@@ -342,21 +344,23 @@ sealed public class Sequencer : MonoBehaviour
         });
         foreach (var item in minDistDict)
         {
-            float h,s,v;
-            Color.RGBToHSV(colorDict[item.Key],out h,out s,out v);
-            if (item.Value == 2f) {
+            float h, s, v;
+            Color.RGBToHSV(colorDict[item.Key], out h, out s, out v);
+            if (item.Value == 2f)
+            {
                 s = 0f;
             }
-            else {
-                s = ((2-item.Value)/2) * s;
+            else
+            {
+                s = ((2 - item.Value) / 2) * s;
             }
-            var newc = Color.HSVToRGB(h,s,v);
-            newc.a = (2-item.Value)/2;
+            var newc = Color.HSVToRGB(h, s, v);
+            newc.a = (2 - item.Value) / 2;
             piano.UpdateDiskColor(item.Key, newc);
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
+            scoreView.SaveScoresAndViewFeedback(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
             this.ClearPianoRoll();
             this.startTime = -1f;
         }
