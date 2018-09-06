@@ -315,12 +315,12 @@ sealed public class PianoBuilder : MonoBehaviour
 
         var obj = Instantiate(textObj);
         string text;
-        if (missPercentage < 0.1f)
+        if (missPercentage < 0.15f)
         {
             text = "Perfection!";
             FillUp(0.5f);
         }
-        else if (missPercentage < 0.25f)
+        else if (missPercentage < 0.3f)
         {
             text = "Godlike";
             FillUp(0.3f);
@@ -342,13 +342,6 @@ sealed public class PianoBuilder : MonoBehaviour
         }
         else
         {
-            // if  (new System.Random().Next(1,7) > 5){
-            //     text = "Perfection!";
-            //     FillUp(0.10f);
-            // } else {
-            //     text = "Godlike!";
-            //     FillUp(0.05f);
-            // }
             text = "Decent";
             FillUp(0.05f);
         }
@@ -401,6 +394,8 @@ sealed public class PianoBuilder : MonoBehaviour
     {
         diskDict[key].GetComponent<MeshRenderer>().material.color = color;
     }
+
+    
 
     public PianoKeyVectors GetLMRAwayVectorsForKey(PianoKey key, float magnitude = 1f)
     {

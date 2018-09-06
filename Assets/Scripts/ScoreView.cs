@@ -10,8 +10,10 @@ public class ScoreView : MonoBehaviour
 
     private PianoBuilder piano;
     private List<GameObject> spawnedSegments;
+
     [SerializeField]
     private GameObject cube;
+
     [SerializeField]
     private const float tolerance = 0.1f;
 
@@ -19,6 +21,32 @@ public class ScoreView : MonoBehaviour
     {
         this.piano = GetComponent<PianoBuilder>();
         this.spawnedSegments = new List<GameObject>();
+    }
+
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.PageDown))
+        {
+            moveTowardsPiano();
+        }
+        if (Input.GetKey(KeyCode.PageUp))
+        {
+            moveAwayFromPiano();
+        }
+    }
+
+    void moveTowardsPiano()
+    {
+        Debug.Log("Move towards");
+        var towards = piano.GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(PianoBuilder.CENTRE)).away * -1;
+        spawnedSegments.ForEach(x => x.transform.Translate(Vector3.down * 0.1f));
+    }
+
+    void moveAwayFromPiano()
+    {
+        Debug.Log("Move away");
+        var away = piano.GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(PianoBuilder.CENTRE)).away;
+        spawnedSegments.ForEach(x => x.transform.Translate(Vector3.up * 0.1f));
     }
 
     public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
@@ -175,29 +203,37 @@ public class ScoreView : MonoBehaviour
             segMap[item.Key] = segments;
             var currMidiEvents = midiEvents.Where(e => e.key == item.Key).ToList();
             var currMidiNoteFromFile = item.Value;
-            item.Value.ForEach(e => segments.Add(new MidiSegment(MidiSegment.SegmentType.MISSED,e)));
+            item.Value.ForEach(e => segments.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e)));
 
-            if (!userMap.ContainsKey(item.Key)) {
+            if (!userMap.ContainsKey(item.Key))
+            {
                 continue;
             }
 
-            foreach (var userSeg in userMap[item.Key]) {
+            foreach (var userSeg in userMap[item.Key])
+            {
                 segments.Add(new MidiSegment(MidiSegment.SegmentType.EXTRA, userSeg));
             }
 
-            item.Value.ForEach(e => {
-                userMap[item.Key].ForEach(u => {
-                    if (u.start >= e.start && u.end < e.end && u.start < e.end) {
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT,e,u));
+            item.Value.ForEach(e =>
+            {
+                userMap[item.Key].ForEach(u =>
+                {
+                    if (u.start >= e.start && u.end < e.end && u.start < e.end)
+                    {
+                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, e, u));
                     }
-                    else if (u.start >= e.start && u.end > e.end && u.start < e.end) {
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT,u,e));
+                    else if (u.start >= e.start && u.end > e.end && u.start < e.end)
+                    {
+                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, u, e));
                     }
-                    else if (u.start <= e.start && u.end >= e.end) {
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT,e));
+                    else if (u.start <= e.start && u.end >= e.end)
+                    {
+                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, e));
                     }
-                    else if (u.start <= e.start && u.end <= e.end && u.end > e.start) {
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT,e,u));
+                    else if (u.start <= e.start && u.end <= e.end && u.end > e.start)
+                    {
+                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, e, u));
                     }
                 });
             });
