@@ -11,18 +11,18 @@ public class MidiSessionDto
 {
     public MidiSessionDto(){} // For json framework
 
-    public MidiSessionDto(string FileName, Difficulty TrackDifficulty, Mode GameMode, double Accuracy){
+    public MidiSessionDto(string FileName, double Accuracy){
         this.FileName = FileName;
         this.FormattedTrackName = formatTrackName(FileName);
-        this.TrackDifficulty = TrackDifficulty;
-        this.GameMode = GameMode;
+        this.TrackDifficulty = RuntimeSettings.Difficulty;
+        this.GameMode = RuntimeSettings.IS_PLAY_MODE ? MidiSessionDto.Mode.SpaceInvader : MidiSessionDto.Mode.Practice;
         this.Accuracy = Accuracy;
         this.SessionDateTime = DateTime.Now;
         this.User = RuntimeSettings.USER;
     }
 
     // Creates a dummy session
-    public MidiSessionDto(string midiPath) : this(midiPath, Difficulty.Easy, Mode.Practice, 0){}
+    public MidiSessionDto(string midiPath) : this(midiPath, 0){}
 
     private static string formatTrackName(string midiPath)
     {

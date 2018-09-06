@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -40,12 +41,14 @@ public class ScoreView : MonoBehaviour
         spawnedSegments.ForEach(x => x.transform.Translate(direction * 0.1f));
     }
 
-    public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
+    public void SaveScoresAndViewFeedback(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
     {
         Debug.Log("Displaying scores");
         var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f, offsetStartTime);
         var res = MakeSegmentsFor_(evs, durs);
         var velocity = 1f / velocityIn * noteScale;
+        var total = 0d;
+        var correct = 0d;
 
         if (evs.Count > 0)
         {
@@ -64,6 +67,7 @@ public class ScoreView : MonoBehaviour
 
             foreach (var m in list)
             {
+                total++;
                 var go = Instantiate(cube);
                 var lmraway = piano.GetLMRAwayVectorsForKey(key, Sequencer.calcX(m.offsetY / velocity + m.scaleY / 2f / velocity));
                 spawnedSegments.Add(go);
@@ -85,6 +89,7 @@ public class ScoreView : MonoBehaviour
                     case MidiSegment.SegmentType.CORRECT:
                         color = Color.green;
                         go.transform.localScale += new Vector3(.0002f, .0002f, .0002f);
+                        correct++;
                         break;
                     case MidiSegment.SegmentType.MISSED:
                         color = Color.yellow;
@@ -100,6 +105,15 @@ public class ScoreView : MonoBehaviour
                 go.transform.Rotate(0, -90f, 90f);
             }
         }
+        var accuracy = correct / total;
+        SaveScores(accuracy);
+    }
+
+    private void SaveScores(double accuracy)
+    {
+        Debug.Log("Saving session - accuracy = " + accuracy);
+        var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy);
+        new MidiSessionController(RuntimeSettings.MIDI_SESSIONS_PATH).putMidiSession(midiSessionDTO);
     }
 
     public void ClearScores()

@@ -151,7 +151,7 @@ sealed public class PianoBuilder : MonoBehaviour
             BuildPianoAt(obj.transform.position);
             obj.transform.SetParent(transform);
             base.transform.SetParent(obj.transform);
-            if (RuntimeSettings.isPlayMode)
+            if (RuntimeSettings.IS_PLAY_MODE)
             {
                 spawnGameElements();
             }
@@ -307,7 +307,7 @@ sealed public class PianoBuilder : MonoBehaviour
 
         Debug.Log(total + " " + totalmiss);
 
-        if (!RuntimeSettings.isPlayMode)
+        if (!RuntimeSettings.IS_PLAY_MODE)
         {
             return;
         }

@@ -90,7 +90,7 @@ sealed public class Sequencer : MonoBehaviour
 
     public void LoadMidiFile(string file)
     {
-        Debug.Log("Loading MIDI file: " + file + ", Mode: " + (RuntimeSettings.isPlayMode ? "Play" : "Practice") + ", GameSpeed: " + RuntimeSettings.GAME_SPEED + ", User: " + RuntimeSettings.USER);
+        Debug.Log("Loading MIDI file: " + file + ", Mode: " + (RuntimeSettings.IS_PLAY_MODE ? "Play" : "Practice") + ", GameSpeed: " + RuntimeSettings.GAME_SPEED + ", User: " + RuntimeSettings.USER);
         midiFile = MidiFile.Read(file);
         SpawnNotes();
     }
@@ -356,7 +356,7 @@ sealed public class Sequencer : MonoBehaviour
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            scoreView.DisplayScores(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
+            scoreView.SaveScoresAndViewFeedback(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
             this.ClearPianoRoll();
             this.startTime = -1f;
         }

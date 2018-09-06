@@ -1,10 +1,19 @@
 [
   {
+    "FileName": "Assets/MIDI/Für Elise.mid",
+    "FormattedTrackName": "Für Elise",
+    "TrackDifficulty": 1,
+    "GameMode": 1,
+    "Accuracy": 0.0,
+    "SessionDateTime": "2018-09-06T20:26:42.5760629+12:00",
+    "User": "Beethoven"
+  },
+  {
     "FileName": "Assets/MIDI\\Another Love.mid",
     "FormattedTrackName": "Another Love",
     "TrackDifficulty": 0,
     "GameMode": 1,
-    "Accuracy": 0.70,
+    "Accuracy": 0.7,
     "SessionDateTime": "2018-08-30T12:41:30.409093+12:00",
     "User": "Beethoven"
   },
@@ -40,7 +49,7 @@
     "FormattedTrackName": "Megalovania small",
     "TrackDifficulty": 0,
     "GameMode": 1,
-    "Accuracy": 0.900,
+    "Accuracy": 0.9,
     "SessionDateTime": "2018-08-30T12:41:30.5077443+12:00",
     "User": "Beethoven"
   },
@@ -49,7 +58,7 @@
     "FormattedTrackName": "Megalovania",
     "TrackDifficulty": 0,
     "GameMode": 1,
-    "Accuracy": 0.870,
+    "Accuracy": 0.87,
     "SessionDateTime": "2018-08-30T12:41:30.510248+12:00",
     "User": "Beethoven"
   },
@@ -67,7 +76,7 @@
     "FormattedTrackName": "Moonlight Sonata (3rd mvt)",
     "TrackDifficulty": 2,
     "GameMode": 1,
-    "Accuracy": 0.150,
+    "Accuracy": 0.15,
     "SessionDateTime": "2018-08-30T12:41:30.514755+12:00",
     "User": "Beethoven"
   },
@@ -76,7 +85,7 @@
     "FormattedTrackName": "Mozart Eine Kleine (Easy)",
     "TrackDifficulty": 0,
     "GameMode": 1,
-    "Accuracy": 0.800,
+    "Accuracy": 0.8,
     "SessionDateTime": "2018-08-30T12:41:30.5172587+12:00",
     "User": "Beethoven"
   },
@@ -85,7 +94,7 @@
     "FormattedTrackName": "Silent Night (Easy)",
     "TrackDifficulty": 0,
     "GameMode": 1,
-    "Accuracy": 0.100,
+    "Accuracy": 0.1,
     "SessionDateTime": "2018-08-30T12:41:30.5197624+12:00",
     "User": "Beethoven"
   }

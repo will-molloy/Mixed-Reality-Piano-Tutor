@@ -41,11 +41,11 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     void Start()
     {
-        MidiSessionController = new MidiSessionController(RuntimeSettings.midiSessionResourcePath);
+        MidiSessionController = new MidiSessionController(RuntimeSettings.MIDI_SESSIONS_PATH);
         scrollViewRows = new List<GameObject>();
         scrollViewRows.Add(rowHeader);
         processFolder(RuntimeSettings.MIDI_DIR);
-        headerText.text = RuntimeSettings.isPlayMode ? "Track" : "Exercise";
+        headerText.text = RuntimeSettings.IS_PLAY_MODE ? "Track" : "Exercise";
         speedFieldPlaceHolderText.text = "Game speed: " + RuntimeSettings.GAME_SPEED.ToString("0.00");
     }
 

@@ -27,16 +27,16 @@ public class MainUIButtonSender : MonoBehaviour
     {
 		Debug.Log("Setting up play mode");
         RuntimeSettings.MIDI_DIR = PlayModeMidiDir;
-		RuntimeSettings.midiSessionResourcePath = PlayModeSessions;
-        RuntimeSettings.isPlayMode = true;
+		RuntimeSettings.MIDI_SESSIONS_PATH = PlayModeSessions;
+        RuntimeSettings.IS_PLAY_MODE = true;
     }
 
     private void practiceModeMessage()
     {
 		Debug.Log("Setting up practice mode");
         RuntimeSettings.MIDI_DIR = PracticeModeMidiDir;
-		RuntimeSettings.midiSessionResourcePath = PracticeModeSessions;
-        RuntimeSettings.isPlayMode = false;
+		RuntimeSettings.MIDI_SESSIONS_PATH = PracticeModeSessions;
+        RuntimeSettings.IS_PLAY_MODE = false;
     }
 
 }
