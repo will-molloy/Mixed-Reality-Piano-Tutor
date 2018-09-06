@@ -27,26 +27,17 @@ public class ScoreView : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.PageDown))
         {
-            moveTowardsPiano();
+            move(Vector3.down); // towards
         }
         if (Input.GetKey(KeyCode.PageUp))
         {
-            moveAwayFromPiano();
+            move(Vector3.up); // away
         }
     }
 
-    void moveTowardsPiano()
+    private void move(Vector3 direction)
     {
-        Debug.Log("Move towards");
-        var towards = piano.GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(PianoBuilder.CENTRE)).away * -1;
-        spawnedSegments.ForEach(x => x.transform.Translate(Vector3.down * 0.1f));
-    }
-
-    void moveAwayFromPiano()
-    {
-        Debug.Log("Move away");
-        var away = piano.GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(PianoBuilder.CENTRE)).away;
-        spawnedSegments.ForEach(x => x.transform.Translate(Vector3.up * 0.1f));
+        spawnedSegments.ForEach(x => x.transform.Translate(direction * 0.1f));
     }
 
     public void DisplayScores(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
@@ -56,9 +47,15 @@ public class ScoreView : MonoBehaviour
         var res = MakeSegmentsFor_(evs, durs);
         var velocity = 1f / velocityIn * noteScale;
 
-        Debug.Log(evs.First().start);
-        Debug.Log(durs.First().start);
-
+        if (evs.Count > 0)
+        {
+            Debug.Log(evs.First().start);
+            Debug.Log(durs.First().start);
+        }
+        else
+        {
+            Debug.LogWarning("No midievents recorded");
+        }
 
         foreach (var e in res)
         {
