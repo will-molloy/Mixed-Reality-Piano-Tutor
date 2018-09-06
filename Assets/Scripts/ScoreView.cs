@@ -111,8 +111,12 @@ public class ScoreView : MonoBehaviour
 
     private void SaveScores(double accuracy, List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
     {
-        Debug.Log("Saving session - accuracy = " + String.Format("{0:0.0:0}", accuracy));
         var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, midiEvents, durs, noteScale, velocityIn, offsetStartTime);
+
+        Debug.Log("Displaying end feedback text");
+        piano.showText(midiSessionDTO.FormattedTrackName + ": " + midiSessionDTO.Accuracy * 100 + "%", 50,  false);
+
+        Debug.Log("Saving session - accuracy = " + accuracy);
         new MidiSessionController().putMidiSession(midiSessionDTO);
     }
 

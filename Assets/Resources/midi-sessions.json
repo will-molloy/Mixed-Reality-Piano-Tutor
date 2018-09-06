@@ -4,7 +4,7 @@
     "FormattedTrackName": "Silent Night (Easy)",
     "GameMode": 1,
     "Accuracy": 0.0,
-    "SessionDateTime": "2018-09-06T21:26:57.6997787+12:00",
+    "SessionDateTime": "2018-09-06T22:03:39.1420004+12:00",
     "User": "Beethoven",
     "midiEvents": [],
     "noteDurations": [
@@ -747,6 +747,1070 @@
           "keyNum": 60,
           "color": 1
         }
+      }
+    ],
+    "noteScale": 1.0,
+    "velocityIn": 0.2,
+    "offsetStartTime": 12.4936447
+  },
+  {
+    "FileName": "Assets/MIDI\\Silent Night (Easy).mid",
+    "FormattedTrackName": "Silent Night (Easy)",
+    "GameMode": 1,
+    "Accuracy": 0.0,
+    "SessionDateTime": "2018-09-06T22:01:31.750819+12:00",
+    "User": "Beethoven",
+    "midiEvents": [],
+    "noteDurations": [
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 1.90917969,
+        "end": 3.81835938,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 3.74999976,
+        "end": 7.5,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 2.50976563,
+        "end": 3.14453125,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 3.774414,
+        "end": 5.048828,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 7.57324266,
+        "end": 11.3964844,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 7.5,
+        "end": 11.25,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 9.40918,
+        "end": 11.3183594,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 11.249999,
+        "end": 14.999999,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 10.0097656,
+        "end": 10.6445313,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 11.2744131,
+        "end": 12.5488272,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 12.5,
+        "end": 13.75,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 14.8095694,
+        "end": 18.36914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 13.75,
+        "end": 15.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 15.0,
+        "end": 16.25,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 17.5,
+        "end": 20.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 18.7499981,
+        "end": 22.4999981,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 18.7744141,
+        "end": 20.0488281,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 21.25,
+        "end": 23.75,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 22.5732422,
+        "end": 26.3964844,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 22.5,
+        "end": 23.75,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 25.0,
+        "end": 27.5,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 26.25,
+        "end": 30.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 26.2744141,
+        "end": 27.5488281,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 29.80957,
+        "end": 33.36914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 30.0,
+        "end": 33.75,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 32.5,
+        "end": 35.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 33.7499962,
+        "end": 37.4999962,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 33.7744141,
+        "end": 35.04883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 35.65918,
+        "end": 37.56836,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 37.4999962,
+        "end": 41.2499962,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 36.2597656,
+        "end": 36.89453,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 37.5244141,
+        "end": 38.79883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 39.40918,
+        "end": 41.31836,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 41.2499962,
+        "end": 44.9999962,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 40.0097656,
+        "end": 40.64453,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 41.2744141,
+        "end": 42.54883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 45.0,
+        "end": 48.75,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 44.80957,
+        "end": 48.36914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 47.5,
+        "end": 50.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 48.7500038,
+        "end": 52.5000038,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 48.7744141,
+        "end": 50.04883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 50.6591759,
+        "end": 52.5683556,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 52.5000038,
+        "end": 56.2500038,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 51.2597656,
+        "end": 51.89453,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 52.5244141,
+        "end": 53.79883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 54.40918,
+        "end": 56.31836,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 56.25,
+        "end": 60.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 55.0097656,
+        "end": 55.64453,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 56.2744141,
+        "end": 57.54883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 57.5000038,
+        "end": 58.7500038,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 59.80957,
+        "end": 63.36914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 58.7499962,
+        "end": 59.9999962,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 60.0,
+        "end": 61.25,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 63.7499962,
+        "end": 67.5,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 62.5,
+        "end": 65.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 63.7744141,
+        "end": 65.04883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 65.0244141,
+        "end": 66.29883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 67.49999,
+        "end": 71.24999,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 66.2744141,
+        "end": 67.54883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 67.5244141,
+        "end": 68.79883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 71.24999,
+        "end": 74.99999,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 71.32324,
+        "end": 75.1464844,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 74.99999,
+        "end": 78.74999,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 74.80957,
+        "end": 78.36914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 76.2744141,
+        "end": 77.54883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 78.75,
+        "end": 82.5,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 77.52441,
+        "end": 78.79882,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 78.7744141,
+        "end": 80.04883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 80.65918,
+        "end": 82.56836,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 82.5,
+        "end": 86.25,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 81.2597656,
+        "end": 81.89453,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 82.5244141,
+        "end": 83.79883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 86.05957,
+        "end": 89.61914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 86.25,
+        "end": 90.0,
+        "key": null
+      }
+    ],
+    "noteScale": 1.0,
+    "velocityIn": 0.2,
+    "offsetStartTime": 18.0286026
+  },
+  {
+    "FileName": "Assets/MIDI\\Silent Night (Easy).mid",
+    "FormattedTrackName": "Silent Night (Easy)",
+    "GameMode": 1,
+    "Accuracy": 0.0,
+    "SessionDateTime": "2018-09-06T21:26:57.6997787+12:00",
+    "User": "Beethoven",
+    "midiEvents": [],
+    "noteDurations": [
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 1.90917969,
+        "end": 3.81835938,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 3.74999976,
+        "end": 7.5,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 2.50976563,
+        "end": 3.14453125,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 3.774414,
+        "end": 5.048828,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 7.57324266,
+        "end": 11.3964844,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 7.5,
+        "end": 11.25,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 9.40918,
+        "end": 11.3183594,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 11.249999,
+        "end": 14.999999,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 10.0097656,
+        "end": 10.6445313,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 11.2744131,
+        "end": 12.5488272,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 12.5,
+        "end": 13.75,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 14.8095694,
+        "end": 18.36914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 13.75,
+        "end": 15.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 15.0,
+        "end": 16.25,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 17.5,
+        "end": 20.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 18.7499981,
+        "end": 22.4999981,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 18.7744141,
+        "end": 20.0488281,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 21.25,
+        "end": 23.75,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 22.5732422,
+        "end": 26.3964844,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 22.5,
+        "end": 23.75,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 25.0,
+        "end": 27.5,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 26.25,
+        "end": 30.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 26.2744141,
+        "end": 27.5488281,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 29.80957,
+        "end": 33.36914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 30.0,
+        "end": 33.75,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 32.5,
+        "end": 35.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 33.7499962,
+        "end": 37.4999962,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 33.7744141,
+        "end": 35.04883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 35.65918,
+        "end": 37.56836,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 37.4999962,
+        "end": 41.2499962,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 36.2597656,
+        "end": 36.89453,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 37.5244141,
+        "end": 38.79883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 39.40918,
+        "end": 41.31836,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 41.2499962,
+        "end": 44.9999962,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 40.0097656,
+        "end": 40.64453,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 41.2744141,
+        "end": 42.54883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 45.0,
+        "end": 48.75,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 44.80957,
+        "end": 48.36914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 47.5,
+        "end": 50.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 48.7500038,
+        "end": 52.5000038,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 48.7744141,
+        "end": 50.04883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 50.6591759,
+        "end": 52.5683556,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 52.5000038,
+        "end": 56.2500038,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 51.2597656,
+        "end": 51.89453,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 52.5244141,
+        "end": 53.79883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 54.40918,
+        "end": 56.31836,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 56.25,
+        "end": 60.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 55.0097656,
+        "end": 55.64453,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 56.2744141,
+        "end": 57.54883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 57.5000038,
+        "end": 58.7500038,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 59.80957,
+        "end": 63.36914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 58.7499962,
+        "end": 59.9999962,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 60.0,
+        "end": 61.25,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 63.7499962,
+        "end": 67.5,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 62.5,
+        "end": 65.0,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 63.7744141,
+        "end": 65.04883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 65.0244141,
+        "end": 66.29883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 67.49999,
+        "end": 71.24999,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 66.2744141,
+        "end": 67.54883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 67.5244141,
+        "end": 68.79883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 71.24999,
+        "end": 74.99999,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 71.32324,
+        "end": 75.1464844,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 74.99999,
+        "end": 78.74999,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 74.80957,
+        "end": 78.36914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 76.2744141,
+        "end": 77.54883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 78.75,
+        "end": 82.5,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 77.52441,
+        "end": 78.79882,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 78.7744141,
+        "end": 80.04883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 80.65918,
+        "end": 82.56836,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 82.5,
+        "end": 86.25,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 81.2597656,
+        "end": 81.89453,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 82.5244141,
+        "end": 83.79883,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 86.05957,
+        "end": 89.61914,
+        "key": null
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 0.0,
+        "start": 86.25,
+        "end": 90.0,
+        "key": null
       }
     ],
     "noteScale": 1.0,

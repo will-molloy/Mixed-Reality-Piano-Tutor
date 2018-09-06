@@ -311,7 +311,7 @@ sealed public class PianoBuilder : MonoBehaviour
             return;
         }
         var missPercentage = totalmiss / (double)total;
-        
+
         if (missPercentage < 0.15d)
         {
             showText("Perfection!");
@@ -344,11 +344,11 @@ sealed public class PianoBuilder : MonoBehaviour
         }
     }
 
-    private void showText(string text, float delay = 0.25f)
+    public void showText(string text, int fontSize = 100, bool destroy = true)
     {
         var obj = Instantiate(textObj);
         obj.GetComponent<TextMesh>().text = text;
-        obj.GetComponent<TextMesh>().fontSize = 100;
+        obj.GetComponent<TextMesh>().fontSize = fontSize;
         var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
         var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.1f);
         obj.transform.position = lmr.away + new Vector3(0, 0.05f, 2.5f);
@@ -356,7 +356,10 @@ sealed public class PianoBuilder : MonoBehaviour
         obj.transform.rotation = rotation;
         obj.transform.Rotate(0, 180f, 0f);
 
-        StartCoroutine(SetDelayedDestory(obj, delay));
+        if (destroy)
+        {
+            StartCoroutine(SetDelayedDestory(obj, 0.25f));
+        }
     }
 
     private IEnumerator SetDelayedDestory(GameObject go, float time)
