@@ -9,7 +9,7 @@ public class RuntimeSettings {
 
 	public static bool IS_PLAY_MODE = true; // false = practice mode
 
-    public static MidiSessionDto.Difficulty Difficulty = MidiSessionDto.Difficulty.Medium;
+    public static MidiSessionDto.Difficulty DIFFICULTY = MidiSessionDto.Difficulty.Medium;
 
 	public static string USER = "Beethoven"; 
 

@@ -14,7 +14,7 @@ public class MidiSessionDto
     public MidiSessionDto(string FileName, double Accuracy){
         this.FileName = FileName;
         this.FormattedTrackName = formatTrackName(FileName);
-        this.TrackDifficulty = RuntimeSettings.Difficulty;
+        this.TrackDifficulty = RuntimeSettings.DIFFICULTY;
         this.GameMode = RuntimeSettings.IS_PLAY_MODE ? MidiSessionDto.Mode.SpaceInvader : MidiSessionDto.Mode.Practice;
         this.Accuracy = Accuracy;
         this.SessionDateTime = DateTime.Now;

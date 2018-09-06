@@ -100,7 +100,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
         setText(passes + "/" + sessions.Count(), OVERALL_SCORE_INDEX, row);
 
         // Setup button
-        row.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playButtonEvent(midiPath); });
+        row.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playButtonEvent(midiPath, head.TrackDifficulty); });
 
         if (passes > 0)
         {
@@ -118,7 +118,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
         textObj.text = text;
     }
 
-    private void playButtonEvent(string midiPath)
+    private void playButtonEvent(string midiPath, MidiSessionDto.Difficulty difficulty)
     {
         var name = nameField.GetComponent<UnityEngine.UI.InputField>().text;
         if (!name.Equals(""))
@@ -131,6 +131,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
             RuntimeSettings.GAME_SPEED = float.Parse(speed, CultureInfo.InvariantCulture.NumberFormat);
         }
         RuntimeSettings.MIDI_FILE_NAME = midiPath;
+        RuntimeSettings.DIFFICULTY = difficulty;
         SceneManager.LoadScene(PlayModeSceneName);
     }
 

@@ -81,6 +81,15 @@
     "User": "Beethoven"
   },
   {
+    "FileName": "Assets/MIDI\\Moonlight Sonata (3rd mvt).mid",
+    "FormattedTrackName": "Moonlight Sonata (3rd mvt)",
+    "TrackDifficulty": 2,
+    "GameMode": 1,
+    "Accuracy": 0.0,
+    "SessionDateTime": "2018-09-06T20:35:25.2038276+12:00",
+    "User": "Beethoven"
+  },
+  {
     "FileName": "Assets/MIDI\\Mozart Eine Kleine (Easy).mid",
     "FormattedTrackName": "Mozart Eine Kleine (Easy)",
     "TrackDifficulty": 0,
