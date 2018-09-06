@@ -1,0 +1,90 @@
+[
+  {
+    "FileName": "Assets/MIDI\\Another Love.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI\\Bumble Bee.mid",
+    "difficulty": 2
+  },
+  {
+    "FileName": "Assets/MIDI\\canon.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI\\Für Elise.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI\\Megalovania small.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI\\megalovania.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI\\Moonlight Sonata (1st mvt).mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI\\Moonlight Sonata (3rd mvt).mid",
+    "difficulty": 2
+  },
+  {
+    "FileName": "Assets/MIDI\\Mozart Eine Kleine (Easy).mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI\\Silent Night (Easy).mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_asharp_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_a_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_b_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_csharp_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_c_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_dsharp_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_d_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_e_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_fsharp_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_f_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_gsharp_major.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_g_major.mid",
+    "difficulty": 0
+  }
+]

@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 using Newtonsoft.Json;
+using System;
 
 ///<summary>
 /// Midi session API
@@ -10,6 +11,8 @@ using Newtonsoft.Json;
 public class MidiSessionController
 {
     private static string MIDI_SESSIONS_JSON_PATH = "Assets/Resources/midi-sessions.json";
+
+    private static string MIDI_DIFFICULTY_TABLE_PATH = "Assets/Resources/midi-difficulties.json";
 
     public MidiSessionController()
     {
@@ -41,15 +44,47 @@ public class MidiSessionController
         // Better way than getting all sessions each time to append into json collection?
         var savedSessions = getAllSessions();
         savedSessions.Add(midiSession);
-        savedSessions.Sort((a, b) => a.FileName.CompareTo(b.FileName));
+        savedSessions.Sort((a, b) => a.SessionDateTime.CompareTo(b.SessionDateTime));
         var json = JsonConvert.SerializeObject(savedSessions, Formatting.Indented);
         File.WriteAllText(MIDI_SESSIONS_JSON_PATH, json);
     }
 
-    // Useful for testing
-    public void putDummyMidiSession(string midiPath)
+    public MidiDifficultyDto.Difficulty GetDifficultyFor(string midiPath)
     {
-        putMidiSession(new MidiSessionDto(midiPath));
+        Debug.Log("Retrieving difficulty for: " + midiPath);
+        var table = getAllDifficulties().Where(x => x.FileName.Equals(midiPath));
+        if (table.Count() > 0)
+        {
+            return table.First().difficulty;
+        }
+        else
+        {
+            var dto = new MidiDifficultyDto(midiPath, MidiDifficultyDto.Difficulty.Easy);
+            putDifficultyEntry(dto);
+            return dto.difficulty;
+        }
     }
 
+    private List<MidiDifficultyDto> getAllDifficulties()
+    {
+
+        if (File.Exists(MIDI_DIFFICULTY_TABLE_PATH))
+        {
+            var json = File.ReadAllText(MIDI_DIFFICULTY_TABLE_PATH);
+            if (json.Trim().Length > 0) // empty file cause problems
+            {
+                return JsonConvert.DeserializeObject<List<MidiDifficultyDto>>(json);
+            }
+        }
+        return new List<MidiDifficultyDto>();
+    }
+
+    private void putDifficultyEntry(MidiDifficultyDto dto)
+    {
+        Debug.Log("Creating difficulty entry for: " + dto.FileName);
+        var savedSessions = getAllDifficulties();
+        savedSessions.Add(dto);
+        var json = JsonConvert.SerializeObject(savedSessions, Formatting.Indented);
+        File.WriteAllText(MIDI_DIFFICULTY_TABLE_PATH, json);
+    }
 }

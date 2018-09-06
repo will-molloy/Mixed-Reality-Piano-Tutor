@@ -13,10 +13,6 @@ public class MainUIButtonSender : MonoBehaviour
 
     [SerializeField] private string PracticeModeMidiDir;
 
-	[SerializeField] private string PlayModeSessions;
-
-    [SerializeField] private string PracticeModeSessions;
-
     void Start()
     {
         playModeButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playModeMessage(); });

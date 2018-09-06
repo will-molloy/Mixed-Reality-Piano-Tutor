@@ -15,8 +15,7 @@ public class MidiSessionDto
     {
         this.FileName = FileName;
         this.FormattedTrackName = formatTrackName(FileName);
-        this.TrackDifficulty = RuntimeSettings.DIFFICULTY;
-        this.GameMode = RuntimeSettings.IS_PLAY_MODE ? MidiSessionDto.Mode.SpaceInvader : MidiSessionDto.Mode.Practice;
+        this.GameMode = RuntimeSettings.IS_PLAY_MODE ? Mode.SpaceInvader : Mode.Practice;
         this.Accuracy = Accuracy;
         this.SessionDateTime = DateTime.Now;
         this.User = RuntimeSettings.USER;
@@ -40,9 +39,6 @@ public class MidiSessionDto
 
     [DataMember]
     public string FormattedTrackName { get; set; }
-
-    [DataMember]
-    public Difficulty TrackDifficulty { get; set; }
 
     [DataMember]
     public Mode GameMode { get; set; }
@@ -72,11 +68,9 @@ public class MidiSessionDto
     [DataMember]
     public float offsetStartTime { get; set; }
 
-    public enum Difficulty
+    public override string ToString()
     {
-        Easy,
-        Medium,
-        Hard,
+        return "MidiSession - FileName: " + FileName + ", ";
     }
 
     public enum Mode
@@ -85,9 +79,5 @@ public class MidiSessionDto
         SpaceInvader,
     }
 
-    public override string ToString()
-    {
-        return "MidiSession - FileName: " + FileName + ", ";
-    }
-
 }
+

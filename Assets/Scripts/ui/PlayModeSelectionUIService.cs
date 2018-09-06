@@ -95,12 +95,14 @@ public class PlayModeSelectionUIService : MonoBehaviour
             passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
         }
         setText(head.FormattedTrackName, NAME_INDEX, row);
-        setText(head.TrackDifficulty.ToString(), DIFFICULTY_INDEX, row);
         setText(bestScore * 100 + "%", BEST_SCORE_INDEX, row);
         setText(passes + "/" + sessions.Count(), OVERALL_SCORE_INDEX, row);
 
+        var difficulty = MidiSessionController.GetDifficultyFor(midiPath);
+        setText(difficulty.ToString(), DIFFICULTY_INDEX, row);
+
         // Setup button
-        row.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playButtonEvent(midiPath, head.TrackDifficulty); });
+        row.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playButtonEvent(midiPath, difficulty); });
 
         if (passes > 0)
         {
@@ -118,7 +120,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
         textObj.text = text;
     }
 
-    private void playButtonEvent(string midiPath, MidiSessionDto.Difficulty difficulty)
+    private void playButtonEvent(string midiPath, MidiDifficultyDto.Difficulty difficulty)
     {
         var name = nameField.GetComponent<UnityEngine.UI.InputField>().text;
         if (!name.Equals(""))
