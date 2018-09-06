@@ -1,38 +1,92 @@
 [
   {
-    "FileName": "Assets/MIDI\\forelise.mid",
-    "FormattedTrackName": "forelise",
-    "TrackDifficulty": 2,
-    "GameMode": 0,
-    "Accuracy": 0.45,
-    "SessionDateTime": "2018-06-22T14:16:54.8590012+12:00",
-    "User": "Beethoven"
-  },
-  {
-    "FileName": "Assets/MIDI\\megalovania.mid",
-    "FormattedTrackName": "megalovania",
-    "TrackDifficulty": 1,
-    "GameMode": 0,
-    "Accuracy": 0.20,
-    "SessionDateTime": "2018-06-22T14:16:54.9783054+12:00",
-    "User": "Beethoven"
-  },
-  {
-    "FileName": "Assets/MIDI\\megalovania_s.mid",
-    "FormattedTrackName": "megalovania s",
-    "TrackDifficulty": 1,
-    "GameMode": 0,
-    "Accuracy": 0.95,
-    "SessionDateTime": "2018-06-22T14:16:55.0133942+12:00",
-    "User": "Beethoven"
-  },
-  {
-    "FileName": "Assets/MIDI\\mozart_eine_kleine_easy.mid",
-    "FormattedTrackName": "mozart eine kleine easy",
+    "FileName": "Assets/MIDI\\Another Love.mid",
+    "FormattedTrackName": "Another Love",
     "TrackDifficulty": 0,
-    "GameMode": 2,
-    "Accuracy": 0.98,
-    "SessionDateTime": "2018-06-22T14:16:55.0209139+12:00",
+    "GameMode": 1,
+    "Accuracy": 0.70,
+    "SessionDateTime": "2018-08-30T12:41:30.409093+12:00",
+    "User": "Beethoven"
+  },
+  {
+    "FileName": "Assets/MIDI\\Bumble Bee.mid",
+    "FormattedTrackName": "Bumble Bee",
+    "TrackDifficulty": 0,
+    "GameMode": 1,
+    "Accuracy": 0.823,
+    "SessionDateTime": "2018-08-30T12:41:30.4822053+12:00",
+    "User": "Beethoven"
+  },
+  {
+    "FileName": "Assets/MIDI\\Canon.mid",
+    "FormattedTrackName": "Canon",
+    "TrackDifficulty": 0,
+    "GameMode": 1,
+    "Accuracy": 0.556,
+    "SessionDateTime": "2018-08-30T12:41:30.5032372+12:00",
+    "User": "Beethoven"
+  },
+  {
+    "FileName": "Assets/MIDI\\Für Elise.mid",
+    "FormattedTrackName": "Für Elise",
+    "TrackDifficulty": 1,
+    "GameMode": 1,
+    "Accuracy": 0.456,
+    "SessionDateTime": "2018-08-30T12:41:30.5057412+12:00",
+    "User": "Beethoven"
+  },
+  {
+    "FileName": "Assets/MIDI\\Megalovania small.mid",
+    "FormattedTrackName": "Megalovania small",
+    "TrackDifficulty": 0,
+    "GameMode": 1,
+    "Accuracy": 0.900,
+    "SessionDateTime": "2018-08-30T12:41:30.5077443+12:00",
+    "User": "Beethoven"
+  },
+  {
+    "FileName": "Assets/MIDI\\Megalovania.mid",
+    "FormattedTrackName": "Megalovania",
+    "TrackDifficulty": 0,
+    "GameMode": 1,
+    "Accuracy": 0.870,
+    "SessionDateTime": "2018-08-30T12:41:30.510248+12:00",
+    "User": "Beethoven"
+  },
+  {
+    "FileName": "Assets/MIDI\\Moonlight Sonata (1st mvt).mid",
+    "FormattedTrackName": "Moonlight Sonata (1st mvt)",
+    "TrackDifficulty": 1,
+    "GameMode": 1,
+    "Accuracy": 0.706,
+    "SessionDateTime": "2018-08-30T12:41:30.5127517+12:00",
+    "User": "Beethoven"
+  },
+  {
+    "FileName": "Assets/MIDI\\Moonlight Sonata (3rd mvt).mid",
+    "FormattedTrackName": "Moonlight Sonata (3rd mvt)",
+    "TrackDifficulty": 2,
+    "GameMode": 1,
+    "Accuracy": 0.150,
+    "SessionDateTime": "2018-08-30T12:41:30.514755+12:00",
+    "User": "Beethoven"
+  },
+  {
+    "FileName": "Assets/MIDI\\Mozart Eine Kleine (Easy).mid",
+    "FormattedTrackName": "Mozart Eine Kleine (Easy)",
+    "TrackDifficulty": 0,
+    "GameMode": 1,
+    "Accuracy": 0.800,
+    "SessionDateTime": "2018-08-30T12:41:30.5172587+12:00",
+    "User": "Beethoven"
+  },
+  {
+    "FileName": "Assets/MIDI\\Silent Night (Easy).mid",
+    "FormattedTrackName": "Silent Night (Easy)",
+    "TrackDifficulty": 0,
+    "GameMode": 1,
+    "Accuracy": 0.100,
+    "SessionDateTime": "2018-08-30T12:41:30.5197624+12:00",
     "User": "Beethoven"
   }
 ]

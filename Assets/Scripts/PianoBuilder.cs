@@ -315,35 +315,52 @@ sealed public class PianoBuilder : MonoBehaviour
 
         var obj = Instantiate(textObj);
         string text;
-        if (missPercentage < 0.3f)
+        if (missPercentage < 0.1f)
         {
-            text = "Perfect";
-            FillUp(0.45f);
+            text = "Perfection!";
+            FillUp(0.5f);
         }
-        else if (missPercentage < 0.5f)
+        else if (missPercentage < 0.25f)
+        {
+            text = "Godlike";
+            FillUp(0.3f);
+        }
+        else if (missPercentage < 0.4f)
+        {
+            text = "Impressive";
+            FillUp(0.2f);
+        }
+        else if (missPercentage < 0.55f)
         {
             text = "Great";
-            FillUp(0.25f);
-        }
-        else if (missPercentage < 0.7f)
-        {
-            text = "Decent";
             FillUp(0.15f);
+        }
+        else if (missPercentage < 0.8f)
+        {
+            text = "Good";
+            FillUp(0.1f);
         }
         else
         {
-            text = "Good";
+            // if  (new System.Random().Next(1,7) > 5){
+            //     text = "Perfection!";
+            //     FillUp(0.10f);
+            // } else {
+            //     text = "Godlike!";
+            //     FillUp(0.05f);
+            // }
+            text = "Decent";
             FillUp(0.05f);
         }
         obj.GetComponent<TextMesh>().text = text;
         var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
         var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.1f);
-        obj.transform.position = lmr.away + new Vector3(0f, 0.05f, 0f);
+        obj.transform.position = lmr.away + new Vector3(0, 0.05f, 30);
         var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
         obj.transform.rotation = rotation;
         obj.transform.Rotate(0, 180f, 0f);
 
-        StartCoroutine(SetDelayedDestory(obj, 0.3f));
+        StartCoroutine(SetDelayedDestory(obj, 0.25f));
     }
 
     private IEnumerator SetDelayedDestory(GameObject go, float time)

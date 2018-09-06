@@ -22,7 +22,7 @@ public class MidiSessionDto
     }
 
     // Creates a dummy session
-    public MidiSessionDto(string midiPath) : this(midiPath, Difficulty.Easy, Mode.Standard, 0){}
+    public MidiSessionDto(string midiPath) : this(midiPath, Difficulty.Easy, Mode.Practice, 0){}
 
     private static string formatTrackName(string midiPath)
     {
@@ -62,8 +62,7 @@ public class MidiSessionDto
 
     public enum Mode
     {
-        Standard,
-        Laser,
+        Practice,
         SpaceInvader,
     }
 
