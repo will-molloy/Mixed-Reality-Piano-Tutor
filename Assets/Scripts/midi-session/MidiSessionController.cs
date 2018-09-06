@@ -42,9 +42,19 @@ public class MidiSessionController
     {
         Debug.Log("Writing MIDI session: " + midiSession);
         // Better way than getting all sessions each time to append into json collection?
-        var savedSessions = getAllSessions();
+        var savedSessions = getAllSessions().Where(x =>
+        {
+            if (RuntimeSettings.IS_PLAY_MODE)
+            {
+                return x.GameMode.Equals(MidiSessionDto.Mode.SpaceInvader);
+            }
+            else
+            {
+                return x.GameMode.Equals(MidiSessionDto.Mode.Practice);
+            }
+        }).ToList();
         savedSessions.Add(midiSession);
-        savedSessions.Sort((a, b) => a.SessionDateTime.CompareTo(b.SessionDateTime));
+        savedSessions.Sort((a, b) => -a.SessionDateTime.CompareTo(b.SessionDateTime)); // earliest first
         var json = JsonConvert.SerializeObject(savedSessions, Formatting.Indented);
         File.WriteAllText(MIDI_SESSIONS_JSON_PATH, json);
     }
