@@ -24,7 +24,7 @@ public class MidiSessionController
         return getAllSessions().Where(x => x.FileName.Equals(midiFileName)).ToList();
     }
 
-    private List<MidiSessionDto> getAllSessions()
+    public List<MidiSessionDto> getAllSessions()
     {
 
         if (File.Exists(MIDI_SESSIONS_JSON_PATH))

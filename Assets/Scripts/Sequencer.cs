@@ -309,6 +309,14 @@ sealed public class Sequencer : MonoBehaviour
     }
     public void Update()
     {
+        if (RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP)
+        {
+            Debug.Log("Loading a saved session");
+            var session = RuntimeSettings.CACHED_SESSION;
+            scoreView.SaveScoresAndViewFeedback(session.midiEvents, session.noteDurations, session.noteScale, RuntimeSettings.GAME_SPEED, session.offsetStartTime);
+            RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP = false;
+            RuntimeSettings.CACHED_SESSION = null;
+        }
         if (this.startTime < 0f)
         {
             return;
@@ -410,7 +418,6 @@ sealed public class Sequencer : MonoBehaviour
         }
     }
 }
-
 
 public struct NoteDuration
 {

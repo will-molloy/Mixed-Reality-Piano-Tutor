@@ -86,5 +86,13 @@
   {
     "FileName": "Assets/MIDI/exercises\\scale_g_major.mid",
     "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI\\Canon.mid",
+    "difficulty": 0
+  },
+  {
+    "FileName": "Assets/MIDI\\Megalovania.mid",
+    "difficulty": 0
   }
 ]

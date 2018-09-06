@@ -69,7 +69,6 @@ public class PlayModeSelectionUIService : MonoBehaviour
         Directory.GetFiles(midiDir)
         .Where(x => x.EndsWith(".mid")).ToList()
         .ForEach(x => processSessionsAndPlaceUiEntry(x));
-        // .ForEach(x => MidiSessionController.putDummyMidiSession(x));
 
         // Set progress count
         progressField.text = "Completed: " + tracksCompleted + "/" + totalTracks;

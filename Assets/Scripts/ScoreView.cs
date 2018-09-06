@@ -106,18 +106,16 @@ public class ScoreView : MonoBehaviour
             }
         }
         var accuracy = correct / total;
-        SaveScores(accuracy, midiEvents, durs, noteScale, velocityIn, offsetStartTime);
-    }
-
-    private void SaveScores(double accuracy, List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
-    {
-        var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, midiEvents, durs, noteScale, velocityIn, offsetStartTime);
-
+        
         Debug.Log("Displaying end feedback text");
-        piano.showText(midiSessionDTO.FormattedTrackName + ": " + midiSessionDTO.Accuracy * 100 + "%", 50,  false);
-
-        Debug.Log("Saving session - accuracy = " + accuracy);
-        new MidiSessionController().putMidiSession(midiSessionDTO);
+        var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, midiEvents, durs, noteScale, velocityIn, offsetStartTime);
+        piano.showText(midiSessionDTO.FormattedTrackName + ": " + midiSessionDTO.Accuracy * 100 + "%", 50, false);
+        
+        if (!RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP) // dont resave a loaded session
+        {
+            Debug.Log("Saving session - accuracy = " + accuracy);
+            new MidiSessionController().putMidiSession(midiSessionDTO);
+        }
     }
 
     public void ClearScores()

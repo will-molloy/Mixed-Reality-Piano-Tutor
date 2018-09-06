@@ -15,4 +15,8 @@ public class RuntimeSettings {
 
 	public static float GAME_SPEED = 0.2f;
 
+	public static bool LOAD_SAVED_SESSION_AT_STARTUP = false;
+
+	public static MidiSessionDto CACHED_SESSION = null;
+
 }
