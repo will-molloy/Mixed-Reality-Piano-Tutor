@@ -41,7 +41,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     void Start()
     {
-        MidiSessionController = new MidiSessionController(RuntimeSettings.MIDI_SESSIONS_PATH);
+        MidiSessionController = new MidiSessionController();
         scrollViewRows = new List<GameObject>();
         scrollViewRows.Add(rowHeader);
         processFolder(RuntimeSettings.MIDI_DIR);

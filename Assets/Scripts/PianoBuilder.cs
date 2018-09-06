@@ -73,7 +73,7 @@ sealed public class PianoBuilder : MonoBehaviour
 
     public void FillUp(float percent)
     {
-        Debug.Log("Fill up" + percent);
+        Debug.Log("Fill up " + percent);
         var newPercent = fillUpPercent + percent;
         if (newPercent > 1.0f)
         {

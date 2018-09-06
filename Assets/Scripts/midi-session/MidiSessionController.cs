@@ -9,11 +9,10 @@ using Newtonsoft.Json;
 ///</summary>
 public class MidiSessionController
 {
-    private string jsonPath;
+    private static string MIDI_SESSIONS_JSON_PATH = "Assets/Resources/midi-sessions.json";
 
-    public MidiSessionController(string jsonPath)
+    public MidiSessionController()
     {
-        this.jsonPath = jsonPath;
     }
 
     public List<MidiSessionDto> getMidiSessions(string midiFileName)
@@ -25,9 +24,9 @@ public class MidiSessionController
     private List<MidiSessionDto> getAllSessions()
     {
 
-        if (File.Exists(jsonPath))
+        if (File.Exists(MIDI_SESSIONS_JSON_PATH))
         {
-            var json = File.ReadAllText(jsonPath);
+            var json = File.ReadAllText(MIDI_SESSIONS_JSON_PATH);
             if (json.Trim().Length > 0) // empty file cause problems
             {
                 return JsonConvert.DeserializeObject<List<MidiSessionDto>>(json);
@@ -44,7 +43,7 @@ public class MidiSessionController
         savedSessions.Add(midiSession);
         savedSessions.Sort((a, b) => a.FileName.CompareTo(b.FileName));
         var json = JsonConvert.SerializeObject(savedSessions, Formatting.Indented);
-        File.WriteAllText(jsonPath, json);
+        File.WriteAllText(MIDI_SESSIONS_JSON_PATH, json);
     }
 
     // Useful for testing

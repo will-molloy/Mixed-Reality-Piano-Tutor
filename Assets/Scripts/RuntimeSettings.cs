@@ -13,8 +13,6 @@ public class RuntimeSettings {
 
 	public static string USER = "Beethoven"; 
 
-    public static string MIDI_SESSIONS_PATH = "Assets/Resources/play-sessions.json";
-
 	public static float GAME_SPEED = 0.2f;
 
 }
