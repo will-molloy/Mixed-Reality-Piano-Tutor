@@ -14,10 +14,6 @@ public class MidiSessionController
 
     private static string MIDI_DIFFICULTY_TABLE_PATH = "Assets/Resources/midi-difficulties.json";
 
-    public MidiSessionController()
-    {
-    }
-
     public List<MidiSessionDto> getMidiSessions(string midiFileName)
     {
         Debug.Log("Getting MIDI sessions: " + midiFileName);

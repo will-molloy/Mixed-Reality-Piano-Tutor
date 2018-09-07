@@ -4,6 +4,9 @@ using Melanchall.DryWetMidi.Smf;
 using Melanchall.DryWetMidi.Smf.Interaction;
 using System.Linq;
 using System.Collections;
+using System.Runtime.Serialization;
+using System.IO;
+using System;
 
 /// <summary>  
 /// - Builds piano roll from MIDI file after virtual piano is built
@@ -283,7 +286,7 @@ sealed public class Sequencer : MonoBehaviour
                 eligible.ForEach(e =>
                 {
                     total++;
-                    if (!ons.Contains(e.key))
+                    if (!ons.Contains(PianoKeys.GetKeyFor(e.keyNum)))
                     {
                         totalMiss++;
                     }
@@ -311,9 +314,9 @@ sealed public class Sequencer : MonoBehaviour
     {
         if (RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP)
         {
-            RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP = false;
             Debug.Log("Loading a saved session");
-            scoreView.SaveScoresAndViewFeedback(RuntimeSettings.CACHED_SESSION);
+            RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP = false;
+            scoreView.SaveScoresAndViewFeedback(RuntimeSettings.CACHED_SESSION, false);
             RuntimeSettings.CACHED_SESSION = null;
             this.ClearPianoRoll();
             this.startTime = -1f;
@@ -334,12 +337,12 @@ sealed public class Sequencer : MonoBehaviour
         {
             if (!note.hasKeyBeenActivated && deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration))
             {
-                piano.ActivateKey(note.key.keyNum, Color.red, note.duration);
+                piano.ActivateKey(note.keyNum, Color.red, note.duration);
                 note.hasKeyBeenActivated = true;
             }
             if (deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration))
             {
-                minDistDict[note.key] = 0;
+                minDistDict[PianoKeys.GetKeyFor(note.keyNum)] = 0;
                 return;
             }
             else if (deltaT > note.end)
@@ -349,7 +352,7 @@ sealed public class Sequencer : MonoBehaviour
 
             if (deltaT >= (note.start - 2f) && deltaT <= note.start)
             {
-                minDistDict[note.key] = Mathf.Min(Mathf.Abs(note.start - deltaT), minDistDict[note.key]);
+                minDistDict[PianoKeys.GetKeyFor(note.keyNum)] = Mathf.Min(Mathf.Abs(note.start - deltaT), minDistDict[PianoKeys.GetKeyFor(note.keyNum)]);
             }
         });
         foreach (var item in minDistDict)
@@ -421,19 +424,33 @@ sealed public class Sequencer : MonoBehaviour
     }
 }
 
-public struct NoteDuration
+[DataContract]
+public class NoteDuration
 {
-    public bool hasKeyBeenActivated { get; set; }
-    public float duration { get; }
-    public float start { get; set; }
-    public float end { get; set; }
-    public PianoKey key { get; }
+    [DataMember] public bool hasKeyBeenActivated { get; set; }
+    [DataMember] public float duration { get; }
+    [DataMember] public float start { get; set; }
+    [DataMember] public float end { get; set; }
+    [DataMember] public int keyNum { get; }
+
     public NoteDuration(float start, float dur, PianoKey key)
     {
         this.hasKeyBeenActivated = false;
         this.start = start;
         this.end = start + dur;
-        this.key = key;
+        this.keyNum = key.keyNum;
         this.duration = dur;
     }
+
+    public NoteDuration() { }
+
+    override public string ToString()
+    {
+        return hasKeyBeenActivated + " " +
+            duration + " " +
+            start + " " +
+            end + " " +
+            keyNum;
+    }
+
 }

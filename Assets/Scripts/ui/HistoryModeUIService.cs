@@ -49,6 +49,8 @@ public class HistoryModeUIService : MonoBehaviour
         var sessions = MidiSessionController.getAllSessions();
         sessions.ForEach(session =>
         {
+            session.midiEvents.ForEach(x => Debug.Log(x));
+
             var row = Instantiate(rowEntryObj);
 
             // Add to scroll view

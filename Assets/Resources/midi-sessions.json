@@ -4,28 +4,29 @@
     "FormattedTrackName": "Silent Night (Easy)",
     "GameMode": 1,
     "Accuracy": 0.0,
-    "SessionDateTime": "2018-09-07T13:00:24.5572853+12:00",
+    "SessionDateTime": "2018-09-07T13:48:19.7776572+12:00",
     "User": "Beethoven",
     "midiEvents": [
       {
         "hasKeyBeenActivated": false,
-        "duration": 1.0111084,
-        "start": 1.64815521,
-        "end": 2.65926361,
-        "key": {
-          "keyNum": 41,
-          "color": 1
-        }
+        "duration": 0.3000002,
+        "start": 1.209836,
+        "end": 1.5098362,
+        "keyNum": 38
       },
       {
         "hasKeyBeenActivated": false,
-        "duration": 0.9777756,
-        "start": 1.65926361,
-        "end": 2.63703918,
-        "key": {
-          "keyNum": 40,
-          "color": 1
-        }
+        "duration": 0.244444847,
+        "start": 1.43205833,
+        "end": 1.67650318,
+        "keyNum": 40
+      },
+      {
+        "hasKeyBeenActivated": false,
+        "duration": 1.39999962,
+        "start": 1.67650318,
+        "end": 3.0765028,
+        "keyNum": 41
       }
     ],
     "noteDurations": [
@@ -34,1284 +35,522 @@
         "duration": 1.90917969,
         "start": 1.90917969,
         "end": 3.81835938,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 3.74999976,
         "end": 7.5,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 0.6347656,
         "start": 2.50976563,
         "end": 3.14453125,
-        "key": {
-          "keyNum": 69,
-          "color": 1
-        }
+        "keyNum": 69
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 3.774414,
         "end": 5.048828,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.82324219,
         "start": 7.57324266,
         "end": 11.3964844,
-        "key": {
-          "keyNum": 64,
-          "color": 1
-        }
+        "keyNum": 64
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 7.5,
         "end": 11.25,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.90917969,
         "start": 9.40918,
         "end": 11.3183594,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 11.249999,
         "end": 14.999999,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 0.6347656,
         "start": 10.0097656,
         "end": 10.6445313,
-        "key": {
-          "keyNum": 69,
-          "color": 1
-        }
+        "keyNum": 69
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 11.2744131,
         "end": 12.5488272,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.25,
         "start": 12.5,
         "end": 13.75,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.55957031,
         "start": 14.8095694,
         "end": 18.36914,
-        "key": {
-          "keyNum": 64,
-          "color": 1
-        }
+        "keyNum": 64
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.25,
         "start": 13.75,
         "end": 15.0,
-        "key": {
-          "keyNum": 59,
-          "color": 1
-        }
+        "keyNum": 59
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.25,
         "start": 15.0,
         "end": 16.25,
-        "key": {
-          "keyNum": 57,
-          "color": 1
-        }
+        "keyNum": 57
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 2.5,
         "start": 17.5,
         "end": 20.0,
-        "key": {
-          "keyNum": 74,
-          "color": 1
-        }
+        "keyNum": 74
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 18.7499981,
         "end": 22.4999981,
-        "key": {
-          "keyNum": 55,
-          "color": 1
-        }
+        "keyNum": 55
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 18.7744141,
         "end": 20.0488281,
-        "key": {
-          "keyNum": 74,
-          "color": 1
-        }
+        "keyNum": 74
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 2.5,
         "start": 21.25,
         "end": 23.75,
-        "key": {
-          "keyNum": 55,
-          "color": 1
-        }
+        "keyNum": 55
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.82324219,
         "start": 22.5732422,
         "end": 26.3964844,
-        "key": {
-          "keyNum": 71,
-          "color": 1
-        }
+        "keyNum": 71
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.25,
         "start": 22.5,
         "end": 23.75,
-        "key": {
-          "keyNum": 55,
-          "color": 1
-        }
+        "keyNum": 55
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 2.5,
         "start": 25.0,
         "end": 27.5,
-        "key": {
-          "keyNum": 72,
-          "color": 1
-        }
+        "keyNum": 72
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 26.25,
         "end": 30.0,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 26.2744141,
         "end": 27.5488281,
-        "key": {
-          "keyNum": 72,
-          "color": 1
-        }
+        "keyNum": 72
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.55957031,
         "start": 29.80957,
         "end": 33.36914,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 30.0,
         "end": 33.75,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 2.5,
         "start": 32.5,
         "end": 35.0,
-        "key": {
-          "keyNum": 69,
-          "color": 1
-        }
+        "keyNum": 69
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 33.7499962,
         "end": 37.4999962,
-        "key": {
-          "keyNum": 53,
-          "color": 1
-        }
+        "keyNum": 53
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 33.7744141,
         "end": 35.04883,
-        "key": {
-          "keyNum": 69,
-          "color": 1
-        }
+        "keyNum": 69
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.90917969,
         "start": 35.65918,
         "end": 37.56836,
-        "key": {
-          "keyNum": 72,
-          "color": 1
-        }
+        "keyNum": 72
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 37.4999962,
         "end": 41.2499962,
-        "key": {
-          "keyNum": 53,
-          "color": 1
-        }
+        "keyNum": 53
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 0.6347656,
         "start": 36.2597656,
         "end": 36.89453,
-        "key": {
-          "keyNum": 71,
-          "color": 1
-        }
+        "keyNum": 71
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 37.5244141,
         "end": 38.79883,
-        "key": {
-          "keyNum": 69,
-          "color": 1
-        }
+        "keyNum": 69
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.90917969,
         "start": 39.40918,
         "end": 41.31836,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 41.2499962,
         "end": 44.9999962,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 0.6347656,
         "start": 40.0097656,
         "end": 40.64453,
-        "key": {
-          "keyNum": 69,
-          "color": 1
-        }
+        "keyNum": 69
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 41.2744141,
         "end": 42.54883,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 45.0,
         "end": 48.75,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.55957031,
         "start": 44.80957,
         "end": 48.36914,
-        "key": {
-          "keyNum": 64,
-          "color": 1
-        }
+        "keyNum": 64
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 2.5,
         "start": 47.5,
         "end": 50.0,
-        "key": {
-          "keyNum": 69,
-          "color": 1
-        }
+        "keyNum": 69
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 48.7500038,
         "end": 52.5000038,
-        "key": {
-          "keyNum": 53,
-          "color": 1
-        }
+        "keyNum": 53
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 48.7744141,
         "end": 50.04883,
-        "key": {
-          "keyNum": 69,
-          "color": 1
-        }
+        "keyNum": 69
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.90917969,
         "start": 50.6591759,
         "end": 52.5683556,
-        "key": {
-          "keyNum": 72,
-          "color": 1
-        }
+        "keyNum": 72
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 52.5000038,
         "end": 56.2500038,
-        "key": {
-          "keyNum": 53,
-          "color": 1
-        }
+        "keyNum": 53
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 0.6347656,
         "start": 51.2597656,
         "end": 51.89453,
-        "key": {
-          "keyNum": 71,
-          "color": 1
-        }
+        "keyNum": 71
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 52.5244141,
         "end": 53.79883,
-        "key": {
-          "keyNum": 69,
-          "color": 1
-        }
+        "keyNum": 69
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.90917969,
         "start": 54.40918,
         "end": 56.31836,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 56.25,
         "end": 60.0,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 0.6347656,
         "start": 55.0097656,
         "end": 55.64453,
-        "key": {
-          "keyNum": 69,
-          "color": 1
-        }
+        "keyNum": 69
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 56.2744141,
         "end": 57.54883,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.25,
         "start": 57.5000038,
         "end": 58.7500038,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.55957031,
         "start": 59.80957,
         "end": 63.36914,
-        "key": {
-          "keyNum": 64,
-          "color": 1
-        }
+        "keyNum": 64
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.25,
         "start": 58.7499962,
         "end": 59.9999962,
-        "key": {
-          "keyNum": 59,
-          "color": 1
-        }
+        "keyNum": 59
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.25,
         "start": 60.0,
         "end": 61.25,
-        "key": {
-          "keyNum": 57,
-          "color": 1
-        }
+        "keyNum": 57
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 63.7499962,
         "end": 67.5,
-        "key": {
-          "keyNum": 55,
-          "color": 1
-        }
+        "keyNum": 55
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 2.5,
         "start": 62.5,
         "end": 65.0,
-        "key": {
-          "keyNum": 74,
-          "color": 1
-        }
+        "keyNum": 74
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 63.7744141,
         "end": 65.04883,
-        "key": {
-          "keyNum": 74,
-          "color": 1
-        }
+        "keyNum": 74
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 65.0244141,
         "end": 66.29883,
-        "key": {
-          "keyNum": 77,
-          "color": 1
-        }
+        "keyNum": 77
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 67.49999,
         "end": 71.24999,
-        "key": {
-          "keyNum": 55,
-          "color": 1
-        }
+        "keyNum": 55
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 66.2744141,
         "end": 67.54883,
-        "key": {
-          "keyNum": 74,
-          "color": 1
-        }
+        "keyNum": 74
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 67.5244141,
         "end": 68.79883,
-        "key": {
-          "keyNum": 71,
-          "color": 1
-        }
+        "keyNum": 71
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 71.24999,
         "end": 74.99999,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.82324219,
         "start": 71.32324,
         "end": 75.1464844,
-        "key": {
-          "keyNum": 72,
-          "color": 1
-        }
+        "keyNum": 72
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 74.99999,
         "end": 78.74999,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.55957031,
         "start": 74.80957,
         "end": 78.36914,
-        "key": {
-          "keyNum": 76,
-          "color": 1
-        }
+        "keyNum": 76
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 76.2744141,
         "end": 77.54883,
-        "key": {
-          "keyNum": 72,
-          "color": 1
-        }
+        "keyNum": 72
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 78.75,
         "end": 82.5,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 77.52441,
         "end": 78.79882,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 78.7744141,
         "end": 80.04883,
-        "key": {
-          "keyNum": 64,
-          "color": 1
-        }
+        "keyNum": 64
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.90917969,
         "start": 80.65918,
         "end": 82.56836,
-        "key": {
-          "keyNum": 67,
-          "color": 1
-        }
+        "keyNum": 67
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 82.5,
         "end": 86.25,
-        "key": {
-          "keyNum": 55,
-          "color": 1
-        }
+        "keyNum": 55
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 0.6347656,
         "start": 81.2597656,
         "end": 81.89453,
-        "key": {
-          "keyNum": 65,
-          "color": 1
-        }
+        "keyNum": 65
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 1.27441406,
         "start": 82.5244141,
         "end": 83.79883,
-        "key": {
-          "keyNum": 62,
-          "color": 1
-        }
+        "keyNum": 62
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.55957031,
         "start": 86.05957,
         "end": 89.61914,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       },
       {
         "hasKeyBeenActivated": false,
         "duration": 3.75,
         "start": 86.25,
         "end": 90.0,
-        "key": {
-          "keyNum": 60,
-          "color": 1
-        }
+        "keyNum": 60
       }
     ],
     "noteScale": 1.0,
     "velocityIn": 0.2,
-    "offsetStartTime": 93.0274048
-  },
-  {
-    "FileName": "Assets/MIDI\\Silent Night (Easy).mid",
-    "FormattedTrackName": "Silent Night (Easy)",
-    "GameMode": 1,
-    "Accuracy": 0.0,
-    "SessionDateTime": "2018-09-07T12:59:07.5173318+12:00",
-    "User": "Beethoven",
-    "midiEvents": [
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 12.5792437,
-        "end": 13.0236883,
-        "key": null
-      }
-    ],
-    "noteDurations": [
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 1.90917969,
-        "end": 3.81835938,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 3.74999976,
-        "end": 7.5,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 2.50976563,
-        "end": 3.14453125,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 3.774414,
-        "end": 5.048828,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 7.57324266,
-        "end": 11.3964844,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 7.5,
-        "end": 11.25,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 9.40918,
-        "end": 11.3183594,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 11.249999,
-        "end": 14.999999,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 10.0097656,
-        "end": 10.6445313,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 11.2744131,
-        "end": 12.5488272,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 12.5,
-        "end": 13.75,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 14.8095694,
-        "end": 18.36914,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 13.75,
-        "end": 15.0,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 15.0,
-        "end": 16.25,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 17.5,
-        "end": 20.0,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 18.7499981,
-        "end": 22.4999981,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 18.7744141,
-        "end": 20.0488281,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 21.25,
-        "end": 23.75,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 22.5732422,
-        "end": 26.3964844,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 22.5,
-        "end": 23.75,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 25.0,
-        "end": 27.5,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 26.25,
-        "end": 30.0,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 26.2744141,
-        "end": 27.5488281,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 29.80957,
-        "end": 33.36914,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 30.0,
-        "end": 33.75,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 32.5,
-        "end": 35.0,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 33.7499962,
-        "end": 37.4999962,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 33.7744141,
-        "end": 35.04883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 35.65918,
-        "end": 37.56836,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 37.4999962,
-        "end": 41.2499962,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 36.2597656,
-        "end": 36.89453,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 37.5244141,
-        "end": 38.79883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 39.40918,
-        "end": 41.31836,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 41.2499962,
-        "end": 44.9999962,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 40.0097656,
-        "end": 40.64453,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 41.2744141,
-        "end": 42.54883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 45.0,
-        "end": 48.75,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 44.80957,
-        "end": 48.36914,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 47.5,
-        "end": 50.0,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 48.7500038,
-        "end": 52.5000038,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 48.7744141,
-        "end": 50.04883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 50.6591759,
-        "end": 52.5683556,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 52.5000038,
-        "end": 56.2500038,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 51.2597656,
-        "end": 51.89453,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 52.5244141,
-        "end": 53.79883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 54.40918,
-        "end": 56.31836,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 56.25,
-        "end": 60.0,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 55.0097656,
-        "end": 55.64453,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 56.2744141,
-        "end": 57.54883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 57.5000038,
-        "end": 58.7500038,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 59.80957,
-        "end": 63.36914,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 58.7499962,
-        "end": 59.9999962,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 60.0,
-        "end": 61.25,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 63.7499962,
-        "end": 67.5,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 62.5,
-        "end": 65.0,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 63.7744141,
-        "end": 65.04883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 65.0244141,
-        "end": 66.29883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 67.49999,
-        "end": 71.24999,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 66.2744141,
-        "end": 67.54883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 67.5244141,
-        "end": 68.79883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 71.24999,
-        "end": 74.99999,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 71.32324,
-        "end": 75.1464844,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 74.99999,
-        "end": 78.74999,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 74.80957,
-        "end": 78.36914,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 76.2744141,
-        "end": 77.54883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 78.75,
-        "end": 82.5,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 77.52441,
-        "end": 78.79882,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 78.7744141,
-        "end": 80.04883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 80.65918,
-        "end": 82.56836,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 82.5,
-        "end": 86.25,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 81.2597656,
-        "end": 81.89453,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 82.5244141,
-        "end": 83.79883,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 86.05957,
-        "end": 89.61914,
-        "key": null
-      },
-      {
-        "hasKeyBeenActivated": false,
-        "duration": 0.0,
-        "start": 86.25,
-        "end": 90.0,
-        "key": null
-      }
-    ],
-    "noteScale": 1.0,
-    "velocityIn": 0.2,
-    "offsetStartTime": 10.3185339
+    "offsetStartTime": 7.63683033
   }
 ]

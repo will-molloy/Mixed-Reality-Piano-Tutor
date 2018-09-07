@@ -41,35 +41,39 @@ public class ScoreView : MonoBehaviour
         spawnedSegments.ForEach(x => x.transform.Translate(direction * 0.1f));
     }
 
-    public void SaveScoresAndViewFeedback(MidiSessionDto session)
+    public void SaveScoresAndViewFeedback(MidiSessionDto session, bool save = true)
     {
-        Debug.Log("User events: " + session.midiEvents.Count());
-        Debug.Log("Track events: " + session.noteDurations.Count());
+        var events = session.midiEvents;
+        var notes = session.noteDurations;
 
-        var evs = session.midiEvents;
-        var res = MakeSegmentsFor(evs, session.noteDurations);
+        Debug.Log("User events: " + events.Count());
+        Debug.Log("Track events: " + notes.Count());
+        events.ForEach(x => Debug.Log(x));
+
+        var segments = MakeSegmentsFor(events, notes);
         var velocity = 1f / session.velocityIn * session.noteScale;
         var total = 0d;
         var correct = 0d;
 
-        if (evs.Count == 0)
+        if (events.Count == 0)
         {
-            Debug.Log("No midievents recorded");
+            Debug.LogWarning("No midievents recorded");
         }
 
-        foreach (var e in res)
+        foreach (var e in segments)
         {
-            var key = e.Key;
+            var keyNum = e.Key;
             var list = e.Value;
 
             foreach (var m in list)
             {
+                var key = PianoKeys.GetKeyFor(keyNum);
                 total++;
                 var go = Instantiate(cube);
                 var lmraway = piano.GetLMRAwayVectorsForKey(key, Sequencer.calcX(m.offsetY / velocity + m.scaleY / 2f / velocity));
                 spawnedSegments.Add(go);
                 var dummy = new GameObject();
-                var k = piano.GetKeyObj(m.key);
+                var k = piano.GetKeyObj(key);
                 dummy.transform.SetParent(k.transform);
                 go.transform.SetParent(piano.transform);
                 var dropdownScale = go.transform.localScale;
@@ -108,11 +112,11 @@ public class ScoreView : MonoBehaviour
         var score = (int)(accuracy * 100);
         piano.showText(session.FormattedTrackName + ": " + score + "%", 50, false);
 
-        if (!RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP)  // dont resave a loaded session
+        if (save)  // dont resave a loaded session
         {
             Debug.Log("Saving session - score = " + accuracy * 100);
             // Same but update accuracy
-            var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, evs, session.noteDurations, session.noteScale, session.velocityIn, session.offsetStartTime);
+            var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, events, session.noteDurations, session.noteScale, session.velocityIn, session.offsetStartTime);
             new MidiSessionController().putMidiSession(midiSessionDTO);
         }
     }
@@ -151,7 +155,7 @@ public class ScoreView : MonoBehaviour
             refs.ForEach(e => temp.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e)));
             return temp;
         }
-        var key = seg[0].key;
+        var key = seg[0].keyNum;
         for (int i = 1; i < seg.Count; i++)
         {
             var gapStart = seg[i - 1].offsetY;
@@ -212,22 +216,39 @@ public class ScoreView : MonoBehaviour
         return of + tolerance >= a && of - tolerance <= a;
     }
 
-    private Dictionary<PianoKey, List<MidiSegment>> MakeSegmentsFor(List<NoteDuration> userEvents, List<NoteDuration> trackEvents)
+    private Dictionary<int, List<MidiSegment>> MakeSegmentsFor(List<NoteDuration> userEvents, List<NoteDuration> trackEvents)
     {
-        var segMap = new Dictionary<PianoKey, List<MidiSegment>>();
-        var userMap = userEvents.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
-        var trackMap = trackEvents.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
-        
         if (userEvents == null || trackEvents == null)
         {
             Debug.LogError("Null Args recved at MakeSegmentsFor()");
         }
+        var segMap = new Dictionary<int, List<MidiSegment>>();
+
+        var userMap = new Dictionary<int, List<NoteDuration>>();
+        foreach (var item in userEvents)
+        {
+            var newList = new List<NoteDuration>();
+            var list = userMap.ContainsKey(item.keyNum) ? userMap[item.keyNum] : newList;
+            list.Add(item);
+            userMap[item.keyNum] = list;
+        }
+
+        var trackMap = new Dictionary<int, List<NoteDuration>>();
+        foreach (var item in trackEvents)
+        {
+            var newList = new List<NoteDuration>();
+            var list = trackMap.ContainsKey(item.keyNum) ? trackMap[item.keyNum] : newList;
+            list.Add(item);
+            trackMap[item.keyNum] = list;
+        }
+        // var trackMap = trackEvents.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
+        // var userMap = userEvents.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
 
         foreach (var item in trackMap)
         {
             var segments = new List<MidiSegment>();
             segMap[item.Key] = segments;
-            var currMidiEvents = userEvents.Where(e => e.key == item.Key).ToList();
+            var currMidiEvents = userEvents.Where(e => e.keyNum == item.Key).ToList();
             var currMidiNoteFromFile = item.Value;
             item.Value.ForEach(e => segments.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e)));
 
@@ -279,23 +300,22 @@ public class ScoreView : MonoBehaviour
         public readonly float scaleY;
         public readonly float offsetY;
 
-        public readonly PianoKey key;
+        public readonly int keyNum;
 
-        public MidiSegment(SegmentType type, float scaleY, float offsetY, PianoKey key)
+        public MidiSegment(SegmentType type, float scaleY, float offsetY, int keyNum)
         {
             this.type = type;
             this.scaleY = scaleY;
             this.offsetY = offsetY;
-            this.key = key;
+            this.keyNum = keyNum;
         }
-
 
         public MidiSegment(SegmentType type, NoteDuration from, NoteDuration to)
         {
             this.type = type;
             this.scaleY = to.end - from.start;
             this.offsetY = to.end;
-            this.key = from.key;
+            this.keyNum = from.keyNum;
         }
 
         public MidiSegment(SegmentType type, NoteDuration dur)
@@ -303,7 +323,7 @@ public class ScoreView : MonoBehaviour
             this.type = type;
             this.scaleY = dur.duration;
             this.offsetY = dur.start;
-            this.key = dur.key;
+            this.keyNum = dur.keyNum;
         }
 
         override public string ToString()
