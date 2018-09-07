@@ -311,12 +311,14 @@ sealed public class Sequencer : MonoBehaviour
     {
         if (RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP)
         {
-            Debug.Log("Loading a saved session");
-            var session = RuntimeSettings.CACHED_SESSION;
-            scoreView.SaveScoresAndViewFeedback(session.midiEvents, session.noteDurations, session.noteScale, RuntimeSettings.GAME_SPEED, session.offsetStartTime);
             RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP = false;
+            Debug.Log("Loading a saved session");
+            scoreView.SaveScoresAndViewFeedback(RuntimeSettings.CACHED_SESSION);
             RuntimeSettings.CACHED_SESSION = null;
+            this.ClearPianoRoll();
+            this.startTime = -1f;
         }
+
         if (this.startTime < 0f)
         {
             return;
@@ -368,7 +370,7 @@ sealed public class Sequencer : MonoBehaviour
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            scoreView.SaveScoresAndViewFeedback(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
+            scoreView.ConvertEventsSaveScoresAndViewFeedback(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
             this.ClearPianoRoll();
             this.startTime = -1f;
         }

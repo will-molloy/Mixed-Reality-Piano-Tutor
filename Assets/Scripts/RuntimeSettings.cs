@@ -3,7 +3,7 @@
 ///</summary>
 public class RuntimeSettings {
 
-	public static string MIDI_FILE_NAME = "Assets/MIDI/Für Elise.mid";
+	public static string MIDI_FILE_NAME = "Assets/MIDI\\Für Elise.mid";
 
 	public static string MIDI_DIR = "Assets/MIDI";
 

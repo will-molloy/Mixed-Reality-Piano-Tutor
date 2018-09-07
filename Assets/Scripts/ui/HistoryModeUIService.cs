@@ -59,8 +59,9 @@ public class HistoryModeUIService : MonoBehaviour
 
             // Set text fields
             setText(session.FormattedTrackName, NAME_INDEX, row);
-            setText(session.SessionDateTime.ToShortDateString(), DATE_INDEX, row);
-            setText(session.Accuracy * 100 + "%", SCORE_INDEX, row);
+            setText(session.SessionDateTime.ToShortTimeString() + " " + session.SessionDateTime.ToShortDateString(), DATE_INDEX, row);
+            var score = (int)(session.Accuracy)*100;
+            setText(score + "%", SCORE_INDEX, row);
 
             // Setup button
             row.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate { playButtonEvent(session); });

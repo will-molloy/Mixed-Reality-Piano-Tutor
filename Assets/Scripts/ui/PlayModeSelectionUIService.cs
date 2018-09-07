@@ -93,6 +93,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
             bestScore = sessions.OrderByDescending(x => x.Accuracy).First().Accuracy;
             passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
         }
+        Debug.Log(sessions.Count());
         setText(head.FormattedTrackName, NAME_INDEX, row);
         setText(bestScore * 100 + "%", BEST_SCORE_INDEX, row);
         setText(passes + "/" + sessions.Count(), OVERALL_SCORE_INDEX, row);
