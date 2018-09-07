@@ -14,19 +14,14 @@ public class MidiSessionController
 
     private static string MIDI_DIFFICULTY_TABLE_PATH = "Assets/Resources/midi-difficulties.json";
 
-    public MidiSessionController()
-    {
-    }
-
     public List<MidiSessionDto> getMidiSessions(string midiFileName)
     {
         Debug.Log("Getting MIDI sessions: " + midiFileName);
         return getAllSessions().Where(x => x.FileName.Equals(midiFileName)).ToList();
     }
 
-    private List<MidiSessionDto> getAllSessions()
+    public List<MidiSessionDto> getAllSessions()
     {
-
         if (File.Exists(MIDI_SESSIONS_JSON_PATH))
         {
             var json = File.ReadAllText(MIDI_SESSIONS_JSON_PATH);
@@ -42,17 +37,7 @@ public class MidiSessionController
     {
         Debug.Log("Writing MIDI session: " + midiSession);
         // Better way than getting all sessions each time to append into json collection?
-        var savedSessions = getAllSessions().Where(x =>
-        {
-            if (RuntimeSettings.IS_PLAY_MODE)
-            {
-                return x.GameMode.Equals(MidiSessionDto.Mode.SpaceInvader);
-            }
-            else
-            {
-                return x.GameMode.Equals(MidiSessionDto.Mode.Practice);
-            }
-        }).ToList();
+        var savedSessions = getAllSessions();
         savedSessions.Add(midiSession);
         savedSessions.Sort((a, b) => -a.SessionDateTime.CompareTo(b.SessionDateTime)); // earliest first
         var json = JsonConvert.SerializeObject(savedSessions, Formatting.Indented);

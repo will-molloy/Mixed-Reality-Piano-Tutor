@@ -4,6 +4,9 @@ using Melanchall.DryWetMidi.Smf;
 using Melanchall.DryWetMidi.Smf.Interaction;
 using System.Linq;
 using System.Collections;
+using System.Runtime.Serialization;
+using System.IO;
+using System;
 
 /// <summary>  
 /// - Builds piano roll from MIDI file after virtual piano is built
@@ -283,7 +286,7 @@ sealed public class Sequencer : MonoBehaviour
                 eligible.ForEach(e =>
                 {
                     total++;
-                    if (!ons.Contains(e.key))
+                    if (!ons.Contains(PianoKeys.GetKeyFor(e.keyNum)))
                     {
                         totalMiss++;
                     }
@@ -309,6 +312,16 @@ sealed public class Sequencer : MonoBehaviour
     }
     public void Update()
     {
+        if (RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP)
+        {
+            Debug.Log("Loading a saved session");
+            RuntimeSettings.LOAD_SAVED_SESSION_AT_STARTUP = false;
+            scoreView.SaveScoresAndViewFeedback(RuntimeSettings.CACHED_SESSION, false);
+            RuntimeSettings.CACHED_SESSION = null;
+            this.ClearPianoRoll();
+            this.startTime = -1f;
+        }
+
         if (this.startTime < 0f)
         {
             return;
@@ -324,12 +337,12 @@ sealed public class Sequencer : MonoBehaviour
         {
             if (!note.hasKeyBeenActivated && deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration))
             {
-                piano.ActivateKey(note.key.keyNum, Color.red, note.duration);
+                piano.ActivateKey(note.keyNum, Color.red, note.duration);
                 note.hasKeyBeenActivated = true;
             }
             if (deltaT >= (note.start - note.duration) && deltaT < (note.end - note.duration))
             {
-                minDistDict[note.key] = 0;
+                minDistDict[PianoKeys.GetKeyFor(note.keyNum)] = 0;
                 return;
             }
             else if (deltaT > note.end)
@@ -339,7 +352,7 @@ sealed public class Sequencer : MonoBehaviour
 
             if (deltaT >= (note.start - 2f) && deltaT <= note.start)
             {
-                minDistDict[note.key] = Mathf.Min(Mathf.Abs(note.start - deltaT), minDistDict[note.key]);
+                minDistDict[PianoKeys.GetKeyFor(note.keyNum)] = Mathf.Min(Mathf.Abs(note.start - deltaT), minDistDict[PianoKeys.GetKeyFor(note.keyNum)]);
             }
         });
         foreach (var item in minDistDict)
@@ -360,7 +373,7 @@ sealed public class Sequencer : MonoBehaviour
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            scoreView.SaveScoresAndViewFeedback(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
+            scoreView.ConvertEventsSaveScoresAndViewFeedback(midiController.GetMidiEvents(), this.noteDurations.Select(x => new CompressedNoteDuration(x)).ToList(), this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
             this.ClearPianoRoll();
             this.startTime = -1f;
         }
@@ -411,20 +424,59 @@ sealed public class Sequencer : MonoBehaviour
     }
 }
 
-
 public struct NoteDuration
 {
     public bool hasKeyBeenActivated { get; set; }
     public float duration { get; }
-    public float start { get; set; }
-    public float end { get; set; }
-    public PianoKey key { get; }
+    public float start { get; }
+    public float end { get; }
+    public int keyNum { get; }
+
     public NoteDuration(float start, float dur, PianoKey key)
     {
         this.hasKeyBeenActivated = false;
         this.start = start;
         this.end = start + dur;
-        this.key = key;
+        this.keyNum = key.keyNum;
         this.duration = dur;
     }
+
 }
+
+[DataContract]
+public class CompressedNoteDuration
+{
+    [DataMember] public float duration { get; set; }
+    [DataMember] public float start { get; set; }
+    [DataMember] public float end { get; set; }
+    [DataMember] public int keyNum { get; set; }
+
+    public CompressedNoteDuration(NoteDuration noteDuration)
+    {
+        this.duration = noteDuration.duration;
+        this.start = noteDuration.start;
+        this.end = noteDuration.end;
+        this.keyNum = noteDuration.keyNum;
+    }
+
+    public CompressedNoteDuration(float start, float dur, PianoKey key)
+    {
+        this.start = start;
+        this.end = start + dur;
+        this.keyNum = key.keyNum;
+        this.duration = dur;
+    }
+
+    public CompressedNoteDuration() { }
+
+    override public string ToString()
+    {
+        return
+            duration + " " +
+            start + " " +
+            end + " " +
+            keyNum;
+    }
+
+}
+

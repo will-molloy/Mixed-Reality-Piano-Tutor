@@ -28,51 +28,51 @@ public class ScoreView : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.PageDown))
         {
-            move(Vector3.down); // towards
+            moveSegments(Vector3.down); // towards
         }
         if (Input.GetKey(KeyCode.PageUp))
         {
-            move(Vector3.up); // away
+            moveSegments(Vector3.up); // away
         }
     }
 
-    private void move(Vector3 direction)
+    private void moveSegments(Vector3 direction)
     {
         spawnedSegments.ForEach(x => x.transform.Translate(direction * 0.1f));
     }
 
-    public void SaveScoresAndViewFeedback(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
+    public void SaveScoresAndViewFeedback(MidiSessionDto session, bool save = true)
     {
-        Debug.Log("Displaying scores");
-        var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f, offsetStartTime);
-        var res = MakeSegmentsFor_(evs, durs);
-        var velocity = 1f / velocityIn * noteScale;
+        var events = session.userNoteDurations;
+        var notes = session.trackNoteDurations;
+
+        Debug.Log("User events: " + events.Count());
+        Debug.Log("Track events: " + notes.Count());
+
+        var segments = MakeSegmentsFor(events, notes);
+        var velocity = 1f / session.velocityIn * session.noteScale;
         var total = 0d;
         var correct = 0d;
 
-        if (evs.Count > 0)
-        {
-            Debug.Log(evs.First().start);
-            Debug.Log(durs.First().start);
-        }
-        else
+        if (events.Count == 0)
         {
             Debug.LogWarning("No midievents recorded");
         }
 
-        foreach (var e in res)
+        foreach (var e in segments)
         {
-            var key = e.Key;
+            var keyNum = e.Key;
             var list = e.Value;
 
             foreach (var m in list)
             {
+                var key = PianoKeys.GetKeyFor(keyNum);
                 total++;
                 var go = Instantiate(cube);
                 var lmraway = piano.GetLMRAwayVectorsForKey(key, Sequencer.calcX(m.offsetY / velocity + m.scaleY / 2f / velocity));
                 spawnedSegments.Add(go);
                 var dummy = new GameObject();
-                var k = piano.GetKeyObj(m.key);
+                var k = piano.GetKeyObj(key);
                 dummy.transform.SetParent(k.transform);
                 go.transform.SetParent(piano.transform);
                 var dropdownScale = go.transform.localScale;
@@ -106,18 +106,31 @@ public class ScoreView : MonoBehaviour
             }
         }
         var accuracy = correct / total;
-        SaveScores(accuracy, midiEvents, durs, noteScale, velocityIn, offsetStartTime);
-    }
-
-    private void SaveScores(double accuracy, List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
-    {
-        var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, midiEvents, durs, noteScale, velocityIn, offsetStartTime);
 
         Debug.Log("Displaying end feedback text");
-        piano.showText(midiSessionDTO.FormattedTrackName + ": " + midiSessionDTO.Accuracy * 100 + "%", 50,  false);
+        var score = (int)(accuracy * 100);
+        piano.showText(session.FormattedTrackName + ": " + score + "%", 50, false);
 
-        Debug.Log("Saving session - accuracy = " + accuracy);
-        new MidiSessionController().putMidiSession(midiSessionDTO);
+        if (save)  // dont resave a loaded session
+        {
+            Debug.Log("Saving session - score = " + accuracy * 100);
+            // Same but update accuracy
+            var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, events, session.trackNoteDurations, session.noteScale, session.velocityIn, session.offsetStartTime);
+            new MidiSessionController().putMidiSession(midiSessionDTO);
+        }
+    }
+
+    public void ConvertEventsSaveScoresAndViewFeedback(List<MidiEventStorage> midiEvents, List<CompressedNoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
+    {
+        Debug.Log("Displaying scores");
+        var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f, offsetStartTime);
+        var res = MakeSegmentsFor(evs, durs);
+        var velocity = 1f / velocityIn * noteScale;
+        var total = 0d;
+        var correct = 0d;
+
+        var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, 0, evs, durs, noteScale, velocityIn, offsetStartTime);
+        SaveScoresAndViewFeedback(midiSessionDTO);
     }
 
     public void ClearScores()
@@ -126,7 +139,7 @@ public class ScoreView : MonoBehaviour
         this.spawnedSegments.Clear();
     }
 
-    private List<MidiSegment> FillGaps(List<MidiSegment> seg, List<NoteDuration> refs)
+    private List<MidiSegment> FillGaps(List<MidiSegment> seg, List<CompressedNoteDuration> refs)
     {
         List<MidiSegment> temp = new List<MidiSegment>();
         refs.ForEach(e =>
@@ -141,7 +154,7 @@ public class ScoreView : MonoBehaviour
             refs.ForEach(e => temp.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e)));
             return temp;
         }
-        var key = seg[0].key;
+        var key = seg[0].keyNum;
         for (int i = 1; i < seg.Count; i++)
         {
             var gapStart = seg[i - 1].offsetY;
@@ -161,9 +174,9 @@ public class ScoreView : MonoBehaviour
         return seg;
     }
 
-    private List<NoteDuration> ConvertToNoteDurationFromMidiEventStorage(List<MidiEventStorage> midiEvents, float defaultEndTiming, float timeOffset)
+    private List<CompressedNoteDuration> ConvertToNoteDurationFromMidiEventStorage(List<MidiEventStorage> midiEvents, float defaultEndTiming, float timeOffset)
     {
-        var list = new List<NoteDuration>();
+        var list = new List<CompressedNoteDuration>();
         for (; ; )
         {
             // Until we have an empty list, keep searching notes and end of it
@@ -186,7 +199,7 @@ public class ScoreView : MonoBehaviour
                     else
                     {
                         var item = midiEvents[i];
-                        list.Add(new NoteDuration(head.time, item.time - head.time, PianoKeys.GetKeyFor(keyNum)));
+                        list.Add(new CompressedNoteDuration(head.time, item.time - head.time, PianoKeys.GetKeyFor(keyNum)));
                         midiEvents.Remove(head);
                         midiEvents.Remove(item);
                         break;
@@ -202,21 +215,21 @@ public class ScoreView : MonoBehaviour
         return of + tolerance >= a && of - tolerance <= a;
     }
 
-    private Dictionary<PianoKey, List<MidiSegment>> MakeSegmentsFor_(List<NoteDuration> midiEvents, List<NoteDuration> midiNotesFromFile)
+    private Dictionary<int, List<MidiSegment>> MakeSegmentsFor(List<CompressedNoteDuration> userEvents, List<CompressedNoteDuration> trackEvents)
     {
-        var segMap = new Dictionary<PianoKey, List<MidiSegment>>();
-        var premadeMap = midiNotesFromFile.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
-        var userMap = midiEvents.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
-        if (midiEvents == null || midiNotesFromFile == null)
+        if (userEvents == null || trackEvents == null)
         {
             Debug.LogError("Null Args recved at MakeSegmentsFor()");
         }
+        var segMap = new Dictionary<int, List<MidiSegment>>();
+        var trackMap = trackEvents.GroupBy(e => e.keyNum).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
+        var userMap = userEvents.GroupBy(e => e.keyNum).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
 
-        foreach (var item in premadeMap)
+        foreach (var item in trackMap)
         {
             var segments = new List<MidiSegment>();
             segMap[item.Key] = segments;
-            var currMidiEvents = midiEvents.Where(e => e.key == item.Key).ToList();
+            var currMidiEvents = userEvents.Where(e => e.keyNum == item.Key).ToList();
             var currMidiNoteFromFile = item.Value;
             item.Value.ForEach(e => segments.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, e)));
 
@@ -257,140 +270,6 @@ public class ScoreView : MonoBehaviour
         return segMap;
     }
 
-    private Dictionary<PianoKey, List<MidiSegment>> MakeSegmentsFor(List<NoteDuration> midiEvents, List<NoteDuration> midiNotesFromFile)
-    {
-        var segMap = new Dictionary<PianoKey, List<MidiSegment>>();
-        var premadeMap = midiNotesFromFile.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
-        // var premadeMap = PianoKeys.GetAllKeys().ToDictionary(e => e, e => midiNotesFromFile.Where(x => x.key.keyNum == e.keyNum).ToList());
-
-        if (midiEvents == null || midiNotesFromFile == null)
-        {
-            Debug.LogError("Null Args recved at MakeSegmentsFor()");
-        }
-
-        foreach (var item in premadeMap)
-        {
-            var segments = new List<MidiSegment>();
-            var currMidiEvents = midiEvents.Where(e => e.key == item.Key).ToList();
-            var currMidiNoteFromFile = item.Value;
-            int n = 0;
-            int j = 0;
-            // Both list should be sorted by their start time
-
-            while (n < currMidiEvents.Count || j < currMidiNoteFromFile.Count)
-            {
-                if (n >= currMidiEvents.Count)
-                {
-                    break;
-                }
-                var userEvent = currMidiEvents[n];
-                var refEvent = currMidiNoteFromFile[j];
-
-                if (WithInTolerance(userEvent.start, refEvent.start))
-                {
-                    // Exact start
-                    if (WithInTolerance(userEvent.end, refEvent.end))
-                    {
-                        // Exact End
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, refEvent));
-                    }
-                    else if (userEvent.end < refEvent.end + tolerance)
-                    {
-                        // Early end
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, userEvent));
-                    }
-                    else
-                    {
-                        // Late end
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, userEvent, refEvent));
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.EXTRA, refEvent, userEvent));
-                        // Advance to ref event after the end of this userevent
-                        while (j < currMidiNoteFromFile.Count)
-                        {
-                            if (userEvent.end < currMidiNoteFromFile[j].start - tolerance)
-                            {
-                                break;
-                            }
-                            j++;
-                        }
-
-                    }
-                    n++;
-
-                }
-                else if (userEvent.start > refEvent.start - tolerance && userEvent.start < refEvent.end + tolerance)
-                {
-                    // Late Start
-                    if (userEvent.end < refEvent.end + tolerance)
-                    {
-                        // Early end
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, userEvent));
-                    }
-                    else
-                    {
-                        // Late end
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, userEvent, refEvent));
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.EXTRA, refEvent, userEvent));
-                        // Advance to ref event after the end of this userevent
-                        while (j < currMidiNoteFromFile.Count)
-                        {
-                            if (userEvent.end < currMidiNoteFromFile[j].start - tolerance)
-                            {
-                                break;
-                            }
-                            j++;
-                        }
-                    }
-                    n++;
-                }
-                else if (userEvent.start < refEvent.start - tolerance)
-                {
-                    // Early Start
-                    if (userEvent.end < refEvent.start - tolerance)
-                    {
-                        // very early end
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.EXTRA, userEvent));
-                    }
-                    else if (userEvent.end < refEvent.end + tolerance)
-                    {
-                        // Early or exact end
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.EXTRA, userEvent, refEvent));
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, refEvent, userEvent));
-                    }
-                    else
-                    {
-                        // Late end
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.EXTRA, userEvent, refEvent));
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.CORRECT, refEvent));
-                        segments.Add(new MidiSegment(MidiSegment.SegmentType.EXTRA, refEvent, userEvent));
-                    }
-                    // Advance to ref event after the end of this userevent
-                    while (j < currMidiNoteFromFile.Count)
-                    {
-                        if (userEvent.end < currMidiNoteFromFile[j].start - tolerance)
-                        {
-                            break;
-                        }
-                        j++;
-                    }
-                    n++;
-                }
-                else if (userEvent.start > refEvent.end + tolerance)
-                {
-                    // Very late start (OOB)
-                    // Make Missed segment for the whole ref and adv j
-                    segments.Add(new MidiSegment(MidiSegment.SegmentType.MISSED, refEvent));
-                    j++;
-                    continue;
-                }
-            }
-            var ret = FillGaps(segments, currMidiNoteFromFile);
-            segMap.Add(item.Key, ret);
-        }
-
-        return segMap;
-    }
-
     public struct MidiSegment
     {
         public enum SegmentType
@@ -402,31 +281,30 @@ public class ScoreView : MonoBehaviour
         public readonly float scaleY;
         public readonly float offsetY;
 
-        public readonly PianoKey key;
+        public readonly int keyNum;
 
-        public MidiSegment(SegmentType type, float scaleY, float offsetY, PianoKey key)
+        public MidiSegment(SegmentType type, float scaleY, float offsetY, int keyNum)
         {
             this.type = type;
             this.scaleY = scaleY;
             this.offsetY = offsetY;
-            this.key = key;
+            this.keyNum = keyNum;
         }
 
-
-        public MidiSegment(SegmentType type, NoteDuration from, NoteDuration to)
+        public MidiSegment(SegmentType type, CompressedNoteDuration from, CompressedNoteDuration to)
         {
             this.type = type;
             this.scaleY = to.end - from.start;
             this.offsetY = to.end;
-            this.key = from.key;
+            this.keyNum = from.keyNum;
         }
 
-        public MidiSegment(SegmentType type, NoteDuration dur)
+        public MidiSegment(SegmentType type, CompressedNoteDuration dur)
         {
             this.type = type;
             this.scaleY = dur.duration;
             this.offsetY = dur.start;
-            this.key = dur.key;
+            this.keyNum = dur.keyNum;
         }
 
         override public string ToString()

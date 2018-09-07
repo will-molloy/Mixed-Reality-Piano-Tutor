@@ -51,6 +51,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     void Update()
     {
+        // Update width when screen size changes
         var canvasWidth = canvas.GetComponent<RectTransform>().rect.width;
         scrollViewRows.ForEach(x =>
         {
@@ -69,7 +70,6 @@ public class PlayModeSelectionUIService : MonoBehaviour
         Directory.GetFiles(midiDir)
         .Where(x => x.EndsWith(".mid")).ToList()
         .ForEach(x => processSessionsAndPlaceUiEntry(x));
-        // .ForEach(x => MidiSessionController.putDummyMidiSession(x));
 
         // Set progress count
         progressField.text = "Completed: " + tracksCompleted + "/" + totalTracks;
@@ -94,6 +94,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
             bestScore = sessions.OrderByDescending(x => x.Accuracy).First().Accuracy;
             passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
         }
+        Debug.Log(sessions.Count());
         setText(head.FormattedTrackName, NAME_INDEX, row);
         setText(bestScore * 100 + "%", BEST_SCORE_INDEX, row);
         setText(passes + "/" + sessions.Count(), OVERALL_SCORE_INDEX, row);

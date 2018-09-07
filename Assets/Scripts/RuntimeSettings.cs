@@ -3,7 +3,7 @@
 ///</summary>
 public class RuntimeSettings {
 
-	public static string MIDI_FILE_NAME = "Assets/MIDI/Für Elise.mid";
+	public static string MIDI_FILE_NAME = "Assets/MIDI\\Für Elise.mid";
 
 	public static string MIDI_DIR = "Assets/MIDI";
 
@@ -14,5 +14,9 @@ public class RuntimeSettings {
 	public static string USER = "Beethoven"; 
 
 	public static float GAME_SPEED = 0.2f;
+
+	public static bool LOAD_SAVED_SESSION_AT_STARTUP = false;
+
+	public static MidiSessionDto CACHED_SESSION = null;
 
 }

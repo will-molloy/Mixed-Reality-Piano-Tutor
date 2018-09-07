@@ -11,7 +11,7 @@ public class MidiSessionDto
 {
     public MidiSessionDto() { } // For json framework
 
-    public MidiSessionDto(string FileName, double Accuracy, List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
+    public MidiSessionDto(string FileName, double Accuracy, List<CompressedNoteDuration> midiEvents, List<CompressedNoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
     {
         this.FileName = FileName;
         this.FormattedTrackName = formatTrackName(FileName);
@@ -19,54 +19,43 @@ public class MidiSessionDto
         this.Accuracy = Accuracy;
         this.SessionDateTime = DateTime.Now;
         this.User = RuntimeSettings.USER;
-        this.midiEvents = midiEvents;
-        this.noteDurations = durs;
+        this.userNoteDurations = midiEvents;
+        this.trackNoteDurations = durs;
         this.noteScale = noteScale;
         this.velocityIn = velocityIn;
         this.offsetStartTime = offsetStartTime;
     }
 
     // Creates a dummy session
-    public MidiSessionDto(string midiPath) : this(midiPath, 0, new List<MidiEventStorage>(), new List<NoteDuration>(), 0, 0, 0) { }
+    public MidiSessionDto(string midiPath) : this(midiPath, 0, new List<CompressedNoteDuration>(), new List<CompressedNoteDuration>(), 0, 0, 0) { }
 
     private static string formatTrackName(string midiPath)
     {
         return Path.GetFileNameWithoutExtension(midiPath).Replace("_", " ");
     }
 
-    [DataMember]
-    public string FileName { get; set; } // id
+    [DataMember] public string FileName { get; set; } // id
 
-    [DataMember]
-    public string FormattedTrackName { get; set; }
+    [DataMember] public string FormattedTrackName { get; set; }
 
-    [DataMember]
-    public Mode GameMode { get; set; }
+    [DataMember] public Mode GameMode { get; set; }
 
-    [DataMember]
-    public double Accuracy { get; set; }
+    [DataMember] public double Accuracy { get; set; }
 
-    [DataMember]
-    public DateTime SessionDateTime { get; set; }
+    [DataMember] public DateTime SessionDateTime { get; set; }
 
-    [DataMember]
-    public string User { get; set; }
+    [DataMember] public string User { get; set; }
 
     // Midi events for recreating feedback view in history mode
-    [DataMember]
-    public List<MidiEventStorage> midiEvents { get; set; }
+    [DataMember] public float noteScale { get; set; }
 
-    [DataMember]
-    public List<NoteDuration> noteDurations { get; set; }
+    [DataMember] public float velocityIn { get; set; }
 
-    [DataMember]
-    public float noteScale { get; set; }
+    [DataMember] public float offsetStartTime { get; set; }
 
-    [DataMember]
-    public float velocityIn { get; set; }
+    [DataMember] public List<CompressedNoteDuration> userNoteDurations { get; set; }
 
-    [DataMember]
-    public float offsetStartTime { get; set; }
+    [DataMember] public List<CompressedNoteDuration> trackNoteDurations { get; set; }
 
     public override string ToString()
     {
