@@ -373,7 +373,7 @@ sealed public class Sequencer : MonoBehaviour
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))
         {
-            scoreView.ConvertEventsSaveScoresAndViewFeedback(midiController.GetMidiEvents(), this.noteDurations, this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
+            scoreView.ConvertEventsSaveScoresAndViewFeedback(midiController.GetMidiEvents(), this.noteDurations.Select(x => new CompressedNoteDuration(x)).ToList(), this.notesScale, RuntimeSettings.GAME_SPEED, this.startTime);
             this.ClearPianoRoll();
             this.startTime = -1f;
         }
@@ -424,14 +424,13 @@ sealed public class Sequencer : MonoBehaviour
     }
 }
 
-[DataContract]
-public class NoteDuration
+public struct NoteDuration
 {
-    [DataMember] public bool hasKeyBeenActivated { get; set; }
-    [DataMember] public float duration { get; set; }
-    [DataMember] public float start { get; set; }
-    [DataMember] public float end { get; set; }
-    [DataMember] public int keyNum { get; set; }
+    public bool hasKeyBeenActivated { get; set; }
+    public float duration { get; }
+    public float start { get; }
+    public float end { get; }
+    public int keyNum { get; }
 
     public NoteDuration(float start, float dur, PianoKey key)
     {
@@ -442,11 +441,37 @@ public class NoteDuration
         this.duration = dur;
     }
 
-    public NoteDuration() { }
+}
+
+[DataContract]
+public class CompressedNoteDuration
+{
+    [DataMember] public float duration { get; set; }
+    [DataMember] public float start { get; set; }
+    [DataMember] public float end { get; set; }
+    [DataMember] public int keyNum { get; set; }
+
+    public CompressedNoteDuration(NoteDuration noteDuration)
+    {
+        this.duration = noteDuration.duration;
+        this.start = noteDuration.start;
+        this.end = noteDuration.end;
+        this.keyNum = noteDuration.keyNum;
+    }
+
+    public CompressedNoteDuration(float start, float dur, PianoKey key)
+    {
+        this.start = start;
+        this.end = start + dur;
+        this.keyNum = key.keyNum;
+        this.duration = dur;
+    }
+
+    public CompressedNoteDuration() { }
 
     override public string ToString()
     {
-        return hasKeyBeenActivated + " " +
+        return
             duration + " " +
             start + " " +
             end + " " +
@@ -454,3 +479,4 @@ public class NoteDuration
     }
 
 }
+

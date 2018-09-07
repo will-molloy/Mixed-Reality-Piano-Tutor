@@ -43,8 +43,8 @@ public class ScoreView : MonoBehaviour
 
     public void SaveScoresAndViewFeedback(MidiSessionDto session, bool save = true)
     {
-        var events = session.midiEvents;
-        var notes = session.noteDurations;
+        var events = session.userNoteDurations;
+        var notes = session.trackNoteDurations;
 
         Debug.Log("User events: " + events.Count());
         Debug.Log("Track events: " + notes.Count());
@@ -115,12 +115,12 @@ public class ScoreView : MonoBehaviour
         {
             Debug.Log("Saving session - score = " + accuracy * 100);
             // Same but update accuracy
-            var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, events, session.noteDurations, session.noteScale, session.velocityIn, session.offsetStartTime);
+            var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, events, session.trackNoteDurations, session.noteScale, session.velocityIn, session.offsetStartTime);
             new MidiSessionController().putMidiSession(midiSessionDTO);
         }
     }
 
-    public void ConvertEventsSaveScoresAndViewFeedback(List<MidiEventStorage> midiEvents, List<NoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
+    public void ConvertEventsSaveScoresAndViewFeedback(List<MidiEventStorage> midiEvents, List<CompressedNoteDuration> durs, float noteScale, float velocityIn, float offsetStartTime)
     {
         Debug.Log("Displaying scores");
         var evs = ConvertToNoteDurationFromMidiEventStorage(midiEvents, 0f, offsetStartTime);
@@ -139,7 +139,7 @@ public class ScoreView : MonoBehaviour
         this.spawnedSegments.Clear();
     }
 
-    private List<MidiSegment> FillGaps(List<MidiSegment> seg, List<NoteDuration> refs)
+    private List<MidiSegment> FillGaps(List<MidiSegment> seg, List<CompressedNoteDuration> refs)
     {
         List<MidiSegment> temp = new List<MidiSegment>();
         refs.ForEach(e =>
@@ -174,9 +174,9 @@ public class ScoreView : MonoBehaviour
         return seg;
     }
 
-    private List<NoteDuration> ConvertToNoteDurationFromMidiEventStorage(List<MidiEventStorage> midiEvents, float defaultEndTiming, float timeOffset)
+    private List<CompressedNoteDuration> ConvertToNoteDurationFromMidiEventStorage(List<MidiEventStorage> midiEvents, float defaultEndTiming, float timeOffset)
     {
-        var list = new List<NoteDuration>();
+        var list = new List<CompressedNoteDuration>();
         for (; ; )
         {
             // Until we have an empty list, keep searching notes and end of it
@@ -199,7 +199,7 @@ public class ScoreView : MonoBehaviour
                     else
                     {
                         var item = midiEvents[i];
-                        list.Add(new NoteDuration(head.time, item.time - head.time, PianoKeys.GetKeyFor(keyNum)));
+                        list.Add(new CompressedNoteDuration(head.time, item.time - head.time, PianoKeys.GetKeyFor(keyNum)));
                         midiEvents.Remove(head);
                         midiEvents.Remove(item);
                         break;
@@ -215,33 +215,15 @@ public class ScoreView : MonoBehaviour
         return of + tolerance >= a && of - tolerance <= a;
     }
 
-    private Dictionary<int, List<MidiSegment>> MakeSegmentsFor(List<NoteDuration> userEvents, List<NoteDuration> trackEvents)
+    private Dictionary<int, List<MidiSegment>> MakeSegmentsFor(List<CompressedNoteDuration> userEvents, List<CompressedNoteDuration> trackEvents)
     {
         if (userEvents == null || trackEvents == null)
         {
             Debug.LogError("Null Args recved at MakeSegmentsFor()");
         }
         var segMap = new Dictionary<int, List<MidiSegment>>();
-
-        var userMap = new Dictionary<int, List<NoteDuration>>();
-        foreach (var item in userEvents)
-        {
-            var newList = new List<NoteDuration>();
-            var list = userMap.ContainsKey(item.keyNum) ? userMap[item.keyNum] : newList;
-            list.Add(item);
-            userMap[item.keyNum] = list;
-        }
-
-        var trackMap = new Dictionary<int, List<NoteDuration>>();
-        foreach (var item in trackEvents)
-        {
-            var newList = new List<NoteDuration>();
-            var list = trackMap.ContainsKey(item.keyNum) ? trackMap[item.keyNum] : newList;
-            list.Add(item);
-            trackMap[item.keyNum] = list;
-        }
-        // var trackMap = trackEvents.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
-        // var userMap = userEvents.GroupBy(e => e.key).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
+        var trackMap = trackEvents.GroupBy(e => e.keyNum).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
+        var userMap = userEvents.GroupBy(e => e.keyNum).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
 
         foreach (var item in trackMap)
         {
@@ -309,7 +291,7 @@ public class ScoreView : MonoBehaviour
             this.keyNum = keyNum;
         }
 
-        public MidiSegment(SegmentType type, NoteDuration from, NoteDuration to)
+        public MidiSegment(SegmentType type, CompressedNoteDuration from, CompressedNoteDuration to)
         {
             this.type = type;
             this.scaleY = to.end - from.start;
@@ -317,7 +299,7 @@ public class ScoreView : MonoBehaviour
             this.keyNum = from.keyNum;
         }
 
-        public MidiSegment(SegmentType type, NoteDuration dur)
+        public MidiSegment(SegmentType type, CompressedNoteDuration dur)
         {
             this.type = type;
             this.scaleY = dur.duration;
