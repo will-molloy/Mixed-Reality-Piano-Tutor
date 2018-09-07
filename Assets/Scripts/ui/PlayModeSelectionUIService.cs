@@ -51,6 +51,7 @@ public class PlayModeSelectionUIService : MonoBehaviour
 
     void Update()
     {
+        // Update width when screen size changes
         var canvasWidth = canvas.GetComponent<RectTransform>().rect.width;
         scrollViewRows.ForEach(x =>
         {

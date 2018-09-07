@@ -36,6 +36,7 @@ public class HistoryModeUIService : MonoBehaviour
 
     void Update()
     {
+        // Update width when screen size changes
         var canvasWidth = canvas.GetComponent<RectTransform>().rect.width;
         scrollViewRows.ForEach(row =>
         {
@@ -49,8 +50,6 @@ public class HistoryModeUIService : MonoBehaviour
         var sessions = MidiSessionController.getAllSessions();
         sessions.ForEach(session =>
         {
-            session.midiEvents.ForEach(x => Debug.Log(x));
-
             var row = Instantiate(rowEntryObj);
 
             // Add to scroll view

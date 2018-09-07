@@ -48,7 +48,6 @@ public class ScoreView : MonoBehaviour
 
         Debug.Log("User events: " + events.Count());
         Debug.Log("Track events: " + notes.Count());
-        events.ForEach(x => Debug.Log(x));
 
         var segments = MakeSegmentsFor(events, notes);
         var velocity = 1f / session.velocityIn * session.noteScale;
