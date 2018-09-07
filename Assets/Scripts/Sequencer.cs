@@ -428,10 +428,10 @@ sealed public class Sequencer : MonoBehaviour
 public class NoteDuration
 {
     [DataMember] public bool hasKeyBeenActivated { get; set; }
-    [DataMember] public float duration { get; }
+    [DataMember] public float duration { get; set; }
     [DataMember] public float start { get; set; }
     [DataMember] public float end { get; set; }
-    [DataMember] public int keyNum { get; }
+    [DataMember] public int keyNum { get; set; }
 
     public NoteDuration(float start, float dur, PianoKey key)
     {
