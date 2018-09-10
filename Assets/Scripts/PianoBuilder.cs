@@ -347,14 +347,14 @@ sealed public class PianoBuilder : MonoBehaviour
     public void showText(string text, int fontSize = 100, bool destroy = true)
     {
         var obj = Instantiate(textObj);
-        obj.GetComponent<TextMesh>().text = text;
-        obj.GetComponent<TextMesh>().fontSize = fontSize;
         var midKey = pianoKeys[PianoKeys.GetKeyFor(CENTRE)];
-        var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.1f);
-        obj.transform.position = lmr.away + new Vector3(0, 0.05f, 2.5f);
-        var rotation = Quaternion.LookRotation(lmr.centre - lmr.away);
-        obj.transform.rotation = rotation;
-        obj.transform.Rotate(0, 180f, 0f);
+        obj.transform.SetParent(midKey.transform);
+        obj.name = "Instant feedback text";
+        obj.GetComponent<TextMesh>().text = text;
+        obj.GetComponent<TextMesh>().fontSize = 500;
+        obj.transform.localScale = Vector3.one * 0.1f;
+        obj.transform.localEulerAngles = Vector3.zero;
+        obj.transform.localPosition = new Vector3(0, 10, 1);
 
         if (destroy)
         {
