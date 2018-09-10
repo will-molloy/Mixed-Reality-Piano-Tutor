@@ -95,8 +95,9 @@ public class PlayModeSelectionUIService : MonoBehaviour
             passes = sessions.Where(x => x.Accuracy >= SCORE_TO_PASS).Count();
         }
         Debug.Log(sessions.Count());
+        //var best = string.Format("%.2f\\%", bestScore * 100);
         setText(head.FormattedTrackName, NAME_INDEX, row);
-        setText(bestScore * 100 + "%", BEST_SCORE_INDEX, row);
+        setText((bestScore * 100).ToString("F2") + "%", BEST_SCORE_INDEX, row);
         setText(passes + "/" + sessions.Count(), OVERALL_SCORE_INDEX, row);
 
         var difficulty = MidiSessionController.GetDifficultyFor(midiPath);
