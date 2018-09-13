@@ -22,9 +22,11 @@ public class MidiDifficultyDto
 
     public enum Difficulty
     {
+        Beginner, // ONE HANDED
         Easy,
         Medium,
         Hard,
+        Expert,
     }
 
 }
