@@ -391,7 +391,8 @@ sealed public class Sequencer : MonoBehaviour
                 foreach (var obj in item.Value)
                 {
                     //obj.transform.position = Vector3.MoveTowards(obj.transform.position, lmr.centre, step);
-                    obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[item.Key].transform.position, step);
+                    obj.transform.Translate(0, -step, 0);
+                    //obj.transform.position = Vector3.MoveTowards(obj.transform.position, keyAwayDir[item.Key].transform.position, step);
                     var newD = obj.transform.position - lmr.centre;
                     if (obj.transform.childCount > 0)
                     {

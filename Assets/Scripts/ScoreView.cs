@@ -43,18 +43,18 @@ public class ScoreView : MonoBehaviour
 
     public void SaveScoresAndViewFeedback(MidiSessionDto session, bool save = true)
     {
-        var events = session.userNoteDurations;
-        var notes = session.trackNoteDurations;
+        var userEvents = session.userNoteDurations;
+        var trackEvents = session.trackNoteDurations;
 
-        Debug.Log("User events: " + events.Count());
-        Debug.Log("Track events: " + notes.Count());
+        Debug.Log("User events: " + userEvents.Count());
+        Debug.Log("Track events: " + trackEvents.Count());
 
-        var segments = MakeSegmentsFor(events, notes);
+        var segments = MakeSegmentsFor(userEvents, trackEvents);
         var velocity = 1f / session.velocityIn * session.noteScale;
         var total = 0d;
         var correct = 0d;
 
-        if (events.Count == 0)
+        if (userEvents.Count == 0)
         {
             Debug.LogWarning("No midievents recorded");
         }
@@ -108,14 +108,22 @@ public class ScoreView : MonoBehaviour
         var accuracy = correct / total;
 
         Debug.Log("Displaying end feedback text");
-        var score = (int)(accuracy * 100);
+        int score;
+        if (save)
+        {
+            score = (int)(accuracy * 100);
+        }
+        else
+        {
+            score = (int)(session.Accuracy * 100);
+        }
         piano.showText(session.FormattedTrackName + ": " + score + "%", 50, false);
 
         if (save)  // dont resave a loaded session
         {
             Debug.Log("Saving session - score = " + accuracy * 100);
             // Same but update accuracy
-            var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, events, session.trackNoteDurations, session.noteScale, session.velocityIn, session.offsetStartTime);
+            var midiSessionDTO = new MidiSessionDto(RuntimeSettings.MIDI_FILE_NAME, accuracy, userEvents, session.trackNoteDurations, session.noteScale, session.velocityIn, session.offsetStartTime);
             new MidiSessionController().putMidiSession(midiSessionDTO);
         }
     }
@@ -177,7 +185,7 @@ public class ScoreView : MonoBehaviour
     private List<CompressedNoteDuration> ConvertToNoteDurationFromMidiEventStorage(List<MidiEventStorage> midiEvents, float defaultEndTiming, float timeOffset)
     {
         var list = new List<CompressedNoteDuration>();
-        for (; ; )
+        while (midiEvents.Count() > 0)
         {
             // Until we have an empty list, keep searching notes and end of it
             if (midiEvents.Count == 0) break;
@@ -225,6 +233,7 @@ public class ScoreView : MonoBehaviour
         var trackMap = trackEvents.GroupBy(e => e.keyNum).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
         var userMap = userEvents.GroupBy(e => e.keyNum).ToDictionary(pianoKey => pianoKey.Key, notes => notes.ToList());
 
+        PianoKeys.GetAllKeys().Select(x => x.keyNum).Where(x => !trackMap.ContainsKey(x)).ToList().ForEach(x => trackMap.Add(x, new List<CompressedNoteDuration>()));
         foreach (var item in trackMap)
         {
             var segments = new List<MidiSegment>();

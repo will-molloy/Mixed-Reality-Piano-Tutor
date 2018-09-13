@@ -22,6 +22,8 @@ sealed public class MidiController : MonoBehaviour
     {
         notesOn = new HashSet<PianoKey>();
         mockEvents = new List<MidiEventStorage>();
+        mockEvents.Add(new MidiEventStorage(51, false, 0));
+        mockEvents.Add(new MidiEventStorage(51, true, 1));
         mockEvents.Add(new MidiEventStorage(55, false, 0.5f));
         mockEvents.Add(new MidiEventStorage(55, true, 0.8f));
         mockEvents.Add(new MidiEventStorage(74, false, 1f));
