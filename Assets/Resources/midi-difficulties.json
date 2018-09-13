@@ -1,51 +1,51 @@
 [
   {
     "FileName": "Assets/MIDI\\Another Love.mid",
-    "difficulty": 1
+    "difficulty": 3
   },
   {
     "FileName": "Assets/MIDI\\Beethoven - Für Elise.mid",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "FileName": "Assets/MIDI\\Beethoven - Moonlight Sonata (1st mvt).mid",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "FileName": "Assets/MIDI\\Beethoven - Moonlight Sonata (3rd mvt).mid",
-    "difficulty": 1
+    "difficulty": 4
   },
   {
     "FileName": "Assets/MIDI\\Bumble Bee.mid",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "FileName": "Assets/MIDI\\Canon.mid",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "FileName": "Assets/MIDI\\Claude Debussy - Clair de Lune.mid",
-    "difficulty": 1
+    "difficulty": 3
   },
   {
     "FileName": "Assets/MIDI\\Halo 3 Never Forget.mid",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "FileName": "Assets/MIDI\\Interstellar Main Theme.mid",
-    "difficulty": 1
+    "difficulty": 3
   },
   {
     "FileName": "Assets/MIDI\\Megalovania.mid",
-    "difficulty": 1
+    "difficulty": 2
   },
   {
     "FileName": "Assets/MIDI\\Moonriver.mid",
-    "difficulty": 1
+    "difficulty": 3
   },
   {
     "FileName": "Assets/MIDI\\Mozart Eine Kleine.mid",
-    "difficulty": 1
+    "difficulty": 0
   },
   {
     "FileName": "Assets/MIDI\\Silent Night.mid",
@@ -53,6 +53,54 @@
   },
   {
     "FileName": "Assets/MIDI\\Twinkle Twinkle Little Star.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_asharp_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_a_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_b_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_csharp_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_c_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_dsharp_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_d_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_e_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_fsharp_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_f_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_gsharp_major.mid",
+    "difficulty": 1
+  },
+  {
+    "FileName": "Assets/MIDI/exercises\\scale_g_major.mid",
     "difficulty": 1
   }
 ]
