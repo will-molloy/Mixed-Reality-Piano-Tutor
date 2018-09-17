@@ -83,13 +83,14 @@ sealed public class MidiController : MonoBehaviour
         if (e.Message.Command == ChannelCommand.NoteOn)
         {
             PianoBuilder.instance.ActivateKey(keyNum, Color.green);
-            PianoBuilder.instance.SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(keyNum), true);
+            
+            //PianoBuilder.instance.SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(keyNum), true);
             notesOn.Add(PianoKeys.GetKeyFor(keyNum));
         }
         else if (e.Message.Command == ChannelCommand.NoteOff)
         {
             PianoBuilder.instance.DeactivateKey(keyNum);
-            PianoBuilder.instance.SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(keyNum), false);
+            //PianoBuilder.instance.SetParticleSystemStatusForKey(PianoKeys.GetKeyFor(keyNum), false);
             notesOn.Remove(PianoKeys.GetKeyFor(keyNum));
         }
     }

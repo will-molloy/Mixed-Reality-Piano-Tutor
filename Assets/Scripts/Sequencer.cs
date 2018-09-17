@@ -39,6 +39,7 @@ sealed public class Sequencer : MonoBehaviour
 
     private Dictionary<PianoKey, List<GameObject>> pianoRollDict = new Dictionary<PianoKey, List<GameObject>>();
     private Dictionary<PianoKey, GameObject> keyAwayDir = new Dictionary<PianoKey, GameObject>();
+    public Dictionary<PianoKey, bool> shouldKeyBeOn = new Dictionary<PianoKey, bool>();
 
     public static Dictionary<PianoKey, Color> colorDict = new Dictionary<PianoKey, Color>();
 
@@ -48,7 +49,7 @@ sealed public class Sequencer : MonoBehaviour
     private float startTime = -1;
     private float deltaTime;
     private readonly float offsetStart = (0.5f * 1f) / 0.5f;
-    private List<NoteDuration> noteDurations;
+    public List<NoteDuration> noteDurations;
     private TimeSignature ts;
     private float ttp;
 
@@ -74,6 +75,9 @@ sealed public class Sequencer : MonoBehaviour
 
     void Start()
     {
+        PianoKeys.GetAllKeys().ForEach(e => {
+            shouldKeyBeOn[e] = false;
+        });
         piano = GetComponent<PianoBuilder>();
         crtHolder = new List<Coroutine>();
         midiController = GetComponent<MidiController>();
@@ -369,6 +373,11 @@ sealed public class Sequencer : MonoBehaviour
             }
             var newc = Color.HSVToRGB(h, s, v);
             newc.a = (2 - item.Value) / 2;
+            if (newc.a >= 1f) {
+                shouldKeyBeOn[item.Key] = true;
+            } else {
+                shouldKeyBeOn[item.Key] = false;
+            }
             piano.UpdateDiskColor(item.Key, newc);
         }
         if (noteDurations.Last().hasKeyBeenActivated || Input.GetKeyDown(KeyCode.Escape))

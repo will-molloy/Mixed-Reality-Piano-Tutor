@@ -1038,6 +1038,8 @@ MonoBehaviour:
   disk: {fileID: 1463195157636300, guid: 08fa9f2b810f66f46b1e91cc3ef64b39, type: 2}
   particleSystem: {fileID: 1956794768317474, guid: 6ba818cd48a16e34bafd79702ff2b5d3,
     type: 2}
+  particleSystemR: {fileID: 1956794768317474, guid: 1ac93ae552346054aa41c195aa8626bd,
+    type: 2}
   pianoKeyGap: 0.001
   worldAnchor: {fileID: 2113433557}
 --- !u!4 &2113433557
