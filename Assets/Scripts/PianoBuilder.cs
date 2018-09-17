@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
-
+[RequireComponent(typeof(MidiController))]
+[RequireComponent(typeof(Sequencer))]
 sealed public class PianoBuilder : MonoBehaviour
 {
     [SerializeField] private GameObject textObj;
@@ -28,16 +29,21 @@ sealed public class PianoBuilder : MonoBehaviour
     private List<GameObject> auxLines = new List<GameObject>();
     private List<GameObject> pulsers = new List<GameObject>();
     private Dictionary<PianoKey, GameObject> particleSystems;
+    private Dictionary<PianoKey, GameObject> particleSystemsR;
     [SerializeField]
     private GameObject particleSystem;
+    [SerializeField]
+    private GameObject particleSystemR;
     [SerializeField]
     public float pianoKeyGap = 0.001f; // 1mm or so
     [SerializeField]
     internal Transform worldAnchor;
+    private Sequencer seq;
 
     private Dictionary<PianoKey, GameObject> diskDict = new Dictionary<PianoKey, GameObject>();
     private float fillUpPercent = 0f;
     private int totalNumberOfSpeaceShips = 0;
+    private MidiController mctl;
 
     void Start()
     {
@@ -45,6 +51,9 @@ sealed public class PianoBuilder : MonoBehaviour
         sequencer = GetComponent<Sequencer>();
         pianoKeys = new Dictionary<PianoKey, GameObject>();
         particleSystems = new Dictionary<PianoKey, GameObject>();
+        particleSystemsR = new Dictionary<PianoKey, GameObject>();
+        mctl = GetComponent<MidiController>();
+        seq = GetComponent<Sequencer>();
     }
 
     void Update()
@@ -69,6 +78,26 @@ sealed public class PianoBuilder : MonoBehaviour
         {
             FillUp(0.55f);
         }
+        var ons = mctl.GetOnKeys();
+        PianoKeys.GetAllKeys().ForEach(e => {
+            var pe = particleSystems[e].GetComponent<ParticleSystem>();
+            pe.enableEmission = false;
+            pe = particleSystemsR[e].GetComponent<ParticleSystem>();
+            pe.enableEmission = false;
+        });
+        var skbo = seq.shouldKeyBeOn;
+        ons.ToList().ForEach(e => {
+            if(skbo[e]) {
+                var pe = particleSystems[e].GetComponent<ParticleSystem>();
+                pe.enableEmission = true;
+            }
+            else {
+                var pe = particleSystemsR[e].GetComponent<ParticleSystem>();
+                pe.enableEmission = true ;
+            }
+        });
+
+
     }
 
     public void FillUp(float percent)
@@ -224,17 +253,17 @@ sealed public class PianoBuilder : MonoBehaviour
         var lmr = GetLMRAwayVectorsForKey(PianoKeys.GetKeyFor(CENTRE), 0.1f);
         if (spaceCraftObj.Count == 0)
         {
-            obj.transform.position = lmr.away + new Vector3(0f, 0.5f, 0f);
+            obj.transform.position = lmr.away + new Vector3(0f, 0.25f, 0f);
         }
         else if (spaceCraftObj.Count == 1)
         {
             spaceCraftObj.ForEach(e => e.GetComponent<SpaceCraftControl>().RestoreAll());
-            obj.transform.position = lmr.away + new Vector3(0.2f, 0.5f, 0.0f);
+            obj.transform.position = lmr.away + new Vector3(0.2f, 0.25f, 0.0f);
         }
         else if (spaceCraftObj.Count == 2)
         {
             spaceCraftObj.ForEach(e => e.GetComponent<SpaceCraftControl>().RestoreAll());
-            obj.transform.position = lmr.away + new Vector3(-0.2f, 0.5f, 0.0f);
+            obj.transform.position = lmr.away + new Vector3(-0.2f, 0.25f, 0.0f);
         }
         else
         {
@@ -267,6 +296,17 @@ sealed public class PianoBuilder : MonoBehaviour
             obj.transform.position = lmraway.centre;
             obj.GetComponent<ParticleSystem>().enableEmission = false;
             particleSystems.Add(item.Key, obj);
+            var dummy = new GameObject();
+            dummy.transform.SetParent(this.transform);
+            obj.transform.SetParent(this.transform);
+        }
+        foreach (var item in pianoKeys)
+        {
+            var lmraway = GetLMRAwayVectorsForKey(item.Key);
+            var obj = Instantiate(particleSystemR);
+            obj.transform.position = lmraway.centre;
+            obj.GetComponent<ParticleSystem>().enableEmission = false;
+            particleSystemsR.Add(item.Key, obj);
             var dummy = new GameObject();
             dummy.transform.SetParent(this.transform);
             obj.transform.SetParent(this.transform);
