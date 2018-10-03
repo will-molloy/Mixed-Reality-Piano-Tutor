@@ -15,14 +15,15 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             [TimeSpanType.BarBeat] = typeof(BarBeatTimeSpan)
         };
 
-        private static readonly Dictionary<Type, ITimeSpanConverter> Converters = new Dictionary<Type, ITimeSpanConverter>
-        {
-            [typeof(MidiTimeSpan)] = new MidiTimeSpanConverter(),
-            [typeof(MetricTimeSpan)] = new MetricTimeSpanConverter(),
-            [typeof(MusicalTimeSpan)] = new MusicalTimeSpanConverter(),
-            [typeof(BarBeatTimeSpan)] = new BarBeatTimeSpanConverter(),
-            [typeof(MathTimeSpan)] = new MathTimeSpanConverter()
-        };
+        private static readonly Dictionary<Type, ITimeSpanConverter> Converters =
+            new Dictionary<Type, ITimeSpanConverter>
+            {
+                [typeof(MidiTimeSpan)] = new MidiTimeSpanConverter(),
+                [typeof(MetricTimeSpan)] = new MetricTimeSpanConverter(),
+                [typeof(MusicalTimeSpan)] = new MusicalTimeSpanConverter(),
+                [typeof(BarBeatTimeSpan)] = new BarBeatTimeSpanConverter(),
+                [typeof(MathTimeSpan)] = new MathTimeSpanConverter()
+            };
 
         #endregion
 
@@ -31,7 +32,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         public static TTimeSpan ConvertTo<TTimeSpan>(long timeSpan, long time, TempoMap tempoMap)
             where TTimeSpan : ITimeSpan
         {
-            return (TTimeSpan)GetConverter<TTimeSpan>().ConvertTo(timeSpan, time, tempoMap);
+            return (TTimeSpan) GetConverter<TTimeSpan>().ConvertTo(timeSpan, time, tempoMap);
         }
 
         public static ITimeSpan ConvertTo(long timeSpan, TimeSpanType timeSpanType, long time, TempoMap tempoMap)
@@ -43,7 +44,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             where TTimeSpan : ITimeSpan
         {
             if (timeSpan is TTimeSpan)
-                return (TTimeSpan)timeSpan.Clone();
+                return (TTimeSpan) timeSpan.Clone();
 
             return ConvertTo<TTimeSpan>(ConvertFrom(timeSpan, time, tempoMap), time, tempoMap);
         }

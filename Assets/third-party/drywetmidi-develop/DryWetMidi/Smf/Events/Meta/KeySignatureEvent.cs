@@ -1,25 +1,47 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System;
+﻿using System;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents a Key Signature meta event.
+    ///     Represents a Key Signature meta event.
     /// </summary>
     /// <remarks>
-    /// The MIDI key signature meta message specifies the key signature and scale of a MIDI file.
+    ///     The MIDI key signature meta message specifies the key signature and scale of a MIDI file.
     /// </remarks>
     public sealed class KeySignatureEvent : MetaEvent
     {
+        #region Methods
+
+        private static int ProcessValue(int value, string property, int min, int max,
+            InvalidMetaEventParameterValuePolicy policy)
+        {
+            if (value >= min && value <= max)
+                return value;
+
+            switch (policy)
+            {
+                case InvalidMetaEventParameterValuePolicy.Abort:
+                    throw new InvalidMetaEventParameterValueException(
+                        $"{value} is invalid value for the {property} of a Key Signature event.", value);
+                case InvalidMetaEventParameterValuePolicy.SnapToLimits:
+                    return Math.Min(Math.Max(value, min), max);
+            }
+
+            return value;
+        }
+
+        #endregion
+
         #region Constants
 
         /// <summary>
-        /// Default key (C).
+        ///     Default key (C).
         /// </summary>
         public const sbyte DefaultKey = 0;
 
         /// <summary>
-        /// Default scale (major).
+        ///     Default scale (major).
         /// </summary>
         public const byte DefaultScale = 0;
 
@@ -41,15 +63,15 @@ namespace Melanchall.DryWetMidi.Smf
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KeySignatureEvent"/>.
+        ///     Initializes a new instance of the <see cref="KeySignatureEvent" />.
         /// </summary>
         public KeySignatureEvent()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KeySignatureEvent"/> with the
-        /// specified key and scale.
+        ///     Initializes a new instance of the <see cref="KeySignatureEvent" /> with the
+        ///     specified key and scale.
         /// </summary>
         /// <param name="key"></param>
         /// <param name="scale"></param>
@@ -65,8 +87,8 @@ namespace Melanchall.DryWetMidi.Smf
         #region Properties
 
         /// <summary>
-        /// Gets or sets key signature in terms of number of flats (if negative) or
-        /// sharps (if positive).
+        ///     Gets or sets key signature in terms of number of flats (if negative) or
+        ///     sharps (if positive).
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Key is out of range.</exception>
         public sbyte Key
@@ -81,7 +103,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets or sets scale (0 for major or 1 for minor).
+        ///     Gets or sets scale (0 for major or 1 for minor).
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Scale is out of range.</exception>
         public byte Scale
@@ -97,30 +119,10 @@ namespace Melanchall.DryWetMidi.Smf
 
         #endregion
 
-        #region Methods
-
-        private static int ProcessValue(int value, string property, int min, int max, InvalidMetaEventParameterValuePolicy policy)
-        {
-            if (value >= min && value <= max)
-                return value;
-
-            switch (policy)
-            {
-                case InvalidMetaEventParameterValuePolicy.Abort:
-                    throw new InvalidMetaEventParameterValueException($"{value} is invalid value for the {property} of a Key Signature event.", value);
-                case InvalidMetaEventParameterValuePolicy.SnapToLimits:
-                    return Math.Min(Math.Max(value, min), max);
-            }
-
-            return value;
-        }
-
-        #endregion
-
         #region Overrides
 
         /// <summary>
-        /// Reads content of a MIDI meta event.
+        ///     Reads content of a MIDI meta event.
         /// </summary>
         /// <param name="reader">Reader to read the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be read.</param>
@@ -129,21 +131,21 @@ namespace Melanchall.DryWetMidi.Smf
         {
             var invalidMetaEventParameterValuePolicy = settings.InvalidMetaEventParameterValuePolicy;
 
-            Key = (sbyte)ProcessValue(reader.ReadSByte(),
-                                       nameof(Key),
-                                       MinKey,
-                                       MaxKey,
-                                       invalidMetaEventParameterValuePolicy);
+            Key = (sbyte) ProcessValue(reader.ReadSByte(),
+                nameof(Key),
+                MinKey,
+                MaxKey,
+                invalidMetaEventParameterValuePolicy);
 
-            Scale = (byte)ProcessValue(reader.ReadByte(),
-                                        nameof(Scale),
-                                        MinScale,
-                                        MaxScale,
-                                        invalidMetaEventParameterValuePolicy);
+            Scale = (byte) ProcessValue(reader.ReadByte(),
+                nameof(Scale),
+                MinScale,
+                MaxScale,
+                invalidMetaEventParameterValuePolicy);
         }
 
         /// <summary>
-        /// Writes content of a MIDI meta event.
+        ///     Writes content of a MIDI meta event.
         /// </summary>
         /// <param name="writer">Writer to write the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
@@ -154,7 +156,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets the size of the content of a MIDI meta event.
+        ///     Gets the size of the content of a MIDI meta event.
         /// </summary>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
         /// <returns>Size of the event's content.</returns>
@@ -164,7 +166,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Clones event by creating a copy of it.
+        ///     Clones event by creating a copy of it.
         /// </summary>
         /// <returns>Copy of the event.</returns>
         protected override MidiEvent CloneEvent()
@@ -173,7 +175,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()

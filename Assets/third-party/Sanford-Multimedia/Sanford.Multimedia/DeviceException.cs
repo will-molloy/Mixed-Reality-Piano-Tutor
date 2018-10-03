@@ -38,23 +38,32 @@ namespace Sanford.Multimedia
 {
     public abstract class DeviceException : ApplicationException
     {
+        public DeviceException(int errorCode)
+        {
+            ErrorCode = errorCode;
+        }
+
+        public int ErrorCode { get; }
+
         #region Error Codes
 
-        public const int MMSYSERR_NOERROR = 0;  /* no error */
-        public const int MMSYSERR_ERROR = 1;  /* unspecified error */
-        public const int MMSYSERR_BADDEVICEID = 2;  /* device ID out of range */
-        public const int MMSYSERR_NOTENABLED = 3;  /* driver failed enable */
-        public const int MMSYSERR_ALLOCATED = 4;  /* device already allocated */
-        public const int MMSYSERR_INVALHANDLE = 5;  /* device handle is invalid */
-        public const int MMSYSERR_NODRIVER = 6;  /* no device driver present */
-        public const int MMSYSERR_NOMEM = 7;  /* memory allocation error */
-        public const int MMSYSERR_NOTSUPPORTED = 8;  /* function isn't supported */
-        public const int MMSYSERR_BADERRNUM = 9;  /* error value out of range */
+        public const int MMSYSERR_NOERROR = 0; /* no error */
+        public const int MMSYSERR_ERROR = 1; /* unspecified error */
+        public const int MMSYSERR_BADDEVICEID = 2; /* device ID out of range */
+        public const int MMSYSERR_NOTENABLED = 3; /* driver failed enable */
+        public const int MMSYSERR_ALLOCATED = 4; /* device already allocated */
+        public const int MMSYSERR_INVALHANDLE = 5; /* device handle is invalid */
+        public const int MMSYSERR_NODRIVER = 6; /* no device driver present */
+        public const int MMSYSERR_NOMEM = 7; /* memory allocation error */
+        public const int MMSYSERR_NOTSUPPORTED = 8; /* function isn't supported */
+        public const int MMSYSERR_BADERRNUM = 9; /* error value out of range */
         public const int MMSYSERR_INVALFLAG = 10; /* invalid flag passed */
         public const int MMSYSERR_INVALPARAM = 11; /* invalid parameter passed */
+
         public const int MMSYSERR_HANDLEBUSY = 12; /* handle being used */
-                                                    /* simultaneously on another */
-                                                    /* thread (eg callback) */
+
+        /* simultaneously on another */
+        /* thread (eg callback) */
         public const int MMSYSERR_INVALIDALIAS = 13; /* specified alias not found */
         public const int MMSYSERR_BADDB = 14; /* bad registry database */
         public const int MMSYSERR_KEYNOTFOUND = 15; /* registry key not found */
@@ -66,20 +75,5 @@ namespace Sanford.Multimedia
         public const int MMSYSERR_LASTERROR = 20;
 
         #endregion
-
-        private int errorCode;
-
-        public DeviceException(int errorCode)
-        {
-            this.errorCode = errorCode;
-        }
-
-        public int ErrorCode
-        {
-            get
-            {
-                return errorCode;
-            }
-        }
     }
 }

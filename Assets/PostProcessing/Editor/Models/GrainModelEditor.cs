@@ -2,22 +2,20 @@ using UnityEngine.PostProcessing;
 
 namespace UnityEditor.PostProcessing
 {
-    using Settings = GrainModel.Settings;
-
     [PostProcessingModelEditor(typeof(GrainModel))]
     public class GrainModelEditor : PostProcessingModelEditor
     {
-        SerializedProperty m_Colored;
-        SerializedProperty m_Intensity;
-        SerializedProperty m_Size;
-        SerializedProperty m_LuminanceContribution;
+        private SerializedProperty m_Colored;
+        private SerializedProperty m_Intensity;
+        private SerializedProperty m_LuminanceContribution;
+        private SerializedProperty m_Size;
 
         public override void OnEnable()
         {
-            m_Colored = FindSetting((Settings x) => x.colored);
-            m_Intensity = FindSetting((Settings x) => x.intensity);
-            m_Size = FindSetting((Settings x) => x.size);
-            m_LuminanceContribution = FindSetting((Settings x) => x.luminanceContribution);
+            m_Colored = FindSetting((GrainModel.Settings x) => x.colored);
+            m_Intensity = FindSetting((GrainModel.Settings x) => x.intensity);
+            m_Size = FindSetting((GrainModel.Settings x) => x.size);
+            m_LuminanceContribution = FindSetting((GrainModel.Settings x) => x.luminanceContribution);
         }
 
         public override void OnInspectorGUI()

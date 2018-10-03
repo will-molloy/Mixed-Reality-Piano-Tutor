@@ -4,21 +4,6 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 {
     internal static class MidiTimeSpanParser
     {
-        #region Constants
-
-        private const string TimeSpanGroupName = "ts";
-
-        private static readonly string TimeSpanGroup = ParsingUtilities.GetNonnegativeNumberGroup(TimeSpanGroupName);
-
-        private static readonly string[] Patterns = new[]
-        {
-            $@"{TimeSpanGroup}",
-        };
-
-        private const string OutOfRange = "Time span is out of range.";
-
-        #endregion
-
         #region Methods
 
         internal static ParsingResult TryParse(string input, out MidiTimeSpan timeSpan)
@@ -39,6 +24,21 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             timeSpan = new MidiTimeSpan(midiTimeSpan);
             return ParsingResult.Parsed;
         }
+
+        #endregion
+
+        #region Constants
+
+        private const string TimeSpanGroupName = "ts";
+
+        private static readonly string TimeSpanGroup = ParsingUtilities.GetNonnegativeNumberGroup(TimeSpanGroupName);
+
+        private static readonly string[] Patterns =
+        {
+            $@"{TimeSpanGroup}"
+        };
+
+        private const string OutOfRange = "Time span is out of range.";
 
         #endregion
     }

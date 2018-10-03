@@ -3,7 +3,7 @@
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Base class that represents a Note On or a Note Off message.
+    ///     Base class that represents a Note On or a Note Off message.
     /// </summary>
     public abstract class NoteEvent : ChannelEvent
     {
@@ -18,7 +18,7 @@ namespace Melanchall.DryWetMidi.Smf
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NoteEvent"/>.
+        ///     Initializes a new instance of the <see cref="NoteEvent" />.
         /// </summary>
         public NoteEvent()
             : base(ParametersCount)
@@ -26,8 +26,8 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NoteEvent"/> with the specified
-        /// note number and velocity.
+        ///     Initializes a new instance of the <see cref="NoteEvent" /> with the specified
+        ///     note number and velocity.
         /// </summary>
         /// <param name="noteNumber">Note number.</param>
         /// <param name="velocity">Velocity.</param>
@@ -43,7 +43,7 @@ namespace Melanchall.DryWetMidi.Smf
         #region Properties
 
         /// <summary>
-        /// Gets or sets note number.
+        ///     Gets or sets note number.
         /// </summary>
         public SevenBitNumber NoteNumber
         {
@@ -52,7 +52,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets or sets velocity.
+        ///     Gets or sets velocity.
         /// </summary>
         public SevenBitNumber Velocity
         {

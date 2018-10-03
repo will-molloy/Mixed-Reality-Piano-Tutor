@@ -5,22 +5,6 @@ namespace Melanchall.DryWetMidi.MusicTheory
 {
     internal static class NoteParser
     {
-        #region Constants
-
-        private const string NoteNameGroupName = "n";
-        private const string OctaveGroupName = "o";
-
-        private static readonly string OctaveGroup = ParsingUtilities.GetNumberGroup(OctaveGroupName);
-
-        private static readonly string[] Patterns = NoteNameParser.GetPatterns()
-                                                                  .Select(p => $@"(?<{NoteNameGroupName}>{p})\s*{OctaveGroup}")
-                                                                  .ToArray();
-
-        private const string OctaveIsOutOfRange = "Octave number is out of range.";
-        private const string NoteIsOutOfRange = "Note is out of range.";
-
-        #endregion
-
         #region Methods
 
         internal static ParsingResult TryParse(string input, out Note note)
@@ -51,6 +35,22 @@ namespace Melanchall.DryWetMidi.MusicTheory
             note = Note.Get(noteName, octaveNumber);
             return ParsingResult.Parsed;
         }
+
+        #endregion
+
+        #region Constants
+
+        private const string NoteNameGroupName = "n";
+        private const string OctaveGroupName = "o";
+
+        private static readonly string OctaveGroup = ParsingUtilities.GetNumberGroup(OctaveGroupName);
+
+        private static readonly string[] Patterns = NoteNameParser.GetPatterns()
+            .Select(p => $@"(?<{NoteNameGroupName}>{p})\s*{OctaveGroup}")
+            .ToArray();
+
+        private const string OctaveIsOutOfRange = "Octave number is out of range.";
+        private const string NoteIsOutOfRange = "Note is out of range.";
 
         #endregion
     }

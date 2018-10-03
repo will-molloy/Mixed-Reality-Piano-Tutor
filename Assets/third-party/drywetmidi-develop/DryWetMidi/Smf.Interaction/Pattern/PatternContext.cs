@@ -6,15 +6,6 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 {
     internal sealed class PatternContext
     {
-        #region Fields
-
-        private readonly Stack<long> _timeHistory = new Stack<long>();
-        private readonly Dictionary<object, List<long>> _anchors = new Dictionary<object, List<long>>();
-        private readonly List<long> _anchorsList = new List<long>();
-        private readonly List<Note> _notes = new List<Note>();
-
-        #endregion
-
         #region Constructor
 
         public PatternContext(TempoMap tempoMap, FourBitNumber channel)
@@ -22,6 +13,15 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             TempoMap = tempoMap;
             Channel = channel;
         }
+
+        #endregion
+
+        #region Fields
+
+        private readonly Stack<long> _timeHistory = new Stack<long>();
+        private readonly Dictionary<object, List<long>> _anchors = new Dictionary<object, List<long>>();
+        private readonly List<long> _anchorsList = new List<long>();
+        private readonly List<Note> _notes = new List<Note>();
 
         #endregion
 
@@ -42,8 +42,8 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
         public long? RestoreTime()
         {
-            return _timeHistory.Any() ?
-                (long?)_timeHistory.Pop()
+            return _timeHistory.Any()
+                ? (long?) _timeHistory.Pop()
                 : null;
         }
 

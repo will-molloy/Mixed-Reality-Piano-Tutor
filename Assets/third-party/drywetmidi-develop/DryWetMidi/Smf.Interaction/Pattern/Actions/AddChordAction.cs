@@ -17,16 +17,6 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
         #endregion
 
-        #region Properties
-
-        public IEnumerable<MusicTheory.Note> Notes { get; }
-
-        public SevenBitNumber Velocity { get; }
-
-        public ITimeSpan Length { get; }
-
-        #endregion
-
         #region IPatternAction
 
         public PatternActionResult Invoke(long time, PatternContext context)
@@ -36,12 +26,22 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             var chordLength = LengthConverter.ConvertFrom(Length, time, context.TempoMap);
 
             return new PatternActionResult(time + chordLength,
-                                           Notes.Select(d => new Note(d.NoteNumber, chordLength, time)
-                                           {
-                                               Channel = context.Channel,
-                                               Velocity = Velocity
-                                           }));
+                Notes.Select(d => new Note(d.NoteNumber, chordLength, time)
+                {
+                    Channel = context.Channel,
+                    Velocity = Velocity
+                }));
         }
+
+        #endregion
+
+        #region Properties
+
+        public IEnumerable<MusicTheory.Note> Notes { get; }
+
+        public SevenBitNumber Velocity { get; }
+
+        public ITimeSpan Length { get; }
 
         #endregion
     }

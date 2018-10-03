@@ -1,93 +1,93 @@
 ﻿//======= Copyright (c) Stereolabs Corporation, All rights reserved. ===============
 
-using UnityEngine;
 using System.Collections.Generic;
-
+using System.IO;
+using sl;
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 /// <summary>
-/// Contols the ZEDSpatialMapping and hides its implementation
+///     Contols the ZEDSpatialMapping and hides its implementation
 /// </summary>
 [DisallowMultipleComponent]
 public class ZEDSpatialMappingManager : MonoBehaviour
 {
-
-
-
     /// <summary>
-    /// Current resolution, a higher resolution create more meshes
+    ///     The parameters of filtering
     /// </summary>
-	public ZEDSpatialMapping.RESOLUTION resolution_preset = ZEDSpatialMapping.RESOLUTION.MEDIUM;
+    public FILTER filterParameters;
 
     /// <summary>
-    /// The range of the spatial mapping, how far the depth is taken into account
+    ///     Flag if filtering is needed
     /// </summary>
-	public ZEDSpatialMapping.RANGE range_preset = ZEDSpatialMapping.RANGE.MEDIUM;
+    public bool isFilteringEnable;
 
     /// <summary>
-    /// Flag if filtering is needed
+    ///     Falg is the textures will be created and applied
     /// </summary>
-    public bool isFilteringEnable = false;
+    public bool isTextured;
+
+    private ZEDManager manager;
 
     /// <summary>
-    /// Falg is the textures will be created and applied
-    /// </summary>
-    public bool isTextured = false;
-
-    /// <summary>
-    /// Flag to save when spatial mapping is over
-    /// </summary>
-    public bool saveWhenOver = false;
-
-    /// <summary>
-    /// Path to save the .obj and the .area
+    ///     Path to save the .obj and the .area
     /// </summary>
     public string meshPath = "Assets/ZEDMesh.obj";
 
     /// <summary>
-    /// The parameters of filtering
+    ///     The range of the spatial mapping, how far the depth is taken into account
     /// </summary>
-    public sl.FILTER filterParameters;
+    public ZEDSpatialMapping.RANGE range_preset = ZEDSpatialMapping.RANGE.MEDIUM;
+
 
     /// <summary>
-    /// The core of spatial mapping
+    ///     Current resolution, a higher resolution create more meshes
+    /// </summary>
+    public ZEDSpatialMapping.RESOLUTION resolution_preset = ZEDSpatialMapping.RESOLUTION.MEDIUM;
+
+    /// <summary>
+    ///     Flag to save when spatial mapping is over
+    /// </summary>
+    public bool saveWhenOver;
+
+    /// <summary>
+    ///     The core of spatial mapping
     /// </summary>
     private ZEDSpatialMapping spatialMapping;
-    private ZEDManager manager;
+
+    /// <summary>
+    ///     Is the spatial mapping running
+    /// </summary>
+    public bool IsRunning => spatialMapping != null ? spatialMapping.IsRunning() : false;
+
+    /// <summary>
+    ///     List of the submeshes processed, it is filled only when "StopSpatialMapping" is called
+    /// </summary>
+    public List<ZEDSpatialMapping.Chunk> ChunkList => spatialMapping != null ? spatialMapping.ChunkList : null;
+
+    /// <summary>
+    ///     Is the update thread running, the thread is stopped before the post process
+    /// </summary>
+    public bool IsUpdateThreadRunning => spatialMapping != null ? spatialMapping.IsUpdateThreadRunning : false;
+
+    /// <summary>
+    ///     Is the spatial mapping process is stopped
+    /// </summary>
+    public bool IsPaused => spatialMapping != null ? spatialMapping.IsPaused : false;
+
+    /// <summary>
+    ///     Is the texturing is running
+    /// </summary>
+    public bool IsTexturingRunning => spatialMapping != null ? spatialMapping.IsTexturingRunning : false;
 
     private void Start()
     {
-        manager = GameObject.FindObjectOfType(typeof(ZEDManager)) as ZEDManager;
-        spatialMapping = new ZEDSpatialMapping(transform, sl.ZEDCamera.GetInstance(), manager);
-       
+        manager = FindObjectOfType(typeof(ZEDManager)) as ZEDManager;
+        spatialMapping = new ZEDSpatialMapping(transform, ZEDCamera.GetInstance(), manager);
     }
-
-    /// <summary>
-    /// Is the spatial mapping running
-    /// </summary>
-    public bool IsRunning {get { return spatialMapping!= null ? spatialMapping.IsRunning(): false; }}
-
-    /// <summary>
-    /// List of the submeshes processed, it is filled only when "StopSpatialMapping" is called
-    /// </summary>
-    public List<ZEDSpatialMapping.Chunk> ChunkList { get { return spatialMapping != null ? spatialMapping.ChunkList : null; } }
-
-    /// <summary>
-    /// Is the update thread running, the thread is stopped before the post process
-    /// </summary>
-    public bool IsUpdateThreadRunning { get { return spatialMapping != null ? spatialMapping.IsUpdateThreadRunning: false; } }
-
-    /// <summary>
-    /// Is the spatial mapping process is stopped
-    /// </summary>
-    public bool IsPaused { get { return spatialMapping != null ? spatialMapping.IsPaused :false; } }
-
-    /// <summary>
-    /// Is the texturing is running
-    /// </summary>
-    public bool IsTexturingRunning { get { return spatialMapping != null ? spatialMapping.IsTexturingRunning : false; } }
 
 
     private void OnEnable()
@@ -100,7 +100,7 @@ public class ZEDSpatialMappingManager : MonoBehaviour
         ZEDSpatialMapping.OnMeshReady -= SpatialMappingHasStopped;
     }
 
-    void SpatialMappingHasStopped()
+    private void SpatialMappingHasStopped()
     {
         if (saveWhenOver)
             SaveMesh(meshPath);
@@ -111,11 +111,12 @@ public class ZEDSpatialMappingManager : MonoBehaviour
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.identity;
 
-        spatialMapping.StartStatialMapping(resolution_preset, range_preset, isTextured);        
+        spatialMapping.StartStatialMapping(resolution_preset, range_preset, isTextured);
     }
 
     /// <summary>
-    /// Stop the current spatial mapping, the current mapping will be processed to add a mesh collider, and events will be called
+    ///     Stop the current spatial mapping, the current mapping will be processed to add a mesh collider, and events will be
+    ///     called
     /// </summary>
     public void StopSpatialMapping()
     {
@@ -137,7 +138,7 @@ public class ZEDSpatialMappingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Display the mesh
+    ///     Display the mesh
     /// </summary>
     /// <param name="state"></param>
     public void SwitchDisplayMeshState(bool state)
@@ -146,7 +147,7 @@ public class ZEDSpatialMappingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Pause the computation of the mesh
+    ///     Pause the computation of the mesh
     /// </summary>
     /// <param name="state"></param>
     public void SwitchPauseState(bool state)
@@ -155,8 +156,8 @@ public class ZEDSpatialMappingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Save the mesh in a file. The saving will disable the spatial mapping and register and area memory.
-    /// May take some time
+    ///     Save the mesh in a file. The saving will disable the spatial mapping and register and area memory.
+    ///     May take some time
     /// </summary>
     /// <param name="meshPath"></param>
     /// <returns></returns>
@@ -166,7 +167,7 @@ public class ZEDSpatialMappingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Load the mesh from a file
+    ///     Load the mesh from a file
     /// </summary>
     /// <param name="meshPath"></param>
     /// <returns></returns>
@@ -177,7 +178,6 @@ public class ZEDSpatialMappingManager : MonoBehaviour
         spatialMapping.SetMeshRenderer();
         return spatialMapping.LoadMesh(meshPath);
     }
-
 }
 #if UNITY_EDITOR
 
@@ -185,27 +185,23 @@ public class ZEDSpatialMappingManager : MonoBehaviour
 [CustomEditor(typeof(ZEDSpatialMappingManager))]
 public class ZEDSpatialMappingEditor : Editor
 {
-    private ZEDSpatialMappingManager spatialMapping;
-
-    private GUILayoutOption[] optionsButtonBrowse = { GUILayout.MaxWidth(30) };
-
     private string displayText = "Hide Mesh";
-    private SerializedProperty range;
-    private SerializedProperty resolution;
-    private SerializedProperty isFilteringEnable;
     private SerializedProperty filterParameters;
-    private SerializedProperty saveWhenOver;
+    private SerializedProperty isFilteringEnable;
     private SerializedProperty isTextured;
     private SerializedProperty meshPath;
 
-    private ZEDSpatialMappingManager Target
-    {
-        get { return (ZEDSpatialMappingManager)target; }
-    }
+    private readonly GUILayoutOption[] optionsButtonBrowse = {GUILayout.MaxWidth(30)};
+    private SerializedProperty range;
+    private SerializedProperty resolution;
+    private SerializedProperty saveWhenOver;
+    private ZEDSpatialMappingManager spatialMapping;
+
+    private ZEDSpatialMappingManager Target => (ZEDSpatialMappingManager) target;
 
     public void OnEnable()
     {
-        spatialMapping = (ZEDSpatialMappingManager)target;
+        spatialMapping = (ZEDSpatialMappingManager) target;
         range = serializedObject.FindProperty("range_preset");
         resolution = serializedObject.FindProperty("resolution_preset");
         isFilteringEnable = serializedObject.FindProperty("isFilteringEnable");
@@ -216,37 +212,38 @@ public class ZEDSpatialMappingEditor : Editor
     }
 
 
-
     public override void OnInspectorGUI()
     {
-
-		bool cameraIsReady = sl.ZEDCamera.GetInstance().IsCameraReady;
+        var cameraIsReady = ZEDCamera.GetInstance().IsCameraReady;
         displayText = ZEDSpatialMapping.display ? "Hide Mesh" : "Display Mesh";
         serializedObject.Update();
         EditorGUILayout.BeginHorizontal();
 
         GUILayout.Label("Mesh Parameters", EditorStyles.boldLabel);
-        EditorGUILayout.EndHorizontal(); EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
 
-        ZEDSpatialMapping.RESOLUTION newResolution = (ZEDSpatialMapping.RESOLUTION)EditorGUILayout.EnumPopup("Resolution", spatialMapping.resolution_preset);
+        var newResolution =
+            (ZEDSpatialMapping.RESOLUTION) EditorGUILayout.EnumPopup("Resolution", spatialMapping.resolution_preset);
         if (newResolution != spatialMapping.resolution_preset)
         {
-            resolution.enumValueIndex = (int)newResolution;
+            resolution.enumValueIndex = (int) newResolution;
             serializedObject.ApplyModifiedProperties();
         }
 
-        ZEDSpatialMapping.RANGE newRange = (ZEDSpatialMapping.RANGE)EditorGUILayout.EnumPopup("Range", spatialMapping.range_preset);
+        var newRange = (ZEDSpatialMapping.RANGE) EditorGUILayout.EnumPopup("Range", spatialMapping.range_preset);
         if (newRange != spatialMapping.range_preset)
         {
-            range.enumValueIndex = (int)newRange;
+            range.enumValueIndex = (int) newRange;
             serializedObject.ApplyModifiedProperties();
         }
 
         EditorGUILayout.BeginHorizontal();
-        filterParameters.enumValueIndex = (int)(sl.FILTER)EditorGUILayout.EnumPopup("Mesh Filtering", (sl.FILTER)filterParameters.enumValueIndex);
-		isFilteringEnable.boolValue = true;
+        filterParameters.enumValueIndex =
+            (int) (FILTER) EditorGUILayout.EnumPopup("Mesh Filtering", (FILTER) filterParameters.enumValueIndex);
+        isFilteringEnable.boolValue = true;
 
 
         EditorGUILayout.EndHorizontal();
@@ -256,22 +253,20 @@ public class ZEDSpatialMappingEditor : Editor
         isTextured.boolValue = EditorGUILayout.Toggle("Texturing", isTextured.boolValue);
 
         GUI.enabled = cameraIsReady;
-        
+
         EditorGUILayout.BeginHorizontal();
         if (!spatialMapping.IsRunning)
         {
             if (GUILayout.Button("Start Spatial Mapping"))
             {
-                if (!ZEDSpatialMapping.display)
-                {
-                    spatialMapping.SwitchDisplayMeshState(true);
-                }
+                if (!ZEDSpatialMapping.display) spatialMapping.SwitchDisplayMeshState(true);
                 spatialMapping.StartSpatialMapping();
             }
         }
         else
         {
-            if (spatialMapping.IsRunning && !spatialMapping.IsUpdateThreadRunning || spatialMapping.IsRunning && spatialMapping.IsTexturingRunning)
+            if (spatialMapping.IsRunning && !spatialMapping.IsUpdateThreadRunning ||
+                spatialMapping.IsRunning && spatialMapping.IsTexturingRunning)
 
             {
                 GUILayout.FlexibleSpace();
@@ -281,23 +276,17 @@ public class ZEDSpatialMappingEditor : Editor
             }
             else
             {
-                if (GUILayout.Button("Stop Spatial Mapping"))
-                {
-                    spatialMapping.StopSpatialMapping();
-                }
+                if (GUILayout.Button("Stop Spatial Mapping")) spatialMapping.StopSpatialMapping();
             }
         }
 
         EditorGUILayout.EndHorizontal();
 
         GUI.enabled = cameraIsReady;
-        if (GUILayout.Button(displayText))
-        {
-            spatialMapping.SwitchDisplayMeshState(!ZEDSpatialMapping.display);
-        }
+        if (GUILayout.Button(displayText)) spatialMapping.SwitchDisplayMeshState(!ZEDSpatialMapping.display);
         GUI.enabled = true;
         GUILayout.Label("Mesh Storage", EditorStyles.boldLabel);
-		saveWhenOver.boolValue = EditorGUILayout.Toggle("Save Mesh (when stop)", saveWhenOver.boolValue);
+        saveWhenOver.boolValue = EditorGUILayout.Toggle("Save Mesh (when stop)", saveWhenOver.boolValue);
 
 
         EditorGUILayout.BeginHorizontal();
@@ -315,11 +304,8 @@ public class ZEDSpatialMappingEditor : Editor
         //GUI.enabled = cameraIsReady;
         GUILayout.FlexibleSpace();
 
-        GUI.enabled = System.IO.File.Exists(meshPath.stringValue) && cameraIsReady;
-        if (GUILayout.Button("Load"))
-        {
-            spatialMapping.LoadMesh(meshPath.stringValue);
-        }
+        GUI.enabled = File.Exists(meshPath.stringValue) && cameraIsReady;
+        if (GUILayout.Button("Load")) spatialMapping.LoadMesh(meshPath.stringValue);
 
         EditorGUILayout.EndHorizontal();
 
@@ -327,8 +313,6 @@ public class ZEDSpatialMappingEditor : Editor
 
         if (!cameraIsReady) Repaint();
     }
-
-
 }
 
 #endif

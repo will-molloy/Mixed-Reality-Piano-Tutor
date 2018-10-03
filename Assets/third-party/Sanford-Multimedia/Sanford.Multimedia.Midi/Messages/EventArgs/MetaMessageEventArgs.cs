@@ -4,19 +4,11 @@ namespace Sanford.Multimedia.Midi
 {
     public class MetaMessageEventArgs : EventArgs
     {
-        private MetaMessage message;
-
         public MetaMessageEventArgs(MetaMessage message)
         {
-            this.message = message;
+            Message = message;
         }
 
-        public MetaMessage Message
-        {
-            get
-            {
-                return message;
-            }
-        }
+        public MetaMessage Message { get; }
     }
 }

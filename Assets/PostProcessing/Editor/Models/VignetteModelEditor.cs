@@ -4,32 +4,31 @@ using UnityEngine.PostProcessing;
 namespace UnityEditor.PostProcessing
 {
     using VignetteMode = VignetteModel.Mode;
-    using Settings = VignetteModel.Settings;
 
     [PostProcessingModelEditor(typeof(VignetteModel))]
     public class VignetteModelEditor : PostProcessingModelEditor
     {
-        SerializedProperty m_Mode;
-        SerializedProperty m_Color;
-        SerializedProperty m_Center;
-        SerializedProperty m_Intensity;
-        SerializedProperty m_Smoothness;
-        SerializedProperty m_Roundness;
-        SerializedProperty m_Mask;
-        SerializedProperty m_Opacity;
-        SerializedProperty m_Rounded;
+        private SerializedProperty m_Center;
+        private SerializedProperty m_Color;
+        private SerializedProperty m_Intensity;
+        private SerializedProperty m_Mask;
+        private SerializedProperty m_Mode;
+        private SerializedProperty m_Opacity;
+        private SerializedProperty m_Rounded;
+        private SerializedProperty m_Roundness;
+        private SerializedProperty m_Smoothness;
 
         public override void OnEnable()
         {
-            m_Mode = FindSetting((Settings x) => x.mode);
-            m_Color = FindSetting((Settings x) => x.color);
-            m_Center = FindSetting((Settings x) => x.center);
-            m_Intensity = FindSetting((Settings x) => x.intensity);
-            m_Smoothness = FindSetting((Settings x) => x.smoothness);
-            m_Roundness = FindSetting((Settings x) => x.roundness);
-            m_Mask = FindSetting((Settings x) => x.mask);
-            m_Opacity = FindSetting((Settings x) => x.opacity);
-            m_Rounded = FindSetting((Settings x) => x.rounded);
+            m_Mode = FindSetting((VignetteModel.Settings x) => x.mode);
+            m_Color = FindSetting((VignetteModel.Settings x) => x.color);
+            m_Center = FindSetting((VignetteModel.Settings x) => x.center);
+            m_Intensity = FindSetting((VignetteModel.Settings x) => x.intensity);
+            m_Smoothness = FindSetting((VignetteModel.Settings x) => x.smoothness);
+            m_Roundness = FindSetting((VignetteModel.Settings x) => x.roundness);
+            m_Mask = FindSetting((VignetteModel.Settings x) => x.mask);
+            m_Opacity = FindSetting((VignetteModel.Settings x) => x.opacity);
+            m_Rounded = FindSetting((VignetteModel.Settings x) => x.rounded);
         }
 
         public override void OnInspectorGUI()
@@ -37,7 +36,7 @@ namespace UnityEditor.PostProcessing
             EditorGUILayout.PropertyField(m_Mode);
             EditorGUILayout.PropertyField(m_Color);
 
-            if (m_Mode.intValue < (int)VignetteMode.Masked)
+            if (m_Mode.intValue < (int) VignetteMode.Masked)
             {
                 EditorGUILayout.PropertyField(m_Center);
                 EditorGUILayout.PropertyField(m_Intensity);
@@ -57,12 +56,12 @@ namespace UnityEditor.PostProcessing
                     if (importer != null) // Fails when using an internal texture
                     {
 #if UNITY_5_5_OR_NEWER
-                        bool valid = importer.anisoLevel == 0
-                            && importer.mipmapEnabled == false
-                            //&& importer.alphaUsage == TextureImporterAlphaUsage.FromGrayScale
-                            && importer.alphaSource == TextureImporterAlphaSource.FromGrayScale
-                            && importer.textureCompression == TextureImporterCompression.Uncompressed
-                            && importer.wrapMode == TextureWrapMode.Clamp;
+                        var valid = importer.anisoLevel == 0
+                                    && importer.mipmapEnabled == false
+                                    //&& importer.alphaUsage == TextureImporterAlphaUsage.FromGrayScale
+                                    && importer.alphaSource == TextureImporterAlphaSource.FromGrayScale
+                                    && importer.textureCompression == TextureImporterCompression.Uncompressed
+                                    && importer.wrapMode == TextureWrapMode.Clamp;
 #else
                         bool valid = importer.anisoLevel == 0
                             && importer.mipmapEnabled == false
@@ -84,8 +83,10 @@ namespace UnityEditor.PostProcessing
                                     SetMaskImportSettings(importer);
                                     AssetDatabase.Refresh();
                                 }
+
                                 GUILayout.Space(8);
                             }
+
                             GUILayout.Space(11);
                         }
                     }
@@ -96,7 +97,7 @@ namespace UnityEditor.PostProcessing
             }
         }
 
-        void SetMaskImportSettings(TextureImporter importer)
+        private void SetMaskImportSettings(TextureImporter importer)
         {
 #if UNITY_5_5_OR_NEWER
             importer.textureType = TextureImporterType.SingleChannel;

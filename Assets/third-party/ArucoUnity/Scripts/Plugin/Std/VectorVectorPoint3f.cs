@@ -3,81 +3,78 @@ using System.Runtime.InteropServices;
 
 namespace ArucoUnity.Plugin
 {
-  public static partial class Std
-  {
-    public class VectorVectorPoint3f : Utility.HandleCppPtr
+    public static partial class Std
     {
-      // Native functions
-
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_std_vectorVectorPoint3f_new();
-
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_std_vectorVectorPoint3f_delete(IntPtr vector);
-
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_std_vectorVectorPoint3f_at(IntPtr vector, uint pos, IntPtr exception);
-
-      [DllImport("ArucoUnityPlugin")]
-      static extern unsafe IntPtr* au_std_vectorVectorPoint3f_data(IntPtr vector);
-
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_std_vectorVectorPoint3f_push_back(IntPtr vector, IntPtr value);
-
-      [DllImport("ArucoUnityPlugin")]
-      static extern uint au_std_vectorVectorPoint3f_size(IntPtr vector);
-
-      // Constructors & destructor
-
-      public VectorVectorPoint3f() : base(au_std_vectorVectorPoint3f_new())
-      {
-      }
-
-      public VectorVectorPoint3f(IntPtr vectorVectorPoint3fPtr,
-        Utility.DeleteResponsibility deleteResponsibility = Utility.DeleteResponsibility.True)
-        : base(vectorVectorPoint3fPtr, deleteResponsibility)
-      {
-      }
-
-      protected override void DeleteCppPtr()
-      {
-        au_std_vectorVectorPoint3f_delete(CppPtr);
-      }
-
-      // Methods
-
-      public VectorPoint3f At(uint pos)
-      {
-        Cv.Exception exception = new Cv.Exception();
-        VectorPoint3f element = new VectorPoint3f(au_std_vectorVectorPoint3f_at(CppPtr, pos, exception.CppPtr),
-          Utility.DeleteResponsibility.False);
-        exception.Check();
-        return element;
-      }
-
-      public unsafe VectorPoint3f[] Data()
-      {
-        IntPtr* dataPtr = au_std_vectorVectorPoint3f_data(CppPtr);
-        uint size = Size();
-
-        VectorPoint3f[] data = new VectorPoint3f[size];
-        for (int i = 0; i < size; i++)
+        public class VectorVectorPoint3f : Utility.HandleCppPtr
         {
-          data[i] = new VectorPoint3f(dataPtr[i], Utility.DeleteResponsibility.False);
+            // Constructors & destructor
+
+            public VectorVectorPoint3f() : base(au_std_vectorVectorPoint3f_new())
+            {
+            }
+
+            public VectorVectorPoint3f(IntPtr vectorVectorPoint3fPtr,
+                Utility.DeleteResponsibility deleteResponsibility = Utility.DeleteResponsibility.True)
+                : base(vectorVectorPoint3fPtr, deleteResponsibility)
+            {
+            }
+            // Native functions
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_std_vectorVectorPoint3f_new();
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_std_vectorVectorPoint3f_delete(IntPtr vector);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_std_vectorVectorPoint3f_at(IntPtr vector, uint pos, IntPtr exception);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern unsafe IntPtr* au_std_vectorVectorPoint3f_data(IntPtr vector);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_std_vectorVectorPoint3f_push_back(IntPtr vector, IntPtr value);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern uint au_std_vectorVectorPoint3f_size(IntPtr vector);
+
+            protected override void DeleteCppPtr()
+            {
+                au_std_vectorVectorPoint3f_delete(CppPtr);
+            }
+
+            // Methods
+
+            public VectorPoint3f At(uint pos)
+            {
+                var exception = new Cv.Exception();
+                var element = new VectorPoint3f(au_std_vectorVectorPoint3f_at(CppPtr, pos, exception.CppPtr),
+                    Utility.DeleteResponsibility.False);
+                exception.Check();
+                return element;
+            }
+
+            public unsafe VectorPoint3f[] Data()
+            {
+                var dataPtr = au_std_vectorVectorPoint3f_data(CppPtr);
+                var size = Size();
+
+                var data = new VectorPoint3f[size];
+                for (var i = 0; i < size; i++)
+                    data[i] = new VectorPoint3f(dataPtr[i], Utility.DeleteResponsibility.False);
+
+                return data;
+            }
+
+            public void PushBack(VectorPoint3f value)
+            {
+                au_std_vectorVectorPoint3f_push_back(CppPtr, value.CppPtr);
+            }
+
+            public uint Size()
+            {
+                return au_std_vectorVectorPoint3f_size(CppPtr);
+            }
         }
-
-        return data;
-      }
-
-      public void PushBack(VectorPoint3f value)
-      {
-        au_std_vectorVectorPoint3f_push_back(CppPtr, value.CppPtr);
-      }
-
-      public uint Size()
-      {
-        return au_std_vectorVectorPoint3f_size(CppPtr);
-      }
     }
-  }
 }

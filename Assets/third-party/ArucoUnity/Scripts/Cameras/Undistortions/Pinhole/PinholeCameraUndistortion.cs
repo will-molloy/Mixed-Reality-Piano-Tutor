@@ -3,21 +3,23 @@
 namespace ArucoUnity.Cameras.Undistortions
 {
   /// <summary>
-  /// Manages the undistortion and rectification process for pinhole <see cref="ArucoCamera"/>.
+  ///     Manages the undistortion and rectification process for pinhole <see cref="ArucoCamera" />.
   /// </summary>
   public class PinholeCameraUndistortion : PinholeCameraUndistortionGeneric<ArucoCamera>
-  {
-    // ArucoCameraUndistortion methods
-
-    protected override void InitializeRectification()
     {
-      for (int cameraId = 0; cameraId < CameraParameters.CameraNumber; cameraId++)
-      {
-        RectifiedCameraMatrices[cameraId] = Cv.GetOptimalNewCameraMatrix(CameraParameters.CameraMatrices[cameraId],
-          CameraParameters.DistCoeffs[cameraId], ArucoCamera.Images[cameraId].Size, RectificationScalingFactor,
-          ArucoCamera.Images[cameraId].Size, noROI, centerPrincipalPoint: true);
-        RectificationMatrices[cameraId] = noRectificationMatrix;
-      }
+        // ArucoCameraUndistortion methods
+
+        protected override void InitializeRectification()
+        {
+            for (var cameraId = 0; cameraId < CameraParameters.CameraNumber; cameraId++)
+            {
+                RectifiedCameraMatrices[cameraId] = Cv.GetOptimalNewCameraMatrix(
+                    CameraParameters.CameraMatrices[cameraId],
+                    CameraParameters.DistCoeffs[cameraId], ArucoCamera.Images[cameraId].Size,
+                    RectificationScalingFactor,
+                    ArucoCamera.Images[cameraId].Size, noROI, true);
+                RectificationMatrices[cameraId] = noRectificationMatrix;
+            }
+        }
     }
-  }
 }

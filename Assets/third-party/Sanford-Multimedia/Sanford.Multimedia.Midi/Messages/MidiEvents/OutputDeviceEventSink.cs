@@ -3,27 +3,12 @@
 namespace Sanford.Multimedia.Midi
 {
     /// <summary>
-    /// Event sink that sends midi messages to an output device
+    ///     Event sink that sends midi messages to an output device
     /// </summary>
     public class OutputDeviceEventSink : IDisposable
     {
-        readonly OutputDevice FOutDevice;
-        readonly MidiEvents FEventSource;
-
-        public int DeviceID
-        {
-            get
-            {
-                if (FOutDevice != null)
-                {
-                    return FOutDevice.DeviceID;
-                }
-                else
-                {
-                    return -1;
-                }
-            }
-        }
+        private readonly MidiEvents FEventSource;
+        private readonly OutputDevice FOutDevice;
 
         public OutputDeviceEventSink(OutputDevice outDevice, MidiEvents eventSource)
         {
@@ -31,7 +16,25 @@ namespace Sanford.Multimedia.Midi
             FEventSource = eventSource;
 
             RegisterEvents();
+        }
 
+        public int DeviceID
+        {
+            get
+            {
+                if (FOutDevice != null)
+                    return FOutDevice.DeviceID;
+                return -1;
+            }
+        }
+
+        /// <summary>
+        ///     Disposes the underying output device and removes the events from the source
+        /// </summary>
+        public void Dispose()
+        {
+            UnRegisterEvents();
+            FOutDevice.Dispose();
         }
 
         private void RegisterEvents()
@@ -95,23 +98,15 @@ namespace Sanford.Multimedia.Midi
             FOutDevice.SendShort(e.Message.Message);
         }
 
-        /// <summary>
-        /// Disposes the underying output device and removes the events from the source
-        /// </summary>
-        public void Dispose()
-        {
-            UnRegisterEvents();
-            FOutDevice.Dispose();
-        }
-
         public static OutputDeviceEventSink FromDeviceID(int deviceID, MidiEvents eventSource)
         {
-            var deviceCount = OutputDevice.DeviceCount;
+            var deviceCount = OutputDeviceBase.DeviceCount;
             if (deviceCount > 0)
             {
                 deviceID %= deviceCount;
                 return new OutputDeviceEventSink(new OutputDevice(deviceID), eventSource);
             }
+
             return null;
         }
     }

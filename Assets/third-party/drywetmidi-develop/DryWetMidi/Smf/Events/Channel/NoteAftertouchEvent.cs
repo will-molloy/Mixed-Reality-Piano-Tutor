@@ -3,13 +3,26 @@
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents a Polyphonic Key Pressure (Aftertouch) message.
+    ///     Represents a Polyphonic Key Pressure (Aftertouch) message.
     /// </summary>
     /// <remarks>
-    /// This message is most often sent by pressing down on the key after it "bottoms out".
+    ///     This message is most often sent by pressing down on the key after it "bottoms out".
     /// </remarks>
     public sealed class NoteAftertouchEvent : ChannelEvent
     {
+        #region Overrides
+
+        /// <summary>
+        ///     Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString()
+        {
+            return $"Note Aftertouch [{Channel}] ({NoteNumber}, {AftertouchValue})";
+        }
+
+        #endregion
+
         #region Constants
 
         private const int ParametersCount = 2;
@@ -21,7 +34,7 @@ namespace Melanchall.DryWetMidi.Smf
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NoteAftertouchEvent"/>.
+        ///     Initializes a new instance of the <see cref="NoteAftertouchEvent" />.
         /// </summary>
         public NoteAftertouchEvent()
             : base(ParametersCount)
@@ -29,8 +42,8 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NoteAftertouchEvent"/> with the specified
-        /// note number and aftertouch (pressure) value.
+        ///     Initializes a new instance of the <see cref="NoteAftertouchEvent" /> with the specified
+        ///     note number and aftertouch (pressure) value.
         /// </summary>
         /// <param name="noteNumber">Note number.</param>
         /// <param name="aftertouchValue">Aftertouch (pressure) value.</param>
@@ -46,7 +59,7 @@ namespace Melanchall.DryWetMidi.Smf
         #region Properties
 
         /// <summary>
-        /// Gets or sets note number.
+        ///     Gets or sets note number.
         /// </summary>
         public SevenBitNumber NoteNumber
         {
@@ -55,25 +68,12 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets or sets aftertouch (pressure) value.
+        ///     Gets or sets aftertouch (pressure) value.
         /// </summary>
         public SevenBitNumber AftertouchValue
         {
             get { return this[AftertouchValueParameterIndex]; }
             set { this[AftertouchValueParameterIndex] = value; }
-        }
-
-        #endregion
-
-        #region Overrides
-
-        /// <summary>
-        /// Returns a string that represents the current object.
-        /// </summary>
-        /// <returns>A string that represents the current object.</returns>
-        public override string ToString()
-        {
-            return $"Note Aftertouch [{Channel}] ({NoteNumber}, {AftertouchValue})";
         }
 
         #endregion

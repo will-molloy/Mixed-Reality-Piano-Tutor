@@ -5,37 +5,30 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
 
 namespace Valve.VR.InteractionSystem
 {
-	//-------------------------------------------------------------------------
-	public class LinearDisplacement : MonoBehaviour
-	{
-		public Vector3 displacement;
-		public LinearMapping linearMapping;
+    //-------------------------------------------------------------------------
+    public class LinearDisplacement : MonoBehaviour
+    {
+        public Vector3 displacement;
 
-		private Vector3 initialPosition;
+        private Vector3 initialPosition;
+        public LinearMapping linearMapping;
 
-		//-------------------------------------------------
-		void Start()
-		{
-			initialPosition = transform.localPosition;
+        //-------------------------------------------------
+        private void Start()
+        {
+            initialPosition = transform.localPosition;
 
-			if ( linearMapping == null )
-			{
-				linearMapping = GetComponent<LinearMapping>();
-			}
-		}
+            if (linearMapping == null) linearMapping = GetComponent<LinearMapping>();
+        }
 
 
-		//-------------------------------------------------
-		void Update()
-		{
-			if ( linearMapping )
-			{
-				transform.localPosition = initialPosition + linearMapping.value * displacement;
-			}
-		}
-	}
+        //-------------------------------------------------
+        private void Update()
+        {
+            if (linearMapping) transform.localPosition = initialPosition + linearMapping.value * displacement;
+        }
+    }
 }

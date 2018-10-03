@@ -12,35 +12,30 @@ namespace Sanford.Threading
         }
 
         /// <summary>
-        /// Implements the IAsyncResult interface for the DelegateQueue class.
+        ///     Implements the IAsyncResult interface for the DelegateQueue class.
         /// </summary>
         private class DelegateQueueAsyncResult : AsyncResult
         {
-            // The delegate to be invoked.
-            private Delegate method;
-
             // Args to be passed to the delegate.
-            private object[] args;
-
-            // The object returned from the delegate.
-            private object returnValue = null;
+            private readonly object[] args;
 
             // Represents a possible exception thrown by invoking the method.
-            private Exception error = null;
 
-            private NotificationType notificationType;
+            // The delegate to be invoked.
+
+            // The object returned from the delegate.
 
             public DelegateQueueAsyncResult(
-                object owner, 
-                Delegate method, 
-                object[] args, 
-                bool synchronously, 
-                NotificationType notificationType) 
+                object owner,
+                Delegate method,
+                object[] args,
+                bool synchronously,
+                NotificationType notificationType)
                 : base(owner, null, null)
             {
-                this.method = method;
+                Method = method;
                 this.args = args;
-                this.notificationType = notificationType;
+                NotificationType = notificationType;
             }
 
             public DelegateQueueAsyncResult(
@@ -53,20 +48,28 @@ namespace Sanford.Threading
                 NotificationType notificationType)
                 : base(owner, callback, state)
             {
-                this.method = method;
+                Method = method;
                 this.args = args;
-                this.notificationType = notificationType;
+                NotificationType = notificationType;
             }
+
+            public object ReturnValue { get; private set; }
+
+            public Exception Error { get; set; }
+
+            public Delegate Method { get; }
+
+            public NotificationType NotificationType { get; }
 
             public void Invoke()
             {
                 try
                 {
-                    returnValue = method.DynamicInvoke(args);
+                    ReturnValue = Method.DynamicInvoke(args);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    error = ex;
+                    Error = ex;
                 }
                 finally
                 {
@@ -77,42 +80,6 @@ namespace Sanford.Threading
             public object[] GetArgs()
             {
                 return args;
-            }
-
-            public object ReturnValue
-            {
-                get
-                {
-                    return returnValue;
-                }
-            }
-
-            public Exception Error
-            {
-                get
-                {
-                    return error;
-                }
-                set
-                {
-                    error = value;
-                }
-            }
-
-            public Delegate Method
-            {
-                get
-                {
-                    return method;
-                }
-            }
-
-            public NotificationType NotificationType
-            {
-                get
-                {
-                    return notificationType;
-                }
             }
         }
     }

@@ -1,19 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class SunCorona : MonoBehaviour {
+public class SunCorona : MonoBehaviour
+{
+    private Material mat;
+    private Vector2 offset;
+    public Vector2 speed = new Vector2(1, 1);
 
-    Material mat;
-    Vector2 offset;
-    public Vector2 speed = new Vector2(1, 1); 
-	void Start () {
+    private void Start()
+    {
         mat = GetComponent<Renderer>().sharedMaterial;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
         offset += speed * Time.deltaTime;
         mat.SetTextureOffset("_MainTex", offset);
-	}
+    }
 }

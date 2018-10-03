@@ -4,11 +4,11 @@ using UnityEngine.PostProcessing;
 namespace UnityEditor.PostProcessing
 {
     [CustomPropertyDrawer(typeof(GetSetAttribute))]
-    sealed class GetSetDrawer : PropertyDrawer
+    internal sealed class GetSetDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var attribute = (GetSetAttribute)base.attribute;
+            var attribute = (GetSetAttribute) this.attribute;
 
             EditorGUI.BeginChangeCheck();
             EditorGUI.PropertyField(position, property, label);
@@ -19,7 +19,8 @@ namespace UnityEditor.PostProcessing
             }
             else if (attribute.dirty)
             {
-                var parent = ReflectionUtils.GetParentObject(property.propertyPath, property.serializedObject.targetObject);
+                var parent =
+                    ReflectionUtils.GetParentObject(property.propertyPath, property.serializedObject.targetObject);
 
                 var type = parent.GetType();
                 var info = type.GetProperty(attribute.name);

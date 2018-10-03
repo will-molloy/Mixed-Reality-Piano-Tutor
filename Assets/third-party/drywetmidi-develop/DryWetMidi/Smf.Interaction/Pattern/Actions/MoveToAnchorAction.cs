@@ -11,43 +11,6 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
     internal sealed class MoveToAnchorAction : IPatternAction
     {
-        #region Constructor
-
-        public MoveToAnchorAction(AnchorPosition position)
-            : this(null, position)
-        {
-        }
-
-        public MoveToAnchorAction(object anchor, AnchorPosition position)
-            : this(anchor, position, -1)
-        {
-        }
-
-        public MoveToAnchorAction(AnchorPosition position, int index)
-            : this(null, position, index)
-        {
-        }
-
-        public MoveToAnchorAction(object anchor, AnchorPosition position, int index)
-        {
-            Anchor = anchor;
-            AnchorPosition = position;
-            Index = index;
-
-        }
-
-        #endregion
-
-        #region Properties
-
-        public object Anchor { get; }
-
-        public AnchorPosition AnchorPosition { get; }
-
-        public int Index { get; }
-
-        #endregion
-
         #region IPatternAction
 
         public PatternActionResult Invoke(long time, PatternContext context)
@@ -70,6 +33,42 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             return new PatternActionResult(newTime);
         }
+
+        #endregion
+
+        #region Constructor
+
+        public MoveToAnchorAction(AnchorPosition position)
+            : this(null, position)
+        {
+        }
+
+        public MoveToAnchorAction(object anchor, AnchorPosition position)
+            : this(anchor, position, -1)
+        {
+        }
+
+        public MoveToAnchorAction(AnchorPosition position, int index)
+            : this(null, position, index)
+        {
+        }
+
+        public MoveToAnchorAction(object anchor, AnchorPosition position, int index)
+        {
+            Anchor = anchor;
+            AnchorPosition = position;
+            Index = index;
+        }
+
+        #endregion
+
+        #region Properties
+
+        public object Anchor { get; }
+
+        public AnchorPosition AnchorPosition { get; }
+
+        public int Index { get; }
 
         #endregion
     }

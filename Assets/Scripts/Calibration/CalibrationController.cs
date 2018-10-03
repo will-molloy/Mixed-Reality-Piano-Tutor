@@ -1,63 +1,61 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using System.IO;
+﻿using System.IO;
 using Newtonsoft.Json;
-using System;
-using System.Runtime.Serialization;
+using UnityEngine;
+using Virtual_Piano;
 
-[RequireComponent(typeof(PianoBuilder))]
-[RequireComponent(typeof(PianoBuilderMarkerHook))]
-public class CalibrationController : MonoBehaviour
+namespace Calibration
 {
-
-    [SerializeField]
-    private string JSON_PATH = "Assets/Resources/piano-calibration.json";
-
-    private PianoBuilderMarkerHook cameraHook;
-
-    private PianoBuilder builder;
-
-    private bool loadedMarker;
-
-    void Start()
+    /// <summary>
+    ///     - Saves (on backspace press) and loads (at start) PianoBuilder calibration to/from disk via JSON
+    /// </summary>
+    [RequireComponent(typeof(PianoBuilder))]
+    [RequireComponent(typeof(PianoBuilderMarkerHook))]
+    public class CalibrationController : MonoBehaviour
     {
-        cameraHook = GetComponent<PianoBuilderMarkerHook>();
-        builder = GetComponent<PianoBuilder>();
-    }
+        private PianoBuilder builder;
 
-    private void LoadMarker()
-    {
-        Debug.Log("Loading marker position from disk.");
-        var marker = cameraHook.GetMarkerTransform();
-        var json = File.ReadAllText(JSON_PATH);
-        var dto = JsonConvert.DeserializeObject<PianoCalibrationDTO>(json);
-        marker.localPosition = dto.markerPos;
-        marker.localScale = dto.markerScale;
-        marker.localEulerAngles = dto.markerEulerAngle;
-    }
+        private PianoBuilderMarkerHook cameraHook;
 
-    void Update()
-    {
-        if (!loadedMarker)
+        [SerializeField] private string JSON_PATH = "Assets/Resources/piano-calibration.json";
+
+        private bool loadedMarker;
+
+        private void Start()
         {
-            LoadMarker();
-            loadedMarker = true;
+            cameraHook = GetComponent<PianoBuilderMarkerHook>();
+            builder = GetComponent<PianoBuilder>();
         }
 
-        builder.transform.localEulerAngles = Vector3.zero;
-        if (Input.GetKeyDown(KeyCode.Backspace))
+        private void LoadMarker()
         {
-            SaveMarker();
+            Debug.Log("Loading marker position from disk.");
+            var marker = cameraHook.GetMarkerTransform();
+            var json = File.ReadAllText(JSON_PATH);
+            var dto = JsonConvert.DeserializeObject<PianoCalibrationDto>(json);
+            marker.localPosition = dto.markerPos;
+            marker.localScale = dto.markerScale;
+            marker.localEulerAngles = dto.markerEulerAngle;
         }
-    }
 
-    private void SaveMarker()
-    {
-        var marker = cameraHook.GetMarkerTransform();
-        Debug.Log("Saving marker position to disk." + marker.localPosition.ToString("F5"));
-        var dto = new PianoCalibrationDTO(marker.localPosition, marker.localScale, marker.localEulerAngles);
-        var json = JsonConvert.SerializeObject(dto, Formatting.Indented);
-        File.WriteAllText(JSON_PATH, json);
+        private void Update()
+        {
+            if (!loadedMarker)
+            {
+                LoadMarker();
+                loadedMarker = true;
+            }
+
+            builder.transform.localEulerAngles = Vector3.zero;
+            if (Input.GetKeyDown(KeyCode.Backspace)) SaveMarker();
+        }
+
+        private void SaveMarker()
+        {
+            var marker = cameraHook.GetMarkerTransform();
+            Debug.Log("Saving marker position to disk." + marker.localPosition.ToString("F5"));
+            var dto = new PianoCalibrationDto(marker.localPosition, marker.localScale, marker.localEulerAngles);
+            var json = JsonConvert.SerializeObject(dto, Formatting.Indented);
+            File.WriteAllText(JSON_PATH, json);
+        }
     }
 }

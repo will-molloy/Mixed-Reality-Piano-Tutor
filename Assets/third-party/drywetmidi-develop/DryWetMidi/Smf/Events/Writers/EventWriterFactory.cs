@@ -3,22 +3,14 @@
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Provides a way to get <see cref="IEventWriter"/> for an event.
+    ///     Provides a way to get <see cref="IEventWriter" /> for an event.
     /// </summary>
     internal static class EventWriterFactory
     {
-        #region Fields
-
-        private static readonly IEventWriter _metaEventWriter = new MetaEventWriter();
-        private static readonly IEventWriter _channelEventWriter = new ChannelEventWriter();
-        private static readonly IEventWriter _sysExEventWriter = new SysExEventWriter();
-
-        #endregion
-
         #region Methods
 
         /// <summary>
-        /// Gets <see cref="IEventWriter"/> for an event.
+        ///     Gets <see cref="IEventWriter" /> for an event.
         /// </summary>
         /// <param name="midiEvent">Event to get writer for.</param>
         /// <returns>Writer for the event.</returns>
@@ -36,6 +28,14 @@ namespace Melanchall.DryWetMidi.Smf
 
             return _sysExEventWriter;
         }
+
+        #endregion
+
+        #region Fields
+
+        private static readonly IEventWriter _metaEventWriter = new MetaEventWriter();
+        private static readonly IEventWriter _channelEventWriter = new ChannelEventWriter();
+        private static readonly IEventWriter _sysExEventWriter = new SysExEventWriter();
 
         #endregion
     }

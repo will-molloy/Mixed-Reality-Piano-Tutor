@@ -43,9 +43,9 @@ namespace Sanford.Multimedia.Midi
 
         public IEnumerable<MidiEvent> Iterator()
         {
-            MidiEvent current = head;
+            var current = head;
 
-            while(current != null)
+            while (current != null)
             {
                 yield return current;
 
@@ -56,12 +56,12 @@ namespace Sanford.Multimedia.Midi
 
             yield return current;
         }
-        
+
         public IEnumerable<int> DispatcherIterator(MessageDispatcher dispatcher)
         {
-            IEnumerator<MidiEvent> enumerator = Iterator().GetEnumerator();
+            var enumerator = Iterator().GetEnumerator();
 
-            while(enumerator.MoveNext())
+            while (enumerator.MoveNext())
             {
                 yield return enumerator.Current.AbsoluteTicks;
 
@@ -69,47 +69,40 @@ namespace Sanford.Multimedia.Midi
             }
         }
 
-        public IEnumerable<int> TickIterator(int startPosition, 
+        public IEnumerable<int> TickIterator(int startPosition,
             ChannelChaser chaser, MessageDispatcher dispatcher)
         {
             #region Require
 
-            if(startPosition < 0)
-            {
+            if (startPosition < 0)
                 throw new ArgumentOutOfRangeException("startPosition", startPosition,
                     "Start position out of range.");
-            }
 
             #endregion
 
-            IEnumerator<MidiEvent> enumerator = Iterator().GetEnumerator();
+            var enumerator = Iterator().GetEnumerator();
 
-            bool notFinished = enumerator.MoveNext();
+            var notFinished = enumerator.MoveNext();
             IMidiMessage message;
 
-            while(notFinished && enumerator.Current.AbsoluteTicks < startPosition)
+            while (notFinished && enumerator.Current.AbsoluteTicks < startPosition)
             {
                 message = enumerator.Current.MidiMessage;
 
-                if(message.MessageType == MessageType.Channel)
-                {
-                    chaser.Process((ChannelMessage)message);
-                }
-                else if(message.MessageType == MessageType.Meta)
-                {
-                    dispatcher.Dispatch(message);
-                }
+                if (message.MessageType == MessageType.Channel)
+                    chaser.Process((ChannelMessage) message);
+                else if (message.MessageType == MessageType.Meta) dispatcher.Dispatch(message);
 
                 notFinished = enumerator.MoveNext();
             }
 
             chaser.Chase();
 
-            int ticks = startPosition;
+            var ticks = startPosition;
 
-            while(notFinished)
+            while (notFinished)
             {
-                while(ticks < enumerator.Current.AbsoluteTicks)
+                while (ticks < enumerator.Current.AbsoluteTicks)
                 {
                     yield return ticks;
 
@@ -118,11 +111,11 @@ namespace Sanford.Multimedia.Midi
 
                 yield return ticks;
 
-                while(notFinished && enumerator.Current.AbsoluteTicks == ticks)
+                while (notFinished && enumerator.Current.AbsoluteTicks == ticks)
                 {
                     dispatcher.Dispatch(enumerator.Current.MidiMessage);
 
-                    notFinished = enumerator.MoveNext();    
+                    notFinished = enumerator.MoveNext();
                 }
 
                 ticks++;

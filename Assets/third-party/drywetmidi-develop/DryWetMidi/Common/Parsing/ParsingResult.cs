@@ -4,17 +4,26 @@ namespace Melanchall.DryWetMidi.Common
 {
     internal sealed class ParsingResult
     {
+        #region Fields
+
+        private readonly string _error;
+
+        #endregion
+
+        #region Methods
+
+        public static ParsingResult Error(string error)
+        {
+            return new ParsingResult(error);
+        }
+
+        #endregion
+
         #region Constants
 
         public static readonly ParsingResult Parsed = new ParsingResult(ParsingStatus.Parsed);
         public static readonly ParsingResult EmptyInputString = new ParsingResult(ParsingStatus.EmptyInputString);
         public static readonly ParsingResult NotMatched = new ParsingResult(ParsingStatus.NotMatched);
-
-        #endregion
-
-        #region Fields
-
-        private readonly string _error;
 
         #endregion
 
@@ -58,15 +67,6 @@ namespace Melanchall.DryWetMidi.Common
 
                 return null;
             }
-        }
-
-        #endregion
-
-        #region Methods
-
-        public static ParsingResult Error(string error)
-        {
-            return new ParsingResult(error);
         }
 
         #endregion

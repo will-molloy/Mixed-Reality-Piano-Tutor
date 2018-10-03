@@ -39,22 +39,19 @@ namespace Sanford.Multimedia.Midi
 {
     public class ChannelStopper
     {
-        private ChannelMessage[,] noteOnMessage;
+        private readonly ChannelMessageBuilder builder = new ChannelMessageBuilder();
 
-        private bool[] holdPedal1Message;
+        private readonly bool[] holdPedal1Message;
 
-        private bool[] holdPedal2Message;
+        private readonly bool[] holdPedal2Message;
+        private readonly ChannelMessage[,] noteOnMessage;
 
-        private bool[] sustenutoMessage;
-
-        private ChannelMessageBuilder builder = new ChannelMessageBuilder();
-
-        public event EventHandler<StoppedEventArgs> Stopped;
+        private readonly bool[] sustenutoMessage;
 
         public ChannelStopper()
         {
-            int c = ChannelMessage.MidiChannelMaxValue + 1;
-            int d = ShortMessage.DataMaxValue + 1;
+            var c = ChannelMessage.MidiChannelMaxValue + 1;
+            var d = ShortMessage.DataMaxValue + 1;
 
             noteOnMessage = new ChannelMessage[c, d];
 
@@ -63,19 +60,17 @@ namespace Sanford.Multimedia.Midi
             sustenutoMessage = new bool[c];
         }
 
+        public event EventHandler<StoppedEventArgs> Stopped;
+
         public void Process(ChannelMessage message)
         {
-            switch(message.Command)
+            switch (message.Command)
             {
                 case ChannelCommand.NoteOn:
-                    if(message.Data2 > 0)
-                    {
+                    if (message.Data2 > 0)
                         noteOnMessage[message.MidiChannel, message.Data1] = message;
-                    }
                     else
-                    {
                         noteOnMessage[message.MidiChannel, message.Data1] = null;
-                    }
                     break;
 
                 case ChannelCommand.NoteOff:
@@ -83,54 +78,42 @@ namespace Sanford.Multimedia.Midi
                     break;
 
                 case ChannelCommand.Controller:
-                    switch(message.Data1)
+                    switch (message.Data1)
                     {
-                        case (int)ControllerType.HoldPedal1:
-                            if(message.Data2 > 63)
-                            {
+                        case (int) ControllerType.HoldPedal1:
+                            if (message.Data2 > 63)
                                 holdPedal1Message[message.MidiChannel] = true;
-                            }
                             else
-                            {
                                 holdPedal1Message[message.MidiChannel] = false;
-                            }
                             break;
 
-                        case (int)ControllerType.HoldPedal2:
-                            if(message.Data2 > 63)
-                            {
+                        case (int) ControllerType.HoldPedal2:
+                            if (message.Data2 > 63)
                                 holdPedal2Message[message.MidiChannel] = true;
-                            }
                             else
-                            {
                                 holdPedal2Message[message.MidiChannel] = false;
-                            }
                             break;
 
-                        case (int)ControllerType.SustenutoPedal:
-                            if(message.Data2 > 63)
-                            {
+                        case (int) ControllerType.SustenutoPedal:
+                            if (message.Data2 > 63)
                                 sustenutoMessage[message.MidiChannel] = true;
-                            }
                             else
-                            {
                                 sustenutoMessage[message.MidiChannel] = false;
-                            }
                             break;
                     }
+
                     break;
             }
         }
 
         public void AllSoundOff()
         {
-            ArrayList stoppedMessages = new ArrayList();
+            var stoppedMessages = new ArrayList();
 
-            for(int c = 0; c <= ChannelMessage.MidiChannelMaxValue; c++)
+            for (var c = 0; c <= ChannelMessage.MidiChannelMaxValue; c++)
             {
-                for(int n = 0; n <= ShortMessage.DataMaxValue; n++)
-                {
-                    if(noteOnMessage[c, n] != null)
+                for (var n = 0; n <= ShortMessage.DataMaxValue; n++)
+                    if (noteOnMessage[c, n] != null)
                     {
                         builder.MidiChannel = c;
                         builder.Command = ChannelCommand.NoteOff;
@@ -141,13 +124,12 @@ namespace Sanford.Multimedia.Midi
 
                         noteOnMessage[c, n] = null;
                     }
-                }
 
-                if(holdPedal1Message[c])
+                if (holdPedal1Message[c])
                 {
                     builder.MidiChannel = c;
                     builder.Command = ChannelCommand.Controller;
-                    builder.Data1 = (int)ControllerType.HoldPedal1;
+                    builder.Data1 = (int) ControllerType.HoldPedal1;
                     builder.Build();
 
                     stoppedMessages.Add(builder.Result);
@@ -155,11 +137,11 @@ namespace Sanford.Multimedia.Midi
                     holdPedal1Message[c] = false;
                 }
 
-                if(holdPedal2Message[c])
+                if (holdPedal2Message[c])
                 {
                     builder.MidiChannel = c;
                     builder.Command = ChannelCommand.Controller;
-                    builder.Data1 = (int)ControllerType.HoldPedal2;
+                    builder.Data1 = (int) ControllerType.HoldPedal2;
                     builder.Build();
 
                     stoppedMessages.Add(builder.Result);
@@ -167,11 +149,11 @@ namespace Sanford.Multimedia.Midi
                     holdPedal2Message[c] = false;
                 }
 
-                if(sustenutoMessage[c])
+                if (sustenutoMessage[c])
                 {
                     builder.MidiChannel = c;
                     builder.Command = ChannelCommand.Controller;
-                    builder.Data1 = (int)ControllerType.SustenutoPedal;
+                    builder.Data1 = (int) ControllerType.SustenutoPedal;
                     builder.Build();
 
                     stoppedMessages.Add(builder.Result);
@@ -185,12 +167,9 @@ namespace Sanford.Multimedia.Midi
 
         public void Reset()
         {
-            for(int c = 0; c <= ChannelMessage.MidiChannelMaxValue; c++)
+            for (var c = 0; c <= ChannelMessage.MidiChannelMaxValue; c++)
             {
-                for(int n = 0; n <= ShortMessage.DataMaxValue; n++)
-                {
-                    noteOnMessage[c, n] = null;
-                }
+                for (var n = 0; n <= ShortMessage.DataMaxValue; n++) noteOnMessage[c, n] = null;
 
                 holdPedal1Message[c] = false;
                 holdPedal2Message[c] = false;
@@ -200,12 +179,9 @@ namespace Sanford.Multimedia.Midi
 
         protected virtual void OnStopped(StoppedEventArgs e)
         {
-            EventHandler<StoppedEventArgs> handler = Stopped;
+            var handler = Stopped;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
     }
 }

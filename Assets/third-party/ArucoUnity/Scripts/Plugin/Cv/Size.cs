@@ -3,76 +3,76 @@ using System.Runtime.InteropServices;
 
 namespace ArucoUnity.Plugin
 {
-  public static partial class Cv
-  {
-    public class Size : Utility.HandleCppPtr
+    public static partial class Cv
     {
-      // Native functions
+        public class Size : Utility.HandleCppPtr
+        {
+            // Constructors & destructor
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_cv_Size_new1();
+            public Size() : base(au_cv_Size_new1())
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_cv_Size_new2(int width, int height);
+            public Size(int width, int height) : base(au_cv_Size_new2(width, height))
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_cv_Size_delete(IntPtr size);
+            public Size(IntPtr sizePtr,
+                Utility.DeleteResponsibility deleteResponsibility = Utility.DeleteResponsibility.True)
+                : base(sizePtr, deleteResponsibility)
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_cv_Size_area(IntPtr size);
+            // Properties
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_cv_Size_getHeight(IntPtr size);
+            public int Height
+            {
+                get { return au_cv_Size_getHeight(CppPtr); }
+                set { au_cv_Size_setHeight(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_cv_Size_setHeight(IntPtr size, int height);
+            public int Width
+            {
+                get { return au_cv_Size_getWidth(CppPtr); }
+                set { au_cv_Size_setWidth(CppPtr, value); }
+            }
+            // Native functions
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_cv_Size_getWidth(IntPtr size);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_cv_Size_new1();
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_cv_Size_setWidth(IntPtr size, int width);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_cv_Size_new2(int width, int height);
 
-      // Constructors & destructor
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_cv_Size_delete(IntPtr size);
 
-      public Size() : base(au_cv_Size_new1())
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_cv_Size_area(IntPtr size);
 
-      public Size(int width, int height) : base(au_cv_Size_new2(width, height))
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_cv_Size_getHeight(IntPtr size);
 
-      public Size(IntPtr sizePtr, Utility.DeleteResponsibility deleteResponsibility = Utility.DeleteResponsibility.True)
-        : base(sizePtr, deleteResponsibility)
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_cv_Size_setHeight(IntPtr size, int height);
 
-      protected override void DeleteCppPtr()
-      {
-        au_cv_Size_delete(CppPtr);
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_cv_Size_getWidth(IntPtr size);
 
-      // Properties
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_cv_Size_setWidth(IntPtr size, int width);
 
-      public int Height
-      {
-        get { return au_cv_Size_getHeight(CppPtr); }
-        set { au_cv_Size_setHeight(CppPtr, value); }
-      }
+            protected override void DeleteCppPtr()
+            {
+                au_cv_Size_delete(CppPtr);
+            }
 
-      public int Width
-      {
-        get { return au_cv_Size_getWidth(CppPtr); }
-        set { au_cv_Size_setWidth(CppPtr, value); }
-      }
+            // Methods
 
-      // Methods
-
-      public int Area()
-      {
-        return au_cv_Size_area(CppPtr);
-      }
+            public int Area()
+            {
+                return au_cv_Size_area(CppPtr);
+            }
+        }
     }
-  }
 }

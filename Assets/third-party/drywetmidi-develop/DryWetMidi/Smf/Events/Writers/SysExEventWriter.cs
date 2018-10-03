@@ -4,6 +4,17 @@ namespace Melanchall.DryWetMidi.Smf
 {
     internal sealed class SysExEventWriter : IEventWriter
     {
+        #region Methods
+
+        [Conditional("DEBUG")]
+        private static void VerifyEvent(MidiEvent midiEvent)
+        {
+            Debug.Assert(midiEvent != null);
+            Debug.Assert(midiEvent is SysExEvent, "Event is not SysEx event.");
+        }
+
+        #endregion
+
         #region IEventWriter
 
         public void Write(MidiEvent midiEvent, MidiWriter writer, WritingSettings settings, bool writeStatusByte)
@@ -51,17 +62,6 @@ namespace Melanchall.DryWetMidi.Smf
                 Debug.Fail($"No status byte defined for {midiEvent.GetType()}.");
 
             return statusByte;
-        }
-
-        #endregion
-
-        #region Methods
-
-        [Conditional("DEBUG")]
-        private static void VerifyEvent(MidiEvent midiEvent)
-        {
-            Debug.Assert(midiEvent != null);
-            Debug.Assert(midiEvent is SysExEvent, "Event is not SysEx event.");
         }
 
         #endregion

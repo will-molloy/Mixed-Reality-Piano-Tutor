@@ -1,31 +1,40 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents a track chunk of a standard MIDI file.
+    ///     Represents a track chunk of a standard MIDI file.
     /// </summary>
     /// <remarks>
-    /// Track chunk contains actual MIDI data as set of events.
+    ///     Track chunk contains actual MIDI data as set of events.
     /// </remarks>
     public sealed class TrackChunk : MidiChunk
     {
         #region Constants
 
         /// <summary>
-        /// ID of the track chunk. This field is constsnt.
+        ///     ID of the track chunk. This field is constsnt.
         /// </summary>
         public const string Id = "MTrk";
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        ///     Gets the collection of events contained in the track chunk.
+        /// </summary>
+        public EventsCollection Events { get; } = new EventsCollection();
 
         #endregion
 
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrackChunk"/>.
+        ///     Initializes a new instance of the <see cref="TrackChunk" />.
         /// </summary>
         public TrackChunk()
             : base(Id)
@@ -33,15 +42,15 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrackChunk"/> with the specified events.
+        ///     Initializes a new instance of the <see cref="TrackChunk" /> with the specified events.
         /// </summary>
         /// <param name="events">Events to add to the track chunk.</param>
         /// <remarks>
-        /// Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
-        /// track chunk structure. End Of Track event will be written to the track chunk automatically on
-        /// <see cref="MidiFile.Write(string, bool, MidiFileFormat, WritingSettings)"/>.
+        ///     Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
+        ///     track chunk structure. End Of Track event will be written to the track chunk automatically on
+        ///     <see cref="MidiFile.Write(string, bool, MidiFileFormat, WritingSettings)" />.
         /// </remarks>
-        /// <exception cref="ArgumentNullException"><paramref name="events"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="events" /> is null.</exception>
         public TrackChunk(IEnumerable<MidiEvent> events)
             : this()
         {
@@ -51,17 +60,18 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrackChunk"/> with the specified events.
+        ///     Initializes a new instance of the <see cref="TrackChunk" /> with the specified events.
         /// </summary>
         /// <param name="events">Events to add to the track chunk.</param>
         /// <remarks>
-        /// Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
-        /// track chunk structure. End Of Track event will be written to the track chunk automatically on
-        /// <see cref="MidiFile.Write(string, bool, MidiFileFormat, WritingSettings)"/>.
+        ///     Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
+        ///     track chunk structure. End Of Track event will be written to the track chunk automatically on
+        ///     <see cref="MidiFile.Write(string, bool, MidiFileFormat, WritingSettings)" />.
         /// </remarks>
-        /// <exception cref="ArgumentNullException"><paramref name="events"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="events"/> contain an instance of <see cref="EndOfTrackEvent"/>; or
-        /// <paramref name="events"/> contain null.
+        /// <exception cref="ArgumentNullException"><paramref name="events" /> is null.</exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="events" /> contain an instance of <see cref="EndOfTrackEvent" />; or
+        ///     <paramref name="events" /> contain null.
         /// </exception>
         public TrackChunk(params MidiEvent[] events)
             : this()
@@ -71,34 +81,29 @@ namespace Melanchall.DryWetMidi.Smf
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        /// Gets the collection of events contained in the track chunk.
-        /// </summary>
-        public EventsCollection Events { get; } = new EventsCollection();
-
-        #endregion
-
         #region Overrides
 
         /// <summary>
-        /// Reads content of a <see cref="TrackChunk"/>.
+        ///     Reads content of a <see cref="TrackChunk" />.
         /// </summary>
         /// <remarks>
-        /// Content of a <see cref="TrackChunk"/> is collection of MIDI events.
+        ///     Content of a <see cref="TrackChunk" /> is collection of MIDI events.
         /// </remarks>
         /// <param name="reader">Reader to read the chunk's content with.</param>
         /// <param name="settings">Settings according to which the chunk's content must be read.</param>
         /// <param name="size">Expected size of the content taken from the chunk's header.</param>
-        /// <exception cref="ObjectDisposedException">Method was called after the writer's underlying stream
-        /// was disposed.</exception>
+        /// <exception cref="ObjectDisposedException">
+        ///     Method was called after the writer's underlying stream
+        ///     was disposed.
+        /// </exception>
         /// <exception cref="IOException">An I/O error occurred on the writer's underlying stream.</exception>
         /// <exception cref="UnexpectedRunningStatusException">Unexpected running status is encountered.</exception>
         /// <exception cref="UnknownChannelEventException">Reader has encountered an unknown channel event.</exception>
         /// <exception cref="NotEnoughBytesException">Not enough bytes to read an event.</exception>
-        /// <exception cref="InvalidChannelEventParameterValueException">Value of a channel event's parameter just
-        /// read is invalid.</exception>
+        /// <exception cref="InvalidChannelEventParameterValueException">
+        ///     Value of a channel event's parameter just
+        ///     read is invalid.
+        /// </exception>
         /// <exception cref="MissedEndOfTrackEventException">Track chunk doesn't end with End Of Track event.</exception>
         protected override void ReadContent(MidiReader reader, ReadingSettings settings, uint size)
         {
@@ -128,10 +133,10 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Writes content of a <see cref="TrackChunk"/>.
+        ///     Writes content of a <see cref="TrackChunk" />.
         /// </summary>
         /// <remarks>
-        /// Content of a <see cref="TrackChunk"/> is collection of MIDI events.
+        ///     Content of a <see cref="TrackChunk" /> is collection of MIDI events.
         /// </remarks>
         /// <param name="writer">Writer to write the chunk's content with.</param>
         /// <param name="settings">Settings according to which the chunk's content must be written.</param>
@@ -147,19 +152,19 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets size of <see cref="TrackChunk"/>'s content as number of bytes required to write it according
-        /// to specified <see cref="WritingSettings"/>.
+        ///     Gets size of <see cref="TrackChunk" />'s content as number of bytes required to write it according
+        ///     to specified <see cref="WritingSettings" />.
         /// </summary>
         /// <param name="settings">Settings according to which the chunk's content will be written.</param>
-        /// <returns>Number of bytes required to write <see cref="TrackChunk"/>'s content.</returns>
+        /// <returns>Number of bytes required to write <see cref="TrackChunk" />'s content.</returns>
         protected override uint GetContentSize(WritingSettings settings)
         {
             uint result = 0;
 
             ProcessEvents(settings, (eventWriter, midiEvent, writeStatusByte) =>
             {
-                result += (uint)(midiEvent.DeltaTime.GetVlqLength() +
-                                eventWriter.CalculateSize(midiEvent, settings, writeStatusByte));
+                result += (uint) (midiEvent.DeltaTime.GetVlqLength() +
+                                  eventWriter.CalculateSize(midiEvent, settings, writeStatusByte));
             });
 
             return result;
@@ -170,20 +175,24 @@ namespace Melanchall.DryWetMidi.Smf
         #region Methods
 
         /// <summary>
-        /// Reads an event from the reader's underlying stream.
+        ///     Reads an event from the reader's underlying stream.
         /// </summary>
         /// <param name="reader">Reader to read an event.</param>
         /// <param name="settings">Settings according to which an event must be read.</param>
         /// <param name="channelEventStatusByte">Current channel event status byte used as running status.</param>
-        /// <returns>Instance of the <see cref="MidiEvent"/> representing a MIDI event.</returns>
-        /// <exception cref="ObjectDisposedException">Method was called after the writer's underlying stream
-        /// was disposed.</exception>
+        /// <returns>Instance of the <see cref="MidiEvent" /> representing a MIDI event.</returns>
+        /// <exception cref="ObjectDisposedException">
+        ///     Method was called after the writer's underlying stream
+        ///     was disposed.
+        /// </exception>
         /// <exception cref="IOException">An I/O error occurred on the writer's underlying stream.</exception>
         /// <exception cref="UnexpectedRunningStatusException">Unexpected running status is encountered.</exception>
         /// <exception cref="UnknownChannelEventException">Reader has encountered an unknown channel event.</exception>
         /// <exception cref="NotEnoughBytesException">Not enough bytes to read an event.</exception>
-        /// <exception cref="InvalidChannelEventParameterValueException">Value of a channel event's parameter just
-        /// read is invalid.</exception>
+        /// <exception cref="InvalidChannelEventParameterValueException">
+        ///     Value of a channel event's parameter just
+        ///     read is invalid.
+        /// </exception>
         private MidiEvent ReadEvent(MidiReader reader, ReadingSettings settings, ref byte? channelEventStatusByte)
         {
             var deltaTime = reader.ReadVlqLongNumber();
@@ -213,14 +222,12 @@ namespace Melanchall.DryWetMidi.Smf
             {
                 var noteOnEvent = midiEvent as NoteOnEvent;
                 if (noteOnEvent?.Velocity == 0)
-                {
                     midiEvent = new NoteOffEvent
                     {
                         DeltaTime = noteOnEvent.DeltaTime,
                         Channel = noteOnEvent.Channel,
                         NoteNumber = noteOnEvent.NoteNumber
                     };
-                }
             }
 
             //
@@ -243,10 +250,11 @@ namespace Melanchall.DryWetMidi.Smf
             var skipKeySignature = true;
             var skipTimeSignature = true;
 
-            foreach (var midiEvent in Events.Concat(new[] { new EndOfTrackEvent() }))
+            foreach (var midiEvent in Events.Concat(new[] {new EndOfTrackEvent()}))
             {
                 var eventToWrite = midiEvent;
-                if (eventToWrite is UnknownMetaEvent && settings.CompressionPolicy.HasFlag(CompressionPolicy.DeleteUnknownMetaEvents))
+                if (eventToWrite is UnknownMetaEvent &&
+                    settings.CompressionPolicy.HasFlag(CompressionPolicy.DeleteUnknownMetaEvents))
                     continue;
 
                 //
@@ -279,12 +287,13 @@ namespace Melanchall.DryWetMidi.Smf
 
                 //
 
-                IEventWriter eventWriter = EventWriterFactory.GetWriter(eventToWrite);
+                var eventWriter = EventWriterFactory.GetWriter(eventToWrite);
 
                 if (eventToWrite is ChannelEvent)
                 {
                     var statusByte = eventWriter.GetStatusByte(eventToWrite);
-                    writeStatusByte = runningStatus != statusByte || !settings.CompressionPolicy.HasFlag(CompressionPolicy.UseRunningStatus);
+                    writeStatusByte = runningStatus != statusByte ||
+                                      !settings.CompressionPolicy.HasFlag(CompressionPolicy.UseRunningStatus);
                     runningStatus = statusByte;
                 }
                 else
@@ -323,7 +332,8 @@ namespace Melanchall.DryWetMidi.Smf
                 var keySignatureEvent = midiEvent as KeySignatureEvent;
                 if (keySignatureEvent != null)
                 {
-                    if (keySignatureEvent.Key == KeySignatureEvent.DefaultKey && keySignatureEvent.Scale == KeySignatureEvent.DefaultScale)
+                    if (keySignatureEvent.Key == KeySignatureEvent.DefaultKey &&
+                        keySignatureEvent.Scale == KeySignatureEvent.DefaultScale)
                         return true;
 
                     skip = false;

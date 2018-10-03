@@ -40,30 +40,30 @@ namespace Sanford.Multimedia.Midi
 {
     public partial class InputDevice
     {
-        private delegate void GenericDelegate<T>(T args);
-
-        private DelegateQueue delegateQueue = null;
-
-        private volatile int bufferCount = 0;
-
         private readonly object lockObject = new object();
 
-        private MidiInProc midiInProc;
+        private volatile int bufferCount;
 
-        private bool recording = false;
+        private readonly ChannelMessageBuilder cmBuilder = new ChannelMessageBuilder();
 
-        private MidiHeaderBuilder headerBuilder = new MidiHeaderBuilder();
+        private readonly DelegateQueue delegateQueue;
 
-        private ChannelMessageBuilder cmBuilder = new ChannelMessageBuilder();
+        private readonly IntPtr handle;
 
-        private SysCommonMessageBuilder scBuilder = new SysCommonMessageBuilder();
+        private readonly MidiHeaderBuilder headerBuilder = new MidiHeaderBuilder();
 
-        private IntPtr handle;
+        private readonly MidiInProc midiInProc;
 
-        private volatile bool resetting = false;
+        private bool recording;
+
+        private volatile bool resetting;
+
+        private readonly SysCommonMessageBuilder scBuilder = new SysCommonMessageBuilder();
 
         private int sysExBufferSize = 4096;
 
-        private List<byte> sysExData = new List<byte>();
+        private readonly List<byte> sysExData = new List<byte>();
+
+        private delegate void GenericDelegate<T>(T args);
     }
 }

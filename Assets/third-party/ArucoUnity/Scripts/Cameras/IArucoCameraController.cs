@@ -3,15 +3,15 @@
 namespace ArucoUnity.Cameras
 {
   /// <summary>
-  /// Configurable controller using a <see cref="IArucoCamera"/>.
+  ///     Configurable controller using a <see cref="IArucoCamera" />.
   /// </summary>
   public interface IArucoCameraController : IConfigurableController
-  {
-    // Properties
+    {
+        // Properties
 
-    /// <summary>
-    /// Gets or sets the camera to use.
-    /// </summary>
-    IArucoCamera ArucoCamera { get; set; }
-  }
+      /// <summary>
+      ///     Gets or sets the camera to use.
+      /// </summary>
+      IArucoCamera ArucoCamera { get; set; }
+    }
 }

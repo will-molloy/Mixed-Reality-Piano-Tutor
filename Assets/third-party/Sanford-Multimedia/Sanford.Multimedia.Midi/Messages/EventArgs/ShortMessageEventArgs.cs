@@ -3,35 +3,27 @@ using System;
 namespace Sanford.Multimedia.Midi
 {
     /// <summary>
-    /// Raw short message as int or byte array, useful when working with VST.
+    ///     Raw short message as int or byte array, useful when working with VST.
     /// </summary>
     public class ShortMessageEventArgs : EventArgs
     {
-        ShortMessage message;
-
         public ShortMessageEventArgs(ShortMessage message)
         {
-            this.message = message;
+            Message = message;
         }
 
         public ShortMessageEventArgs(int message, int timestamp = 0)
         {
-            this.message = new ShortMessage(message);
-            this.message.Timestamp = timestamp;
+            Message = new ShortMessage(message);
+            Message.Timestamp = timestamp;
         }
 
         public ShortMessageEventArgs(byte status, byte data1, byte data2)
         {
-            this.message = new ShortMessage(status, data1, data2);
+            Message = new ShortMessage(status, data1, data2);
         }
 
-        public ShortMessage Message
-        {
-            get
-            {
-                return message;
-            }
-        }
+        public ShortMessage Message { get; }
 
         public static ShortMessageEventArgs FromChannelMessage(ChannelMessageEventArgs arg)
         {

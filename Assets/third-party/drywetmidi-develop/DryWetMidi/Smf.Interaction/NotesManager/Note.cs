@@ -1,20 +1,20 @@
-﻿using Melanchall.DryWetMidi.Common;
+﻿using System.Diagnostics;
+using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.MusicTheory;
-using System.Diagnostics;
 
 namespace Melanchall.DryWetMidi.Smf.Interaction
 {
     /// <summary>
-    /// Represents a musical note.
+    ///     Represents a musical note.
     /// </summary>
     public sealed class Note : ILengthedObject
     {
         #region Constants
 
         /// <summary>
-        /// Default velocity.
+        ///     Default velocity.
         /// </summary>
-        public static readonly SevenBitNumber DefaultVelocity = (SevenBitNumber)100;
+        public static readonly SevenBitNumber DefaultVelocity = (SevenBitNumber) 100;
 
         #endregion
 
@@ -24,63 +24,88 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
         #endregion
 
+        #region Overrides
+
+        /// <summary>
+        ///     Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString()
+        {
+            return _note.ToString();
+        }
+
+        #endregion
+
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Note"/> with the specified
-        /// note name and octave.
+        ///     Initializes a new instance of the <see cref="Note" /> with the specified
+        ///     note name and octave.
         /// </summary>
         /// <param name="noteName">Name of the note.</param>
         /// <param name="octave">Number of the octave in scientific pitch notation.</param>
         /// <remarks>
-        /// Octave number is specified in scientific pitch notation which means that 4 must be
-        /// passed to <paramref name="octave"/> to get the middle C.
+        ///     Octave number is specified in scientific pitch notation which means that 4 must be
+        ///     passed to <paramref name="octave" /> to get the middle C.
         /// </remarks>
-        /// <exception cref="InvalidEnumArgumentException"><paramref name="noteName"/> specified an
-        /// invalid value.</exception>
-        /// <exception cref="ArgumentException">Note number is out of range for the specified note
-        /// name and octave.</exception>
+        /// <exception cref="InvalidEnumArgumentException">
+        ///     <paramref name="noteName" /> specified an
+        ///     invalid value.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Note number is out of range for the specified note
+        ///     name and octave.
+        /// </exception>
         public Note(NoteName noteName, int octave)
             : this(noteName, octave, 0)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Note"/> with the specified
-        /// note name, octave and length.
+        ///     Initializes a new instance of the <see cref="Note" /> with the specified
+        ///     note name, octave and length.
         /// </summary>
         /// <param name="noteName">Name of the note.</param>
         /// <param name="octave">Number of the octave in scientific pitch notation.</param>
         /// <param name="length">Length of the note in units defined by time division of a MIDI file.</param>
         /// <remarks>
-        /// Octave number is specified in scientific pitch notation which means that 4 must be
-        /// passed to <paramref name="octave"/> to get the middle C.
+        ///     Octave number is specified in scientific pitch notation which means that 4 must be
+        ///     passed to <paramref name="octave" /> to get the middle C.
         /// </remarks>
-        /// <exception cref="InvalidEnumArgumentException"><paramref name="noteName"/> specified an
-        /// invalid value.</exception>
-        /// <exception cref="ArgumentException">Note number is out of range for the specified note
-        /// name and octave.</exception>
+        /// <exception cref="InvalidEnumArgumentException">
+        ///     <paramref name="noteName" /> specified an
+        ///     invalid value.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Note number is out of range for the specified note
+        ///     name and octave.
+        /// </exception>
         public Note(NoteName noteName, int octave, long length)
             : this(noteName, octave, length, 0)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Note"/> with the specified
-        /// note name, octave, length and absolute time.
+        ///     Initializes a new instance of the <see cref="Note" /> with the specified
+        ///     note name, octave, length and absolute time.
         /// </summary>
         /// <param name="noteName">Name of the note.</param>
         /// <param name="octave">Number of the octave in scientific pitch notation.</param>
         /// <param name="length">Length of the note in units defined by time division of a MIDI file.</param>
         /// <param name="time">Absolute time of the note in units defined by the time division of a MIDI file.</param>
         /// <remarks>
-        /// Octave number is specified in scientific pitch notation which means that 4 must be
-        /// passed to <paramref name="octave"/> to get the middle C.
+        ///     Octave number is specified in scientific pitch notation which means that 4 must be
+        ///     passed to <paramref name="octave" /> to get the middle C.
         /// </remarks>
-        /// <exception cref="InvalidEnumArgumentException"><paramref name="noteName"/> specified an
-        /// invalid value.</exception>
-        /// <exception cref="ArgumentException">Note number is out of range for the specified note
-        /// name and octave.</exception>
+        /// <exception cref="InvalidEnumArgumentException">
+        ///     <paramref name="noteName" /> specified an
+        ///     invalid value.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Note number is out of range for the specified note
+        ///     name and octave.
+        /// </exception>
         public Note(NoteName noteName, int octave, long length, long time)
             : this(NoteUtilities.GetNoteNumber(noteName, octave))
         {
@@ -89,7 +114,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Note"/> with the specified note number.
+        ///     Initializes a new instance of the <see cref="Note" /> with the specified note number.
         /// </summary>
         /// <param name="noteNumber">Number of the note (60 is middle C).</param>
         public Note(SevenBitNumber noteNumber)
@@ -98,8 +123,8 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Note"/> with the specified
-        /// note number and length.
+        ///     Initializes a new instance of the <see cref="Note" /> with the specified
+        ///     note number and length.
         /// </summary>
         /// <param name="noteNumber">Number of the note (60 is middle C).</param>
         /// <param name="length">Length of the note in units defined by time division of a MIDI file.</param>
@@ -109,8 +134,8 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Note"/> with the specified
-        /// note number, length and absolute time.
+        ///     Initializes a new instance of the <see cref="Note" /> with the specified
+        ///     note number, length and absolute time.
         /// </summary>
         /// <param name="noteNumber">Number of the note (60 is middle C).</param>
         /// <param name="length">Length of the note in units defined by time division of a MIDI file.</param>
@@ -124,11 +149,11 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Note"/> with the specified
-        /// Note On and Note Off timed events.
+        ///     Initializes a new instance of the <see cref="Note" /> with the specified
+        ///     Note On and Note Off timed events.
         /// </summary>
-        /// <param name="timedNoteOnEvent">Wrapped <see cref="NoteOnEvent"/>.</param>
-        /// <param name="timedNoteOffEvent">Wrapped <see cref="NoteOffEvent"/>.</param>
+        /// <param name="timedNoteOnEvent">Wrapped <see cref="NoteOnEvent" />.</param>
+        /// <param name="timedNoteOffEvent">Wrapped <see cref="NoteOffEvent" />.</param>
         internal Note(TimedEvent timedNoteOnEvent, TimedEvent timedNoteOffEvent)
         {
             Debug.Assert(timedNoteOnEvent != null);
@@ -139,8 +164,8 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             //
 
-            var noteOnEvent = (NoteOnEvent)timedNoteOnEvent.Event;
-            var noteOffEvent = (NoteOffEvent)timedNoteOffEvent.Event;
+            var noteOnEvent = (NoteOnEvent) timedNoteOnEvent.Event;
+            var noteOffEvent = (NoteOffEvent) timedNoteOffEvent.Event;
 
             TimedNoteOnEvent = timedNoteOnEvent;
             TimedNoteOffEvent = timedNoteOffEvent;
@@ -157,7 +182,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Properties
 
         /// <summary>
-        /// Gets or sets absolute time of the note in units defined by the time division of a MIDI file.
+        ///     Gets or sets absolute time of the note in units defined by the time division of a MIDI file.
         /// </summary>
         public long Time
         {
@@ -172,7 +197,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Gets or sets length of the note in units defined by the time division of a MIDI file.
+        ///     Gets or sets length of the note in units defined by the time division of a MIDI file.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Value is negative.</exception>
         public long Length
@@ -187,7 +212,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Gets or sets number of the note (60 is middle C).
+        ///     Gets or sets number of the note (60 is middle C).
         /// </summary>
         public SevenBitNumber NoteNumber
         {
@@ -196,37 +221,37 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Gets or sets velocity of the underlying <see cref="NoteOnEvent"/>.
+        ///     Gets or sets velocity of the underlying <see cref="NoteOnEvent" />.
         /// </summary>
         public SevenBitNumber Velocity { get; set; } = DefaultVelocity;
 
         /// <summary>
-        /// Gets or sets velocity of the underlying <see cref="NoteOffEvent"/>.
+        ///     Gets or sets velocity of the underlying <see cref="NoteOffEvent" />.
         /// </summary>
         public SevenBitNumber OffVelocity { get; set; }
 
         /// <summary>
-        /// Gets or sets channel to play the note on.
+        ///     Gets or sets channel to play the note on.
         /// </summary>
         public FourBitNumber Channel { get; set; }
 
         /// <summary>
-        /// Gets name of the note.
+        ///     Gets name of the note.
         /// </summary>
         public NoteName NoteName => _note.NoteName;
 
         /// <summary>
-        /// Gets octave of the note.
+        ///     Gets octave of the note.
         /// </summary>
         public int Octave => _note.Octave;
 
         /// <summary>
-        /// Gets Note On timed event of the note.
+        ///     Gets Note On timed event of the note.
         /// </summary>
         internal TimedEvent TimedNoteOnEvent { get; } = new TimedEvent(new NoteOnEvent());
 
         /// <summary>
-        /// Gets Note Off timed event of the note.
+        ///     Gets Note Off timed event of the note.
         /// </summary>
         internal TimedEvent TimedNoteOffEvent { get; } = new TimedEvent(new NoteOffEvent());
 
@@ -235,18 +260,22 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Methods
 
         /// <summary>
-        /// Sets note name and octave for current <see cref="Note"/>.
+        ///     Sets note name and octave for current <see cref="Note" />.
         /// </summary>
         /// <param name="noteName">Name of the note.</param>
         /// <param name="octave">Number of the octave in scientific pitch notation.</param>
         /// <remarks>
-        /// Octave number is specified in scientific pitch notation which means that 4 must be
-        /// passed to <paramref name="octave"/> to get the number of the middle C.
+        ///     Octave number is specified in scientific pitch notation which means that 4 must be
+        ///     passed to <paramref name="octave" /> to get the number of the middle C.
         /// </remarks>
-        /// <exception cref="InvalidEnumArgumentException"><paramref name="noteName"/> specified an
-        /// invalid value.</exception>
-        /// <exception cref="ArgumentException">Note number is out of range for the specified note
-        /// name and octave.</exception>
+        /// <exception cref="InvalidEnumArgumentException">
+        ///     <paramref name="noteName" /> specified an
+        ///     invalid value.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     Note number is out of range for the specified note
+        ///     name and octave.
+        /// </exception>
         public void SetNoteNameAndOctave(NoteName noteName, int octave)
         {
             _note = MusicTheory.Note.Get(noteName, octave);
@@ -260,19 +289,6 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
                 Velocity = Velocity,
                 OffVelocity = OffVelocity
             };
-        }
-
-        #endregion
-
-        #region Overrides
-
-        /// <summary>
-        /// Returns a string that represents the current object.
-        /// </summary>
-        /// <returns>A string that represents the current object.</returns>
-        public override string ToString()
-        {
-            return _note.ToString();
         }
 
         #endregion

@@ -5,35 +5,34 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
 
 namespace Valve.VR.InteractionSystem
 {
-	//-------------------------------------------------------------------------
-	public class SoundBowClick : MonoBehaviour
-	{
-		public AudioClip bowClick;
-		public AnimationCurve pitchTensionCurve;
-		public float minPitch;
-		public float maxPitch;
+    //-------------------------------------------------------------------------
+    public class SoundBowClick : MonoBehaviour
+    {
+        public AudioClip bowClick;
+        public float maxPitch;
+        public float minPitch;
+        public AnimationCurve pitchTensionCurve;
 
-		AudioSource thisAudioSource;
+        private AudioSource thisAudioSource;
 
-		//-------------------------------------------------
-		void Awake()
-		{
-			thisAudioSource = GetComponent<AudioSource>();
-		}
+        //-------------------------------------------------
+        private void Awake()
+        {
+            thisAudioSource = GetComponent<AudioSource>();
+        }
 
 
-		//-------------------------------------------------
-		public void PlayBowTensionClicks( float normalizedTension )
-		{
-			// Tension is a float between 0 and 1. 1 being max tension and 0 being no tension
-			float y = pitchTensionCurve.Evaluate( normalizedTension );
+        //-------------------------------------------------
+        public void PlayBowTensionClicks(float normalizedTension)
+        {
+            // Tension is a float between 0 and 1. 1 being max tension and 0 being no tension
+            var y = pitchTensionCurve.Evaluate(normalizedTension);
 
-			thisAudioSource.pitch = ( ( maxPitch - minPitch ) * y ) + minPitch;
-			thisAudioSource.PlayOneShot( bowClick );
-		}
-	}
+            thisAudioSource.pitch = (maxPitch - minPitch) * y + minPitch;
+            thisAudioSource.PlayOneShot(bowClick);
+        }
+    }
 }

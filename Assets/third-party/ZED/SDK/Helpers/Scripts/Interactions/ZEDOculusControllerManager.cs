@@ -1,26 +1,19 @@
 ﻿//======= Copyright (c) Stereolabs Corporation, All rights reserved. ===============
 
 
-using System.Collections;
-using System.Collections.Generic;
+using sl;
 using UnityEngine;
-using System.IO;
-
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 
 public class ZEDOculusControllerManager : MonoBehaviour, ZEDControllerManager
 {
+    public bool PadsAreInit { get; } = false;
 
-    private bool padsAreInit = false;
-    public bool PadsAreInit
-    {
-        get { return padsAreInit; }
-    }
-    private int controllerIndexZEDHolder = -1;
-    public int ControllerIndexZEDHolder { get { return controllerIndexZEDHolder; } }
+    public int ControllerIndexZEDHolder { get; } = -1;
 
 #if ZED_OCULUS
     enum CONTROLLER
@@ -151,11 +144,15 @@ public class ZEDOculusControllerManager : MonoBehaviour, ZEDControllerManager
                 int currentIndex = i;
                 if (currentIndex > 0)
                 {
-                    float timeBetween = controllers[index].delays[currentIndex].timestamp - controllers[index].delays[currentIndex - 1].timestamp;
-                    float alpha = ((Time.time - controllers[index].delays[currentIndex - 1].timestamp) - timeDelay) / timeBetween;
+                    float timeBetween =
+ controllers[index].delays[currentIndex].timestamp - controllers[index].delays[currentIndex - 1].timestamp;
+                    float alpha =
+ ((Time.time - controllers[index].delays[currentIndex - 1].timestamp) - timeDelay) / timeBetween;
 
-                    Vector3 pos = Vector3.Lerp(controllers[index].delays[currentIndex - 1].position, controllers[index].delays[currentIndex].position, alpha);
-                    Quaternion rot = Quaternion.Lerp(controllers[index].delays[currentIndex - 1].rotation, controllers[index].delays[currentIndex].rotation, alpha);
+                    Vector3 pos =
+ Vector3.Lerp(controllers[index].delays[currentIndex - 1].position, controllers[index].delays[currentIndex].position, alpha);
+                    Quaternion rot =
+ Quaternion.Lerp(controllers[index].delays[currentIndex - 1].rotation, controllers[index].delays[currentIndex].rotation, alpha);
 
                     p = new Pose();
                     p.pose = pos;
@@ -254,13 +251,13 @@ public class ZEDOculusControllerManager : MonoBehaviour, ZEDControllerManager
         OVRInput.FixedUpdate();
     }
 #endif
-    /// <summary>
-    /// Checks if a button is down
-    /// </summary>
-    /// <param name="button"></param>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    public bool GetDown(sl.CONTROLS_BUTTON button, int id = -1)
+	/// <summary>
+	///     Checks if a button is down
+	/// </summary>
+	/// <param name="button"></param>
+	/// <param name="id"></param>
+	/// <returns></returns>
+	public bool GetDown(CONTROLS_BUTTON button, int id = -1)
     {
 #if ZED_OCULUS
         return OVRInput.GetDown(ConvertToButton(button));
@@ -269,12 +266,12 @@ public class ZEDOculusControllerManager : MonoBehaviour, ZEDControllerManager
 #endif
     }
 
-    /// <summary>
-    /// Gets the local position of a controller
-    /// </summary>
-    /// <param name="IDPad"></param>
-    /// <returns></returns>
-    public Vector3 GetPosition(int IDPad)
+	/// <summary>
+	///     Gets the local position of a controller
+	/// </summary>
+	/// <param name="IDPad"></param>
+	/// <returns></returns>
+	public Vector3 GetPosition(int IDPad)
     {
 #if ZED_OCULUS
         return OVRInput.GetLocalControllerPosition((OVRInput.Controller)IDPad);
@@ -283,13 +280,13 @@ public class ZEDOculusControllerManager : MonoBehaviour, ZEDControllerManager
 #endif
     }
 
-    /// <summary>
-    /// Gets the status of a trigger
-    /// </summary>
-    /// <param name="idTrigger"></param>
-    /// <param name="idPad"></param>
-    /// <returns></returns>
-    public float GetHairTrigger(sl.CONTROLS_AXIS1D idTrigger, int idPad)
+	/// <summary>
+	///     Gets the status of a trigger
+	/// </summary>
+	/// <param name="idTrigger"></param>
+	/// <param name="idPad"></param>
+	/// <returns></returns>
+	public float GetHairTrigger(CONTROLS_AXIS1D idTrigger, int idPad)
     {
 #if ZED_OCULUS
         return OVRInput.Get(ConvertToAxis(idTrigger), (OVRInput.Controller)idPad);
@@ -297,11 +294,12 @@ public class ZEDOculusControllerManager : MonoBehaviour, ZEDControllerManager
         return 0;
 #endif
     }
-    /// <summary>
-    /// Get the ID of the right index
-    /// </summary>
-    /// <returns></returns>
-    public int GetRightIndex()
+
+	/// <summary>
+	///     Get the ID of the right index
+	/// </summary>
+	/// <returns></returns>
+	public int GetRightIndex()
     {
 #if ZED_OCULUS
         return (int)OVRInput.Controller.RTouch;
@@ -310,11 +308,11 @@ public class ZEDOculusControllerManager : MonoBehaviour, ZEDControllerManager
 #endif
     }
 
-    /// <summary>
-    /// Gets the ID of the left index
-    /// </summary>
-    /// <returns></returns>
-    public int GetLeftIndex()
+	/// <summary>
+	///     Gets the ID of the left index
+	/// </summary>
+	/// <returns></returns>
+	public int GetLeftIndex()
     {
 #if ZED_OCULUS
         return (int)OVRInput.Controller.LTouch;
@@ -323,14 +321,13 @@ public class ZEDOculusControllerManager : MonoBehaviour, ZEDControllerManager
 #endif
     }
 
-    /// <summary>
-    /// Loads the index controlling the ZED 
-    /// </summary>
-    /// <param name="path"></param>
-    public void LoadIndex(string path)
+	/// <summary>
+	///     Loads the index controlling the ZED
+	/// </summary>
+	/// <param name="path"></param>
+	public void LoadIndex(string path)
     {
-        #if ZED_OCULUS
-
+#if ZED_OCULUS
         if (!System.IO.File.Exists(path))
         {
             return;
@@ -376,140 +373,119 @@ public class ZEDOculusControllerManager : MonoBehaviour, ZEDControllerManager
 
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(ZEDOculusControllerManager)), CanEditMultipleObjects]
+[CustomEditor(typeof(ZEDOculusControllerManager))]
+[CanEditMultipleObjects]
 public class ZEDOculusDependencies : Editor
 {
-	[SerializeField]
-	const string defineName = "ZED_OCULUS";
-	const string packageName = "Oculus"; //Switch to OVR for old plugin.
+    [SerializeField] private const string defineName = "ZED_OCULUS";
+
+    private const string packageName = "Oculus"; //Switch to OVR for old plugin.
 
 
+    public override void OnInspectorGUI()
+    {
+        if (EditorPrefs.GetBool(packageName) && CheckPackageExists(packageName) && isDefineActivated())
+        {
+            DrawDefaultInspector();
+        }
+        else
+        {
+            // Should not be needed but in just in case...
+            GUILayout.Space(20);
+            if (GUILayout.Button("Activate Oculus"))
+                if (CheckPackageExists(packageName))
+                    ActivateDefine();
 
-	public override void OnInspectorGUI()
-	{
-		if (EditorPrefs.GetBool(packageName) && CheckPackageExists (packageName) && isDefineActivated())
-		{
-			DrawDefaultInspector();
-		}
-		else
-		{
-			// Should not be needed but in just in case...
-			GUILayout.Space(20);
-			if (GUILayout.Button("Activate Oculus"))
-			{
-				if(CheckPackageExists(packageName))
-				{
-					ActivateDefine();
-				}
-			}
-
-			//if OVR package does not exist, undef ZED_OCULUS to avoid build errors
-			if (!CheckPackageExists (packageName)) {
-				EditorGUILayout.HelpBox (ZEDLogMessage.Error2Str (ZEDLogMessage.ERROR.OVR_NOT_INSTALLED), MessageType.Warning);
-				DesactivateDefine ();
-			}
-
-		}
-	}
+            //if OVR package does not exist, undef ZED_OCULUS to avoid build errors
+            if (!CheckPackageExists(packageName))
+            {
+                EditorGUILayout.HelpBox(ZEDLogMessage.Error2Str(ZEDLogMessage.ERROR.OVR_NOT_INSTALLED),
+                    MessageType.Warning);
+                DesactivateDefine();
+            }
+        }
+    }
 
 
-	//Enable Or Disable : Define ZED_OCULUS is package exist. Undef it if not, to avoid build errors.
-	public void OnEnable()
-	{
-		if(CheckPackageExists(packageName))
-			ActivateDefine();
-		else
-			DesactivateDefine ();
-	}
+    //Enable Or Disable : Define ZED_OCULUS is package exist. Undef it if not, to avoid build errors.
+    public void OnEnable()
+    {
+        if (CheckPackageExists(packageName))
+            ActivateDefine();
+        else
+            DesactivateDefine();
+    }
 
 
-	public void OnDisable()
-	{
-		if(CheckPackageExists(packageName))
-			ActivateDefine();
-		else
-			DesactivateDefine ();
-	}
+    public void OnDisable()
+    {
+        if (CheckPackageExists(packageName))
+            ActivateDefine();
+        else
+            DesactivateDefine();
+    }
 
 
-	public static bool CheckPackageExists(string name)
-	{
-		string[] packages = AssetDatabase.FindAssets(name);
-		return packages.Length != 0 && AssetDatabase.IsValidFolder("Assets/" + name);
-	}
+    public static bool CheckPackageExists(string name)
+    {
+        var packages = AssetDatabase.FindAssets(name);
+        return packages.Length != 0 && AssetDatabase.IsValidFolder("Assets/" + name);
+    }
 
-	public static bool isDefineActivated()
-	{
-		string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
-		if (defines.Length != 0)
-		{
-			return defines.Contains (defineName);
-		}
+    public static bool isDefineActivated()
+    {
+        var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+        if (defines.Length != 0) return defines.Contains(defineName);
 
-		return false;
-
-	}
+        return false;
+    }
 
 
-	public static void ActivateDefine()
-	{
-		EditorPrefs.SetBool(packageName, true);
+    public static void ActivateDefine()
+    {
+        EditorPrefs.SetBool(packageName, true);
 
-		string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
-		if (defines.Length != 0)
-		{
-			if (!defines.Contains(defineName))
-			{
-				defines += ";" + defineName;
-			}
-		}
-		else
-		{
-			if (!defines.Contains(defineName))
-			{
-				defines += defineName;
-			}
-		}
-		PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, defines);
-	}
+        var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+        if (defines.Length != 0)
+        {
+            if (!defines.Contains(defineName)) defines += ";" + defineName;
+        }
+        else
+        {
+            if (!defines.Contains(defineName)) defines += defineName;
+        }
 
-	public static void DesactivateDefine()
-	{
-		EditorPrefs.SetBool(packageName, false);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, defines);
+    }
 
-		string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
-		if (defines.Length != 0)
-		{
-			if (defines.Contains(defineName))
-			{
-				defines = defines.Remove(defines.IndexOf(defineName), defineName.Length);
+    public static void DesactivateDefine()
+    {
+        EditorPrefs.SetBool(packageName, false);
 
-				if (defines.LastIndexOf(";") == defines.Length - 1 && defines.Length != 0)
-				{
-					defines.Remove(defines.LastIndexOf(";"), 1);
-				}
-			}
-		}
-		PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, defines);
-	}
+        var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+        if (defines.Length != 0)
+            if (defines.Contains(defineName))
+            {
+                defines = defines.Remove(defines.IndexOf(defineName), defineName.Length);
 
-	public class AssetPostProcessOculus : AssetPostprocessor
-	{
+                if (defines.LastIndexOf(";") == defines.Length - 1 && defines.Length != 0)
+                    defines.Remove(defines.LastIndexOf(";"), 1);
+            }
 
-		static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
-		{
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, defines);
+    }
 
-			if (ZEDOculusDependencies.CheckPackageExists("OVR") || ZEDOculusDependencies.CheckPackageExists("Oculus"))
-			{
-				ZEDOculusDependencies.ActivateDefine();
-			}
-			else
-			{
-				ZEDOculusDependencies.DesactivateDefine();
-			}
-		}
-	}
+    public class AssetPostProcessOculus : AssetPostprocessor
+    {
+        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
+            string[] movedAssets, string[] movedFromAssetPaths)
+        {
+            if (CheckPackageExists("OVR") || CheckPackageExists("Oculus"))
+                ActivateDefine();
+            else
+                DesactivateDefine();
+        }
+    }
 }
 
 #endif
-

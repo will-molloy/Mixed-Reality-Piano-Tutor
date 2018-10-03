@@ -39,24 +39,33 @@ namespace Sanford.Threading
 {
     public class Task : IComparable
     {
+        #region IComparable Members
+
+        public int CompareTo(object obj)
+        {
+            var t = obj as Task;
+
+            if (t == null) throw new ArgumentException("obj is not the same type as this instance.");
+
+            return -NextTimeout.CompareTo(t.NextTimeout);
+        }
+
+        #endregion
+
         #region Task Members
 
         #region Fields
 
         // The number of times left to invoke the delegate associated with this Task.
-        private int count;
 
         // The interval between delegate invocation.
-        private int millisecondsTimeout;
 
         // The delegate to invoke.
-        private Delegate method;
 
         // The arguments to pass to the delegate when it is invoked.
-        private object[] args;
+        private readonly object[] args;
 
         // The time for the next timeout;
-        private DateTime nextTimeout;
 
         // For locking.
         private readonly object lockObject = new object();
@@ -71,9 +80,9 @@ namespace Sanford.Threading
             Delegate method,
             object[] args)
         {
-            this.count = count;
-            this.millisecondsTimeout = millisecondsTimeout;
-            this.method = method;
+            Count = count;
+            MillisecondsTimeout = millisecondsTimeout;
+            Method = method;
             this.args = args;
 
             ResetNextTimeout();
@@ -85,27 +94,24 @@ namespace Sanford.Threading
 
         internal void ResetNextTimeout()
         {
-            nextTimeout = DateTime.Now.AddMilliseconds(millisecondsTimeout);
+            NextTimeout = DateTime.Now.AddMilliseconds(MillisecondsTimeout);
         }
 
         internal object Invoke(DateTime signalTime)
         {
-            Debug.Assert(count == DelegateScheduler.Infinite || count > 0);
+            Debug.Assert(Count == DelegateScheduler.Infinite || Count > 0);
 
-            object returnValue = method.DynamicInvoke(args);
+            var returnValue = Method.DynamicInvoke(args);
 
-            if(count == DelegateScheduler.Infinite)
+            if (Count == DelegateScheduler.Infinite)
             {
-                nextTimeout = nextTimeout.AddMilliseconds(millisecondsTimeout);
+                NextTimeout = NextTimeout.AddMilliseconds(MillisecondsTimeout);
             }
             else
             {
-                count--;
+                Count--;
 
-                if(count > 0)
-                {
-                    nextTimeout = nextTimeout.AddMilliseconds(millisecondsTimeout);
-                }
+                if (Count > 0) NextTimeout = NextTimeout.AddMilliseconds(MillisecondsTimeout);
             }
 
             return returnValue;
@@ -120,55 +126,15 @@ namespace Sanford.Threading
 
         #region Properties
 
-        public DateTime NextTimeout
-        {
-            get
-            {
-                return nextTimeout;
-            }
-        }
+        public DateTime NextTimeout { get; private set; }
 
-        public int Count
-        {
-            get
-            {
-                return count;
-            }
-        }
+        public int Count { get; private set; }
 
-        public Delegate Method
-        {
-            get
-            {
-                return method;
-            }
-        }
+        public Delegate Method { get; }
 
-        public int MillisecondsTimeout
-        {
-            get
-            {
-                return millisecondsTimeout;
-            }
-        }
+        public int MillisecondsTimeout { get; }
 
         #endregion
-
-        #endregion
-
-        #region IComparable Members
-
-        public int CompareTo(object obj)
-        {
-            Task t = obj as Task;
-
-            if(t == null)
-            {
-                throw new ArgumentException("obj is not the same type as this instance.");
-            }
-
-            return -nextTimeout.CompareTo(t.nextTimeout);
-        }
 
         #endregion
     }

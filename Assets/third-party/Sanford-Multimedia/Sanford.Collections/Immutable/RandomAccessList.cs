@@ -13,19 +13,34 @@ using System.Diagnostics;
 
 namespace Sanford.Collections.Immutable
 {
-	/// <summary>
-	/// Implements Chris Okasaki's random access list.
-	/// </summary>
-	[ImmutableObject(true)]
-	public class RandomAccessList : IEnumerable
-	{
+    /// <summary>
+    ///     Implements Chris Okasaki's random access list.
+    /// </summary>
+    [ImmutableObject(true)]
+    public class RandomAccessList : IEnumerable
+    {
+        #region IEnumerable Members
+
+        /// <summary>
+        ///     Returns an IEnumerator for the RandomAccessList.
+        /// </summary>
+        /// <returns>
+        ///     An IEnumerator for the RandomAccessList.
+        /// </returns>
+        public IEnumerator GetEnumerator()
+        {
+            return new RalEnumerator(first, Count);
+        }
+
+        #endregion
+
         #region RandomAccessList Members
 
         #region Class Fields
 
         /// <summary>
-        /// Represents an empty random access list.
-        /// </summary> 
+        ///     Represents an empty random access list.
+        /// </summary>
         public static readonly RandomAccessList Empty = new RandomAccessList();
 
         #endregion
@@ -33,44 +48,43 @@ namespace Sanford.Collections.Immutable
         #region Instance Fields
 
         // The number of elements in the random access list.
-        private readonly int count;
 
         // The first top node in the list.
         private readonly RalTopNode first;
 
         // A random access list representing the head of the current list.
-        private RandomAccessList head = null;
+        private RandomAccessList head;
 
         // A random access list representing the tail of the current list.
-        private RandomAccessList tail = null;
+        private RandomAccessList tail;
 
         #endregion
 
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the RandomAccessList class.
+        ///     Initializes a new instance of the RandomAccessList class.
         /// </summary>
-		public RandomAccessList()
-		{
-            count = 0;
+        public RandomAccessList()
+        {
+            Count = 0;
             first = null;
-		}
+        }
 
         /// <summary>
-        /// Initializes a new instance of the RandomAccessList class with the
-        /// specified first top node and the number of elements in the list.
+        ///     Initializes a new instance of the RandomAccessList class with the
+        ///     specified first top node and the number of elements in the list.
         /// </summary>
         /// <param name="first">
-        /// The first top node in the list.
+        ///     The first top node in the list.
         /// </param>
         /// <param name="count">
-        /// The number of nodes in the list.
+        ///     The number of nodes in the list.
         /// </param>
         private RandomAccessList(RalTopNode first, int count)
         {
             this.first = first;
-            this.count = count;
+            Count = count;
         }
 
         #endregion
@@ -78,14 +92,14 @@ namespace Sanford.Collections.Immutable
         #region Methods
 
         /// <summary>
-        /// Prepends a value to the random access list.
+        ///     Prepends a value to the random access list.
         /// </summary>
         /// <param name="value">
-        /// The value to prepend to the list.
+        ///     The value to prepend to the list.
         /// </param>
         /// <returns>
-        /// A new random access list with the specified value prepended to the
-        /// list.
+        ///     A new random access list with the specified value prepended to the
+        ///     list.
         /// </returns>
         public RandomAccessList Cons(object value)
         {
@@ -93,16 +107,16 @@ namespace Sanford.Collections.Immutable
 
             // If the list is empty, or there is only one tree in the list, or
             // the first tree is smaller than the second tree.
-            if(Count == 0 || 
-                first.NextNode == null || 
+            if (Count == 0 ||
+                first.NextNode == null ||
                 first.Root.Count < first.NextNode.Root.Count)
             {
                 // Create a new first node with the specified value.
-                RalTreeNode newRoot = new RalTreeNode(value, null, null);
+                var newRoot = new RalTreeNode(value, null, null);
 
                 // Create a new random access list.
                 result = new RandomAccessList(
-                    new RalTopNode(newRoot, first), 
+                    new RalTopNode(newRoot, first),
                     Count + 1);
             }
             // Else the first and second trees in the list are the same size.
@@ -112,14 +126,14 @@ namespace Sanford.Collections.Immutable
 
                 // Create a new first node with the old first and second node 
                 // as the left and right children respectively.
-                RalTreeNode newRoot = new RalTreeNode(
-                    value, 
-                    first.Root, 
+                var newRoot = new RalTreeNode(
+                    value,
+                    first.Root,
                     first.NextNode.Root);
 
                 // Create a new random access list.
                 result = new RandomAccessList(
-                    new RalTopNode(newRoot, first.NextNode.NextNode), 
+                    new RalTopNode(newRoot, first.NextNode.NextNode),
                     Count + 1);
             }
 
@@ -127,59 +141,55 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Gets the value at the specified position in the current 
-        /// RandomAccessList.
+        ///     Gets the value at the specified position in the current
+        ///     RandomAccessList.
         /// </summary>
         /// <param name="index">
-        /// An integer that represents the position of the RandomAccessList 
-        /// element to get. 
+        ///     An integer that represents the position of the RandomAccessList
+        ///     element to get.
         /// </param>
         /// <returns>
-        /// The value at the specified position in the RandomAccessList.
+        ///     The value at the specified position in the RandomAccessList.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// index is outside the range of valid indexes for the current 
-        /// RandomAccessList.
+        ///     index is outside the range of valid indexes for the current
+        ///     RandomAccessList.
         /// </exception>
         public object GetValue(int index)
         {
             // Precondition.
-            if(index < 0 || index >= Count)
-            {
+            if (index < 0 || index >= Count)
                 throw new ArgumentOutOfRangeException("index", index,
                     "Index out of range.");
-            }
 
             return first.GetValue(index);
         }
 
         /// <summary>
-        /// Sets the specified element in the current RandomAccessList to the 
-        /// specified value.
+        ///     Sets the specified element in the current RandomAccessList to the
+        ///     specified value.
         /// </summary>
         /// <param name="value">
-        /// The new value for the specified element. 
+        ///     The new value for the specified element.
         /// </param>
         /// <param name="index">
-        /// An integer that represents the position of the RandomAccessList 
-        /// element to set. 
+        ///     An integer that represents the position of the RandomAccessList
+        ///     element to set.
         /// </param>
         /// <returns>
-        /// A new RandomAccessList with the element at the specified position 
-        /// set to the specified value.
+        ///     A new RandomAccessList with the element at the specified position
+        ///     set to the specified value.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// index is outside the range of valid indexes for the current 
-        /// RandomAccessList.
+        ///     index is outside the range of valid indexes for the current
+        ///     RandomAccessList.
         /// </exception>
         public RandomAccessList SetValue(object value, int index)
         {
             // Precondition.
-            if(index < 0 || index >= Count)
-            {
+            if (index < 0 || index >= Count)
                 throw new ArgumentOutOfRangeException("index", index,
                     "Index out of range.");
-            }
 
             return new RandomAccessList(first.SetValue(value, index), Count);
         }
@@ -189,40 +199,32 @@ namespace Sanford.Collections.Immutable
         #region Properties
 
         /// <summary>
-        /// Gets the number of elements in the RandomAccessList.
+        ///     Gets the number of elements in the RandomAccessList.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return count;
-            }
-        }
+        public int Count { get; }
 
         /// <summary>
-        /// Gets a RandomAccessList with first element of the current 
-        /// RandomAccessList.
+        ///     Gets a RandomAccessList with first element of the current
+        ///     RandomAccessList.
         /// </summary>
         /// <exception cref="InvalidOperationException">
-        /// If the RandomAccessList is empty.
+        ///     If the RandomAccessList is empty.
         /// </exception>
         public RandomAccessList Head
         {
             get
             {
                 // Preconditions.
-                if(Count == 0)
-                {
+                if (Count == 0)
                     throw new InvalidOperationException(
                         "Cannot get the head of an empty random access list.");
-                }
 
-                if(head == null)
+                if (head == null)
                 {
-                    RalTreeNode newRoot = new RalTreeNode(
+                    var newRoot = new RalTreeNode(
                         first.Root.Value, null, null);
 
-                    RalTopNode newFirst = new RalTopNode(newRoot, null);
+                    var newFirst = new RalTopNode(newRoot, null);
 
                     head = new RandomAccessList(newFirst, 1);
                 }
@@ -232,39 +234,37 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Gets a RandomAccessList with all but the first element of the
-        /// current RandomAccessList.
+        ///     Gets a RandomAccessList with all but the first element of the
+        ///     current RandomAccessList.
         /// </summary>
         /// <exception cref="InvalidOperationException">
-        /// If the RandomAccessList is empty.
+        ///     If the RandomAccessList is empty.
         /// </exception>
         public RandomAccessList Tail
         {
             get
             {
                 // Precondition.
-                if(Count == 0)
-                {
+                if (Count == 0)
                     throw new InvalidOperationException(
                         "Cannot get the tail of an empty random access list.");
-                }
 
-                if(tail == null)
+                if (tail == null)
                 {
-                    if(Count == 1)
+                    if (Count == 1)
                     {
                         tail = Empty;
                     }
                     else
-                    {                        
-                        if(first.Root.Count > 1)
+                    {
+                        if (first.Root.Count > 1)
                         {
-                            RalTreeNode left = first.Root.LeftChild;
-                            RalTreeNode right = first.Root.RightChild;
+                            var left = first.Root.LeftChild;
+                            var right = first.Root.RightChild;
 
-                            RalTopNode newSecond = new RalTopNode(
+                            var newSecond = new RalTopNode(
                                 right, first.NextNode);
-                            RalTopNode newFirst = new RalTopNode(
+                            var newFirst = new RalTopNode(
                                 left, newSecond);
 
                             tail = new RandomAccessList(newFirst, Count - 1);
@@ -281,21 +281,6 @@ namespace Sanford.Collections.Immutable
         }
 
         #endregion
-
-        #endregion
-
-        #region IEnumerable Members
-
-        /// <summary>
-        /// Returns an IEnumerator for the RandomAccessList.
-        /// </summary>
-        /// <returns>
-        /// An IEnumerator for the RandomAccessList.
-        /// </returns>
-        public IEnumerator GetEnumerator()
-        {
-            return new RalEnumerator(first, Count);
-        }
 
         #endregion
     }

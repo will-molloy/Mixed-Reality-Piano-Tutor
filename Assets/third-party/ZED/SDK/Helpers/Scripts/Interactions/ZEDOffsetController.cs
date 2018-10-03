@@ -1,43 +1,46 @@
 ﻿//======= Copyright (c) Stereolabs Corporation, All rights reserved. ===============
 
 
-using UnityEngine;
+using System;
+using System.Globalization;
 using System.IO;
+using sl;
+using UnityEngine;
+using Valve.VR;
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 /// <summary>
-/// Enables to save/load the position of the ZED, is useful especially for the greenScreen
+///     Enables to save/load the position of the ZED, is useful especially for the greenScreen
 /// </summary>
 public class ZEDOffsetController : MonoBehaviour
 {
-
     /// <summary>
-    /// ZED pose file name
+    ///     ZED pose file name
     /// </summary>
-    [SerializeField]
-    public static string ZEDOffsetFile = "ZED_Position_Offset.conf";
+    [SerializeField] public static string ZEDOffsetFile = "ZED_Position_Offset.conf";
+
+    public bool isReady;
+
+    public ZEDControllerTracker padManager;
 
     private string path = @"Stereolabs\steamvr";
 
-	public ZEDControllerTracker padManager;
-
-	public bool isReady = false;
-
     /// <summary>
-    /// Save the position of the ZED
+    ///     Save the position of the ZED
     /// </summary>
     public void SaveZEDPos()
     {
-		using (System.IO.StreamWriter file = new System.IO.StreamWriter(path))
+        using (var file = new StreamWriter(path))
         {
-            string tx = "x=" + transform.localPosition.x.ToString() + " //Translation x";
-            string ty = "y=" + transform.localPosition.y.ToString() + " //Translation y";
-            string tz = "z=" + transform.localPosition.z.ToString() + " //Translation z";
-            string rx = "rx=" + transform.localRotation.eulerAngles.x.ToString() + " //Rotation x";
-            string ry = "ry=" + transform.localRotation.eulerAngles.y.ToString() + " //Rotation y";
-            string rz = "rz=" + transform.localRotation.eulerAngles.z.ToString() + " //Rotation z";
+            var tx = "x=" + transform.localPosition.x + " //Translation x";
+            var ty = "y=" + transform.localPosition.y + " //Translation y";
+            var tz = "z=" + transform.localPosition.z + " //Translation z";
+            var rx = "rx=" + transform.localRotation.eulerAngles.x + " //Rotation x";
+            var ry = "ry=" + transform.localRotation.eulerAngles.y + " //Rotation y";
+            var rz = "rz=" + transform.localRotation.eulerAngles.z + " //Rotation z";
 
 
             file.WriteLine(tx);
@@ -46,18 +49,21 @@ public class ZEDOffsetController : MonoBehaviour
             file.WriteLine(rx);
             file.WriteLine(ry);
             file.WriteLine(rz);
-			if (sl.ZEDCamera.GetInstance().IsCameraReady)
+            if (ZEDCamera.GetInstance().IsCameraReady)
             {
-                string fov = "fov=" + (sl.ZEDCamera.GetInstance().GetFOV() * Mathf.Rad2Deg).ToString();
+                var fov = "fov=" + ZEDCamera.GetInstance().GetFOV() * Mathf.Rad2Deg;
                 file.WriteLine(fov);
-
             }
 
 
 #if ZED_STEAM_VR
             if (PadComponentExist())
             {
-                string i = "indexController=" + (padManager.index > 0 ? SteamVR.instance.GetStringProperty(Valve.VR.ETrackedDeviceProperty.Prop_SerialNumber_String, (uint)padManager.index) : "NONE") + " //SN of the pad attached to the camera (NONE to set no pad on it)";
+                var i = "indexController=" +
+                        (padManager.index > 0
+                            ? SteamVR.instance.GetStringProperty(ETrackedDeviceProperty.Prop_SerialNumber_String,
+                                (uint) padManager.index)
+                            : "NONE") + " //SN of the pad attached to the camera (NONE to set no pad on it)";
                 file.WriteLine(i);
             }
 #endif
@@ -71,8 +77,7 @@ public class ZEDOffsetController : MonoBehaviour
     {
         if (padManager != null)
             return true;
-        else
-            return false;
+        return false;
     }
 
     private void OnEnable()
@@ -82,7 +87,7 @@ public class ZEDOffsetController : MonoBehaviour
 
     private void LoadComponentPad()
     {
-        ZEDControllerTracker pad = GetComponent<ZEDControllerTracker>();
+        var pad = GetComponent<ZEDControllerTracker>();
         if (pad == null)
             pad = GetComponentInParent<ZEDControllerTracker>();
         if (pad == null)
@@ -90,24 +95,24 @@ public class ZEDOffsetController : MonoBehaviour
         if (pad != null)
             padManager = pad;
     }
-		
-    void Awake()
+
+    private void Awake()
     {
         LoadComponentPad();
 
-        string folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData);
-        string specificFolder = Path.Combine(folder, @"Stereolabs\steamvr");
+        var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        var specificFolder = Path.Combine(folder, @"Stereolabs\steamvr");
         path = Path.Combine(specificFolder, ZEDOffsetFile);
 
         // Check if folder exists and if not, create it
         if (!Directory.Exists(specificFolder))
-			Directory.CreateDirectory(specificFolder);
+            Directory.CreateDirectory(specificFolder);
 
 
         LoadZEDPos();
-		CreateFileWatcher(specificFolder);
+        CreateFileWatcher(specificFolder);
 
-		isReady = true;
+        isReady = true;
     }
 
     private void Update()
@@ -117,72 +122,72 @@ public class ZEDOffsetController : MonoBehaviour
     }
 
     /// <summary>
-    /// Load the position of the ZED from a file
+    ///     Load the position of the ZED from a file
     /// </summary>
     public void LoadZEDPos()
     {
-		if (!System.IO.File.Exists(path)) return;
+        if (!File.Exists(path)) return;
 
         string[] lines = null;
         try
         {
-			lines = System.IO.File.ReadAllLines(path);
+            lines = File.ReadAllLines(path);
         }
-        catch (System.Exception)
+        catch (Exception)
         {
             padManager.SNHolder = "NONE";
         }
+
         if (lines == null)
         {
             padManager.SNHolder = "NONE";
             return;
         }
+
         if (lines == null) return;
-        Vector3 position = new Vector3(0, 0, 0);
-        Vector3 eulerRotation = new Vector3(0, 0, 0);
-        foreach (string line in lines)
+        var position = new Vector3(0, 0, 0);
+        var eulerRotation = new Vector3(0, 0, 0);
+        foreach (var line in lines)
         {
-            string[] splittedLine = line.Split('=');
+            var splittedLine = line.Split('=');
             if (splittedLine != null && splittedLine.Length >= 2)
             {
-                string key = splittedLine[0];
-                string field = splittedLine[1].Split(' ')[0];
+                var key = splittedLine[0];
+                var field = splittedLine[1].Split(' ')[0];
 
                 if (key == "x")
                 {
-                    position.x = float.Parse(field, System.Globalization.CultureInfo.InvariantCulture);
+                    position.x = float.Parse(field, CultureInfo.InvariantCulture);
                 }
                 else if (key == "y")
                 {
-                    position.y = float.Parse(field, System.Globalization.CultureInfo.InvariantCulture);
+                    position.y = float.Parse(field, CultureInfo.InvariantCulture);
                 }
                 else if (key == "z")
                 {
-                    position.z = float.Parse(field, System.Globalization.CultureInfo.InvariantCulture);
+                    position.z = float.Parse(field, CultureInfo.InvariantCulture);
                 }
                 else if (key == "rx")
                 {
-                    eulerRotation.x = float.Parse(field, System.Globalization.CultureInfo.InvariantCulture);
+                    eulerRotation.x = float.Parse(field, CultureInfo.InvariantCulture);
                 }
                 else if (key == "ry")
                 {
-                    eulerRotation.y = float.Parse(field, System.Globalization.CultureInfo.InvariantCulture);
+                    eulerRotation.y = float.Parse(field, CultureInfo.InvariantCulture);
                 }
                 else if (key == "rz")
                 {
-                    eulerRotation.z = float.Parse(field, System.Globalization.CultureInfo.InvariantCulture);
+                    eulerRotation.z = float.Parse(field, CultureInfo.InvariantCulture);
                 }
-                else if(key == "indexController")
+                else if (key == "indexController")
                 {
                     LoadComponentPad();
 
-                    if (PadComponentExist())
-                    {
-                        padManager.SNHolder = field;
-                    }
+                    if (PadComponentExist()) padManager.SNHolder = field;
                 }
             }
         }
+
         transform.localPosition = position;
         transform.localRotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z);
     }
@@ -190,17 +195,17 @@ public class ZEDOffsetController : MonoBehaviour
     public void CreateFileWatcher(string path)
     {
         // Create a new FileSystemWatcher and set its properties.
-        FileSystemWatcher watcher = new FileSystemWatcher();
+        var watcher = new FileSystemWatcher();
         watcher.Path = path;
         /* Watch for changes in LastAccess and LastWrite times, and 
            the renaming of files or directories. */
         watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-           | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+                                                        | NotifyFilters.FileName | NotifyFilters.DirectoryName;
         // Only watch text files.
         watcher.Filter = ZEDOffsetFile;
 
         // Add event handlers.
-        watcher.Changed += new FileSystemEventHandler(OnChanged);
+        watcher.Changed += OnChanged;
 
         // Begin watching.
         watcher.EnableRaisingEvents = true;
@@ -209,15 +214,11 @@ public class ZEDOffsetController : MonoBehaviour
     // Define the event handlers.
     private void OnChanged(object source, FileSystemEventArgs e)
     {
-        if (PadComponentExist())
-        {
-            LoadZEDPos();
-        }
+        if (PadComponentExist()) LoadZEDPos();
     }
 }
 
 #if UNITY_EDITOR
-
 
 
 [CustomEditor(typeof(ZEDOffsetController))]
@@ -227,8 +228,7 @@ public class ZEDPositionEditor : Editor
 
     public void OnEnable()
     {
-        positionManager = (ZEDOffsetController)target;
-
+        positionManager = (ZEDOffsetController) target;
     }
 
     public override void OnInspectorGUI()
@@ -239,15 +239,9 @@ public class ZEDPositionEditor : Editor
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.BeginHorizontal();
 
-		GUI.enabled = positionManager.isReady;
-        if (GUILayout.Button("Save Camera Offset"))
-        {
-            positionManager.SaveZEDPos();
-        }
-        if (GUILayout.Button("Load Camera Offset"))
-        {
-            positionManager.LoadZEDPos();
-        }
+        GUI.enabled = positionManager.isReady;
+        if (GUILayout.Button("Save Camera Offset")) positionManager.SaveZEDPos();
+        if (GUILayout.Button("Load Camera Offset")) positionManager.LoadZEDPos();
         EditorGUILayout.EndHorizontal();
     }
 }

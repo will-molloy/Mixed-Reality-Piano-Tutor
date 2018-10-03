@@ -1,36 +1,35 @@
 ﻿#if UNITY_EDITOR
+using System.IO;
 using UnityEditor;
 using UnityEngine;
-using System.IO;
-[CustomEditor(typeof(GreenScreenManager))]
-class GreenScreenManagerEditor : Editor
-{
-    private GreenScreenManager greenScreen;
-    private GUILayoutOption[] optionsButton = { GUILayout.MaxWidth(100) };
 
-    private GUILayoutOption[] optionsButtonBrowse = { GUILayout.MaxWidth(30) };
+[CustomEditor(typeof(GreenScreenManager))]
+internal class GreenScreenManagerEditor : Editor
+{
+    private static GUIStyle ToggleButtonStyleNormal;
+    private static GUIStyle ToggleButtonStyleToggled;
+    private SerializedProperty blackclip;
+    private SerializedProperty despill;
+    private SerializedProperty enableGrabageMatte;
+    private SerializedProperty erosion;
+    private GreenScreenManager greenScreen;
 
     private SerializedProperty keyColors;
-    private SerializedProperty range;
-    private SerializedProperty smoothness;
-    private SerializedProperty whiteclip;
-    private SerializedProperty blackclip;
-    private SerializedProperty erosion;
-    private SerializedProperty sigma;
-    private SerializedProperty despill;
-    private SerializedProperty pathfileconfig;
 
 
     private GarbageMatte matte;
-    private SerializedProperty enableGrabageMatte;
+    private readonly GUILayoutOption[] optionsButton = {GUILayout.MaxWidth(100)};
 
-
-    private static GUIStyle ToggleButtonStyleNormal = null;
-    private static GUIStyle ToggleButtonStyleToggled = null;
+    private readonly GUILayoutOption[] optionsButtonBrowse = {GUILayout.MaxWidth(30)};
+    private SerializedProperty pathfileconfig;
+    private SerializedProperty range;
+    private SerializedProperty sigma;
+    private SerializedProperty smoothness;
+    private SerializedProperty whiteclip;
 
     public void OnEnable()
     {
-        greenScreen = (GreenScreenManager)target;
+        greenScreen = (GreenScreenManager) target;
 
 
         keyColors = serializedObject.FindProperty("keyColors");
@@ -45,15 +44,13 @@ class GreenScreenManagerEditor : Editor
         pathfileconfig = serializedObject.FindProperty("pathFileConfig");
 
         enableGrabageMatte = serializedObject.FindProperty("enableGarbageMatte");
-
-
     }
+
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
-        greenScreen = (GreenScreenManager)target;
+        greenScreen = (GreenScreenManager) target;
         key_colors();
-    
 
 
         if (ToggleButtonStyleNormal == null)
@@ -65,44 +62,34 @@ class GreenScreenManagerEditor : Editor
 
         //matte = (ZEDGarbageMatte)target;
         matte = greenScreen.garbageMatte;
-        GUI.enabled = greenScreen.screenManager != null && greenScreen.screenManager.ActualRenderingPath == RenderingPath.Forward;
+        GUI.enabled = greenScreen.screenManager != null &&
+                      greenScreen.screenManager.ActualRenderingPath == RenderingPath.Forward;
         enableGrabageMatte.boolValue = EditorGUILayout.Toggle("Enable Garbage Matte", enableGrabageMatte.boolValue);
         GUI.enabled = true;
-        if (enableGrabageMatte.boolValue && greenScreen.screenManager != null && greenScreen.screenManager.ActualRenderingPath == RenderingPath.Forward)
+        if (enableGrabageMatte.boolValue && greenScreen.screenManager != null &&
+            greenScreen.screenManager.ActualRenderingPath == RenderingPath.Forward)
         {
             //serializedObject.Update();
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Place Markers", matte.editMode ? ToggleButtonStyleToggled : ToggleButtonStyleNormal))
             {
                 matte.editMode = !matte.editMode;
-                if (matte.editMode)
-                {
-                    matte.EnterEditMode();
-                }
-
+                if (matte.editMode) matte.EnterEditMode();
             }
+
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Remove Last Marker"))
-            {
-                matte.RemoveLastPoint();
-            }
+            if (GUILayout.Button("Remove Last Marker")) matte.RemoveLastPoint();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Apply Garbage Matte"))
-            {
-                matte.ApplyGarbageMatte();
-            }
+            if (GUILayout.Button("Apply Garbage Matte")) matte.ApplyGarbageMatte();
             EditorGUILayout.EndHorizontal();
 
-        
+
             GUI.enabled = true;
 
-            if (GUILayout.Button("Reset"))
-            {
-                matte.ResetPoints(true);
-            }
-        } 
+            if (GUILayout.Button("Reset")) matte.ResetPoints(true);
+        }
 
         GUILayout.Space(20);
         EditorGUILayout.BeginHorizontal();
@@ -113,13 +100,13 @@ class GreenScreenManagerEditor : Editor
             pathfileconfig.stringValue = EditorUtility.OpenFilePanel("Load save file", "", "json");
             serializedObject.ApplyModifiedProperties();
         }
-        EditorGUILayout.EndHorizontal(); EditorGUILayout.BeginHorizontal();
+
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
 
         if (GUILayout.Button("Save"))
-        {
             greenScreen.SaveData(greenScreen.RegisterDataChromaKeys(), greenScreen.garbageMatte.RegisterData());
-        }
         GUI.enabled = File.Exists(greenScreen.pathFileConfig);
         if (GUILayout.Button("Load"))
         {
@@ -134,34 +121,28 @@ class GreenScreenManagerEditor : Editor
             sigma.floatValue = greenScreen.sigma_;
             despill.floatValue = greenScreen.spill;
         }
-		if (GUILayout.Button ("Clean")) {
-			matte.CleanSpheres ();
-		}
+
+        if (GUILayout.Button("Clean")) matte.CleanSpheres();
         GUI.enabled = true;
 
         EditorGUILayout.EndHorizontal();
         GUILayout.Space(20);
         if (GUILayout.Button("Camera Control"))
-        {
-			EditorWindow.GetWindow(typeof(ZEDCameraSettingsEditor), false, "ZED Camera").Show();
-        }
+            EditorWindow.GetWindow(typeof(ZEDCameraSettingsEditor), false, "ZED Camera").Show();
 
 
         serializedObject.ApplyModifiedProperties();
     }
 
-    void key_colors()
+    private void key_colors()
     {
         //GUILayout.Label("Chroma Key", EditorStyles.boldLabel);
         EditorGUILayout.Space();
         EditorGUI.BeginChangeCheck();
-        greenScreen.canal = (GreenScreenManager.CANAL)EditorGUILayout.EnumPopup("View", greenScreen.canal);
+        greenScreen.canal = (GreenScreenManager.CANAL) EditorGUILayout.EnumPopup("View", greenScreen.canal);
         EditorGUILayout.Space();
 
-        if (EditorGUI.EndChangeCheck())
-        {
-            greenScreen.UpdateCanal();
-        }
+        if (EditorGUI.EndChangeCheck()) greenScreen.UpdateCanal();
         EditorGUI.BeginChangeCheck();
 
         EditorGUILayout.BeginHorizontal();
@@ -203,15 +184,11 @@ class GreenScreenManagerEditor : Editor
 
             Repaint();
         }
+
         GUILayout.EndHorizontal();
 
 
-        if (EditorGUI.EndChangeCheck())
-        {
-            greenScreen.UpdateShader();
-        }
-
-
+        if (EditorGUI.EndChangeCheck()) greenScreen.UpdateShader();
     }
 }
 #endif

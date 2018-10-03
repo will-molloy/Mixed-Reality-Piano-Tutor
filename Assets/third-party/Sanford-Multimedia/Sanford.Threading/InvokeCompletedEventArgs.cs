@@ -38,43 +38,27 @@ using System.ComponentModel;
 namespace Sanford.Threading
 {
     /// <summary>
-    /// Represents information about the InvokeCompleted event.
+    ///     Represents information about the InvokeCompleted event.
     /// </summary>
     public class InvokeCompletedEventArgs : AsyncCompletedEventArgs
     {
-        private Delegate method;
+        private readonly object[] args;
 
-        private object[] args;
-
-        private object result;
-
-        public InvokeCompletedEventArgs(Delegate method, object[] args, object result, Exception error) 
+        public InvokeCompletedEventArgs(Delegate method, object[] args, object result, Exception error)
             : base(error, false, null)
         {
-            this.method = method;
+            Method = method;
             this.args = args;
-            this.result = result;
+            Result = result;
         }
+
+        public Delegate Method { get; }
+
+        public object Result { get; }
 
         public object[] GetArgs()
         {
             return args;
-        }
-
-        public Delegate Method
-        {
-            get
-            {
-                return method;
-            }
-        }
-
-        public object Result
-        {
-            get
-            {
-                return result;
-            }
         }
     }
 }

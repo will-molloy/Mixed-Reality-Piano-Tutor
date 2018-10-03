@@ -5,83 +5,77 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
 
 namespace Valve.VR.InteractionSystem
 {
-	//-------------------------------------------------------------------------
-	public class BalloonColliders : MonoBehaviour
-	{
-		public GameObject[] colliders;
-		private Vector3[] colliderLocalPositions;
-		private Quaternion[] colliderLocalRotations;
+    //-------------------------------------------------------------------------
+    public class BalloonColliders : MonoBehaviour
+    {
+        private Vector3[] colliderLocalPositions;
+        private Quaternion[] colliderLocalRotations;
+        public GameObject[] colliders;
 
-		private Rigidbody rb;
+        private Rigidbody rb;
 
-		//-------------------------------------------------
-		void Awake()
-		{
-			rb = GetComponent<Rigidbody>();
+        //-------------------------------------------------
+        private void Awake()
+        {
+            rb = GetComponent<Rigidbody>();
 
-			colliderLocalPositions = new Vector3[colliders.Length];
-			colliderLocalRotations = new Quaternion[colliders.Length];
+            colliderLocalPositions = new Vector3[colliders.Length];
+            colliderLocalRotations = new Quaternion[colliders.Length];
 
-			for ( int i = 0; i < colliders.Length; ++i )
-			{
-				colliderLocalPositions[i] = colliders[i].transform.localPosition;
-				colliderLocalRotations[i] = colliders[i].transform.localRotation;
+            for (var i = 0; i < colliders.Length; ++i)
+            {
+                colliderLocalPositions[i] = colliders[i].transform.localPosition;
+                colliderLocalRotations[i] = colliders[i].transform.localRotation;
 
-				colliders[i].name = gameObject.name + "." + colliders[i].name;
-			}
-		}
-
-
-		//-------------------------------------------------
-		void OnEnable()
-		{
-			for ( int i = 0; i < colliders.Length; ++i )
-			{
-				colliders[i].transform.SetParent( transform );
-
-				colliders[i].transform.localPosition = colliderLocalPositions[i];
-				colliders[i].transform.localRotation = colliderLocalRotations[i];
-
-				colliders[i].transform.SetParent( null );
-
-				FixedJoint fixedJoint = colliders[i].AddComponent<FixedJoint>();
-				fixedJoint.connectedBody = rb;
-				fixedJoint.breakForce = Mathf.Infinity;
-				fixedJoint.breakTorque = Mathf.Infinity;
-				fixedJoint.enableCollision = false;
-				fixedJoint.enablePreprocessing = true;
-
-				colliders[i].SetActive( true );
-			}
-		}
+                colliders[i].name = gameObject.name + "." + colliders[i].name;
+            }
+        }
 
 
-		//-------------------------------------------------
-		void OnDisable()
-		{
-			for ( int i = 0; i < colliders.Length; ++i )
-			{
-				if ( colliders[i] != null )
-				{
-					Destroy( colliders[i].GetComponent<FixedJoint>() );
+        //-------------------------------------------------
+        private void OnEnable()
+        {
+            for (var i = 0; i < colliders.Length; ++i)
+            {
+                colliders[i].transform.SetParent(transform);
 
-					colliders[i].SetActive( false );
-				}
-			}
-		}
+                colliders[i].transform.localPosition = colliderLocalPositions[i];
+                colliders[i].transform.localRotation = colliderLocalRotations[i];
+
+                colliders[i].transform.SetParent(null);
+
+                var fixedJoint = colliders[i].AddComponent<FixedJoint>();
+                fixedJoint.connectedBody = rb;
+                fixedJoint.breakForce = Mathf.Infinity;
+                fixedJoint.breakTorque = Mathf.Infinity;
+                fixedJoint.enableCollision = false;
+                fixedJoint.enablePreprocessing = true;
+
+                colliders[i].SetActive(true);
+            }
+        }
 
 
-		//-------------------------------------------------
-		void OnDestroy()
-		{
-			for ( int i = 0; i < colliders.Length; ++i )
-			{
-				Destroy( colliders[i] );
-			}
-		}
-	}
+        //-------------------------------------------------
+        private void OnDisable()
+        {
+            for (var i = 0; i < colliders.Length; ++i)
+                if (colliders[i] != null)
+                {
+                    Destroy(colliders[i].GetComponent<FixedJoint>());
+
+                    colliders[i].SetActive(false);
+                }
+        }
+
+
+        //-------------------------------------------------
+        private void OnDestroy()
+        {
+            for (var i = 0; i < colliders.Length; ++i) Destroy(colliders[i]);
+        }
+    }
 }

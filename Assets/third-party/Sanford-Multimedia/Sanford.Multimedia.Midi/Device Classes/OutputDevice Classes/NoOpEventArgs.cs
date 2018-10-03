@@ -37,23 +37,14 @@ using System;
 namespace Sanford.Multimedia.Midi
 {
     /// <summary>
-    /// 
     /// </summary>
     public class NoOpEventArgs : EventArgs
     {
-        private int data;
-
         public NoOpEventArgs(int data)
         {
-            this.data = data;
+            Data = data;
         }
 
-        public int Data
-        {
-            get
-            {
-                return data;
-            }
-        }
+        public int Data { get; }
     }
 }

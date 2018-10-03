@@ -31,6 +31,7 @@
  */
 
 #endregion
+
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -52,20 +53,19 @@ namespace Sanford.Multimedia.Midi
 
     public partial class InputDevice : MidiDevice
     {
+        private int FLastParam2;
+
         /// <summary>
-        /// Gets or sets a value indicating whether the midi input driver callback should be posted on a delegate queue with its own thread.
-        /// Default is <c>true</c>. If set to <c>false</c> the driver callback directly calls the events for lowest possible latency.
+        ///     Gets or sets a value indicating whether the midi input driver callback should be posted on a delegate queue with
+        ///     its own thread.
+        ///     Default is <c>true</c>. If set to <c>false</c> the driver callback directly calls the events for lowest possible
+        ///     latency.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if the midi input driver callback should be posted on a delegate queue with its own thread; otherwise, <c>false</c>.
+        ///     <c>true</c> if the midi input driver callback should be posted on a delegate queue with its own thread; otherwise,
+        ///     <c>false</c>.
         /// </value>
-        public bool PostDriverCallbackToDelegateQueue
-        {
-            get;
-            set;
-        }
-
-        int FLastParam2;
+        public bool PostDriverCallbackToDelegateQueue { get; set; }
 
         private void HandleMessage(IntPtr hnd, int msg, IntPtr instance, IntPtr param1, IntPtr param2)
         {
@@ -116,19 +116,18 @@ namespace Sanford.Multimedia.Midi
 
         private void HandleShortMessage(object state)
         {
-
-            var param = (MidiInParams)state;
-            int message = param.Param1.ToInt32();
-            int timestamp = param.Param2.ToInt32();
+            var param = (MidiInParams) state;
+            var message = param.Param1.ToInt32();
+            var timestamp = param.Param2.ToInt32();
 
             //first send RawMessage
             OnShortMessage(new ShortMessageEventArgs(message, timestamp));
 
-            int status = ShortMessage.UnpackStatus(message);
+            var status = ShortMessage.UnpackStatus(message);
 
-            if (status >= (int)ChannelCommand.NoteOff &&
-                   status <= (int)ChannelCommand.PitchWheel +
-                   ChannelMessage.MidiChannelMaxValue)
+            if (status >= (int) ChannelCommand.NoteOff &&
+                status <= (int) ChannelCommand.PitchWheel +
+                ChannelMessage.MidiChannelMaxValue)
             {
                 cmBuilder.Message = message;
                 cmBuilder.Build();
@@ -137,10 +136,10 @@ namespace Sanford.Multimedia.Midi
                 OnMessageReceived(cmBuilder.Result);
                 OnChannelMessageReceived(new ChannelMessageEventArgs(cmBuilder.Result));
             }
-            else if (status == (int)SysCommonType.MidiTimeCode ||
-                   status == (int)SysCommonType.SongPositionPointer ||
-                   status == (int)SysCommonType.SongSelect ||
-                   status == (int)SysCommonType.TuneRequest)
+            else if (status == (int) SysCommonType.MidiTimeCode ||
+                     status == (int) SysCommonType.SongPositionPointer ||
+                     status == (int) SysCommonType.SongSelect ||
+                     status == (int) SysCommonType.TuneRequest)
             {
                 scBuilder.Message = message;
                 scBuilder.Build();
@@ -153,7 +152,7 @@ namespace Sanford.Multimedia.Midi
             {
                 SysRealtimeMessageEventArgs e = null;
 
-                switch ((SysRealtimeType)status)
+                switch ((SysRealtimeType) status)
                 {
                     case SysRealtimeType.ActiveSense:
                         e = SysRealtimeMessageEventArgs.ActiveSense;
@@ -194,21 +193,18 @@ namespace Sanford.Multimedia.Midi
         {
             lock (lockObject)
             {
-                var param = (MidiInParams)state;
-                IntPtr headerPtr = param.Param1;
+                var param = (MidiInParams) state;
+                var headerPtr = param.Param1;
 
-                MidiHeader header = (MidiHeader)Marshal.PtrToStructure(headerPtr, typeof(MidiHeader));
+                var header = (MidiHeader) Marshal.PtrToStructure(headerPtr, typeof(MidiHeader));
 
                 if (!resetting)
                 {
-                    for (int i = 0; i < header.bytesRecorded; i++)
-                    {
-                        sysExData.Add(Marshal.ReadByte(header.data, i));
-                    }
+                    for (var i = 0; i < header.bytesRecorded; i++) sysExData.Add(Marshal.ReadByte(header.data, i));
 
                     if (sysExData.Count > 1 && sysExData[0] == 0xF0 && sysExData[sysExData.Count - 1] == 0xF7)
                     {
-                        SysExMessage message = new SysExMessage(sysExData.ToArray());
+                        var message = new SysExMessage(sysExData.ToArray());
                         message.Timestamp = param.Param2.ToInt32();
 
                         sysExData.Clear();
@@ -217,7 +213,7 @@ namespace Sanford.Multimedia.Midi
                         OnSysExMessageReceived(new SysExMessageEventArgs(message));
                     }
 
-                    int result = AddSysExBuffer();
+                    var result = AddSysExBuffer();
 
                     if (result != DeviceException.MMSYSERR_NOERROR)
                     {
@@ -233,7 +229,7 @@ namespace Sanford.Multimedia.Midi
 
         private void HandleInvalidShortMessage(object state)
         {
-            var param = (MidiInParams)state;
+            var param = (MidiInParams) state;
             OnInvalidShortMessageReceived(new InvalidShortMessageEventArgs(param.Param1.ToInt32()));
         }
 
@@ -241,20 +237,20 @@ namespace Sanford.Multimedia.Midi
         {
             lock (lockObject)
             {
-                var param = (MidiInParams)state;
-                IntPtr headerPtr = param.Param1;
+                var param = (MidiInParams) state;
+                var headerPtr = param.Param1;
 
-                MidiHeader header = (MidiHeader)Marshal.PtrToStructure(headerPtr, typeof(MidiHeader));
+                var header = (MidiHeader) Marshal.PtrToStructure(headerPtr, typeof(MidiHeader));
 
                 if (!resetting)
                 {
-                    byte[] data = new byte[header.bytesRecorded];
+                    var data = new byte[header.bytesRecorded];
 
                     Marshal.Copy(header.data, data, 0, data.Length);
 
                     OnInvalidSysExMessageReceived(new InvalidSysExMessageEventArgs(data));
 
-                    int result = AddSysExBuffer();
+                    var result = AddSysExBuffer();
 
                     if (result != DeviceException.MMSYSERR_NOERROR)
                     {
@@ -270,7 +266,7 @@ namespace Sanford.Multimedia.Midi
 
         private void ReleaseBuffer(IntPtr headerPtr)
         {
-            int result = midiInUnprepareHeader(Handle, headerPtr, SizeOfMidiHeader);
+            var result = midiInUnprepareHeader(Handle, headerPtr, SizeOfMidiHeader);
 
             if (result != DeviceException.MMSYSERR_NOERROR)
             {
@@ -297,7 +293,7 @@ namespace Sanford.Multimedia.Midi
             headerBuilder.Build();
 
             // Get the pointer to the built MidiHeader.
-            IntPtr headerPtr = headerBuilder.Result;
+            var headerPtr = headerBuilder.Result;
 
             // Prepare the header to be used.
             result = midiInPrepareHeader(Handle, headerPtr, SizeOfMidiHeader);
@@ -311,7 +307,7 @@ namespace Sanford.Multimedia.Midi
                 result = midiInAddBuffer(Handle, headerPtr, SizeOfMidiHeader);
 
                 // If the buffer could not be added.
-                if (result != MidiDeviceException.MMSYSERR_NOERROR)
+                if (result != DeviceException.MMSYSERR_NOERROR)
                 {
                     // Unprepare header - there's a chance that this will fail 
                     // for whatever reason, but there's not a lot that can be

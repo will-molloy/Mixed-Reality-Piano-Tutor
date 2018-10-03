@@ -1,9 +1,9 @@
-using UnityEngine;
-using UnityEngine.PostProcessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
+using UnityEngine.PostProcessing;
 
 namespace UnityEditor.PostProcessing
 {
@@ -11,26 +11,26 @@ namespace UnityEditor.PostProcessing
     [CustomEditor(typeof(PostProcessingProfile))]
     public class PostProcessingInspector : Editor
     {
-        static GUIContent s_PreviewTitle = new GUIContent("Monitors");
+        private static readonly GUIContent s_PreviewTitle = new GUIContent("Monitors");
 
-        PostProcessingProfile m_ConcreteTarget
-        {
-            get { return target as PostProcessingProfile; }
-        }
+        private readonly Dictionary<PostProcessingModelEditor, PostProcessingModel> m_CustomEditors =
+            new Dictionary<PostProcessingModelEditor, PostProcessingModel>();
 
-        int m_CurrentMonitorID
+        private GUIContent[] m_MonitorNames;
+
+        private List<PostProcessingMonitor> m_Monitors;
+
+        private PostProcessingProfile m_ConcreteTarget => target as PostProcessingProfile;
+
+        private int m_CurrentMonitorID
         {
             get { return m_ConcreteTarget.monitors.currentMonitorID; }
             set { m_ConcreteTarget.monitors.currentMonitorID = value; }
         }
 
-        List<PostProcessingMonitor> m_Monitors;
-        GUIContent[] m_MonitorNames;
-        Dictionary<PostProcessingModelEditor, PostProcessingModel> m_CustomEditors = new Dictionary<PostProcessingModelEditor, PostProcessingModel>();
-
         public bool IsInteractivePreviewOpened { get; private set; }
 
-        void OnEnable()
+        private void OnEnable()
         {
             if (target == null)
                 return;
@@ -44,11 +44,12 @@ namespace UnityEditor.PostProcessing
             var customEditors = new Dictionary<Type, PostProcessingModelEditor>();
             foreach (var editor in editorTypes)
             {
-                var attr = (PostProcessingModelEditorAttribute)editor.GetCustomAttributes(typeof(PostProcessingModelEditorAttribute), false)[0];
+                var attr = (PostProcessingModelEditorAttribute) editor.GetCustomAttributes(
+                    typeof(PostProcessingModelEditorAttribute), false)[0];
                 var effectType = attr.type;
                 var alwaysEnabled = attr.alwaysEnabled;
 
-                var editorInst = (PostProcessingModelEditor)Activator.CreateInstance(editor);
+                var editorInst = (PostProcessingModelEditor) Activator.CreateInstance(editor);
                 editorInst.alwaysEnabled = alwaysEnabled;
                 editorInst.profile = target as PostProcessingProfile;
                 editorInst.inspector = this;
@@ -65,7 +66,9 @@ namespace UnityEditor.PostProcessing
                     continue;
 
                 var type = baseType;
-                var srcObject = ReflectionUtils.GetFieldValueFromPath(serializedObject.targetObject, ref type, property.propertyPath);
+                var srcObject =
+                    ReflectionUtils.GetFieldValueFromPath(serializedObject.targetObject, ref type,
+                        property.propertyPath);
 
                 if (srcObject == null)
                     continue;
@@ -73,7 +76,7 @@ namespace UnityEditor.PostProcessing
                 PostProcessingModelEditor editor;
                 if (customEditors.TryGetValue(type, out editor))
                 {
-                    var effect = (PostProcessingModel)srcObject;
+                    var effect = (PostProcessingModel) srcObject;
 
                     if (editor.alwaysEnabled)
                         effect.enabled = editor.alwaysEnabled;
@@ -99,14 +102,12 @@ namespace UnityEditor.PostProcessing
             var monitorNames = new List<GUIContent>();
 
             foreach (var monitor in monitors)
-            {
                 if (monitor.IsSupported())
                 {
                     monitor.Init(m_ConcreteTarget.monitors, this);
                     m_Monitors.Add(monitor);
                     monitorNames.Add(monitor.GetMonitorTitle());
                 }
-            }
 
             m_MonitorNames = monitorNames.ToArray();
 
@@ -114,7 +115,7 @@ namespace UnityEditor.PostProcessing
                 m_ConcreteTarget.monitors.onFrameEndEditorOnly = OnFrameEnd;
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             if (m_CustomEditors != null)
             {
@@ -136,7 +137,7 @@ namespace UnityEditor.PostProcessing
                 m_ConcreteTarget.monitors.onFrameEndEditorOnly = null;
         }
 
-        void OnFrameEnd(RenderTexture source)
+        private void OnFrameEnd(RenderTexture source)
         {
             if (!IsInteractivePreviewOpened)
                 return;
@@ -154,13 +155,13 @@ namespace UnityEditor.PostProcessing
             // Handles undo/redo events first (before they get used by the editors' widgets)
             var e = Event.current;
             if (e.type == EventType.ValidateCommand && e.commandName == "UndoRedoPerformed")
-            {
                 foreach (var editor in m_CustomEditors)
                     editor.Value.OnValidate();
-            }
 
             if (!m_ConcreteTarget.debugViews.IsModeActive(BuiltinDebugViewsModel.Mode.None))
-                EditorGUILayout.HelpBox("A debug view is currently enabled. Changes done to an effect might not be visible.", MessageType.Info);
+                EditorGUILayout.HelpBox(
+                    "A debug view is currently enabled. Changes done to an effect might not be visible.",
+                    MessageType.Info);
 
             foreach (var editor in m_CustomEditors)
             {
@@ -193,7 +194,8 @@ namespace UnityEditor.PostProcessing
                     m_Monitors[m_CurrentMonitorID].OnMonitorSettings();
 
                 GUILayout.Space(5);
-                m_CurrentMonitorID = EditorGUILayout.Popup(m_CurrentMonitorID, m_MonitorNames, FxStyles.preDropdown, GUILayout.MaxWidth(100f));
+                m_CurrentMonitorID = EditorGUILayout.Popup(m_CurrentMonitorID, m_MonitorNames, FxStyles.preDropdown,
+                    GUILayout.MaxWidth(100f));
             }
         }
 

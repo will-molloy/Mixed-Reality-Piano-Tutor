@@ -4,76 +4,76 @@ using UnityEngine;
 
 namespace ArucoUnity.Plugin
 {
-  public static partial class Cv
-  {
-    public class Point3f : Utility.HandleCppPtr
+    public static partial class Cv
     {
-      // Native functions
+        public class Point3f : Utility.HandleCppPtr
+        {
+            // Constructors & destructor
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_cv_Point3f_new();
+            public Point3f() : base(au_cv_Point3f_new())
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_cv_Point3f_delete(IntPtr point3f);
+            public Point3f(IntPtr point3fPtr,
+                Utility.DeleteResponsibility deleteResponsibility = Utility.DeleteResponsibility.True)
+                : base(point3fPtr, deleteResponsibility)
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern float au_cv_Point3f_getX(IntPtr point3f);
+            // Properties
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_cv_Point3f_setX(IntPtr point3f, float x);
+            public float X
+            {
+                get { return au_cv_Point3f_getX(CppPtr); }
+                set { au_cv_Point3f_setX(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern float au_cv_Point3f_getY(IntPtr point3f);
+            public float Y
+            {
+                get { return au_cv_Point3f_getY(CppPtr); }
+                set { au_cv_Point3f_setY(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_cv_Point3f_setY(IntPtr point3f, float y);
+            public float Z
+            {
+                get { return au_cv_Point3f_getZ(CppPtr); }
+                set { au_cv_Point3f_setZ(CppPtr, value); }
+            }
+            // Native functions
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern float au_cv_Point3f_getZ(IntPtr point3f);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_cv_Point3f_new();
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_cv_Point3f_setZ(IntPtr point3f, float z);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_cv_Point3f_delete(IntPtr point3f);
 
-      // Constructors & destructor
+            [DllImport("ArucoUnityPlugin")]
+            private static extern float au_cv_Point3f_getX(IntPtr point3f);
 
-      public Point3f() : base(au_cv_Point3f_new())
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_cv_Point3f_setX(IntPtr point3f, float x);
 
-      public Point3f(IntPtr point3fPtr, Utility.DeleteResponsibility deleteResponsibility = Utility.DeleteResponsibility.True)
-        : base(point3fPtr, deleteResponsibility)
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern float au_cv_Point3f_getY(IntPtr point3f);
 
-      public static implicit operator Vector3(Point3f point3f)
-      {
-        return new Vector3(point3f.X, point3f.Y, point3f.Z);
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_cv_Point3f_setY(IntPtr point3f, float y);
 
-      protected override void DeleteCppPtr()
-      {
-        au_cv_Point3f_delete(CppPtr);
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern float au_cv_Point3f_getZ(IntPtr point3f);
 
-      // Properties
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_cv_Point3f_setZ(IntPtr point3f, float z);
 
-      public float X
-      {
-        get { return au_cv_Point3f_getX(CppPtr); }
-        set { au_cv_Point3f_setX(CppPtr, value); }
-      }
+            public static implicit operator Vector3(Point3f point3f)
+            {
+                return new Vector3(point3f.X, point3f.Y, point3f.Z);
+            }
 
-      public float Y
-      {
-        get { return au_cv_Point3f_getY(CppPtr); }
-        set { au_cv_Point3f_setY(CppPtr, value); }
-      }
-
-      public float Z
-      {
-        get { return au_cv_Point3f_getZ(CppPtr); }
-        set { au_cv_Point3f_setZ(CppPtr, value); }
-      }
+            protected override void DeleteCppPtr()
+            {
+                au_cv_Point3f_delete(CppPtr);
+            }
+        }
     }
-  }
 }

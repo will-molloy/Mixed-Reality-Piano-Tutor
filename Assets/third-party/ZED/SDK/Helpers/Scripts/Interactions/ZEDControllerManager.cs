@@ -1,5 +1,6 @@
 ﻿//======= Copyright (c) Stereolabs Corporation, All rights reserved. ===============
 
+using sl;
 using UnityEngine;
 
 /// <summary>
@@ -8,7 +9,7 @@ using UnityEngine;
 namespace sl
 {
     /// <summary>
-    /// Overhead on the button
+    ///     Overhead on the button
     /// </summary>
     public enum CONTROLS_BUTTON
     {
@@ -19,7 +20,7 @@ namespace sl
     }
 
     /// <summary>
-    /// Overhead on the trackpad and sticks
+    ///     Overhead on the trackpad and sticks
     /// </summary>
     public enum CONTROLS_AXIS2D
     {
@@ -28,7 +29,7 @@ namespace sl
     }
 
     /// <summary>
-    /// Overhead on the triggers
+    ///     Overhead on the triggers
     /// </summary>
     public enum CONTROLS_AXIS1D
     {
@@ -39,56 +40,56 @@ namespace sl
     }
 }
 
-public interface ZEDControllerManager {
-   
+public interface ZEDControllerManager
+{
     /// <summary>
-    /// Checks if pads are init
+    ///     Checks if pads are init
     /// </summary>
-	bool PadsAreInit { get;}
+    bool PadsAreInit { get; }
 
     /// <summary>
-    /// Checks if a button is down
+    ///     Gets the current ZEDHolder
     /// </summary>
-    /// <param name="button"></param>
-    /// <param name="idPad"></param>
-    /// <returns></returns>
-    bool GetDown(sl.CONTROLS_BUTTON button, int idPad = -1);
+    int ControllerIndexZEDHolder { get; }
 
     /// <summary>
-    /// Checks if a trigger is down
+    ///     Checks if a button is down
     /// </summary>
     /// <param name="button"></param>
     /// <param name="idPad"></param>
     /// <returns></returns>
-    float GetHairTrigger(sl.CONTROLS_AXIS1D button, int idPad = -1);
+    bool GetDown(CONTROLS_BUTTON button, int idPad = -1);
 
     /// <summary>
-    /// Gets the ID of the right controller
+    ///     Checks if a trigger is down
+    /// </summary>
+    /// <param name="button"></param>
+    /// <param name="idPad"></param>
+    /// <returns></returns>
+    float GetHairTrigger(CONTROLS_AXIS1D button, int idPad = -1);
+
+    /// <summary>
+    ///     Gets the ID of the right controller
     /// </summary>
     /// <returns></returns>
     int GetRightIndex();
 
     /// <summary>
-    /// Gets the ID of the left controller
+    ///     Gets the ID of the left controller
     /// </summary>
     /// <returns></returns>
     int GetLeftIndex();
 
     /// <summary>
-    /// Get the local position of a controller
+    ///     Get the local position of a controller
     /// </summary>
     /// <param name="IDPad"></param>
     /// <returns></returns>
     Vector3 GetPosition(int IDPad);
 
     /// <summary>
-    /// Load the index according to the calibration tool
+    ///     Load the index according to the calibration tool
     /// </summary>
     /// <param name="path"></param>
     void LoadIndex(string path);
-
-    /// <summary>
-    /// Gets the current ZEDHolder
-    /// </summary>
-    int ControllerIndexZEDHolder { get; }
 }

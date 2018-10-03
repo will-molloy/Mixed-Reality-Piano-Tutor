@@ -11,7 +11,7 @@ namespace Melanchall.DryWetMidi.MusicTheory
 
         private static readonly string HalfStepsGroup = ParsingUtilities.GetNumberGroup(HalfStepsGroupName);
 
-        private static readonly string[] Patterns = new[]
+        private static readonly string[] Patterns =
         {
             $@"{HalfStepsGroup}"
         };

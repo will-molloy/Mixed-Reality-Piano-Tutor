@@ -39,235 +39,63 @@ using System.IO;
 namespace Sanford.Multimedia.Midi
 {
     /// <summary>
-    /// Defintes constants representing SMPTE frame rates.
+    ///     Defintes constants representing SMPTE frame rates.
     /// </summary>
     public enum SmpteFrameRate
     {
-        Smpte24     = 24,
-        Smpte25     = 25,
+        Smpte24 = 24,
+        Smpte25 = 25,
         Smpte30Drop = 29,
-        Smpte30     = 30
+        Smpte30 = 30
     }
 
     /// <summary>
-    /// The different types of sequences.
+    ///     The different types of sequences.
     /// </summary>
     public enum SequenceType
     {
         Ppqn,
         Smpte
-    }    
+    }
 
-	/// <summary>
-	/// Represents MIDI file properties.
-	/// </summary>
-	internal class MidiFileProperties
-	{
+    /// <summary>
+    ///     Represents MIDI file properties.
+    /// </summary>
+    internal class MidiFileProperties
+    {
         private const int PropertyLength = 2;
 
         private static readonly byte[] MidiFileHeader =
-            {
-                (byte)'M',
-                (byte)'T',
-                (byte)'h',
-                (byte)'d',
-                0, 
-                0, 
-                0,
-                6
-            };
-
-        private int format = 1;
-
-        private int trackCount = 0;
+        {
+            (byte) 'M',
+            (byte) 'T',
+            (byte) 'h',
+            (byte) 'd',
+            0,
+            0,
+            0,
+            6
+        };
 
         private int division = PpqnClock.PpqnMinValue;
 
-        private SequenceType sequenceType = SequenceType.Ppqn;
+        private int format = 1;
 
-		public MidiFileProperties()
-		{
-		}
-
-        public void Read(Stream strm)
-        {
-            #region Require
-
-            if(strm == null)
-            {
-                throw new ArgumentNullException("strm");
-            }
-
-            #endregion
-
-            format = trackCount = division = 0;
-
-            FindHeader(strm);
-            Format = (int)ReadProperty(strm);
-            TrackCount = (int)ReadProperty(strm);
-            Division = (int)ReadProperty(strm);
-
-            #region Invariant
-
-            AssertValid();
-
-            #endregion
-        }
-
-        private void FindHeader(Stream stream)
-        {
-            bool found = false;
-            int result;
-
-            while(!found)
-            {
-                result = stream.ReadByte();
-
-                if(result == 'M')
-                {
-                    result = stream.ReadByte();
-
-                    if(result == 'T')
-                    {
-                        result = stream.ReadByte();
-
-                        if(result == 'h')
-                        {
-                            result = stream.ReadByte();
-
-                            if(result == 'd')
-                            {
-                                found = true;
-                            }
-                        }
-                    }
-                }
-
-                if(result < 0)
-                {
-                    throw new MidiFileException("Unable to find MIDI file header.");
-                }
-            }
-
-            // Eat the header length.
-            for(int i = 0; i < 4; i++)
-            {
-                if(stream.ReadByte() < 0)
-                {
-                    throw new MidiFileException("Unable to find MIDI file header.");
-                }
-            }
-        }
-
-        private ushort ReadProperty(Stream strm)
-        {
-            byte[] data = new byte[PropertyLength];
-
-            int result = strm.Read(data, 0, data.Length);
-
-            if(result != data.Length)
-            {
-                throw new MidiFileException("End of MIDI file unexpectedly reached.");
-            }
-
-            if(BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(data);
-            }
-
-            return BitConverter.ToUInt16(data, 0);
-        }
-
-        public void Write(Stream strm)
-        {
-            #region Require
-
-            if(strm == null)
-            {
-                throw new ArgumentNullException("strm");
-            }
-
-            #endregion
-
-            strm.Write(MidiFileHeader, 0, MidiFileHeader.Length);
-            WriteProperty(strm, (ushort)Format);
-            WriteProperty(strm, (ushort)TrackCount);
-            WriteProperty(strm, (ushort)Division);
-        }
-
-        private void WriteProperty(Stream strm, ushort property)
-        {
-            byte[] data = BitConverter.GetBytes(property);
-
-            if(BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(data);
-            }
-
-            strm.Write(data, 0, PropertyLength);
-        }
-
-        private static bool IsSmpte(int division)
-        {
-            bool result;
-            byte[] data = BitConverter.GetBytes((short)division);
-            
-            if(BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(data);
-            }
-
-            if((sbyte)data[0] < 0)
-            {
-                result = true;
-            }
-            else
-            {
-                result = false;
-            }
-
-            return result;
-        }
-
-        [Conditional("DEBUG")]
-        private void AssertValid()
-        {
-            if(trackCount > 1)
-            {
-                Debug.Assert(Format == 1 || Format == 2);
-            }
-
-            if(IsSmpte(Division))
-            {
-                Debug.Assert(SequenceType == SequenceType.Smpte);
-            }
-            else
-            {
-                Debug.Assert(SequenceType == SequenceType.Ppqn);
-                Debug.Assert(Division >= PpqnClock.PpqnMinValue);
-            }
-        }
+        private int trackCount;
 
         public int Format
         {
-            get
-            {
-                return format;
-            }
+            get { return format; }
             set
             {
                 #region Require
 
-                if(value < 0 || value > 3)
-                {
+                if (value < 0 || value > 3)
                     throw new ArgumentOutOfRangeException("Format", value,
                         "MIDI file format out of range.");
-                }
-                else if(value == 0 && trackCount > 1)
-                {
+                if (value == 0 && trackCount > 1)
                     throw new ArgumentException(
                         "MIDI file format invalid for this track count.");
-                }
 
                 #endregion
 
@@ -283,24 +111,17 @@ namespace Sanford.Multimedia.Midi
 
         public int TrackCount
         {
-            get
-            {
-                return trackCount;
-            }
+            get { return trackCount; }
             set
             {
                 #region Require
 
-                if(value < 0)
-                {
+                if (value < 0)
                     throw new ArgumentOutOfRangeException("TrackCount", value,
                         "Track count out of range.");
-                }
-                else if(value > 1 && Format == 0)
-                {
+                if (value > 1 && Format == 0)
                     throw new ArgumentException(
                         "Track count invalid for this format.");
-                }
 
                 #endregion
 
@@ -316,44 +137,28 @@ namespace Sanford.Multimedia.Midi
 
         public int Division
         {
-            get
-            {
-                return division;
-            }
+            get { return division; }
             set
             {
-                if(IsSmpte(value))
+                if (IsSmpte(value))
                 {
-                    byte[] data = BitConverter.GetBytes((short)value); 
+                    var data = BitConverter.GetBytes((short) value);
 
-                    if(BitConverter.IsLittleEndian)
-                    {
-                        Array.Reverse(data);
-                    }
+                    if (BitConverter.IsLittleEndian) Array.Reverse(data);
 
-                    if((sbyte)data[0] != -(int)SmpteFrameRate.Smpte24 &&                        
-                        (sbyte)data[0] != -(int)SmpteFrameRate.Smpte25 &&
-                        (sbyte)data[0] != -(int)SmpteFrameRate.Smpte30 &&
-                        (sbyte)data[0] != -(int)SmpteFrameRate.Smpte30Drop)
-                    {
+                    if ((sbyte) data[0] != -(int) SmpteFrameRate.Smpte24 &&
+                        (sbyte) data[0] != -(int) SmpteFrameRate.Smpte25 &&
+                        (sbyte) data[0] != -(int) SmpteFrameRate.Smpte30 &&
+                        (sbyte) data[0] != -(int) SmpteFrameRate.Smpte30Drop)
                         throw new ArgumentException("Invalid SMPTE frame rate.");
-                    }
-                    else
-                    {
-                        sequenceType = SequenceType.Smpte;
-                    }
+                    SequenceType = SequenceType.Smpte;
                 }
-                else 
+                else
                 {
-                    if(value < PpqnClock.PpqnMinValue)
-                    {
+                    if (value < PpqnClock.PpqnMinValue)
                         throw new ArgumentOutOfRangeException("Ppqn", value,
                             "Pulses per quarter note is smaller than 24.");
-                    }
-                    else
-                    {
-                        sequenceType = SequenceType.Ppqn;
-                    }
+                    SequenceType = SequenceType.Ppqn;
                 }
 
                 division = value;
@@ -366,14 +171,132 @@ namespace Sanford.Multimedia.Midi
             }
         }
 
-        public SequenceType SequenceType
+        public SequenceType SequenceType { get; private set; } = SequenceType.Ppqn;
+
+        public void Read(Stream strm)
         {
-            get
+            #region Require
+
+            if (strm == null) throw new ArgumentNullException("strm");
+
+            #endregion
+
+            format = trackCount = division = 0;
+
+            FindHeader(strm);
+            Format = ReadProperty(strm);
+            TrackCount = ReadProperty(strm);
+            Division = ReadProperty(strm);
+
+            #region Invariant
+
+            AssertValid();
+
+            #endregion
+        }
+
+        private void FindHeader(Stream stream)
+        {
+            var found = false;
+            int result;
+
+            while (!found)
             {
-                return sequenceType;
+                result = stream.ReadByte();
+
+                if (result == 'M')
+                {
+                    result = stream.ReadByte();
+
+                    if (result == 'T')
+                    {
+                        result = stream.ReadByte();
+
+                        if (result == 'h')
+                        {
+                            result = stream.ReadByte();
+
+                            if (result == 'd') found = true;
+                        }
+                    }
+                }
+
+                if (result < 0) throw new MidiFileException("Unable to find MIDI file header.");
+            }
+
+            // Eat the header length.
+            for (var i = 0; i < 4; i++)
+                if (stream.ReadByte() < 0)
+                    throw new MidiFileException("Unable to find MIDI file header.");
+        }
+
+        private ushort ReadProperty(Stream strm)
+        {
+            var data = new byte[PropertyLength];
+
+            var result = strm.Read(data, 0, data.Length);
+
+            if (result != data.Length) throw new MidiFileException("End of MIDI file unexpectedly reached.");
+
+            if (BitConverter.IsLittleEndian) Array.Reverse(data);
+
+            return BitConverter.ToUInt16(data, 0);
+        }
+
+        public void Write(Stream strm)
+        {
+            #region Require
+
+            if (strm == null) throw new ArgumentNullException("strm");
+
+            #endregion
+
+            strm.Write(MidiFileHeader, 0, MidiFileHeader.Length);
+            WriteProperty(strm, (ushort) Format);
+            WriteProperty(strm, (ushort) TrackCount);
+            WriteProperty(strm, (ushort) Division);
+        }
+
+        private void WriteProperty(Stream strm, ushort property)
+        {
+            var data = BitConverter.GetBytes(property);
+
+            if (BitConverter.IsLittleEndian) Array.Reverse(data);
+
+            strm.Write(data, 0, PropertyLength);
+        }
+
+        private static bool IsSmpte(int division)
+        {
+            bool result;
+            var data = BitConverter.GetBytes((short) division);
+
+            if (BitConverter.IsLittleEndian) Array.Reverse(data);
+
+            if ((sbyte) data[0] < 0)
+                result = true;
+            else
+                result = false;
+
+            return result;
+        }
+
+        [Conditional("DEBUG")]
+        private void AssertValid()
+        {
+            if (trackCount > 1) Debug.Assert(Format == 1 || Format == 2);
+
+            if (IsSmpte(Division))
+            {
+                Debug.Assert(SequenceType == SequenceType.Smpte);
+            }
+            else
+            {
+                Debug.Assert(SequenceType == SequenceType.Ppqn);
+                Debug.Assert(Division >= PpqnClock.PpqnMinValue);
             }
         }
-	}
+    }
 
     public class MidiFileException : ApplicationException
     {

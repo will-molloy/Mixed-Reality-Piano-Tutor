@@ -15,7 +15,7 @@ namespace Melanchall.DryWetMidi.Smf
 
             Type eventType;
             var midiEvent = TryGetEventType(settings.CustomMetaEventTypes, statusByte, out eventType)
-                ? (MetaEvent)Activator.CreateInstance(eventType)
+                ? (MetaEvent) Activator.CreateInstance(eventType)
                 : new UnknownMetaEvent(statusByte);
 
             //
@@ -35,10 +35,11 @@ namespace Melanchall.DryWetMidi.Smf
 
         #region Methods
 
-        private static bool TryGetEventType(EventTypesCollection customMetaEventTypes, byte statusByte, out Type eventType)
+        private static bool TryGetEventType(EventTypesCollection customMetaEventTypes, byte statusByte,
+            out Type eventType)
         {
             return StandardEventTypes.Meta.TryGetType(statusByte, out eventType) ||
-                   (customMetaEventTypes?.TryGetType(statusByte, out eventType) == true && IsMetaEventType(eventType));
+                   customMetaEventTypes?.TryGetType(statusByte, out eventType) == true && IsMetaEventType(eventType);
         }
 
         private static bool IsMetaEventType(Type type)

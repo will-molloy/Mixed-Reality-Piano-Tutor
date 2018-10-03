@@ -38,28 +38,24 @@ using System.Text;
 namespace Sanford.Multimedia.Midi
 {
     /// <summary>
-    /// Represents a MIDI device capable of receiving MIDI events.
+    ///     Represents a MIDI device capable of receiving MIDI events.
     /// </summary>
     public partial class InputDevice : MidiDevice
     {
         protected override void Dispose(bool disposing)
         {
-            if(disposing)
+            if (disposing)
             {
-                lock(lockObject)
+                lock (lockObject)
                 {
                     Reset();
 
-                    int result = midiInClose(handle);
+                    var result = midiInClose(handle);
 
-                    if(result == MidiDeviceException.MMSYSERR_NOERROR)
-                    {
+                    if (result == DeviceException.MMSYSERR_NOERROR)
                         delegateQueue.Dispose();
-                    }
                     else
-                    {
                         throw new InputDeviceException(result);
-                    }
                 }
             }
             else
@@ -73,8 +69,8 @@ namespace Sanford.Multimedia.Midi
     }
 
     /// <summary>
-    /// The exception that is thrown when a error occurs with the InputDevice
-    /// class.
+    ///     The exception that is thrown when a error occurs with the InputDevice
+    ///     class.
     /// </summary>
     public class InputDeviceException : MidiDeviceException
     {
@@ -83,7 +79,7 @@ namespace Sanford.Multimedia.Midi
         #region Win32 Midi Input Error Function
 
         [DllImport("winmm.dll", CharSet = CharSet.Unicode)]
-        private static extern int midiInGetErrorText(int errCode, 
+        private static extern int midiInGetErrorText(int errCode,
             StringBuilder errMsg, int sizeOfErrMsg);
 
         #endregion
@@ -91,18 +87,18 @@ namespace Sanford.Multimedia.Midi
         #region Fields
 
         // Error message.
-        private StringBuilder errMsg = new StringBuilder(128);
+        private readonly StringBuilder errMsg = new StringBuilder(128);
 
-        #endregion 
+        #endregion
 
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the InputDeviceException class with
-        /// the specified error code.
+        ///     Initializes a new instance of the InputDeviceException class with
+        ///     the specified error code.
         /// </summary>
         /// <param name="errCode">
-        /// The error code.
+        ///     The error code.
         /// </param>
         public InputDeviceException(int errCode) : base(errCode)
         {
@@ -115,15 +111,9 @@ namespace Sanford.Multimedia.Midi
         #region Properties
 
         /// <summary>
-        /// Gets a message that describes the current exception.
+        ///     Gets a message that describes the current exception.
         /// </summary>
-        public override string Message
-        {
-            get
-            {
-                return errMsg.ToString();
-            }
-        }
+        public override string Message => errMsg.ToString();
 
         #endregion
 

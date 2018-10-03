@@ -43,34 +43,45 @@ namespace Sanford.Multimedia
 
         protected const int CALLBACK_EVENT = 0x50000;
 
-        private int deviceID;
-
         protected SynchronizationContext context;
 
         // Indicates whether the device has been disposed.
-        private bool disposed = false;
-
-        public event EventHandler<ErrorEventArgs> Error;
 
         public Device(int deviceID)
         {
-            this.deviceID = deviceID;
+            DeviceID = deviceID;
 
-            if(SynchronizationContext.Current == null)
-            {
+            if (SynchronizationContext.Current == null)
                 context = new SynchronizationContext();
-            }
             else
-            {
                 context = SynchronizationContext.Current;
-            }
         }
+
+        /// <summary>
+        ///     Gets the device handle.
+        /// </summary>
+        public abstract IntPtr Handle { get; }
+
+        public int DeviceID { get; }
+
+        public bool IsDisposed { get; private set; }
+
+        #region IDisposable
+
+        /// <summary>
+        ///     Disposes of the device.
+        /// </summary>
+        public abstract void Dispose();
+
+        #endregion
+
+        public event EventHandler<ErrorEventArgs> Error;
 
         protected virtual void Dispose(bool disposing)
         {
-            if(disposing)
+            if (disposing)
             {
-                disposed = true;
+                IsDisposed = true;
 
                 GC.SuppressFinalize(this);
             }
@@ -78,58 +89,20 @@ namespace Sanford.Multimedia
 
         protected virtual void OnError(ErrorEventArgs e)
         {
-            EventHandler<ErrorEventArgs> handler = Error;
+            var handler = Error;
 
-            if(handler != null)
-            {
-                context.Post(delegate(object dummy)
-                {
-                    handler(this, e);
-                }, null);
-            }
+            if (handler != null)
+                context.Post(delegate { handler(this, e); }, null);
         }
 
         /// <summary>
-        /// Closes the MIDI device.
+        ///     Closes the MIDI device.
         /// </summary>
         public abstract void Close();
 
         /// <summary>
-        /// Resets the device.
+        ///     Resets the device.
         /// </summary>
-        public abstract void Reset();        
-
-        /// <summary>
-        /// Gets the device handle.
-        /// </summary>
-        public abstract IntPtr Handle
-        {
-            get;
-        }
-
-        public int DeviceID
-        {
-            get
-            {
-                return deviceID;
-            }
-        }
-
-        public bool IsDisposed
-        {
-            get
-            {
-                return disposed;
-            }
-        }
-
-        #region IDisposable
-
-        /// <summary>
-        /// Disposes of the device.
-        /// </summary>
-        public abstract void Dispose();
-
-        #endregion
+        public abstract void Reset();
     }
 }

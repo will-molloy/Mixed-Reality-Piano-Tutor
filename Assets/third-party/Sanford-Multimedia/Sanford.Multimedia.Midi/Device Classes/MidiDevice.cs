@@ -38,19 +38,19 @@ using System.Runtime.InteropServices;
 namespace Sanford.Multimedia.Midi
 {
     /// <summary>
-    /// The base class for all MIDI devices.
+    ///     The base class for all MIDI devices.
     /// </summary>
     public abstract class MidiDevice : Device
-	{
+    {
         #region MidiDevice Members
 
         #region Win32 Midi Device Functions
 
         [DllImport("winmm.dll")]
-        private static extern int midiConnect(IntPtr handleA, IntPtr handleB, IntPtr reserved);         
+        private static extern int midiConnect(IntPtr handleA, IntPtr handleB, IntPtr reserved);
 
         [DllImport("winmm.dll")]
-        private static extern int midiDisconnect(IntPtr handleA, IntPtr handleB, IntPtr reserved);             
+        private static extern int midiDisconnect(IntPtr handleA, IntPtr handleB, IntPtr reserved);
 
         #endregion
 
@@ -63,56 +63,50 @@ namespace Sanford.Multimedia.Midi
         }
 
         public MidiDevice(int deviceID) : base(deviceID)
-        {            
+        {
         }
-        
+
         /// <summary>
-        /// Connects a MIDI InputDevice to a MIDI thru or OutputDevice, or 
-        /// connects a MIDI thru device to a MIDI OutputDevice. 
+        ///     Connects a MIDI InputDevice to a MIDI thru or OutputDevice, or
+        ///     connects a MIDI thru device to a MIDI OutputDevice.
         /// </summary>
         /// <param name="handleA">
-        /// Handle to a MIDI InputDevice or a MIDI thru device (for thru 
-        /// devices, this handle must belong to a MIDI OutputDevice).
+        ///     Handle to a MIDI InputDevice or a MIDI thru device (for thru
+        ///     devices, this handle must belong to a MIDI OutputDevice).
         /// </param>
         /// <param name="handleB">
-        /// Handle to the MIDI OutputDevice or thru device.
+        ///     Handle to the MIDI OutputDevice or thru device.
         /// </param>
         /// <exception cref="DeviceException">
-        /// If an error occurred while connecting the two devices.
+        ///     If an error occurred while connecting the two devices.
         /// </exception>
         public static void Connect(IntPtr handleA, IntPtr handleB)
         {
-            int result = midiConnect(handleA, handleB, IntPtr.Zero);
+            var result = midiConnect(handleA, handleB, IntPtr.Zero);
 
-            if(result != MidiDeviceException.MMSYSERR_NOERROR)
-            {
-                throw new MidiDeviceException(result);
-            }
+            if (result != DeviceException.MMSYSERR_NOERROR) throw new MidiDeviceException(result);
         }
 
         /// <summary>
-        /// Disconnects a MIDI InputDevice from a MIDI thru or OutputDevice, or 
-        /// disconnects a MIDI thru device from a MIDI OutputDevice. 
+        ///     Disconnects a MIDI InputDevice from a MIDI thru or OutputDevice, or
+        ///     disconnects a MIDI thru device from a MIDI OutputDevice.
         /// </summary>
         /// <param name="handleA">
-        /// Handle to a MIDI InputDevice or a MIDI thru device.
+        ///     Handle to a MIDI InputDevice or a MIDI thru device.
         /// </param>
         /// <param name="handleB">
-        /// Handle to the MIDI OutputDevice to be disconnected. 
+        ///     Handle to the MIDI OutputDevice to be disconnected.
         /// </param>
         /// <exception cref="DeviceException">
-        /// If an error occurred while disconnecting the two devices.
+        ///     If an error occurred while disconnecting the two devices.
         /// </exception>
         public static void Disconnect(IntPtr handleA, IntPtr handleB)
         {
-            int result = midiDisconnect(handleA, handleB, IntPtr.Zero);
+            var result = midiDisconnect(handleA, handleB, IntPtr.Zero);
 
-            if(result != MidiDeviceException.MMSYSERR_NOERROR)
-            {
-                throw new MidiDeviceException(result);
-            }
-        }        
+            if (result != DeviceException.MMSYSERR_NOERROR) throw new MidiDeviceException(result);
+        }
 
-        #endregion        
+        #endregion
     }
 }

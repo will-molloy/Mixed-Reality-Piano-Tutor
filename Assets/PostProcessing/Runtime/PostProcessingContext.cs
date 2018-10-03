@@ -2,10 +2,10 @@ namespace UnityEngine.PostProcessing
 {
     public class PostProcessingContext
     {
-        public PostProcessingProfile profile;
         public Camera camera;
 
         public MaterialFactory materialFactory;
+        public PostProcessingProfile profile;
         public RenderTextureFactory renderTextureFactory;
 
         public bool interrupted { get; private set; }
@@ -26,10 +26,8 @@ namespace UnityEngine.PostProcessing
         }
 
         #region Helpers
-        public bool isGBufferAvailable
-        {
-            get { return camera.actualRenderingPath == RenderingPath.DeferredShading; }
-        }
+
+        public bool isGBufferAvailable => camera.actualRenderingPath == RenderingPath.DeferredShading;
 
         public bool isHdr
         {
@@ -41,20 +39,12 @@ namespace UnityEngine.PostProcessing
 #endif
         }
 
-        public int width
-        {
-            get { return camera.pixelWidth; }
-        }
+        public int width => camera.pixelWidth;
 
-        public int height
-        {
-            get { return camera.pixelHeight; }
-        }
+        public int height => camera.pixelHeight;
 
-        public Rect viewport
-        {
-            get { return camera.rect; } // Normalized coordinates
-        }
+        public Rect viewport => camera.rect;
+
         #endregion
     }
 }

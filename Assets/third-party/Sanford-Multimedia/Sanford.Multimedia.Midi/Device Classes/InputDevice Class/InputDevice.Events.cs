@@ -7,21 +7,20 @@ namespace Sanford.Multimedia.Midi
     public partial class InputDevice
     {
         /// <summary>
-        /// Gets or sets a value indicating whether the midi events should be posted on the same synchronization context as the device constructor was called.
-        /// Default is <c>true</c>. If set to <c>false</c> the events are fired on the driver callback or the thread of the driver callback delegate queue, depending on the PostDriverCallbackToDelegateQueue property.
+        ///     Gets or sets a value indicating whether the midi events should be posted on the same synchronization context as the
+        ///     device constructor was called.
+        ///     Default is <c>true</c>. If set to <c>false</c> the events are fired on the driver callback or the thread of the
+        ///     driver callback delegate queue, depending on the PostDriverCallbackToDelegateQueue property.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if midi events should be posted on the same synchronization context as the device constructor was called; otherwise, <c>false</c>.
+        ///     <c>true</c> if midi events should be posted on the same synchronization context as the device constructor was
+        ///     called; otherwise, <c>false</c>.
         /// </value>
-        public bool PostEventsOnCreationContext
-        {
-            get;
-            set;
-        }
+        public bool PostEventsOnCreationContext { get; set; }
 
         /// <summary>
-        /// Occurs when any message was received. The underlying type of the message is as specific as possible.
-        /// Channel, Common, Realtime or SysEx.
+        ///     Occurs when any message was received. The underlying type of the message is as specific as possible.
+        ///     Channel, Common, Realtime or SysEx.
         /// </summary>
         public event MidiMessageEventHandler MessageReceived;
 
@@ -41,161 +40,105 @@ namespace Sanford.Multimedia.Midi
 
         protected virtual void OnShortMessage(ShortMessageEventArgs e)
         {
-            EventHandler<ShortMessageEventArgs> handler = ShortMessageReceived;
+            var handler = ShortMessageReceived;
 
             if (handler != null)
             {
                 if (PostEventsOnCreationContext)
-                {
-                    context.Post(delegate (object dummy)
-                            {
-                                handler(this, e);
-                            }, null); 
-                }
+                    context.Post(delegate { handler(this, e); }, null);
                 else
-                {
                     handler(this, e);
-                }
             }
         }
 
         protected void OnMessageReceived(IMidiMessage message)
         {
-            MidiMessageEventHandler handler = MessageReceived;
+            var handler = MessageReceived;
 
             if (handler != null)
             {
                 if (PostEventsOnCreationContext)
-                {
-                    context.Post(delegate (object dummy)
-                    {
-                        handler(message);
-                    }, null);
-                }
+                    context.Post(delegate { handler(message); }, null);
                 else
-                {
                     handler(message);
-                }
             }
         }
 
         protected virtual void OnChannelMessageReceived(ChannelMessageEventArgs e)
         {
-            EventHandler<ChannelMessageEventArgs> handler = ChannelMessageReceived;
+            var handler = ChannelMessageReceived;
 
-            if(handler != null)
+            if (handler != null)
             {
                 if (PostEventsOnCreationContext)
-                {
-                    context.Post(delegate (object dummy)
-                    {
-                        handler(this, e);
-                    }, null);
-                }
+                    context.Post(delegate { handler(this, e); }, null);
                 else
-                {
                     handler(this, e);
-                }
             }
         }
 
         protected virtual void OnSysExMessageReceived(SysExMessageEventArgs e)
         {
-            EventHandler<SysExMessageEventArgs> handler = SysExMessageReceived;
+            var handler = SysExMessageReceived;
 
-            if(handler != null)
+            if (handler != null)
             {
                 if (PostEventsOnCreationContext)
-                {
-                    context.Post(delegate (object dummy)
-                    {
-                        handler(this, e);
-                    }, null);
-                }
+                    context.Post(delegate { handler(this, e); }, null);
                 else
-                {
                     handler(this, e);
-                }
             }
         }
 
         protected virtual void OnSysCommonMessageReceived(SysCommonMessageEventArgs e)
         {
-            EventHandler<SysCommonMessageEventArgs> handler = SysCommonMessageReceived;
+            var handler = SysCommonMessageReceived;
 
-            if(handler != null)
+            if (handler != null)
             {
                 if (PostEventsOnCreationContext)
-                {
-                    context.Post(delegate (object dummy)
-                    {
-                        handler(this, e);
-                    }, null);
-                }
+                    context.Post(delegate { handler(this, e); }, null);
                 else
-                {
                     handler(this, e);
-                }
             }
         }
 
         protected virtual void OnSysRealtimeMessageReceived(SysRealtimeMessageEventArgs e)
         {
-            EventHandler<SysRealtimeMessageEventArgs> handler = SysRealtimeMessageReceived;
+            var handler = SysRealtimeMessageReceived;
 
-            if(handler != null)
+            if (handler != null)
             {
                 if (PostEventsOnCreationContext)
-                {
-                    context.Post(delegate (object dummy)
-                    {
-                        handler(this, e);
-                    }, null);
-                }
+                    context.Post(delegate { handler(this, e); }, null);
                 else
-                {
                     handler(this, e);
-                }
             }
         }
 
         protected virtual void OnInvalidShortMessageReceived(InvalidShortMessageEventArgs e)
         {
-            EventHandler<InvalidShortMessageEventArgs> handler = InvalidShortMessageReceived;
+            var handler = InvalidShortMessageReceived;
 
-            if(handler != null)
+            if (handler != null)
             {
                 if (PostEventsOnCreationContext)
-                {
-                    context.Post(delegate (object dummy)
-                    {
-                        handler(this, e);
-                    }, null);
-                }
+                    context.Post(delegate { handler(this, e); }, null);
                 else
-                {
                     handler(this, e);
-                }
             }
         }
 
         protected virtual void OnInvalidSysExMessageReceived(InvalidSysExMessageEventArgs e)
         {
-            EventHandler<InvalidSysExMessageEventArgs> handler = InvalidSysExMessageReceived;
+            var handler = InvalidSysExMessageReceived;
 
-            if(handler != null)
+            if (handler != null)
             {
                 if (PostEventsOnCreationContext)
-                {
-                    context.Post(delegate (object dummy)
-                    {
-                        handler(this, e);
-                    }, null);
-                }
+                    context.Post(delegate { handler(this, e); }, null);
                 else
-                {
                     handler(this, e);
-                }
             }
         }
     }

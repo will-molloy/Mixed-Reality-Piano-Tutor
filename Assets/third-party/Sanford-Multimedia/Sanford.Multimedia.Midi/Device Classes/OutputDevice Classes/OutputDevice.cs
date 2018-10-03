@@ -39,62 +39,64 @@ using System.Text;
 namespace Sanford.Multimedia.Midi
 {
     /// <summary>
-    /// Represents a device capable of sending MIDI messages.
+    ///     Represents a device capable of sending MIDI messages.
     /// </summary>
     public sealed class OutputDevice : OutputDeviceBase
-	{
-        #region Win32 Midi Output Functions and Constants
+    {
+        private readonly MidiOutProc midiOutProc;
 
-        [DllImport("winmm.dll")]
-        private static extern int midiOutOpen(out IntPtr handle, int deviceID,
-            MidiOutProc proc, IntPtr instance, int flags);
+        private int runningStatus;
 
-        [DllImport("winmm.dll")]
-        private static extern int midiOutClose(IntPtr handle);
-
-        #endregion 
-
-        private MidiOutProc midiOutProc;
-
-        private bool runningStatusEnabled = false;
-
-        private int runningStatus = 0;        
+        private bool runningStatusEnabled;
 
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the OutputDevice class.
+        ///     Initializes a new instance of the OutputDevice class.
         /// </summary>
         public OutputDevice(int deviceID) : base(deviceID)
         {
             midiOutProc = HandleMessage;
 
-            int result = midiOutOpen(out handle, deviceID, midiOutProc, IntPtr.Zero, CALLBACK_FUNCTION);
+            var result = midiOutOpen(out handle, deviceID, midiOutProc, IntPtr.Zero, CALLBACK_FUNCTION);
 
-            if(result != MidiDeviceException.MMSYSERR_NOERROR)
+            if (result != DeviceException.MMSYSERR_NOERROR) throw new OutputDeviceException(result);
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether the OutputDevice uses
+        ///     a running status.
+        /// </summary>
+        public bool RunningStatusEnabled
+        {
+            get { return runningStatusEnabled; }
+            set
             {
-                throw new OutputDeviceException(result);
+                runningStatusEnabled = value;
+
+                // Reset running status.
+                runningStatus = 0;
             }
         }
 
-        #endregion     
-   
+        #endregion
+
         protected override void Dispose(bool disposing)
         {
-            if(disposing)
+            if (disposing)
             {
-                lock(lockObject)
+                lock (lockObject)
                 {
                     Reset();
 
                     // Close the OutputDevice.
-                    int result = midiOutClose(Handle);
+                    var result = midiOutClose(Handle);
 
-                    if(result != MidiDeviceException.MMSYSERR_NOERROR)
-                    {
-                        // Throw an exception.
-                        throw new OutputDeviceException(result);
-                    }
+                    if (result != DeviceException.MMSYSERR_NOERROR) throw new OutputDeviceException(result);
                 }
             }
             else
@@ -107,36 +109,30 @@ namespace Sanford.Multimedia.Midi
         }
 
         /// <summary>
-        /// Closes the OutputDevice.
+        ///     Closes the OutputDevice.
         /// </summary>
         /// <exception cref="OutputDeviceException">
-        /// If an error occurred while closing the OutputDevice.
+        ///     If an error occurred while closing the OutputDevice.
         /// </exception>
         public override void Close()
         {
             #region Guard
 
-            if(IsDisposed)
-            {
-                return;
-            }
+            if (IsDisposed) return;
 
             #endregion
 
-            Dispose(true);            
+            Dispose(true);
         }
 
         /// <summary>
-        /// Resets the OutputDevice.
+        ///     Resets the OutputDevice.
         /// </summary>
         public override void Reset()
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
@@ -149,20 +145,17 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
-            lock(lockObject)
+            lock (lockObject)
             {
                 // If running status is enabled.
-                if(runningStatusEnabled)
+                if (runningStatusEnabled)
                 {
                     // If the message's status value matches the running status.
-                    if(message.Status == runningStatus)
+                    if (message.Status == runningStatus)
                     {
                         // Send only the two data bytes without the status byte.
                         Send(message.Message >> 8);
@@ -198,10 +191,7 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
@@ -211,33 +201,21 @@ namespace Sanford.Multimedia.Midi
             base.Send(message);
         }
 
-        #region Properties
+        #region Win32 Midi Output Functions and Constants
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the OutputDevice uses
-        /// a running status.
-        /// </summary>
-        public bool RunningStatusEnabled
-        {
-            get
-            {
-                return runningStatusEnabled;
-            }
-            set
-            {
-                runningStatusEnabled = value;
+        [DllImport("winmm.dll")]
+        private static extern int midiOutOpen(out IntPtr handle, int deviceID,
+            MidiOutProc proc, IntPtr instance, int flags);
 
-                // Reset running status.
-                runningStatus = 0;
-            }
-        }
-        
+        [DllImport("winmm.dll")]
+        private static extern int midiOutClose(IntPtr handle);
+
         #endregion
     }
 
     /// <summary>
-    /// The exception that is thrown when a error occurs with the OutputDevice
-    /// class.
+    ///     The exception that is thrown when a error occurs with the OutputDevice
+    ///     class.
     /// </summary>
     public class OutputDeviceException : MidiDeviceException
     {
@@ -246,7 +224,7 @@ namespace Sanford.Multimedia.Midi
         #region Win32 Midi Output Error Function
 
         [DllImport("winmm.dll", CharSet = CharSet.Unicode)]
-        private static extern int midiOutGetErrorText(int errCode, 
+        private static extern int midiOutGetErrorText(int errCode,
             StringBuilder message, int sizeOfMessage);
 
         #endregion
@@ -254,18 +232,18 @@ namespace Sanford.Multimedia.Midi
         #region Fields
 
         // The error message.
-        private StringBuilder message = new StringBuilder(128);        
+        private readonly StringBuilder message = new StringBuilder(128);
 
         #endregion
 
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the OutputDeviceException class with
-        /// the specified error code.
+        ///     Initializes a new instance of the OutputDeviceException class with
+        ///     the specified error code.
         /// </summary>
         /// <param name="errCode">
-        /// The error code.
+        ///     The error code.
         /// </param>
         public OutputDeviceException(int errCode) : base(errCode)
         {
@@ -278,15 +256,9 @@ namespace Sanford.Multimedia.Midi
         #region Properties
 
         /// <summary>
-        /// Gets a message that describes the current exception.
+        ///     Gets a message that describes the current exception.
         /// </summary>
-        public override string Message
-        {
-            get
-            {
-                return message.ToString();
-            }
-        }        
+        public override string Message => message.ToString();
 
         #endregion
 

@@ -4,27 +4,23 @@ namespace Sanford.Multimedia.Midi
 {
     public class RecordingSession
     {
-        private IClock clock;
-
-        private List<TimestampedMessage> buffer = new List<TimestampedMessage>();
-
-        private Track result = new Track();
+        private readonly List<TimestampedMessage> buffer = new List<TimestampedMessage>();
+        private readonly IClock clock;
 
         public RecordingSession(IClock clock)
         {
             this.clock = clock;
         }
 
+        public Track Result { get; private set; } = new Track();
+
         public void Build()
         {
-            result = new Track();
+            Result = new Track();
 
             buffer.Sort(new TimestampComparer());
 
-            foreach(TimestampedMessage tm in buffer)
-            {
-                result.Insert(tm.ticks, tm.message);
-            }
+            foreach (var tm in buffer) Result.Insert(tm.ticks, tm.message);
         }
 
         public void Clear()
@@ -32,35 +28,21 @@ namespace Sanford.Multimedia.Midi
             buffer.Clear();
         }
 
-        public Track Result
-        {
-            get
-            {
-                return result;
-            }
-        }
-
         public void Record(ChannelMessage message)
         {
-            if(clock.IsRunning)
-            {
-                buffer.Add(new TimestampedMessage(clock.Ticks, message));
-            }
+            if (clock.IsRunning) buffer.Add(new TimestampedMessage(clock.Ticks, message));
         }
 
         public void Record(SysExMessage message)
         {
-            if(clock.IsRunning)
-            {
-                buffer.Add(new TimestampedMessage(clock.Ticks, message));
-            }
+            if (clock.IsRunning) buffer.Add(new TimestampedMessage(clock.Ticks, message));
         }
 
         private struct TimestampedMessage
         {
-            public int ticks;
+            public readonly int ticks;
 
-            public IMidiMessage message;
+            public readonly IMidiMessage message;
 
             public TimestampedMessage(int ticks, IMidiMessage message)
             {
@@ -75,18 +57,11 @@ namespace Sanford.Multimedia.Midi
 
             public int Compare(TimestampedMessage x, TimestampedMessage y)
             {
-                if(x.ticks > y.ticks)
-                {
+                if (x.ticks > y.ticks)
                     return 1;
-                }
-                else if(x.ticks < y.ticks)
-                {
+                if (x.ticks < y.ticks)
                     return -1;
-                }
-                else
-                {
-                    return 0;
-                }
+                return 0;
             }
 
             #endregion

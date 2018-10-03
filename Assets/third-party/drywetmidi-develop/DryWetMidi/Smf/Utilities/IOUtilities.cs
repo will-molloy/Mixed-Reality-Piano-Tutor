@@ -1,9 +1,9 @@
-﻿using Melanchall.DryWetMidi.Common;
-using Microsoft.Win32.SafeHandles;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
+using Melanchall.DryWetMidi.Common;
+using Microsoft.Win32.SafeHandles;
 
 namespace Melanchall.DryWetMidi.Smf
 {
@@ -13,12 +13,12 @@ namespace Melanchall.DryWetMidi.Smf
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern SafeFileHandle CreateFile(string lpFileName,
-                                                        uint dwDesiredAccess,
-                                                        uint dwShareMode,
-                                                        IntPtr lpSecurityAttributes,
-                                                        uint dwCreationDisposition,
-                                                        uint dwFlagsAndAttributes,
-                                                        IntPtr hTemplateFile);
+            uint dwDesiredAccess,
+            uint dwShareMode,
+            IntPtr lpSecurityAttributes,
+            uint dwCreationDisposition,
+            uint dwFlagsAndAttributes,
+            IntPtr hTemplateFile);
 
         #endregion
 
@@ -47,9 +47,9 @@ namespace Melanchall.DryWetMidi.Smf
             }
             catch (PathTooLongException)
             {
-                SafeFileHandle fileHandle = GetFileHandle(filePath,
-                                                          GENERIC_READ,
-                                                          OPEN_EXISTING);
+                var fileHandle = GetFileHandle(filePath,
+                    GENERIC_READ,
+                    OPEN_EXISTING);
 
                 return new FileStream(fileHandle, FileAccess.Read);
             }
@@ -65,10 +65,11 @@ namespace Melanchall.DryWetMidi.Smf
             }
             catch (PathTooLongException)
             {
-                SafeFileHandle fileHandle = GetFileHandle(filePath,
-                                                          GENERIC_WRITE,
-                                                          overwriteFile ? CREATE_ALWAYS
-                                                                        : CREATE_NEW);
+                var fileHandle = GetFileHandle(filePath,
+                    GENERIC_WRITE,
+                    overwriteFile
+                        ? CREATE_ALWAYS
+                        : CREATE_NEW);
 
                 return new FileStream(fileHandle, FileAccess.Write);
             }
@@ -76,15 +77,15 @@ namespace Melanchall.DryWetMidi.Smf
 
         private static SafeFileHandle GetFileHandle(string filePath, uint fileAccess, uint creationDisposition)
         {
-            SafeFileHandle fileHandle = CreateFile($@"\\?\{filePath}",
-                                                   fileAccess,
-                                                   FILE_SHARE_NONE,
-                                                   IntPtr.Zero,
-                                                   creationDisposition,
-                                                   0,
-                                                   IntPtr.Zero);
+            var fileHandle = CreateFile($@"\\?\{filePath}",
+                fileAccess,
+                FILE_SHARE_NONE,
+                IntPtr.Zero,
+                creationDisposition,
+                0,
+                IntPtr.Zero);
 
-            int lastWin32Error = Marshal.GetLastWin32Error();
+            var lastWin32Error = Marshal.GetLastWin32Error();
             if (fileHandle.IsInvalid)
                 throw new Win32Exception(lastWin32Error);
 

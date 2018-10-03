@@ -5,36 +5,35 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
 
 namespace Valve.VR.InteractionSystem
 {
-	//-------------------------------------------------------------------------
-	public class Unparent : MonoBehaviour
-	{
-		Transform oldParent;
+    //-------------------------------------------------------------------------
+    public class Unparent : MonoBehaviour
+    {
+        private Transform oldParent;
 
-		//-------------------------------------------------
-		void Start()
-		{
-			oldParent = transform.parent;
-			transform.parent = null;
-			gameObject.name = oldParent.gameObject.name + "." + gameObject.name;
-		}
-
-
-		//-------------------------------------------------
-		void Update()
-		{
-			if ( oldParent == null )
-				Object.Destroy( gameObject );
-		}
+        //-------------------------------------------------
+        private void Start()
+        {
+            oldParent = transform.parent;
+            transform.parent = null;
+            gameObject.name = oldParent.gameObject.name + "." + gameObject.name;
+        }
 
 
-		//-------------------------------------------------
-		public Transform GetOldParent()
-		{
-			return oldParent;
-		}
-	}
+        //-------------------------------------------------
+        private void Update()
+        {
+            if (oldParent == null)
+                Destroy(gameObject);
+        }
+
+
+        //-------------------------------------------------
+        public Transform GetOldParent()
+        {
+            return oldParent;
+        }
+    }
 }

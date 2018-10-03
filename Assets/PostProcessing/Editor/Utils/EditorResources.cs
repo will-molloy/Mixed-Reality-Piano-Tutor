@@ -4,9 +4,9 @@ namespace UnityEditor.PostProcessing
 {
     using UnityObject = Object;
 
-    static class EditorResources
+    internal static class EditorResources
     {
-        static string m_EditorResourcesPath = string.Empty;
+        private static string m_EditorResourcesPath = string.Empty;
 
         internal static string editorResourcesPath
         {
@@ -19,7 +19,8 @@ namespace UnityEditor.PostProcessing
                     if (SearchForEditorResourcesPath(out path))
                         m_EditorResourcesPath = path;
                     else
-                        Debug.LogError("Unable to locate editor resources. Make sure the PostProcessing package has been installed correctly.");
+                        Debug.LogError(
+                            "Unable to locate editor resources. Make sure the PostProcessing package has been installed correctly.");
                 }
 
                 return m_EditorResourcesPath;
@@ -32,21 +33,19 @@ namespace UnityEditor.PostProcessing
             return AssetDatabase.LoadAssetAtPath<T>(editorResourcesPath + name);
         }
 
-        static bool SearchForEditorResourcesPath(out string path)
+        private static bool SearchForEditorResourcesPath(out string path)
         {
             path = string.Empty;
 
-            string searchStr = "/PostProcessing/Editor Resources/";
+            var searchStr = "/PostProcessing/Editor Resources/";
             string str = null;
 
             foreach (var assetPath in AssetDatabase.GetAllAssetPaths())
-            {
                 if (assetPath.Contains(searchStr))
                 {
                     str = assetPath;
                     break;
                 }
-            }
 
             if (str == null)
                 return false;

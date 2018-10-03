@@ -3,20 +3,20 @@
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents an unknown meta event.
+    ///     Represents an unknown meta event.
     /// </summary>
     /// <remarks>
-    /// Structure of meta eventa allows custom ones be implemented and stored within a MIDI file.
-    /// Any meta event DryWetMIDI doesn't know about will be read as an instance of the
-    /// <see cref="UnknownMetaEvent"/>.
+    ///     Structure of meta eventa allows custom ones be implemented and stored within a MIDI file.
+    ///     Any meta event DryWetMIDI doesn't know about will be read as an instance of the
+    ///     <see cref="UnknownMetaEvent" />.
     /// </remarks>
     public sealed class UnknownMetaEvent : MetaEvent
     {
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnknownMetaEvent"/> with the
-        /// specified status byte.
+        ///     Initializes a new instance of the <see cref="UnknownMetaEvent" /> with the
+        ///     specified status byte.
         /// </summary>
         /// <param name="statusByte">Status byte of the meta event.</param>
         internal UnknownMetaEvent(byte statusByte)
@@ -25,8 +25,8 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnknownMetaEvent"/> with the
-        /// specified status byte and data.
+        ///     Initializes a new instance of the <see cref="UnknownMetaEvent" /> with the
+        ///     specified status byte and data.
         /// </summary>
         /// <param name="statusByte">Status byte of the meta event.</param>
         /// <param name="data">Data of an unknown meta event.</param>
@@ -41,12 +41,12 @@ namespace Melanchall.DryWetMidi.Smf
         #region Properties
 
         /// <summary>
-        /// Gets the status byte of the meta event.
+        ///     Gets the status byte of the meta event.
         /// </summary>
         public byte StatusByte { get; }
 
         /// <summary>
-        /// Gets the content of the meta event as array of bytes.
+        ///     Gets the content of the meta event as array of bytes.
         /// </summary>
         public byte[] Data { get; private set; }
 
@@ -55,24 +55,26 @@ namespace Melanchall.DryWetMidi.Smf
         #region Overrides
 
         /// <summary>
-        /// Reads content of a MIDI meta event.
+        ///     Reads content of a MIDI meta event.
         /// </summary>
         /// <param name="reader">Reader to read the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be read.</param>
         /// <param name="size">Size of the event's content.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Unknown meta event cannot be read since the size is
-        /// negative number.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Unknown meta event cannot be read since the size is
+        ///     negative number.
+        /// </exception>
         protected override void ReadContent(MidiReader reader, ReadingSettings settings, int size)
         {
             ThrowIfArgument.IsNegative(nameof(size),
-                                        size,
-                                        "Unknown meta event cannot be read since the size is negative number.");
+                size,
+                "Unknown meta event cannot be read since the size is negative number.");
 
             Data = reader.ReadBytes(size);
         }
 
         /// <summary>
-        /// Writes content of a MIDI meta event.
+        ///     Writes content of a MIDI meta event.
         /// </summary>
         /// <param name="writer">Writer to write the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
@@ -84,7 +86,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets the size of the content of a MIDI meta event.
+        ///     Gets the size of the content of a MIDI meta event.
         /// </summary>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
         /// <returns>Size of the event's content.</returns>
@@ -94,7 +96,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Clones event by creating a copy of it.
+        ///     Clones event by creating a copy of it.
         /// </summary>
         /// <returns>Copy of the event.</returns>
         protected override MidiEvent CloneEvent()
@@ -103,7 +105,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()

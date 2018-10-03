@@ -2,20 +2,6 @@
 {
     internal sealed class AddAnchorAction : IPatternAction
     {
-        #region Constructor
-
-        public AddAnchorAction()
-            : this(null)
-        {
-        }
-
-        public AddAnchorAction(object anchor)
-        {
-            Anchor = anchor;
-        }
-
-        #endregion
-
         #region Properties
 
         public object Anchor { get; }
@@ -28,6 +14,20 @@
         {
             context.AnchorTime(Anchor, time);
             return PatternActionResult.DoNothing;
+        }
+
+        #endregion
+
+        #region Constructor
+
+        public AddAnchorAction()
+            : this(null)
+        {
+        }
+
+        public AddAnchorAction(object anchor)
+        {
+            Anchor = anchor;
         }
 
         #endregion

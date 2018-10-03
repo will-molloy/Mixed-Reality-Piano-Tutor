@@ -42,6 +42,32 @@ namespace Sanford.Multimedia.Midi
 {
     public abstract class OutputDeviceBase : MidiDevice
     {
+        protected const int MOM_OPEN = 0x3C7;
+        protected const int MOM_CLOSE = 0x3C8;
+        protected const int MOM_DONE = 0x3C9;
+
+        protected readonly object lockObject = new object();
+
+        // The number of buffers still in the queue.
+        protected int bufferCount;
+
+        // For releasing buffers.
+        protected DelegateQueue delegateQueue = new DelegateQueue();
+
+        // The device handle.
+        protected IntPtr handle = IntPtr.Zero;
+
+        // Builds MidiHeader structures for sending system exclusive messages.
+        private readonly MidiHeaderBuilder headerBuilder = new MidiHeaderBuilder();
+
+        public OutputDeviceBase(int deviceID) : base(deviceID)
+        {
+        }
+
+        public override IntPtr Handle => handle;
+
+        public static int DeviceCount => midiOutGetNumDevs();
+
         [DllImport("winmm.dll")]
         protected static extern int midiOutReset(IntPtr handle);
 
@@ -67,33 +93,6 @@ namespace Sanford.Multimedia.Midi
         [DllImport("winmm.dll")]
         protected static extern int midiOutGetNumDevs();
 
-        protected const int MOM_OPEN = 0x3C7;
-        protected const int MOM_CLOSE = 0x3C8;
-        protected const int MOM_DONE = 0x3C9;
-
-        protected delegate void GenericDelegate<T>(T args);
-
-        // Represents the method that handles messages from Windows.
-        protected delegate void MidiOutProc(IntPtr hnd, int msg, IntPtr instance, IntPtr param1, IntPtr param2);
-
-        // For releasing buffers.
-        protected DelegateQueue delegateQueue = new DelegateQueue();
-        
-        protected readonly object lockObject = new object();
-
-        // The number of buffers still in the queue.
-        protected int bufferCount = 0;
-
-        // Builds MidiHeader structures for sending system exclusive messages.
-        private MidiHeaderBuilder headerBuilder = new MidiHeaderBuilder();
-
-        // The device handle.
-        protected IntPtr handle = IntPtr.Zero;        
-
-        public OutputDeviceBase(int deviceID) : base(deviceID)
-        {
-        }
-
         ~OutputDeviceBase()
         {
             Dispose(false);
@@ -101,10 +100,7 @@ namespace Sanford.Multimedia.Midi
 
         protected override void Dispose(bool disposing)
         {
-            if(disposing)
-            {
-                delegateQueue.Dispose();
-            }
+            if (disposing) delegateQueue.Dispose();
 
             base.Dispose(disposing);
         }
@@ -113,10 +109,7 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
@@ -127,10 +120,7 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if (IsDisposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
@@ -141,23 +131,20 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
-            lock(lockObject)
+            lock (lockObject)
             {
                 headerBuilder.InitializeBuffer(message);
                 headerBuilder.Build();
 
                 // Prepare system exclusive buffer.
-                int result = midiOutPrepareHeader(Handle, headerBuilder.Result, SizeOfMidiHeader);
+                var result = midiOutPrepareHeader(Handle, headerBuilder.Result, SizeOfMidiHeader);
 
                 // If the system exclusive buffer was prepared successfully.
-                if(result == MidiDeviceException.MMSYSERR_NOERROR)
+                if (result == DeviceException.MMSYSERR_NOERROR)
                 {
                     bufferCount++;
 
@@ -165,7 +152,7 @@ namespace Sanford.Multimedia.Midi
                     result = midiOutLongMsg(Handle, headerBuilder.Result, SizeOfMidiHeader);
 
                     // If the system exclusive message could not be sent.
-                    if(result != MidiDeviceException.MMSYSERR_NOERROR)
+                    if (result != DeviceException.MMSYSERR_NOERROR)
                     {
                         midiOutUnprepareHeader(Handle, headerBuilder.Result, SizeOfMidiHeader);
                         bufferCount--;
@@ -191,10 +178,7 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
@@ -205,10 +189,7 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
@@ -219,60 +200,43 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (IsDisposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
-            lock(lockObject)
+            lock (lockObject)
             {
                 // Reset the OutputDevice.
-                int result = midiOutReset(Handle); 
+                var result = midiOutReset(Handle);
 
-                if(result == MidiDeviceException.MMSYSERR_NOERROR)
-                {
-                    while(bufferCount > 0)
-                    {
+                if (result == DeviceException.MMSYSERR_NOERROR)
+                    while (bufferCount > 0)
                         Monitor.Wait(lockObject);
-                    }
-                }
                 else
-                {
-                    // Throw an exception.
                     throw new OutputDeviceException(result);
-                }                
             }
-        }        
+        }
 
         protected void Send(int message)
         {
-            lock(lockObject)
+            lock (lockObject)
             {
-                int result = midiOutShortMsg(Handle, message);
+                var result = midiOutShortMsg(Handle, message);
 
-                if(result != MidiDeviceException.MMSYSERR_NOERROR)
-                {
-                    throw new OutputDeviceException(result);
-                }
+                if (result != DeviceException.MMSYSERR_NOERROR) throw new OutputDeviceException(result);
             }
         }
 
         public static MidiOutCaps GetDeviceCapabilities(int deviceID)
         {
-            MidiOutCaps caps = new MidiOutCaps();
+            var caps = new MidiOutCaps();
 
             // Get the device's capabilities.
-            IntPtr devId = (IntPtr)deviceID;
-            int result = midiOutGetDevCaps(devId, ref caps, Marshal.SizeOf(caps));
+            var devId = (IntPtr) deviceID;
+            var result = midiOutGetDevCaps(devId, ref caps, Marshal.SizeOf(caps));
 
             // If the capabilities could not be retrieved.
-            if(result != MidiDeviceException.MMSYSERR_NOERROR)
-            {
-                // Throw an exception.
-                throw new OutputDeviceException(result);
-            }
+            if (result != DeviceException.MMSYSERR_NOERROR) throw new OutputDeviceException(result);
 
             return caps;
         }
@@ -280,13 +244,13 @@ namespace Sanford.Multimedia.Midi
         // Handles Windows messages.
         protected virtual void HandleMessage(IntPtr hnd, int msg, IntPtr instance, IntPtr param1, IntPtr param2)
         {
-            if(msg == MOM_OPEN)
+            if (msg == MOM_OPEN)
             {
             }
-            else if(msg == MOM_CLOSE)
+            else if (msg == MOM_CLOSE)
             {
             }
-            else if(msg == MOM_DONE)
+            else if (msg == MOM_DONE)
             {
                 delegateQueue.Post(ReleaseBuffer, param1);
             }
@@ -295,14 +259,14 @@ namespace Sanford.Multimedia.Midi
         // Releases buffers.
         private void ReleaseBuffer(object state)
         {
-            lock(lockObject)
+            lock (lockObject)
             {
-                IntPtr headerPtr = (IntPtr)state;
+                var headerPtr = (IntPtr) state;
 
                 // Unprepare the buffer.
-                int result = midiOutUnprepareHeader(Handle, headerPtr, SizeOfMidiHeader);
+                var result = midiOutUnprepareHeader(Handle, headerPtr, SizeOfMidiHeader);
 
-                if(result != MidiDeviceException.MMSYSERR_NOERROR)
+                if (result != DeviceException.MMSYSERR_NOERROR)
                 {
                     Exception ex = new OutputDeviceException(result);
 
@@ -316,7 +280,7 @@ namespace Sanford.Multimedia.Midi
 
                 Monitor.Pulse(lockObject);
 
-                Debug.Assert(bufferCount >= 0);                
+                Debug.Assert(bufferCount >= 0);
             }
         }
 
@@ -324,33 +288,19 @@ namespace Sanford.Multimedia.Midi
         {
             #region Guard
 
-            if(IsDisposed)
-            {
-                return;
-            }
+            if (IsDisposed) return;
 
             #endregion
 
-            lock(lockObject)
+            lock (lockObject)
             {
-                Close();          
+                Close();
             }
         }
 
-        public override IntPtr Handle
-        {
-            get
-            {
-                return handle;
-            }
-        }
+        protected delegate void GenericDelegate<T>(T args);
 
-        public static int DeviceCount
-        {
-            get
-            {
-                return midiOutGetNumDevs();
-            }
-        }        
+        // Represents the method that handles messages from Windows.
+        protected delegate void MidiOutProc(IntPtr hnd, int msg, IntPtr instance, IntPtr param1, IntPtr param2);
     }
 }

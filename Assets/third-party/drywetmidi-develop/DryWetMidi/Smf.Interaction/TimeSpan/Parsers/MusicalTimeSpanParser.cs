@@ -1,6 +1,6 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf.Interaction
 {
@@ -14,13 +14,13 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             ["h"] = Tuple.Create(1, 2),
             ["q"] = Tuple.Create(1, 4),
             ["e"] = Tuple.Create(1, 8),
-            ["s"] = Tuple.Create(1, 16),
+            ["s"] = Tuple.Create(1, 16)
         };
 
         private static readonly Dictionary<string, Tuple<int, int>> Tuplets = new Dictionary<string, Tuple<int, int>>
         {
             ["t"] = Tuple.Create(3, 2),
-            ["d"] = Tuple.Create(2, 3),
+            ["d"] = Tuple.Create(2, 3)
         };
 
         private const string NumeratorGroupName = "n";
@@ -33,15 +33,20 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
         private const string DotsGroupName = "dt";
 
-        private static readonly string FractionGroup = $@"(?<{NumeratorGroupName}>\d+)?\/(?<{DenominatorGroupName}>\d+)";
-        private static readonly string FractionMnemonicGroup = GetMnemonicGroup(FractionMnemonicGroupName, Fractions.Keys);
+        private static readonly string
+            FractionGroup = $@"(?<{NumeratorGroupName}>\d+)?\/(?<{DenominatorGroupName}>\d+)";
 
-        private static readonly string TupletGroup = $@"\[\s*(?<{TupletNotesCountGroupName}>\d+)\s*\:\s*(?<{TupletSpaceSizeGroupName}>\d+)\s*\]";
+        private static readonly string FractionMnemonicGroup =
+            GetMnemonicGroup(FractionMnemonicGroupName, Fractions.Keys);
+
+        private static readonly string TupletGroup =
+            $@"\[\s*(?<{TupletNotesCountGroupName}>\d+)\s*\:\s*(?<{TupletSpaceSizeGroupName}>\d+)\s*\]";
+
         private static readonly string TupletMnemonicGroup = GetMnemonicGroup(TupletMnemonicGroupName, Tuplets.Keys);
 
         private static readonly string DotsGroup = $@"(?<{DotsGroupName}>\.+)";
 
-        private static readonly string[] Patterns = new[]
+        private static readonly string[] Patterns =
         {
             $@"({FractionGroup}|{FractionMnemonicGroup})\s*({TupletGroup}|{TupletMnemonicGroup})?\s*{DotsGroup}?"
         };
@@ -111,7 +116,8 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             //
 
-            timeSpan = new MusicalTimeSpan(numerator, denominator).Dotted(dots).Tuplet(tupletNotesCount, tupletSpaceSize);
+            timeSpan = new MusicalTimeSpan(numerator, denominator).Dotted(dots)
+                .Tuplet(tupletNotesCount, tupletSpaceSize);
             return ParsingResult.Parsed;
         }
 

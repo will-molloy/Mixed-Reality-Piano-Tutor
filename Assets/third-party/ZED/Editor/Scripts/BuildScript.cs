@@ -1,8 +1,9 @@
 ﻿using UnityEditor;
-class BuildScript
+
+internal class BuildScript
 {
-	static void CreateCSProj()
-	{
-		EditorApplication.ExecuteMenuItem("Assets/Open C# Project");
-	}
+    private static void CreateCSProj()
+    {
+        EditorApplication.ExecuteMenuItem("Assets/Open C# Project");
+    }
 }

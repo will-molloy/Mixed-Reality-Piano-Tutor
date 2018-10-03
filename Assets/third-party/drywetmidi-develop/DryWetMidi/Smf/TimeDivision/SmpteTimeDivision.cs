@@ -3,20 +3,20 @@
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Time division that represents subdivisions of a second, in a way consistent with
-    /// SMPTE and MIDI time code.
+    ///     Time division that represents subdivisions of a second, in a way consistent with
+    ///     SMPTE and MIDI time code.
     /// </summary>
     public sealed class SmpteTimeDivision : TimeDivision
     {
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SmpteTimeDivision"/> with the
-        /// specified format (frame rate) and resoltion.
+        ///     Initializes a new instance of the <see cref="SmpteTimeDivision" /> with the
+        ///     specified format (frame rate) and resoltion.
         /// </summary>
         /// <param name="format">SMPTE format representing the number of frames per second.</param>
         /// <param name="resolution">Resoltuion within a frame.</param>
-        /// <exception cref="InvalidEnumArgumentException"><paramref name="format"/> specified an invalid value.</exception>
+        /// <exception cref="InvalidEnumArgumentException"><paramref name="format" /> specified an invalid value.</exception>
         public SmpteTimeDivision(SmpteFormat format, byte resolution)
         {
             ThrowIfArgument.IsInvalidEnumValue(nameof(format), format);
@@ -30,12 +30,12 @@ namespace Melanchall.DryWetMidi.Smf
         #region Properties
 
         /// <summary>
-        /// Gets SMPTE format (frame rate).
+        ///     Gets SMPTE format (frame rate).
         /// </summary>
         public SmpteFormat Format { get; }
 
         /// <summary>
-        /// Gets resoltion within a frame.
+        ///     Gets resoltion within a frame.
         /// </summary>
         public byte Resolution { get; }
 
@@ -44,10 +44,10 @@ namespace Melanchall.DryWetMidi.Smf
         #region Operators
 
         /// <summary>
-        /// Determines if two <see cref="SmpteTimeDivision"/> objects are equal.
+        ///     Determines if two <see cref="SmpteTimeDivision" /> objects are equal.
         /// </summary>
-        /// <param name="timeDivision1">The first <see cref="SmpteTimeDivision"/> to compare.</param>
-        /// <param name="timeDivision2">The second <see cref="SmpteTimeDivision"/> to compare.</param>
+        /// <param name="timeDivision1">The first <see cref="SmpteTimeDivision" /> to compare.</param>
+        /// <param name="timeDivision2">The second <see cref="SmpteTimeDivision" /> to compare.</param>
         /// <returns>true if the time divisions are equal, false otherwise.</returns>
         public static bool operator ==(SmpteTimeDivision timeDivision1, SmpteTimeDivision timeDivision2)
         {
@@ -62,10 +62,10 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Determines if two <see cref="SmpteTimeDivision"/> objects are not equal.
+        ///     Determines if two <see cref="SmpteTimeDivision" /> objects are not equal.
         /// </summary>
-        /// <param name="timeDivision1">The first <see cref="SmpteTimeDivision"/> to compare.</param>
-        /// <param name="timeDivision2">The second <see cref="SmpteTimeDivision"/> to compare.</param>
+        /// <param name="timeDivision1">The first <see cref="SmpteTimeDivision" /> to compare.</param>
+        /// <param name="timeDivision2">The second <see cref="SmpteTimeDivision" /> to compare.</param>
         /// <returns>false if the time divisions are equal, true otherwise.</returns>
         public static bool operator !=(SmpteTimeDivision timeDivision1, SmpteTimeDivision timeDivision2)
         {
@@ -78,11 +78,11 @@ namespace Melanchall.DryWetMidi.Smf
 
         internal override short ToInt16()
         {
-            return (short)-DataTypesUtilities.Combine((byte)Format, Resolution);
+            return (short) -DataTypesUtilities.Combine((byte) Format, Resolution);
         }
 
         /// <summary>
-        /// Clones time division by creating a copy of it.
+        ///     Clones time division by creating a copy of it.
         /// </summary>
         /// <returns>Copy of the time division.</returns>
         public override TimeDivision Clone()
@@ -91,7 +91,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
@@ -100,17 +100,17 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Determines whether the specified object is equal to the current object.
+        ///     Determines whether the specified object is equal to the current object.
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return this == (obj as SmpteTimeDivision);
+            return this == obj as SmpteTimeDivision;
         }
 
         /// <summary>
-        /// Returns the hash code for this instance.
+        ///     Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()

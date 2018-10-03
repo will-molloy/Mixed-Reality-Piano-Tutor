@@ -4,19 +4,11 @@ namespace Sanford.Multimedia.Midi
 {
     public class SysExMessageEventArgs : EventArgs
     {
-        private SysExMessage message;
-
         public SysExMessageEventArgs(SysExMessage message)
         {
-            this.message = message;
+            Message = message;
         }
 
-        public SysExMessage Message
-        {
-            get
-            {
-                return message;
-            }
-        }
+        public SysExMessage Message { get; }
     }
 }

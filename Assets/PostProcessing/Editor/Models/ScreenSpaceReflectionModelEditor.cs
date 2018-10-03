@@ -1,67 +1,41 @@
-using UnityEngine;
 using UnityEngine.PostProcessing;
 
 namespace UnityEditor.PostProcessing
 {
-    using Settings = ScreenSpaceReflectionModel.Settings;
-
     [PostProcessingModelEditor(typeof(ScreenSpaceReflectionModel))]
     public class ScreenSpaceReflectionModelEditor : PostProcessingModelEditor
     {
-        struct IntensitySettings
-        {
-            public SerializedProperty reflectionMultiplier;
-            public SerializedProperty fadeDistance;
-            public SerializedProperty fresnelFade;
-            public SerializedProperty fresnelFadePower;
-        }
-
-        struct ReflectionSettings
-        {
-            public SerializedProperty blendType;
-            public SerializedProperty reflectionQuality;
-            public SerializedProperty maxDistance;
-            public SerializedProperty iterationCount;
-            public SerializedProperty stepSize;
-            public SerializedProperty widthModifier;
-            public SerializedProperty reflectionBlur;
-            public SerializedProperty reflectBackfaces;
-        }
-
-        struct ScreenEdgeMask
-        {
-            public SerializedProperty intensity;
-        }
-
-        IntensitySettings m_Intensity;
-        ReflectionSettings m_Reflection;
-        ScreenEdgeMask m_ScreenEdgeMask;
+        private IntensitySettings m_Intensity;
+        private ReflectionSettings m_Reflection;
+        private ScreenEdgeMask m_ScreenEdgeMask;
 
         public override void OnEnable()
         {
             m_Intensity = new IntensitySettings
             {
-                reflectionMultiplier = FindSetting((Settings x) => x.intensity.reflectionMultiplier),
-                fadeDistance = FindSetting((Settings x) => x.intensity.fadeDistance),
-                fresnelFade = FindSetting((Settings x) => x.intensity.fresnelFade),
-                fresnelFadePower = FindSetting((Settings x) => x.intensity.fresnelFadePower)
+                reflectionMultiplier =
+                    FindSetting((ScreenSpaceReflectionModel.Settings x) => x.intensity.reflectionMultiplier),
+                fadeDistance = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.intensity.fadeDistance),
+                fresnelFade = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.intensity.fresnelFade),
+                fresnelFadePower = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.intensity.fresnelFadePower)
             };
 
             m_Reflection = new ReflectionSettings
             {
-                blendType = FindSetting((Settings x) => x.reflection.blendType),
-                reflectionQuality = FindSetting((Settings x) => x.reflection.reflectionQuality),
-                maxDistance = FindSetting((Settings x) => x.reflection.maxDistance),
-                iterationCount = FindSetting((Settings x) => x.reflection.iterationCount),
-                stepSize = FindSetting((Settings x) => x.reflection.stepSize),
-                widthModifier = FindSetting((Settings x) => x.reflection.widthModifier),
-                reflectionBlur = FindSetting((Settings x) => x.reflection.reflectionBlur),
-                reflectBackfaces = FindSetting((Settings x) => x.reflection.reflectBackfaces)
+                blendType = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.reflection.blendType),
+                reflectionQuality =
+                    FindSetting((ScreenSpaceReflectionModel.Settings x) => x.reflection.reflectionQuality),
+                maxDistance = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.reflection.maxDistance),
+                iterationCount = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.reflection.iterationCount),
+                stepSize = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.reflection.stepSize),
+                widthModifier = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.reflection.widthModifier),
+                reflectionBlur = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.reflection.reflectionBlur),
+                reflectBackfaces = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.reflection.reflectBackfaces)
             };
 
             m_ScreenEdgeMask = new ScreenEdgeMask
             {
-                intensity = FindSetting((Settings x) => x.screenEdgeMask.intensity)
+                intensity = FindSetting((ScreenSpaceReflectionModel.Settings x) => x.screenEdgeMask.intensity)
             };
         }
 
@@ -95,6 +69,31 @@ namespace UnityEditor.PostProcessing
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(m_ScreenEdgeMask.intensity);
             EditorGUI.indentLevel--;
+        }
+
+        private struct IntensitySettings
+        {
+            public SerializedProperty reflectionMultiplier;
+            public SerializedProperty fadeDistance;
+            public SerializedProperty fresnelFade;
+            public SerializedProperty fresnelFadePower;
+        }
+
+        private struct ReflectionSettings
+        {
+            public SerializedProperty blendType;
+            public SerializedProperty reflectionQuality;
+            public SerializedProperty maxDistance;
+            public SerializedProperty iterationCount;
+            public SerializedProperty stepSize;
+            public SerializedProperty widthModifier;
+            public SerializedProperty reflectionBlur;
+            public SerializedProperty reflectBackfaces;
+        }
+
+        private struct ScreenEdgeMask
+        {
+            public SerializedProperty intensity;
         }
     }
 }

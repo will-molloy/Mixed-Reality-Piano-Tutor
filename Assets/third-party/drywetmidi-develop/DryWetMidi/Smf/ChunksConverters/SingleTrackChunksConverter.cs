@@ -1,12 +1,68 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf
 {
     internal sealed class SingleTrackChunksConverter : IChunksConverter
     {
+        #region IChunksConverter
+
+        public IEnumerable<MidiChunk> Convert(IEnumerable<MidiChunk> chunks)
+        {
+            ThrowIfArgument.IsNull(nameof(chunks), chunks);
+
+            //
+
+            var trackChunks = chunks.OfType<TrackChunk>().ToArray();
+            if (trackChunks.Length == 1)
+                return chunks;
+
+            //
+
+            var eventsDescriptors = trackChunks
+                .SelectMany(trackChunk =>
+                {
+                    var absoluteTime = 0L;
+                    var channel = -1;
+                    return trackChunk.Events
+                        .Select(midiEvent =>
+                        {
+                            var channelPrefixEvent = midiEvent as ChannelPrefixEvent;
+                            if (channelPrefixEvent != null)
+                                channel = channelPrefixEvent.Channel;
+
+                            if (!(midiEvent is MetaEvent))
+                                channel = -1;
+
+                            return new EventDescriptor(midiEvent, absoluteTime += midiEvent.DeltaTime, channel);
+                        });
+                })
+                .OrderBy(d => d, new EventDescriptorComparer());
+
+            //
+
+            var resultTrackChunk = new TrackChunk();
+            var time = 0L;
+
+            foreach (var eventDescriptor in eventsDescriptors)
+            {
+                var midiEvent = eventDescriptor.Event.Clone();
+
+                midiEvent.DeltaTime = eventDescriptor.AbsoluteTime - time;
+                resultTrackChunk.Events.Add(midiEvent);
+
+                time = eventDescriptor.AbsoluteTime;
+            }
+
+            //
+
+            return new[] {resultTrackChunk}.Concat(chunks.Where(c => !(c is TrackChunk)));
+        }
+
+        #endregion
+
         #region Nested types
 
         private sealed class EventDescriptor
@@ -41,7 +97,7 @@ namespace Melanchall.DryWetMidi.Smf
             {
                 var absoluteTimeDifference = x.AbsoluteTime - y.AbsoluteTime;
                 if (absoluteTimeDifference != 0)
-                    return (int)(absoluteTimeDifference / Math.Abs(absoluteTimeDifference));
+                    return (int) (absoluteTimeDifference / Math.Abs(absoluteTimeDifference));
 
                 //
 
@@ -49,9 +105,9 @@ namespace Melanchall.DryWetMidi.Smf
                 var yMetaEvent = y.Event as MetaEvent;
                 if (xMetaEvent != null && yMetaEvent == null)
                     return -1;
-                else if (xMetaEvent == null && yMetaEvent != null)
+                if (xMetaEvent == null && yMetaEvent != null)
                     return 1;
-                else if (xMetaEvent == null && yMetaEvent == null)
+                if (xMetaEvent == null && yMetaEvent == null)
                     return 0;
 
                 //
@@ -66,7 +122,7 @@ namespace Melanchall.DryWetMidi.Smf
                 var yChannelPrefixEvent = y.Event as ChannelPrefixEvent;
                 if (xChannelPrefixEvent != null && yChannelPrefixEvent == null)
                     return -1;
-                else if (xChannelPrefixEvent == null && yChannelPrefixEvent != null)
+                if (xChannelPrefixEvent == null && yChannelPrefixEvent != null)
                     return 1;
 
                 //
@@ -75,62 +131,6 @@ namespace Melanchall.DryWetMidi.Smf
             }
 
             #endregion
-        }
-
-        #endregion
-
-        #region IChunksConverter
-
-        public IEnumerable<MidiChunk> Convert(IEnumerable<MidiChunk> chunks)
-        {
-            ThrowIfArgument.IsNull(nameof(chunks), chunks);
-
-            //
-
-            var trackChunks = chunks.OfType<TrackChunk>().ToArray();
-            if (trackChunks.Length == 1)
-                return chunks;
-
-            //
-
-            var eventsDescriptors = trackChunks
-                .SelectMany(trackChunk =>
-                {
-                    var absoluteTime = 0L;
-                    var channel = -1;
-                    return trackChunk.Events
-                                     .Select(midiEvent =>
-                                     {
-                                         var channelPrefixEvent = midiEvent as ChannelPrefixEvent;
-                                         if (channelPrefixEvent != null)
-                                             channel = channelPrefixEvent.Channel;
-
-                                         if (!(midiEvent is MetaEvent))
-                                             channel = -1;
-
-                                         return new EventDescriptor(midiEvent, (absoluteTime += midiEvent.DeltaTime), channel);
-                                     });
-                })
-                .OrderBy(d => d, new EventDescriptorComparer());
-
-            //
-
-            var resultTrackChunk = new TrackChunk();
-            var time = 0L;
-
-            foreach (var eventDescriptor in eventsDescriptors)
-            {
-                MidiEvent midiEvent = eventDescriptor.Event.Clone();
-
-                midiEvent.DeltaTime = eventDescriptor.AbsoluteTime - time;
-                resultTrackChunk.Events.Add(midiEvent);
-
-                time = eventDescriptor.AbsoluteTime;
-            }
-
-            //
-
-            return new[] { resultTrackChunk }.Concat(chunks.Where(c => !(c is TrackChunk)));
         }
 
         #endregion

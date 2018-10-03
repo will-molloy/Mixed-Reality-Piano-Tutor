@@ -2,43 +2,27 @@ namespace UnityEngine.PostProcessing
 {
     public sealed class EyeAdaptationComponent : PostProcessingComponentRenderTexture<EyeAdaptationModel>
     {
-        static class Uniforms
-        {
-            internal static readonly int _Params               = Shader.PropertyToID("_Params");
-            internal static readonly int _Speed                = Shader.PropertyToID("_Speed");
-            internal static readonly int _ScaleOffsetRes       = Shader.PropertyToID("_ScaleOffsetRes");
-            internal static readonly int _ExposureCompensation = Shader.PropertyToID("_ExposureCompensation");
-            internal static readonly int _AutoExposure         = Shader.PropertyToID("_AutoExposure");
-            internal static readonly int _DebugWidth           = Shader.PropertyToID("_DebugWidth");
-        }
-
-        ComputeShader m_EyeCompute;
-        ComputeBuffer m_HistogramBuffer;
-
-        readonly RenderTexture[] m_AutoExposurePool = new RenderTexture[2];
-        int m_AutoExposurePingPing;
-        RenderTexture m_CurrentAutoExposure;
-
-        RenderTexture m_DebugHistogram;
-
-        static uint[] s_EmptyHistogramBuffer;
-
-        bool m_FirstFrame = true;
-
         // Don't forget to update 'EyeAdaptation.cginc' if you change these values !
-        const int k_HistogramBins = 64;
-        const int k_HistogramThreadX = 16;
-        const int k_HistogramThreadY = 16;
+        private const int k_HistogramBins = 64;
+        private const int k_HistogramThreadX = 16;
+        private const int k_HistogramThreadY = 16;
 
-        public override bool active
-        {
-            get
-            {
-                return model.enabled
-                       && SystemInfo.supportsComputeShaders
-                       && !context.interrupted;
-            }
-        }
+        private static uint[] s_EmptyHistogramBuffer;
+
+        private readonly RenderTexture[] m_AutoExposurePool = new RenderTexture[2];
+        private int m_AutoExposurePingPing;
+        private RenderTexture m_CurrentAutoExposure;
+
+        private RenderTexture m_DebugHistogram;
+
+        private ComputeShader m_EyeCompute;
+
+        private bool m_FirstFrame = true;
+        private ComputeBuffer m_HistogramBuffer;
+
+        public override bool active => model.enabled
+                                       && SystemInfo.supportsComputeShaders
+                                       && !context.interrupted;
 
         public void ResetHistory()
         {
@@ -66,12 +50,12 @@ namespace UnityEngine.PostProcessing
             m_DebugHistogram = null;
         }
 
-        Vector4 GetHistogramScaleOffsetRes()
+        private Vector4 GetHistogramScaleOffsetRes()
         {
             var settings = model.settings;
             float diff = settings.logMax - settings.logMin;
-            float scale = 1f / diff;
-            float offset = -settings.logMin * scale;
+            var scale = 1f / diff;
+            var offset = -settings.logMin * scale;
             return new Vector4(scale, offset, Mathf.Floor(context.width / 2f), Mathf.Floor(context.height / 2f));
         }
 
@@ -96,7 +80,7 @@ namespace UnityEngine.PostProcessing
             // helps making it more stable
             var scaleOffsetRes = GetHistogramScaleOffsetRes();
 
-            var rt = context.renderTextureFactory.Get((int)scaleOffsetRes.z, (int)scaleOffsetRes.w, 0, source.format);
+            var rt = context.renderTextureFactory.Get((int) scaleOffsetRes.z, (int) scaleOffsetRes.w, 0, source.format);
             Graphics.Blit(source, rt);
 
             if (m_AutoExposurePool[0] == null || !m_AutoExposurePool[0].IsCreated())
@@ -109,11 +93,12 @@ namespace UnityEngine.PostProcessing
             m_HistogramBuffer.SetData(s_EmptyHistogramBuffer);
 
             // Gets a log histogram
-            int kernel = m_EyeCompute.FindKernel("KEyeHistogram");
+            var kernel = m_EyeCompute.FindKernel("KEyeHistogram");
             m_EyeCompute.SetBuffer(kernel, "_Histogram", m_HistogramBuffer);
             m_EyeCompute.SetTexture(kernel, "_Source", rt);
             m_EyeCompute.SetVector("_ScaleOffsetRes", scaleOffsetRes);
-            m_EyeCompute.Dispatch(kernel, Mathf.CeilToInt(rt.width / (float)k_HistogramThreadX), Mathf.CeilToInt(rt.height / (float)k_HistogramThreadY), 1);
+            m_EyeCompute.Dispatch(kernel, Mathf.CeilToInt(rt.width / (float) k_HistogramThreadX),
+                Mathf.CeilToInt(rt.height / (float) k_HistogramThreadY), 1);
 
             // Cleanup
             context.renderTextureFactory.Release(rt);
@@ -125,7 +110,10 @@ namespace UnityEngine.PostProcessing
 
             // Compute auto exposure
             material.SetBuffer("_Histogram", m_HistogramBuffer); // No (int, buffer) overload for SetBuffer ?
-            material.SetVector(Uniforms._Params, new Vector4(settings.lowPercent * 0.01f, settings.highPercent * 0.01f, Mathf.Exp(settings.minLuminance * 0.69314718055994530941723212145818f), Mathf.Exp(settings.maxLuminance * 0.69314718055994530941723212145818f)));
+            material.SetVector(Uniforms._Params,
+                new Vector4(settings.lowPercent * 0.01f, settings.highPercent * 0.01f,
+                    Mathf.Exp(settings.minLuminance * 0.69314718055994530941723212145818f),
+                    Mathf.Exp(settings.maxLuminance * 0.69314718055994530941723212145818f)));
             material.SetVector(Uniforms._Speed, new Vector2(settings.speedDown, settings.speedUp));
             material.SetVector(Uniforms._ScaleOffsetRes, scaleOffsetRes);
             material.SetFloat(Uniforms._ExposureCompensation, settings.keyValue);
@@ -138,17 +126,17 @@ namespace UnityEngine.PostProcessing
                 // We don't want eye adaptation when not in play mode because the GameView isn't
                 // animated, thus making it harder to tweak. Just use the final audo exposure value.
                 m_CurrentAutoExposure = m_AutoExposurePool[0];
-                Graphics.Blit(null, m_CurrentAutoExposure, material, (int)EyeAdaptationModel.EyeAdaptationType.Fixed);
+                Graphics.Blit(null, m_CurrentAutoExposure, material, (int) EyeAdaptationModel.EyeAdaptationType.Fixed);
 
                 // Copy current exposure to the other pingpong target to avoid adapting from black
                 Graphics.Blit(m_AutoExposurePool[0], m_AutoExposurePool[1]);
             }
             else
             {
-                int pp = m_AutoExposurePingPing;
+                var pp = m_AutoExposurePingPing;
                 var src = m_AutoExposurePool[++pp % 2];
                 var dst = m_AutoExposurePool[++pp % 2];
-                Graphics.Blit(src, dst, material, (int)settings.adaptationType);
+                Graphics.Blit(src, dst, material, (int) settings.adaptationType);
                 m_AutoExposurePingPing = ++pp % 2;
                 m_CurrentAutoExposure = dst;
             }
@@ -157,13 +145,11 @@ namespace UnityEngine.PostProcessing
             if (context.profile.debugViews.IsModeActive(BuiltinDebugViewsModel.Mode.EyeAdaptation))
             {
                 if (m_DebugHistogram == null || !m_DebugHistogram.IsCreated())
-                {
                     m_DebugHistogram = new RenderTexture(256, 128, 0, RenderTextureFormat.ARGB32)
                     {
                         filterMode = FilterMode.Point,
                         wrapMode = TextureWrapMode.Clamp
                     };
-                }
 
                 material.SetFloat(Uniforms._DebugWidth, m_DebugHistogram.width);
                 Graphics.Blit(null, m_DebugHistogram, material, 2);
@@ -178,8 +164,19 @@ namespace UnityEngine.PostProcessing
             if (m_DebugHistogram == null || !m_DebugHistogram.IsCreated())
                 return;
 
-            var rect = new Rect(context.viewport.x * Screen.width + 8f, 8f, m_DebugHistogram.width, m_DebugHistogram.height);
+            var rect = new Rect(context.viewport.x * Screen.width + 8f, 8f, m_DebugHistogram.width,
+                m_DebugHistogram.height);
             GUI.DrawTexture(rect, m_DebugHistogram);
+        }
+
+        private static class Uniforms
+        {
+            internal static readonly int _Params = Shader.PropertyToID("_Params");
+            internal static readonly int _Speed = Shader.PropertyToID("_Speed");
+            internal static readonly int _ScaleOffsetRes = Shader.PropertyToID("_ScaleOffsetRes");
+            internal static readonly int _ExposureCompensation = Shader.PropertyToID("_ExposureCompensation");
+            internal static readonly int _AutoExposure = Shader.PropertyToID("_AutoExposure");
+            internal static readonly int _DebugWidth = Shader.PropertyToID("_DebugWidth");
         }
     }
 }

@@ -7,50 +7,30 @@ namespace Sanford.Collections.Generic
         #region Node Class
 
         // Represents a node in the deque.
-        [Serializable()]
+        [Serializable]
         private class Node
         {
-            private T value;
+            private Node next;
 
-            private Node previous = null;
-
-            private Node next = null;
+            private Node previous;
 
             public Node(T value)
             {
-                this.value = value;
+                Value = value;
             }
 
-            public T Value
-            {
-                get
-                {
-                    return value;
-                }
-            }
+            public T Value { get; }
 
             public Node Previous
             {
-                get
-                {
-                    return previous;
-                }
-                set
-                {
-                    previous = value;
-                }
+                get { return previous; }
+                set { previous = value; }
             }
 
             public Node Next
             {
-                get
-                {
-                    return next;
-                }
-                set
-                {
-                    next = value;
-                }
+                get { return next; }
+                set { next = value; }
             }
         }
 

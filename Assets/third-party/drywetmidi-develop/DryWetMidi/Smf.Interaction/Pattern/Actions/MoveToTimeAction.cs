@@ -2,20 +2,6 @@
 {
     internal sealed class MoveToTimeAction : IPatternAction
     {
-        #region Constructor
-
-        public MoveToTimeAction()
-            : this(null)
-        {
-        }
-
-        public MoveToTimeAction(ITimeSpan time)
-        {
-            Time = time;
-        }
-
-        #endregion
-
         #region Properties
 
         public ITimeSpan Time { get; }
@@ -30,6 +16,20 @@
             return new PatternActionResult(Time != null
                 ? TimeConverter.ConvertFrom(Time, context.TempoMap)
                 : context.RestoreTime());
+        }
+
+        #endregion
+
+        #region Constructor
+
+        public MoveToTimeAction()
+            : this(null)
+        {
+        }
+
+        public MoveToTimeAction(ITimeSpan time)
+        {
+            Time = time;
         }
 
         #endregion

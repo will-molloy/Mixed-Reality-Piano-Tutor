@@ -1,6 +1,6 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf
 {
@@ -16,13 +16,13 @@ namespace Melanchall.DryWetMidi.Smf
             if (trackChunks.Length == 0)
                 return chunks;
 
-            var sequenceNumbers = trackChunks.Select((c, i) => new { Chunk = c, Number = GetSequenceNumber(c) ?? i })
-                                             .ToArray();
+            var sequenceNumbers = trackChunks.Select((c, i) => new {Chunk = c, Number = GetSequenceNumber(c) ?? i})
+                .ToArray();
 
             var singleTrackChunksConverter = ChunksConverterFactory.GetConverter(MidiFileFormat.SingleTrack);
             return sequenceNumbers.GroupBy(n => n.Number)
-                                  .SelectMany(g => singleTrackChunksConverter.Convert(g.Select(n => n.Chunk)))
-                                  .Concat(chunks.Where(c => !(c is TrackChunk)));
+                .SelectMany(g => singleTrackChunksConverter.Convert(g.Select(n => n.Chunk)))
+                .Concat(chunks.Where(c => !(c is TrackChunk)));
         }
 
         #endregion
@@ -34,10 +34,10 @@ namespace Melanchall.DryWetMidi.Smf
             ThrowIfArgument.IsNull(nameof(trackChunk), trackChunk);
 
             return trackChunk.Events
-                             .TakeWhile(m => m.DeltaTime == 0)
-                             .OfType<SequenceNumberEvent>()
-                             .FirstOrDefault()
-                             ?.Number;
+                .TakeWhile(m => m.DeltaTime == 0)
+                .OfType<SequenceNumberEvent>()
+                .FirstOrDefault()
+                ?.Number;
         }
 
         #endregion

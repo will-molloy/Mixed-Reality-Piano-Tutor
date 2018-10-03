@@ -35,7 +35,7 @@
 namespace Sanford.Multimedia.Midi
 {
     /// <summary>
-    /// Defines constants representing the General MIDI instrument set.
+    ///     Defines constants representing the General MIDI instrument set.
     /// </summary>
     public enum GeneralMidiInstrument
     {
@@ -62,8 +62,8 @@ namespace Sanford.Multimedia.Midi
         ReedOrgan,
         Accordion,
         Harmonica,
-        TangoAccordion, 
-        AcousticGuitarNylon, 
+        TangoAccordion,
+        AcousticGuitarNylon,
         AcousticGuitarSteel,
         ElectricGuitarJazz,
         ElectricGuitarClean,

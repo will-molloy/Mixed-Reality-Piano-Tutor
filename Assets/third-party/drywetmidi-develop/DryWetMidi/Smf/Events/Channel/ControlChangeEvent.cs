@@ -3,14 +3,27 @@
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents a Control Change message.
+    ///     Represents a Control Change message.
     /// </summary>
     /// <remarks>
-    /// This message is sent when a controller value changes. Controllers include devices
-    /// such as pedals and levers.
+    ///     This message is sent when a controller value changes. Controllers include devices
+    ///     such as pedals and levers.
     /// </remarks>
     public sealed class ControlChangeEvent : ChannelEvent
     {
+        #region Overrides
+
+        /// <summary>
+        ///     Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString()
+        {
+            return $"Control Change [{Channel}] ({ControlNumber}, {ControlValue})";
+        }
+
+        #endregion
+
         #region Constants
 
         private const int ParametersCount = 2;
@@ -22,7 +35,7 @@ namespace Melanchall.DryWetMidi.Smf
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ControlChangeEvent"/>.
+        ///     Initializes a new instance of the <see cref="ControlChangeEvent" />.
         /// </summary>
         public ControlChangeEvent()
             : base(ParametersCount)
@@ -30,8 +43,8 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ControlChangeEvent"/> with the specified
-        /// controller number and controller value.
+        ///     Initializes a new instance of the <see cref="ControlChangeEvent" /> with the specified
+        ///     controller number and controller value.
         /// </summary>
         /// <param name="controlNumber">Controller number.</param>
         /// <param name="controlValue">Controller value.</param>
@@ -47,7 +60,7 @@ namespace Melanchall.DryWetMidi.Smf
         #region Properties
 
         /// <summary>
-        /// Gets or sets controller number.
+        ///     Gets or sets controller number.
         /// </summary>
         public SevenBitNumber ControlNumber
         {
@@ -56,25 +69,12 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets or sets controller value.
+        ///     Gets or sets controller value.
         /// </summary>
         public SevenBitNumber ControlValue
         {
             get { return this[ControlValueParameterIndex]; }
             set { this[ControlValueParameterIndex] = value; }
-        }
-
-        #endregion
-
-        #region Overrides
-
-        /// <summary>
-        /// Returns a string that represents the current object.
-        /// </summary>
-        /// <returns>A string that represents the current object.</returns>
-        public override string ToString()
-        {
-            return $"Control Change [{Channel}] ({ControlNumber}, {ControlValue})";
         }
 
         #endregion

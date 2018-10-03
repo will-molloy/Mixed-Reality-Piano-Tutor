@@ -4,69 +4,69 @@ using UnityEngine;
 
 namespace ArucoUnity.Plugin
 {
-  public static partial class Cv
-  {
-    public class Point2f : Utility.HandleCppPtr
+    public static partial class Cv
     {
-      // Native functions
+        public class Point2f : Utility.HandleCppPtr
+        {
+            // Constructors & destructor
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_cv_Point2f_new();
+            public Point2f() : base(au_cv_Point2f_new())
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_cv_Point2f_delete(IntPtr point2f);
+            public Point2f(IntPtr point2fPtr,
+                Utility.DeleteResponsibility deleteResponsibility = Utility.DeleteResponsibility.True)
+                : base(point2fPtr, deleteResponsibility)
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern float au_cv_Point2f_getX(IntPtr point2f);
+            // Properties
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_cv_Point2f_setX(IntPtr point2f, float x);
+            public float X
+            {
+                get { return au_cv_Point2f_getX(CppPtr); }
+                set { au_cv_Point2f_setX(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern float au_cv_Point2f_getY(IntPtr point2f);
+            public float Y
+            {
+                get { return au_cv_Point2f_getY(CppPtr); }
+                set { au_cv_Point2f_setY(CppPtr, value); }
+            }
+            // Native functions
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_cv_Point2f_setY(IntPtr point2f, float y);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_cv_Point2f_new();
 
-      // Constructors & destructor
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_cv_Point2f_delete(IntPtr point2f);
 
-      public Point2f() : base(au_cv_Point2f_new())
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern float au_cv_Point2f_getX(IntPtr point2f);
 
-      public Point2f(IntPtr point2fPtr, Utility.DeleteResponsibility deleteResponsibility = Utility.DeleteResponsibility.True)
-        : base(point2fPtr, deleteResponsibility)
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_cv_Point2f_setX(IntPtr point2f, float x);
 
-      public static implicit operator Vector2(Point2f point2f)
-      {
-        return new Vector2(point2f.X, point2f.Y);
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern float au_cv_Point2f_getY(IntPtr point2f);
 
-      public static implicit operator Vector3(Point2f point2f)
-      {
-        return new Vector3(point2f.X, point2f.Y, 0);
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_cv_Point2f_setY(IntPtr point2f, float y);
 
-      protected override void DeleteCppPtr()
-      {
-        au_cv_Point2f_delete(CppPtr);
-      }
+            public static implicit operator Vector2(Point2f point2f)
+            {
+                return new Vector2(point2f.X, point2f.Y);
+            }
 
-      // Properties
+            public static implicit operator Vector3(Point2f point2f)
+            {
+                return new Vector3(point2f.X, point2f.Y, 0);
+            }
 
-      public float X
-      {
-        get { return au_cv_Point2f_getX(CppPtr); }
-        set { au_cv_Point2f_setX(CppPtr, value); }
-      }
-
-      public float Y
-      {
-        get { return au_cv_Point2f_getY(CppPtr); }
-        set { au_cv_Point2f_setY(CppPtr, value); }
-      }
+            protected override void DeleteCppPtr()
+            {
+                au_cv_Point2f_delete(CppPtr);
+            }
+        }
     }
-  }
 }

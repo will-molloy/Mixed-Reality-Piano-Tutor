@@ -38,28 +38,16 @@ namespace Sanford.Multimedia.Midi
 {
     public partial class InputDevice
     {
-        public override IntPtr Handle
-        {
-            get 
-            { 
-                return handle; 
-            }
-        }
+        public override IntPtr Handle => handle;
 
         public int SysExBufferSize
         {
-            get
-            {
-                return sysExBufferSize;
-            }
+            get { return sysExBufferSize; }
             set
             {
                 #region Require
 
-                if(value < 1)
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
+                if (value < 1) throw new ArgumentOutOfRangeException();
 
                 #endregion
 
@@ -67,12 +55,6 @@ namespace Sanford.Multimedia.Midi
             }
         }
 
-        public static int DeviceCount
-        {
-            get
-            {
-                return midiInGetNumDevs();
-            }
-        }
+        public static int DeviceCount => midiInGetNumDevs();
     }
 }

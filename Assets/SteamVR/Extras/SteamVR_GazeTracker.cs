@@ -1,6 +1,6 @@
 ﻿//======= Copyright (c) Valve Corporation, All rights reserved. ===============
+
 using UnityEngine;
-using System.Collections;
 
 public struct GazeEventArgs
 {
@@ -11,20 +11,19 @@ public delegate void GazeEventHandler(object sender, GazeEventArgs e);
 
 public class SteamVR_GazeTracker : MonoBehaviour
 {
-    public bool isInGaze = false;
-    public event GazeEventHandler GazeOn;
-    public event GazeEventHandler GazeOff;
     public float gazeInCutoff = 0.15f;
     public float gazeOutCutoff = 0.4f;
 
     // Contains a HMD tracked object that we can use to find the user's gaze
-    Transform hmdTrackedObject = null;
+    private Transform hmdTrackedObject;
+    public bool isInGaze;
+    public event GazeEventHandler GazeOn;
+    public event GazeEventHandler GazeOff;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    private void Start()
     {
-	
-	}
+    }
 
     public virtual void OnGazeOn(GazeEventArgs e)
     {
@@ -39,32 +38,30 @@ public class SteamVR_GazeTracker : MonoBehaviour
     }
 
     // Update is called once per frame
-	void Update ()
+    private void Update()
     {
         // If we haven't set up hmdTrackedObject find what the user is looking at
         if (hmdTrackedObject == null)
         {
-            SteamVR_TrackedObject[] trackedObjects = FindObjectsOfType<SteamVR_TrackedObject>();
-            foreach (SteamVR_TrackedObject tracked in trackedObjects)
-            {
+            var trackedObjects = FindObjectsOfType<SteamVR_TrackedObject>();
+            foreach (var tracked in trackedObjects)
                 if (tracked.index == SteamVR_TrackedObject.EIndex.Hmd)
                 {
                     hmdTrackedObject = tracked.transform;
                     break;
                 }
-            }
         }
 
         if (hmdTrackedObject)
         {
-            Ray r = new Ray(hmdTrackedObject.position, hmdTrackedObject.forward);
-            Plane p = new Plane(hmdTrackedObject.forward, transform.position);
+            var r = new Ray(hmdTrackedObject.position, hmdTrackedObject.forward);
+            var p = new Plane(hmdTrackedObject.forward, transform.position);
 
-            float enter = 0.0f;
+            var enter = 0.0f;
             if (p.Raycast(r, out enter))
             {
-                Vector3 intersect = hmdTrackedObject.position + hmdTrackedObject.forward * enter;
-                float dist = Vector3.Distance(intersect, transform.position);
+                var intersect = hmdTrackedObject.position + hmdTrackedObject.forward * enter;
+                var dist = Vector3.Distance(intersect, transform.position);
                 //Debug.Log("Gaze dist = " + dist);
                 if (dist < gazeInCutoff && !isInGaze)
                 {
@@ -81,8 +78,6 @@ public class SteamVR_GazeTracker : MonoBehaviour
                     OnGazeOff(e);
                 }
             }
-
         }
-
     }
 }
