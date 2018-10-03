@@ -11,7 +11,8 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         {
             var ticksPerQuarterNoteTimeDivision = tempoMap.TimeDivision as TicksPerQuarterNoteTimeDivision;
             if (ticksPerQuarterNoteTimeDivision == null)
-                throw new ArgumentException("Time division is not supported for time span conversion.", nameof(tempoMap));
+                throw new ArgumentException("Time division is not supported for time span conversion.",
+                    nameof(tempoMap));
 
             var ticksPerQuarterNote = ticksPerQuarterNoteTimeDivision.TicksPerQuarterNote;
             var endTime = time + timeSpan;
@@ -28,7 +29,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             // Calculate count of complete bars between time signature changes
 
-            for (int i = 0; i < timeSignatureChanges.Count - 1; i++)
+            for (var i = 0; i < timeSignatureChanges.Count - 1; i++)
             {
                 var timeSignatureChange = timeSignatureChanges[i];
                 var nextTime = timeSignatureChanges[i + 1].Time;
@@ -47,19 +48,19 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             long barsBefore, beatsBefore, ticksBefore;
             CalculateComponents(firstTime - time,
-                                firstTimeSignature,
-                                ticksPerQuarterNote,
-                                out barsBefore,
-                                out beatsBefore,
-                                out ticksBefore);
+                firstTimeSignature,
+                ticksPerQuarterNote,
+                out barsBefore,
+                out beatsBefore,
+                out ticksBefore);
 
             long barsAfter, beatsAfter, ticksAfter;
             CalculateComponents(time + timeSpan - lastTime,
-                                lastTimeSignature,
-                                ticksPerQuarterNote,
-                                out barsAfter,
-                                out beatsAfter,
-                                out ticksAfter);
+                lastTimeSignature,
+                ticksPerQuarterNote,
+                out barsAfter,
+                out beatsAfter,
+                out ticksAfter);
 
             bars += barsBefore + barsAfter;
 
@@ -67,13 +68,11 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             var beats = beatsBefore + beatsAfter;
             if (beats > 0)
-            {
                 if (beatsBefore > 0 && beats >= firstTimeSignature.Numerator)
                 {
                     bars++;
                     beats -= firstTimeSignature.Numerator;
                 }
-            }
 
             // Try to complete a beat
 
@@ -90,25 +89,26 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             //
 
-            return new BarBeatTimeSpan((int)bars, (int)beats, (int)ticks);
+            return new BarBeatTimeSpan((int) bars, (int) beats, (int) ticks);
         }
 
         public long ConvertFrom(ITimeSpan timeSpan, long time, TempoMap tempoMap)
         {
             var ticksPerQuarterNoteTimeDivision = tempoMap.TimeDivision as TicksPerQuarterNoteTimeDivision;
             if (ticksPerQuarterNoteTimeDivision == null)
-                throw new ArgumentException("Time division is not supported for time span conversion.", nameof(tempoMap));
+                throw new ArgumentException("Time division is not supported for time span conversion.",
+                    nameof(tempoMap));
 
-            var barBeatTimeSpan = (BarBeatTimeSpan)timeSpan;
+            var barBeatTimeSpan = (BarBeatTimeSpan) timeSpan;
 
             var ticksPerQuarterNote = ticksPerQuarterNoteTimeDivision.TicksPerQuarterNote;
             var timeSignatureLine = tempoMap.TimeSignature;
 
             //
 
-            long bars = barBeatTimeSpan.Bars;
-            long beats = barBeatTimeSpan.Beats;
-            long ticks = barBeatTimeSpan.Ticks;
+            var bars = barBeatTimeSpan.Bars;
+            var beats = barBeatTimeSpan.Beats;
+            var ticks = barBeatTimeSpan.Ticks;
 
             var startTimeSignature = timeSignatureLine.AtTime(time);
             var startBarLength = GetBarLength(startTimeSignature, ticksPerQuarterNote);
@@ -116,8 +116,8 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             var totalTicks = bars * startBarLength + beats * startBeatLength + ticks;
             var timeSignatureChanges = timeSignatureLine.Values
-                                                        .Where(v => v.Time > time && v.Time < time + totalTicks)
-                                                        .ToList();
+                .Where(v => v.Time > time && v.Time < time + totalTicks)
+                .ToList();
 
             var lastBarLength = 0L;
             var lastBeatLength = 0L;
@@ -128,11 +128,11 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             long barsBefore, beatsBefore, ticksBefore;
             CalculateComponents(lastTime - time,
-                                startTimeSignature,
-                                ticksPerQuarterNote,
-                                out barsBefore,
-                                out beatsBefore,
-                                out ticksBefore);
+                startTimeSignature,
+                ticksPerQuarterNote,
+                out barsBefore,
+                out beatsBefore,
+                out ticksBefore);
 
             bars -= barsBefore;
 
@@ -200,11 +200,11 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Methods
 
         private static void CalculateComponents(long totalTicks,
-                                                TimeSignature timeSignature,
-                                                short ticksPerQuarterNote,
-                                                out long bars,
-                                                out long beats,
-                                                out long ticks)
+            TimeSignature timeSignature,
+            short ticksPerQuarterNote,
+            out long bars,
+            out long beats,
+            out long ticks)
         {
             var barLength = GetBarLength(timeSignature, ticksPerQuarterNote);
             bars = Math.DivRem(totalTicks, barLength, out ticks);

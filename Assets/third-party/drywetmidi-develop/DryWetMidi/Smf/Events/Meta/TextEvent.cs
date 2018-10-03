@@ -1,25 +1,25 @@
 ﻿namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents a Text meta event.
+    ///     Represents a Text meta event.
     /// </summary>
     /// <remarks>
-    /// The MIDI text meta message defines some text to be carried within a MIDI file.
+    ///     The MIDI text meta message defines some text to be carried within a MIDI file.
     /// </remarks>
     public sealed class TextEvent : BaseTextEvent
     {
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TextEvent"/>.
+        ///     Initializes a new instance of the <see cref="TextEvent" />.
         /// </summary>
         public TextEvent()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TextEvent"/> with the
-        /// specified text.
+        ///     Initializes a new instance of the <see cref="TextEvent" /> with the
+        ///     specified text.
         /// </summary>
         /// <param name="text">Text of the message.</param>
         public TextEvent(string text)
@@ -32,7 +32,7 @@
         #region Overrides
 
         /// <summary>
-        /// Clones event by creating a copy of it.
+        ///     Clones event by creating a copy of it.
         /// </summary>
         /// <returns>Copy of the event.</returns>
         protected override MidiEvent CloneEvent()
@@ -41,7 +41,7 @@
         }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()

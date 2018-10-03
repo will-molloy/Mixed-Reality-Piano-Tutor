@@ -1,40 +1,29 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf.Interaction
 {
     /// <summary>
-    /// Represents a basic collection of the <see cref="ITimedObject"/>.
+    ///     Represents a basic collection of the <see cref="ITimedObject" />.
     /// </summary>
     /// <typeparam name="TObject">The type of elements in the collection.</typeparam>
     public abstract class TimedObjectsCollection<TObject> : IEnumerable<TObject>
         where TObject : ITimedObject
     {
-        #region Fields
-
-        /// <summary>
-        /// Internal list of timed objects.
-        /// </summary>
-        protected readonly List<TObject> _objects = new List<TObject>();
-
-        private bool _collectionChanged = true;
-
-        #endregion
-
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TimedObjectsCollection{TObject}"/> with
-        /// the specified timed objects.
+        ///     Initializes a new instance of the <see cref="TimedObjectsCollection{TObject}" /> with
+        ///     the specified timed objects.
         /// </summary>
-        /// <param name="objects">Collection of timed objects to populate the <see cref="TimedObjectsCollection{TObject}"/>.</param>
+        /// <param name="objects">Collection of timed objects to populate the <see cref="TimedObjectsCollection{TObject}" />.</param>
         /// <remarks>
-        /// Note that null objects will be automatically filtered out so the collection will not
-        /// contain them.
+        ///     Note that null objects will be automatically filtered out so the collection will not
+        ///     contain them.
         /// </remarks>
         internal TimedObjectsCollection(IEnumerable<TObject> objects)
         {
@@ -45,13 +34,24 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
         #endregion
 
+        #region Fields
+
+        /// <summary>
+        ///     Internal list of timed objects.
+        /// </summary>
+        protected readonly List<TObject> _objects = new List<TObject>();
+
+        private bool _collectionChanged = true;
+
+        #endregion
+
         #region Methods
 
         /// <summary>
-        /// Adds objects to this collection.
+        ///     Adds objects to this collection.
         /// </summary>
         /// <param name="objects">Objects to add to the collection.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="objects"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="objects" /> is null.</exception>
         public void Add(IEnumerable<TObject> objects)
         {
             ThrowIfArgument.IsNull(nameof(objects), objects);
@@ -62,54 +62,54 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Adds objects to this collection.
+        ///     Adds objects to this collection.
         /// </summary>
         /// <param name="objects">Objects to add to the collection.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="objects"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="objects" /> is null.</exception>
         public void Add(params TObject[] objects)
         {
             ThrowIfArgument.IsNull(nameof(objects), objects);
 
-            Add((IEnumerable<TObject>)objects);
+            Add((IEnumerable<TObject>) objects);
         }
 
         /// <summary>
-        /// Removes objects from this collection.
+        ///     Removes objects from this collection.
         /// </summary>
         /// <param name="objects">Objects to remove from the collection.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="objects"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="objects" /> is null.</exception>
         public void Remove(IEnumerable<TObject> objects)
         {
             ThrowIfArgument.IsNull(nameof(objects), objects);
 
             var removedObjects = new List<TObject>();
             foreach (var obj in objects)
-            {
                 if (_objects.Remove(obj))
                     removedObjects.Add(obj);
-            }
 
             OnObjectsRemoved(removedObjects);
         }
 
         /// <summary>
-        /// Removes objects from this collection.
+        ///     Removes objects from this collection.
         /// </summary>
         /// <param name="objects">Objects to remove from the collection.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="objects"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="objects" /> is null.</exception>
         public void Remove(params TObject[] objects)
         {
             ThrowIfArgument.IsNull(nameof(objects), objects);
 
-            Remove((IEnumerable<TObject>)objects);
+            Remove((IEnumerable<TObject>) objects);
         }
 
         /// <summary>
-        /// Removes all the objects that match the conditions defined by the specified predicate.
+        ///     Removes all the objects that match the conditions defined by the specified predicate.
         /// </summary>
-        /// <param name="match">The <see cref="Predicate{T}"/> delegate that defines the conditions of
-        /// the objects to remove.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="match"/> is null.</exception>
+        /// <param name="match">
+        ///     The <see cref="Predicate{T}" /> delegate that defines the conditions of
+        ///     the objects to remove.
+        /// </param>
+        /// <exception cref="ArgumentNullException"><paramref name="match" /> is null.</exception>
         public void RemoveAll(Predicate<TObject> match)
         {
             ThrowIfArgument.IsNull(nameof(match), match);
@@ -120,7 +120,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Removes all objects from this collection.
+        ///     Removes all objects from this collection.
         /// </summary>
         public void Clear()
         {
@@ -130,7 +130,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Performs an action when objects are added to the collection.
+        ///     Performs an action when objects are added to the collection.
         /// </summary>
         /// <param name="addedObjects">Collection of added objects.</param>
         protected virtual void OnObjectsAdded(IEnumerable<TObject> addedObjects)
@@ -139,7 +139,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Performs an action when objects are removed from the collection.
+        ///     Performs an action when objects are removed from the collection.
         /// </summary>
         /// <param name="removedObjects">Collection of removed objects.</param>
         protected virtual void OnObjectsRemoved(IEnumerable<TObject> removedObjects)
@@ -162,7 +162,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region IEnumerable<TObject>
 
         /// <summary>
-        /// Returns an enumerator that iterates through the collection.
+        ///     Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         public virtual IEnumerator<TObject> GetEnumerator()
@@ -177,7 +177,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Returns an enumerator that iterates through the collection.
+        ///     Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         IEnumerator IEnumerable.GetEnumerator()

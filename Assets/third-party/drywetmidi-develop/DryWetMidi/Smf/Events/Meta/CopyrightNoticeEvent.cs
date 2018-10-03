@@ -1,25 +1,25 @@
 ﻿namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents a Copyright Notice meta event.
+    ///     Represents a Copyright Notice meta event.
     /// </summary>
     /// <remarks>
-    /// The MIDI copyright notice meta message places a copyright notice in a MIDI file.
+    ///     The MIDI copyright notice meta message places a copyright notice in a MIDI file.
     /// </remarks>
     public sealed class CopyrightNoticeEvent : BaseTextEvent
     {
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CopyrightNoticeEvent"/>.
+        ///     Initializes a new instance of the <see cref="CopyrightNoticeEvent" />.
         /// </summary>
         public CopyrightNoticeEvent()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CopyrightNoticeEvent"/> with the
-        /// specified text of copyright notice.
+        ///     Initializes a new instance of the <see cref="CopyrightNoticeEvent" /> with the
+        ///     specified text of copyright notice.
         /// </summary>
         /// <param name="text">Text of copyright notice.</param>
         public CopyrightNoticeEvent(string text)
@@ -32,7 +32,7 @@
         #region Overrides
 
         /// <summary>
-        /// Clones event by creating a copy of it.
+        ///     Clones event by creating a copy of it.
         /// </summary>
         /// <returns>Copy of the event.</returns>
         protected override MidiEvent CloneEvent()
@@ -41,7 +41,7 @@
         }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()

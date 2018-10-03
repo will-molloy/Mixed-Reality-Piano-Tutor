@@ -1,39 +1,39 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents a SMPTE Offset meta event.
+    ///     Represents a SMPTE Offset meta event.
     /// </summary>
     /// <remarks>
-    /// The MIDI SMPTE offset meta message specifies an offset for the starting point
-    /// of a MIDI track from the start of a sequence in terms of SMPTE time
-    /// (hours:minutes:seconds:frames:subframes).
+    ///     The MIDI SMPTE offset meta message specifies an offset for the starting point
+    ///     of a MIDI track from the start of a sequence in terms of SMPTE time
+    ///     (hours:minutes:seconds:frames:subframes).
     /// </remarks>
     public sealed class SmpteOffsetEvent : MetaEvent
     {
         #region Constants
 
         /// <summary>
-        /// Maximum value for the <see cref="Hours"/>.
+        ///     Maximum value for the <see cref="Hours" />.
         /// </summary>
         public const byte MaxHours = 23;
 
         /// <summary>
-        /// Maximum value for the <see cref="Minutes"/>.
+        ///     Maximum value for the <see cref="Minutes" />.
         /// </summary>
         public const byte MaxMinutes = 59;
 
         /// <summary>
-        /// Maximum value for the <see cref="Seconds"/>.
+        ///     Maximum value for the <see cref="Seconds" />.
         /// </summary>
         public const byte MaxSeconds = 59;
 
         /// <summary>
-        /// Maximum value for the <see cref="SubFrames"/>.
+        ///     Maximum value for the <see cref="SubFrames" />.
         /// </summary>
         public const byte MaxSubFrames = 99;
 
@@ -72,15 +72,15 @@ namespace Melanchall.DryWetMidi.Smf
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SmpteOffsetEvent"/>.
+        ///     Initializes a new instance of the <see cref="SmpteOffsetEvent" />.
         /// </summary>
         public SmpteOffsetEvent()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SmpteOffsetEvent"/> with the
-        /// specified SMPE format, hours, minutes, seconds, number of frames and sub-frames.
+        ///     Initializes a new instance of the <see cref="SmpteOffsetEvent" /> with the
+        ///     specified SMPE format, hours, minutes, seconds, number of frames and sub-frames.
         /// </summary>
         /// <param name="format">SMPTE format.</param>
         /// <param name="hours">Number of hours.</param>
@@ -88,10 +88,12 @@ namespace Melanchall.DryWetMidi.Smf
         /// <param name="seconds">Number of seconds.</param>
         /// <param name="frames">Number of frames.</param>
         /// <param name="subFrames">Number of sub-frames.</param>
-        /// <exception cref="InvalidEnumArgumentException"><paramref name="format"/> specified an invalid value.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Hours number is out of valid range. -or-
-        /// Minutes number is out of valid range. -or- Seconds number is out of valid range. -or-
-        /// Frames number is out of valid range. -or- Sub-frames number is out of valid range.</exception>
+        /// <exception cref="InvalidEnumArgumentException"><paramref name="format" /> specified an invalid value.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Hours number is out of valid range. -or-
+        ///     Minutes number is out of valid range. -or- Seconds number is out of valid range. -or-
+        ///     Frames number is out of valid range. -or- Sub-frames number is out of valid range.
+        /// </exception>
         public SmpteOffsetEvent(SmpteFormat format, byte hours, byte minutes, byte seconds, byte frames, byte subFrames)
             : this()
         {
@@ -110,12 +112,12 @@ namespace Melanchall.DryWetMidi.Smf
         #region Properties
 
         /// <summary>
-        /// Gets or sets SMPTE format.
+        ///     Gets or sets SMPTE format.
         /// </summary>
         public SmpteFormat Format { get; set; }
 
         /// <summary>
-        /// Gets or sets number of hours.
+        ///     Gets or sets number of hours.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Hours number is out of valid range (0-23).</exception>
         public byte Hours
@@ -124,17 +126,17 @@ namespace Melanchall.DryWetMidi.Smf
             set
             {
                 ThrowIfArgument.IsOutOfRange(nameof(value),
-                                             value,
-                                             0,
-                                             MaxHours,
-                                             $"Hours number is out of valid range (0-{MaxHours}).");
+                    value,
+                    0,
+                    MaxHours,
+                    $"Hours number is out of valid range (0-{MaxHours}).");
 
                 _hours = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets number of minutes.
+        ///     Gets or sets number of minutes.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Minutes number is out of valid range (0-59).</exception>
         public byte Minutes
@@ -143,17 +145,17 @@ namespace Melanchall.DryWetMidi.Smf
             set
             {
                 ThrowIfArgument.IsOutOfRange(nameof(value),
-                                             value,
-                                             0,
-                                             MaxMinutes,
-                                             $"Minutes number is out of valid range (0-{MaxMinutes}).");
+                    value,
+                    0,
+                    MaxMinutes,
+                    $"Minutes number is out of valid range (0-{MaxMinutes}).");
 
                 _minutes = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets number of seconds.
+        ///     Gets or sets number of seconds.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Seconds number is out of valid range (0-59).</exception>
         public byte Seconds
@@ -162,23 +164,23 @@ namespace Melanchall.DryWetMidi.Smf
             set
             {
                 ThrowIfArgument.IsOutOfRange(nameof(value),
-                                             value,
-                                             0,
-                                             MaxSeconds,
-                                             $"Seconds number is out of valid range (0-{MaxSeconds}).");
+                    value,
+                    0,
+                    MaxSeconds,
+                    $"Seconds number is out of valid range (0-{MaxSeconds}).");
 
                 _seconds = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets number of frames.
+        ///     Gets or sets number of frames.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Frames number is out of valid range.</exception>
         /// <remarks>
-        /// Maximum valid value for the <see cref="Frames"/> depends on the frame rate specified by the
-        /// <see cref="Format"/>: 23 for <see cref="SmpteFormat.TwentyFour"/>, 24 for <see cref="SmpteFormat.TwentyFive"/>,
-        /// 28 for <see cref="SmpteFormat.ThirtyDrop"/> and 29 for <see cref="SmpteFormat.Thirty"/>.
+        ///     Maximum valid value for the <see cref="Frames" /> depends on the frame rate specified by the
+        ///     <see cref="Format" />: 23 for <see cref="SmpteFormat.TwentyFour" />, 24 for <see cref="SmpteFormat.TwentyFive" />,
+        ///     28 for <see cref="SmpteFormat.ThirtyDrop" /> and 29 for <see cref="SmpteFormat.Thirty" />.
         /// </remarks>
         public byte Frames
         {
@@ -187,17 +189,17 @@ namespace Melanchall.DryWetMidi.Smf
             {
                 var maxFrames = MaxFrames[Format];
                 ThrowIfArgument.IsOutOfRange(nameof(value),
-                                             value,
-                                             0,
-                                             maxFrames,
-                                             $"Frames number is out of valid range (0-{maxFrames}).");
+                    value,
+                    0,
+                    maxFrames,
+                    $"Frames number is out of valid range (0-{maxFrames}).");
 
                 _frames = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets number of sub-frames.
+        ///     Gets or sets number of sub-frames.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Sub-frames number is out of valid range (0-99).</exception>
         public byte SubFrames
@@ -206,10 +208,10 @@ namespace Melanchall.DryWetMidi.Smf
             set
             {
                 ThrowIfArgument.IsOutOfRange(nameof(value),
-                                             value,
-                                             0,
-                                             MaxSubFrames,
-                                             $"Sub-frames number is out of valid range (0-{MaxSubFrames}).");
+                    value,
+                    0,
+                    MaxSubFrames,
+                    $"Sub-frames number is out of valid range (0-{MaxSubFrames}).");
 
                 _subFrames = value;
             }
@@ -220,7 +222,7 @@ namespace Melanchall.DryWetMidi.Smf
         #region Methods
 
         /// <summary>
-        /// Gets SMPTE format from a byte containing format and number of hours.
+        ///     Gets SMPTE format from a byte containing format and number of hours.
         /// </summary>
         /// <param name="formatAndHours">Byte containing format and number of hours.</param>
         /// <returns>SMPTE format in terms of frame rate.</returns>
@@ -230,26 +232,27 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets number of hours from a byte containing format and number of hours.
+        ///     Gets number of hours from a byte containing format and number of hours.
         /// </summary>
         /// <param name="formatAndHours">Byte containing format and number of hours.</param>
         /// <returns>Number of hours.</returns>
         private static byte GetHours(byte formatAndHours)
         {
-            return (byte)(formatAndHours & HoursMask);
+            return (byte) (formatAndHours & HoursMask);
         }
 
         /// <summary>
-        /// Gets byte containing SMPTE format and number of hours.
+        ///     Gets byte containing SMPTE format and number of hours.
         /// </summary>
         /// <returns>Byte containing SMPTE format and number of hours.</returns>
         private byte GetFormatAndHours()
         {
             var format = Formats.First(f => f.Value == Format).Key << FormatOffset;
-            return (byte)(format & Hours);
+            return (byte) (format & Hours);
         }
 
-        private static byte ProcessValue(byte value, string property, byte max, InvalidMetaEventParameterValuePolicy policy)
+        private static byte ProcessValue(byte value, string property, byte max,
+            InvalidMetaEventParameterValuePolicy policy)
         {
             if (value <= max)
                 return value;
@@ -257,7 +260,8 @@ namespace Melanchall.DryWetMidi.Smf
             switch (policy)
             {
                 case InvalidMetaEventParameterValuePolicy.Abort:
-                    throw new InvalidMetaEventParameterValueException($"{value} is invalid value for the {property} of a SMPTE Offset event.", value);
+                    throw new InvalidMetaEventParameterValueException(
+                        $"{value} is invalid value for the {property} of a SMPTE Offset event.", value);
                 case InvalidMetaEventParameterValuePolicy.SnapToLimits:
                     return Math.Min(value, max);
             }
@@ -270,7 +274,7 @@ namespace Melanchall.DryWetMidi.Smf
         #region Overrides
 
         /// <summary>
-        /// Reads content of a MIDI meta event.
+        ///     Reads content of a MIDI meta event.
         /// </summary>
         /// <param name="reader">Reader to read the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be read.</param>
@@ -282,29 +286,29 @@ namespace Melanchall.DryWetMidi.Smf
             var formatAndHours = reader.ReadByte();
             Format = GetFormat(formatAndHours);
             Hours = ProcessValue(GetHours(formatAndHours),
-                                 nameof(Hours),
-                                 MaxHours,
-                                 invalidMetaEventParameterValuePolicy);
+                nameof(Hours),
+                MaxHours,
+                invalidMetaEventParameterValuePolicy);
             Minutes = ProcessValue(reader.ReadByte(),
-                                   nameof(Minutes),
-                                   MaxMinutes,
-                                   invalidMetaEventParameterValuePolicy);
+                nameof(Minutes),
+                MaxMinutes,
+                invalidMetaEventParameterValuePolicy);
             Seconds = ProcessValue(reader.ReadByte(),
-                                   nameof(Seconds),
-                                   MaxSeconds,
-                                   invalidMetaEventParameterValuePolicy);
+                nameof(Seconds),
+                MaxSeconds,
+                invalidMetaEventParameterValuePolicy);
             Frames = ProcessValue(reader.ReadByte(),
-                                  nameof(Frames),
-                                  MaxFrames[Format],
-                                  invalidMetaEventParameterValuePolicy);
+                nameof(Frames),
+                MaxFrames[Format],
+                invalidMetaEventParameterValuePolicy);
             SubFrames = ProcessValue(reader.ReadByte(),
-                                     nameof(SubFrames),
-                                     MaxSubFrames,
-                                     invalidMetaEventParameterValuePolicy);
+                nameof(SubFrames),
+                MaxSubFrames,
+                invalidMetaEventParameterValuePolicy);
         }
 
         /// <summary>
-        /// Writes content of a MIDI meta event.
+        ///     Writes content of a MIDI meta event.
         /// </summary>
         /// <param name="writer">Writer to write the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
@@ -318,7 +322,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets the size of the content of a MIDI meta event.
+        ///     Gets the size of the content of a MIDI meta event.
         /// </summary>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
         /// <returns>Size of the event's content.</returns>
@@ -328,7 +332,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Clones event by creating a copy of it.
+        ///     Clones event by creating a copy of it.
         /// </summary>
         /// <returns>Copy of the event.</returns>
         protected override MidiEvent CloneEvent()
@@ -337,7 +341,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()

@@ -35,17 +35,17 @@
 namespace Sanford.Multimedia.Midi
 {
 	/// <summary>
-	/// Represents functionality for building MIDI messages.
+	///     Represents functionality for building MIDI messages.
 	/// </summary>
 	public interface IMessageBuilder
-	{
+    {
         #region IMessageBuilder Members
 
-        /// <summary>
-        /// Builds the MIDI message.
-        /// </summary>
-		void Build();
+	    /// <summary>
+	    ///     Builds the MIDI message.
+	    /// </summary>
+	    void Build();
 
         #endregion
-	}
+    }
 }

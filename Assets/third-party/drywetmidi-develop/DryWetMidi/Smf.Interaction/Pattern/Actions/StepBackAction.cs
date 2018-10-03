@@ -21,7 +21,8 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             context.SaveTime(time);
 
-            var convertedTime = TimeConverter.ConvertFrom(((MidiTimeSpan)time).Subtract(Step, TimeSpanMode.TimeLength), tempoMap);
+            var convertedTime =
+                TimeConverter.ConvertFrom(((MidiTimeSpan) time).Subtract(Step, TimeSpanMode.TimeLength), tempoMap);
             return new PatternActionResult(Math.Max(convertedTime, 0));
         }
 

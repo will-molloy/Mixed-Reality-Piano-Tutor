@@ -1,62 +1,58 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+
 /// <summary>
-/// Positions the enemies and controll their death
+///     Positions the enemies and controll their death
 /// </summary>
 public class EnemyManager : MonoBehaviour
 {
     /// <summary>
-    /// List of all the enemies
+    ///     List of all the enemies
     /// </summary>
-    static List<GameObject> enemies = new List<GameObject>();
+    private static readonly List<GameObject> enemies = new List<GameObject>();
 
     /// <summary>
-    /// The prefab used to spawn the enemy
+    ///     Type of the agent from the prefab
     /// </summary>
-    public GameObject enemyPrefab;
+    private int agentType;
 
     /// <summary>
-    /// Check if the NavMesh is ready
+    ///     Type of agent accepted by the NavMesh
     /// </summary>
-    private bool isReady = false;
+    private int agentTypeNavMeshID;
 
     /// <summary>
-    /// Number of tries to set a prefab
-    /// </summary>
-    private int noNavMeshCount = 0;
-
-    /// <summary>
-    /// Center of the current navMesh
+    ///     Center of the current navMesh
     /// </summary>
     private Vector3 centerNavMesh;
 
     /// <summary>
-    /// Type of agent accepted by the NavMesh
+    ///     The prefab used to spawn the enemy
     /// </summary>
-    private int agentTypeNavMeshID = 0;
+    public GameObject enemyPrefab;
 
     /// <summary>
-    /// Type of the agent from the prefab
+    ///     Check if the NavMesh is ready
     /// </summary>
-    private int agentType = 0;
-    void Update()
+    private bool isReady;
+
+    /// <summary>
+    ///     Number of tries to set a prefab
+    /// </summary>
+    private int noNavMeshCount;
+
+    private void Update()
     {
         //Try to create an enemy on the navMesh
-        if (isReady && enemies.Count == 0 && noNavMeshCount < 20)
-        {
-            Create();
-        }
+        if (isReady && enemies.Count == 0 && noNavMeshCount < 20) Create();
 
         //Clear all the empty items
-        if (enemies.Count > 0)
-        {
-            enemies.RemoveAll(item => item == null);
-        }
+        if (enemies.Count > 0) enemies.RemoveAll(item => item == null);
     }
 
     //A new navmesh has been created
-    void StartNavMesh()
+    private void StartNavMesh()
     {
         //Clear all the enemies
         Clear();
@@ -66,40 +62,33 @@ public class EnemyManager : MonoBehaviour
     private void OnEnable()
     {
         ZEDSpatialMapping.OnMeshStarted += StartNavMesh;
-		NavMeshSurface.OnNavMeshReady += Ready;
+        NavMeshSurface.OnNavMeshReady += Ready;
 
         //Set the ZEDLight component on the object if a light is active
-        Component[] lights = enemyPrefab.GetComponentsInChildren(typeof(Light));
+        var lights = enemyPrefab.GetComponentsInChildren(typeof(Light));
         foreach (Light l in lights)
-        {
             if (!l.gameObject.GetComponent<ZEDLight>())
-            {
                 l.gameObject.AddComponent<ZEDLight>();
-            }
-        }
     }
 
     private void Start()
     {
-        UnityEngine.AI.NavMeshAgent c;
-        if ((c = enemyPrefab.GetComponent<UnityEngine.AI.NavMeshAgent>()) != null)
-        {
-            agentType = c.agentTypeID;
-        }
+        NavMeshAgent c;
+        if ((c = enemyPrefab.GetComponent<NavMeshAgent>()) != null) agentType = c.agentTypeID;
     }
 
     private void OnDisable()
     {
         ZEDSpatialMapping.OnMeshStarted -= StartNavMesh;
-		NavMeshSurface.OnNavMeshReady -= Ready;
+        NavMeshSurface.OnNavMeshReady -= Ready;
     }
 
     /// <summary>
-    /// Event sent from the NavMesh
+    ///     Event sent from the NavMesh
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    void Ready(object sender, NavMeshSurface.PositionEventArgs e)
+    private void Ready(object sender, NavMeshSurface.PositionEventArgs e)
     {
         centerNavMesh = e.position;
         isReady = e.valid;
@@ -114,28 +103,25 @@ public class EnemyManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Destroy all the enemies and clear its container
+    ///     Destroy all the enemies and clear its container
     /// </summary>
-    void Clear()
+    private void Clear()
     {
-        foreach (GameObject o in enemies)
-        {
-            Destroy(o);
-        }
+        foreach (var o in enemies) Destroy(o);
         enemies.Clear();
     }
 
     /// <summary>
-    /// Remove a particular GameObject
+    ///     Remove a particular GameObject
     /// </summary>
     /// <param name="o"></param>
-    static void Destroyed(GameObject o)
+    private static void Destroyed(GameObject o)
     {
         enemies.Remove(o);
     }
 
     /// <summary>
-    /// Try to create an agent on the navMesh
+    ///     Try to create an agent on the navMesh
     /// </summary>
     public void Create()
     {
@@ -145,19 +131,19 @@ public class EnemyManager : MonoBehaviour
             Debug.LogWarning("The agent ID differs from the NavMesh");
             return;
         }
+
         //Create a gameobject to try to set it on the NavMesh
         enemies.Add(Instantiate(enemyPrefab, centerNavMesh, Quaternion.identity));
-        List<GameObject> notActivated = new List<GameObject>();
+        var notActivated = new List<GameObject>();
 
         //For each enemy created move it on the navMesh
-        foreach (GameObject o in enemies)
+        foreach (var o in enemies)
         {
-            NavMeshAgentController a = o.GetComponent<NavMeshAgentController>();
+            var a = o.GetComponent<NavMeshAgentController>();
             if (a.Move())
             {
                 a.GetComponent<RandomWalk>().Activate();
                 noNavMeshCount = 0;
-
             }
             else
             {
@@ -165,9 +151,9 @@ public class EnemyManager : MonoBehaviour
                 noNavMeshCount++;
             }
         }
-        
+
         //Destroy the objects missing the NavMesh
-        foreach (GameObject o in notActivated)
+        foreach (var o in notActivated)
         {
             Destroy(o);
             enemies.Remove(o);

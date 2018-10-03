@@ -1,16 +1,18 @@
 ﻿//======= Copyright (c) Stereolabs Corporation, All rights reserved. ===============
 
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
-/// Spawns and destroys the bunnies
+///     Spawns and destroys the bunnies
 /// </summary>
-public class EnemyBehavior : MonoBehaviour {
-
+public class EnemyBehavior : MonoBehaviour
+{
     private const float lifeMax = 100;
-    public float life = lifeMax;
     private SphereCollider capsuleCollider;
-    private bool isDying = false;
+    private bool isDying;
+    public float life = lifeMax;
+
     private void Start()
     {
         life = lifeMax;
@@ -20,12 +22,12 @@ public class EnemyBehavior : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
-
+    private void Update()
+    {
     }
 
     /// <summary>
-    /// Set the dammage to an object
+    ///     Set the dammage to an object
     /// </summary>
     /// <param name="value"></param>
     public void Dammage(float value)
@@ -33,32 +35,27 @@ public class EnemyBehavior : MonoBehaviour {
         if (!isDying)
         {
             life -= value;
-            if (life < 0)
-            {
-                Dead();
-            }
+            if (life < 0) Dead();
         }
     }
 
     /// <summary>
-    /// Disables the gameobject
+    ///     Disables the gameobject
     /// </summary>
     public void StartSinking()
     {
         capsuleCollider.enabled = false;
         Destroy(gameObject, 2.0f);
-
     }
 
     /// <summary>
-    /// Play the animation of dead
+    ///     Play the animation of dead
     /// </summary>
     private void Dead()
     {
         isDying = true;
-        GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
+        GetComponent<NavMeshAgent>().enabled = false;
         GetComponent<Animator>().SetTrigger("Dead");
-      
     }
 
     private void OnDestroy()

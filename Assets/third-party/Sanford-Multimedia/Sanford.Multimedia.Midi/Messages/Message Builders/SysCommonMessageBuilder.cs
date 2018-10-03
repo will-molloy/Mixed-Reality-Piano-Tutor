@@ -37,33 +37,50 @@ using System.Collections;
 namespace Sanford.Multimedia.Midi
 {
     /// <summary>
-    /// Provides functionality for building SysCommonMessages.
+    ///     Provides functionality for building SysCommonMessages.
     /// </summary>
     public class SysCommonMessageBuilder : IMessageBuilder
     {
+        #region IMessageBuilder Members
+
+        /// <summary>
+        ///     Builds a SysCommonMessage.
+        /// </summary>
+        public void Build()
+        {
+            Result = (SysCommonMessage) messageCache[Message];
+
+            if (Result == null)
+            {
+                Result = new SysCommonMessage(Message);
+
+                messageCache.Add(Message, Result);
+            }
+        }
+
+        #endregion
+
         #region SysCommonMessageBuilder Members
 
         #region Class Fields
 
         // Stores the SystemCommonMessages.
-        private static Hashtable messageCache = Hashtable.Synchronized(new Hashtable());
+        private static readonly Hashtable messageCache = Hashtable.Synchronized(new Hashtable());
 
         #endregion
 
         #region Fields
 
         // The SystemCommonMessage as a packed integer.
-        private int message = 0;
 
         // The built SystemCommonMessage.
-        private SysCommonMessage result = null;
 
         #endregion
 
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the SysCommonMessageBuilder class.
+        ///     Initializes a new instance of the SysCommonMessageBuilder class.
         /// </summary>
         public SysCommonMessageBuilder()
         {
@@ -71,16 +88,16 @@ namespace Sanford.Multimedia.Midi
         }
 
         /// <summary>
-        /// Initializes a new instance of the SysCommonMessageBuilder class 
-        /// with the specified SystemCommonMessage.
+        ///     Initializes a new instance of the SysCommonMessageBuilder class
+        ///     with the specified SystemCommonMessage.
         /// </summary>
         /// <param name="message">
-        /// The SysCommonMessage to use for initializing the 
-        /// SysCommonMessageBuilder.
+        ///     The SysCommonMessage to use for initializing the
+        ///     SysCommonMessageBuilder.
         /// </param>
         /// <remarks>
-        /// The SysCommonMessageBuilder uses the specified SysCommonMessage to 
-        /// initialize its property values.
+        ///     The SysCommonMessageBuilder uses the specified SysCommonMessage to
+        ///     initialize its property values.
         /// </remarks>
         public SysCommonMessageBuilder(SysCommonMessage message)
         {
@@ -92,140 +109,81 @@ namespace Sanford.Multimedia.Midi
         #region Methods
 
         /// <summary>
-        /// Initializes the SysCommonMessageBuilder with the specified 
-        /// SysCommonMessage.
+        ///     Initializes the SysCommonMessageBuilder with the specified
+        ///     SysCommonMessage.
         /// </summary>
         /// <param name="message">
-        /// The SysCommonMessage to use for initializing the 
-        /// SysCommonMessageBuilder.
+        ///     The SysCommonMessage to use for initializing the
+        ///     SysCommonMessageBuilder.
         /// </param>
         public void Initialize(SysCommonMessage message)
         {
-            this.message = message.Message;
+            Message = message.Message;
         }
 
         /// <summary>
-        /// Clears the SysCommonMessageBuilder cache.
+        ///     Clears the SysCommonMessageBuilder cache.
         /// </summary>
         public static void Clear()
         {
             messageCache.Clear();
-        }        
+        }
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Gets the number of messages in the SysCommonMessageBuilder cache.
+        ///     Gets the number of messages in the SysCommonMessageBuilder cache.
         /// </summary>
-        public static int Count
-        {
-            get
-            {
-                return messageCache.Count;
-            }
-        }
+        public static int Count => messageCache.Count;
 
         /// <summary>
-        /// Gets the built SysCommonMessage.
+        ///     Gets the built SysCommonMessage.
         /// </summary>
-        public SysCommonMessage Result
-        {
-            get
-            {
-                return result;
-            }
-        }
+        public SysCommonMessage Result { get; private set; }
 
         /// <summary>
-        /// Gets or sets the SysCommonMessage as a packed integer.
+        ///     Gets or sets the SysCommonMessage as a packed integer.
         /// </summary>
-        internal int Message
-        {
-            get
-            {
-                return message;
-            }
-            set
-            {
-                message = value;
-            }
-        }
+        internal int Message { get; set; }
 
         /// <summary>
-        /// Gets or sets the type of SysCommonMessage.
+        ///     Gets or sets the type of SysCommonMessage.
         /// </summary>
         public SysCommonType Type
         {
-            get
-            {
-                return (SysCommonType)ShortMessage.UnpackStatus(message);
-            }
-            set
-            {
-                message = ShortMessage.PackStatus(message, (int)value);
-            }
+            get { return (SysCommonType) ShortMessage.UnpackStatus(Message); }
+            set { Message = ShortMessage.PackStatus(Message, (int) value); }
         }
 
         /// <summary>
-        /// Gets or sets the first data value to use for building the 
-        /// SysCommonMessage.
+        ///     Gets or sets the first data value to use for building the
+        ///     SysCommonMessage.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Data1 is set to a value less than zero or greater than 127.
+        ///     Data1 is set to a value less than zero or greater than 127.
         /// </exception>
         public int Data1
         {
-            get
-            {
-                return ShortMessage.UnpackData1(message);
-            }
-            set
-            {
-                message = ShortMessage.PackData1(message, value);
-            }
+            get { return ShortMessage.UnpackData1(Message); }
+            set { Message = ShortMessage.PackData1(Message, value); }
         }
 
         /// <summary>
-        /// Gets or sets the second data value to use for building the 
-        /// SysCommonMessage.
+        ///     Gets or sets the second data value to use for building the
+        ///     SysCommonMessage.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Data2 is set to a value less than zero or greater than 127.
+        ///     Data2 is set to a value less than zero or greater than 127.
         /// </exception>
         public int Data2
         {
-            get
-            {
-                return ShortMessage.UnpackData2(message);
-            }
-            set
-            {
-                message = ShortMessage.PackData2(message, value);
-            }
+            get { return ShortMessage.UnpackData2(Message); }
+            set { Message = ShortMessage.PackData2(Message, value); }
         }
 
         #endregion
-
-        #endregion
-
-        #region IMessageBuilder Members
-
-        /// <summary>
-        /// Builds a SysCommonMessage.
-        /// </summary>
-        public void Build()
-        {
-            result = (SysCommonMessage)messageCache[message];
-
-            if(result == null)
-            {
-                result = new SysCommonMessage(message);
-
-                messageCache.Add(message, result);
-            }
-        }
 
         #endregion
     }

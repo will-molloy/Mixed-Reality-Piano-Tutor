@@ -1,13 +1,13 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Collection of <see cref="MidiEvent"/> objects.
+    ///     Collection of <see cref="MidiEvent" /> objects.
     /// </summary>
     public sealed class EventsCollection : IEnumerable<MidiEvent>
     {
@@ -20,7 +20,7 @@ namespace Melanchall.DryWetMidi.Smf
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventsCollection"/>.
+        ///     Initializes a new instance of the <see cref="EventsCollection" />.
         /// </summary>
         internal EventsCollection()
         {
@@ -31,12 +31,14 @@ namespace Melanchall.DryWetMidi.Smf
         #region Properties
 
         /// <summary>
-        /// Gets or sets the event at the specified index.
+        ///     Gets or sets the event at the specified index.
         /// </summary>
         /// <param name="index">The zero-based index of the event to get or set.</param>
         /// <returns>The event at the specified index.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"> <paramref name="index"/> is less than 0;
-        /// or <paramref name="index"/> is equal to or greater than <see cref="Count"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="index" /> is less than 0;
+        ///     or <paramref name="index" /> is equal to or greater than <see cref="Count" />.
+        /// </exception>
         /// <exception cref="ArgumentNullException">value is null</exception>
         public MidiEvent this[int index]
         {
@@ -56,7 +58,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets the number of events contained in the collection.
+        ///     Gets the number of events contained in the collection.
         /// </summary>
         public int Count => _events.Count;
 
@@ -65,15 +67,15 @@ namespace Melanchall.DryWetMidi.Smf
         #region Methods
 
         /// <summary>
-        /// Adds an event to the end of collection.
+        ///     Adds an event to the end of collection.
         /// </summary>
         /// <param name="midiEvent">The event to be added to the end of the collection.</param>
         /// <remarks>
-        /// Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
-        /// track chunk structure. End Of Track event will be written to the track chunk automatically on
-        /// <see cref="MidiFile.Write(string, bool, MidiFileFormat, WritingSettings)"/>.
+        ///     Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
+        ///     track chunk structure. End Of Track event will be written to the track chunk automatically on
+        ///     <see cref="MidiFile.Write(string, bool, MidiFileFormat, WritingSettings)" />.
         /// </remarks>
-        /// <exception cref="ArgumentNullException"><paramref name="midiEvent"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="midiEvent" /> is null.</exception>
         public void Add(MidiEvent midiEvent)
         {
             ThrowIfArgument.IsNull(nameof(midiEvent), midiEvent);
@@ -82,15 +84,15 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Adds events to the end of collection.
+        ///     Adds events to the end of collection.
         /// </summary>
         /// <param name="events">Events to be added to the end of the collection.</param>
         /// <remarks>
-        /// Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
-        /// track chunk structure. End Of Track event will be written to the track chunk automatically on
-        /// <see cref="MidiFile.Write(string, bool, MidiFileFormat, WritingSettings)"/>.
+        ///     Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
+        ///     track chunk structure. End Of Track event will be written to the track chunk automatically on
+        ///     <see cref="MidiFile.Write(string, bool, MidiFileFormat, WritingSettings)" />.
         /// </remarks>
-        /// <exception cref="ArgumentNullException"><paramref name="events"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="events" /> is null.</exception>
         public void AddRange(IEnumerable<MidiEvent> events)
         {
             ThrowIfArgument.IsNull(nameof(events), events);
@@ -99,18 +101,20 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Inserts an event into the collection at the specified index.
+        ///     Inserts an event into the collection at the specified index.
         /// </summary>
         /// <remarks>
-        /// Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
-        /// track chunk structure. End Of Track event will be written to the track chunk automatically on
-        /// a MIDI file writing.
+        ///     Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
+        ///     track chunk structure. End Of Track event will be written to the track chunk automatically on
+        ///     a MIDI file writing.
         /// </remarks>
         /// <param name="index">The zero-based index at which the event should be inserted.</param>
         /// <param name="midiEvent">The event to insert.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="midiEvent"/> is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than 0. -or-
-        /// <paramref name="index"/> is greater than <see cref="Count"/>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="midiEvent" /> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="index" /> is less than 0. -or-
+        ///     <paramref name="index" /> is greater than <see cref="Count" />.
+        /// </exception>
         public void Insert(int index, MidiEvent midiEvent)
         {
             ThrowIfArgument.IsNull(nameof(midiEvent), midiEvent);
@@ -120,18 +124,20 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Inserts a set of events into the collection at the specified index.
+        ///     Inserts a set of events into the collection at the specified index.
         /// </summary>
         /// <remarks>
-        /// Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
-        /// track chunk structure. End Of Track event will be written to the track chunk automatically on
-        /// a MIDI file writing.
+        ///     Note that End Of Track events cannot be added into the collection since it may cause inconsistence in a
+        ///     track chunk structure. End Of Track event will be written to the track chunk automatically on
+        ///     a MIDI file writing.
         /// </remarks>
         /// <param name="index">The zero-based index at which the events should be inserted.</param>
         /// <param name="midiEvents">The events to insert.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="midiEvents"/> is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than 0. -or-
-        /// <paramref name="index"/> is greater than <see cref="Count"/>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="midiEvents" /> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="index" /> is less than 0. -or-
+        ///     <paramref name="index" /> is greater than <see cref="Count" />.
+        /// </exception>
         public void InsertRange(int index, IEnumerable<MidiEvent> midiEvents)
         {
             ThrowIfArgument.IsNull(nameof(midiEvents), midiEvents);
@@ -141,12 +147,14 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Removes the first occurrence of a specific event from the collection.
+        ///     Removes the first occurrence of a specific event from the collection.
         /// </summary>
         /// <param name="midiEvent">The event to remove from the collection. The value cannot be null.</param>
-        /// <returns>true if event is successfully removed; otherwise, false. This method also returns
-        /// false if event was not found in the collection.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="midiEvent"/> is null.</exception>
+        /// <returns>
+        ///     true if event is successfully removed; otherwise, false. This method also returns
+        ///     false if event was not found in the collection.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="midiEvent" /> is null.</exception>
         public bool Remove(MidiEvent midiEvent)
         {
             ThrowIfArgument.IsNull(nameof(midiEvent), midiEvent);
@@ -155,11 +163,13 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Removes the event at the specified index of the collection.
+        ///     Removes the event at the specified index of the collection.
         /// </summary>
         /// <param name="index">The zero-based index of the event to remove.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than 0; or <paramref name="index"/>
-        /// is equal to or greater than <see cref="Count"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="index" /> is less than 0; or <paramref name="index" />
+        ///     is equal to or greater than <see cref="Count" />.
+        /// </exception>
         public void RemoveAt(int index)
         {
             ThrowIfArgument.IsInvalidIndex(nameof(index), index, _events.Count);
@@ -168,12 +178,14 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Removes all the events that match the conditions defined by the specified predicate.
+        ///     Removes all the events that match the conditions defined by the specified predicate.
         /// </summary>
-        /// <param name="match">The <see cref="Predicate{T}"/> delegate that defines the conditions
-        /// of the events to remove.</param>
-        /// <returns>The number of events removed from the <see cref="EventsCollection"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="match"/> is null.</exception>
+        /// <param name="match">
+        ///     The <see cref="Predicate{T}" /> delegate that defines the conditions
+        ///     of the events to remove.
+        /// </param>
+        /// <returns>The number of events removed from the <see cref="EventsCollection" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="match" /> is null.</exception>
         public int RemoveAll(Predicate<MidiEvent> match)
         {
             ThrowIfArgument.IsNull(nameof(match), match);
@@ -182,13 +194,15 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Searches for the specified event and returns the zero-based index of the first
-        /// occurrence within the entire <see cref="EventsCollection"/>.
+        ///     Searches for the specified event and returns the zero-based index of the first
+        ///     occurrence within the entire <see cref="EventsCollection" />.
         /// </summary>
-        /// <param name="midiEvent">The event to locate in the <see cref="EventsCollection"/>.</param>
-        /// <returns>The zero-based index of the first occurrence of event within the entire
-        /// <see cref="EventsCollection"/>, if found; otherwise, –1.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="midiEvent"/> is null.</exception>
+        /// <param name="midiEvent">The event to locate in the <see cref="EventsCollection" />.</param>
+        /// <returns>
+        ///     The zero-based index of the first occurrence of event within the entire
+        ///     <see cref="EventsCollection" />, if found; otherwise, –1.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="midiEvent" /> is null.</exception>
         public int IndexOf(MidiEvent midiEvent)
         {
             ThrowIfArgument.IsNull(nameof(midiEvent), midiEvent);
@@ -197,7 +211,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Removes all events from the <see cref="EventsCollection"/>.
+        ///     Removes all events from the <see cref="EventsCollection" />.
         /// </summary>
         public void Clear()
         {
@@ -209,18 +223,18 @@ namespace Melanchall.DryWetMidi.Smf
         #region IEnumerable<MidiEvent>
 
         /// <summary>
-        /// Returns an enumerator that iterates through the <see cref="EventsCollection"/>.
+        ///     Returns an enumerator that iterates through the <see cref="EventsCollection" />.
         /// </summary>
-        /// <returns>An enumerator for the <see cref="EventsCollection"/>.</returns>
+        /// <returns>An enumerator for the <see cref="EventsCollection" />.</returns>
         public IEnumerator<MidiEvent> GetEnumerator()
         {
             return _events.GetEnumerator();
         }
 
         /// <summary>
-        /// Returns an enumerator that iterates through the <see cref="EventsCollection"/>.
+        ///     Returns an enumerator that iterates through the <see cref="EventsCollection" />.
         /// </summary>
-        /// <returns>An enumerator for the <see cref="EventsCollection"/>.</returns>
+        /// <returns>An enumerator for the <see cref="EventsCollection" />.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _events.GetEnumerator();

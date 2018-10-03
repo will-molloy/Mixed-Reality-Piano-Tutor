@@ -1,5 +1,5 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System;
+﻿using System;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf.Interaction
 {
@@ -11,11 +11,13 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         {
             var ticksPerQuarterNoteTimeDivision = tempoMap.TimeDivision as TicksPerQuarterNoteTimeDivision;
             if (ticksPerQuarterNoteTimeDivision == null)
-                throw new ArgumentException("Time division is not supported for time span conversion.", nameof(tempoMap));
+                throw new ArgumentException("Time division is not supported for time span conversion.",
+                    nameof(tempoMap));
 
             //
 
-            var xy = MathUtilities.SolveDiophantineEquation(4 * ticksPerQuarterNoteTimeDivision.TicksPerQuarterNote, -timeSpan);
+            var xy = MathUtilities.SolveDiophantineEquation(4 * ticksPerQuarterNoteTimeDivision.TicksPerQuarterNote,
+                -timeSpan);
             return new MusicalTimeSpan(Math.Abs(xy.Item1), Math.Abs(xy.Item2));
         }
 
@@ -23,11 +25,13 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         {
             var ticksPerQuarterNoteTimeDivision = tempoMap.TimeDivision as TicksPerQuarterNoteTimeDivision;
             if (ticksPerQuarterNoteTimeDivision == null)
-                throw new ArgumentException("Time division is not supported for time span conversion.", nameof(tempoMap));
+                throw new ArgumentException("Time division is not supported for time span conversion.",
+                    nameof(tempoMap));
 
-            var musicalTimeSpan = (MusicalTimeSpan)timeSpan;
+            var musicalTimeSpan = (MusicalTimeSpan) timeSpan;
 
-            return 4 * musicalTimeSpan.Numerator * ticksPerQuarterNoteTimeDivision.TicksPerQuarterNote / musicalTimeSpan.Denominator;
+            return 4 * musicalTimeSpan.Numerator * ticksPerQuarterNoteTimeDivision.TicksPerQuarterNote /
+                   musicalTimeSpan.Denominator;
         }
 
         #endregion

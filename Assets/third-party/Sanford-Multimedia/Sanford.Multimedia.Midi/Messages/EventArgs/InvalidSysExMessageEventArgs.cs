@@ -5,19 +5,13 @@ namespace Sanford.Multimedia.Midi
 {
     public class InvalidSysExMessageEventArgs : EventArgs
     {
-        private byte[] messageData;
+        private readonly byte[] messageData;
 
         public InvalidSysExMessageEventArgs(byte[] messageData)
         {
             this.messageData = messageData;
         }
 
-        public ICollection MessageData
-        {
-            get
-            {
-                return messageData;
-            }
-        }
+        public ICollection MessageData => messageData;
     }
 }

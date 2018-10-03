@@ -7,23 +7,6 @@ namespace Melanchall.DryWetMidi.MusicTheory
 {
     internal static class ScaleParser
     {
-        #region Constants
-
-        private const string RootNoteNameGroupName = "rn";
-        private const string IntervalsMnemonicGroupName = "im";
-        private const string IntervalGroupName = "i";
-
-        private static readonly string IntervalGroup = $"(?<{IntervalGroupName}>({string.Join("|", IntervalParser.GetPatterns())})\\s*)+";
-        private static readonly string IntervalsMnemonicGroup = $"(?<{IntervalsMnemonicGroupName}>.+?)";
-
-        private static readonly string[] Patterns = NoteNameParser.GetPatterns()
-                                                                  .Select(p => $@"(?<{RootNoteNameGroupName}>{p})\s*({IntervalGroup}|{IntervalsMnemonicGroup})")
-                                                                  .ToArray();
-
-        private const string ScaleIsUnknown = "Scale is unknown.";
-
-        #endregion
-
         #region Methods
 
         internal static ParsingResult TryParse(string input, out Scale scale)
@@ -67,7 +50,8 @@ namespace Melanchall.DryWetMidi.MusicTheory
                     })
                     .ToArray();
 
-                var notParsedResult = intervalsParsingResults.FirstOrDefault(r => r.ParsingResult.Status != ParsingStatus.Parsed);
+                var notParsedResult =
+                    intervalsParsingResults.FirstOrDefault(r => r.ParsingResult.Status != ParsingStatus.Parsed);
                 if (notParsedResult != null)
                     return notParsedResult.ParsingResult;
 
@@ -89,6 +73,25 @@ namespace Melanchall.DryWetMidi.MusicTheory
             scale = new Scale(intervals, rootNoteName);
             return ParsingResult.Parsed;
         }
+
+        #endregion
+
+        #region Constants
+
+        private const string RootNoteNameGroupName = "rn";
+        private const string IntervalsMnemonicGroupName = "im";
+        private const string IntervalGroupName = "i";
+
+        private static readonly string IntervalGroup =
+            $"(?<{IntervalGroupName}>({string.Join("|", IntervalParser.GetPatterns())})\\s*)+";
+
+        private static readonly string IntervalsMnemonicGroup = $"(?<{IntervalsMnemonicGroupName}>.+?)";
+
+        private static readonly string[] Patterns = NoteNameParser.GetPatterns()
+            .Select(p => $@"(?<{RootNoteNameGroupName}>{p})\s*({IntervalGroup}|{IntervalsMnemonicGroup})")
+            .ToArray();
+
+        private const string ScaleIsUnknown = "Scale is unknown.";
 
         #endregion
     }

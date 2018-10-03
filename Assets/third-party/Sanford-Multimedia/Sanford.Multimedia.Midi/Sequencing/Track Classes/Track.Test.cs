@@ -16,23 +16,20 @@ namespace Sanford.Multimedia.Midi
         [Conditional("DEBUG")]
         private static void TestInsert()
         {
-            Track track = new Track();
-            int midiEventCount = 2000;
-            int positionMax = 32000;
-            int endOfTrackOffset = 1000;
-            int length = 0;
-            int position = 0;
-            ChannelMessage message = new ChannelMessage(ChannelCommand.NoteOff, 0, 60, 0);
-            Random r = new Random();
+            var track = new Track();
+            var midiEventCount = 2000;
+            var positionMax = 32000;
+            var endOfTrackOffset = 1000;
+            var length = 0;
+            var position = 0;
+            var message = new ChannelMessage(ChannelCommand.NoteOff, 0, 60, 0);
+            var r = new Random();
 
-            for(int i = 0; i < midiEventCount; i++)
+            for (var i = 0; i < midiEventCount; i++)
             {
                 position = r.Next(positionMax);
 
-                if(position > length)
-                {
-                    length = position;
-                }
+                if (position > length) length = position;
 
                 track.Insert(position, message);
             }
@@ -48,8 +45,8 @@ namespace Sanford.Multimedia.Midi
         [Conditional("DEBUG")]
         private static void TestRemoveAt()
         {
-            Track a = new Track();
-            ChannelMessage message = new ChannelMessage(ChannelCommand.NoteOff, 0, 60, 0);
+            var a = new Track();
+            var message = new ChannelMessage(ChannelCommand.NoteOff, 0, 60, 0);
 
             a.Insert(0, message);
             a.Insert(10, message);
@@ -57,7 +54,7 @@ namespace Sanford.Multimedia.Midi
             a.Insert(30, message);
             a.Insert(40, message);
 
-            int count = a.Count;
+            var count = a.Count;
 
             a.RemoveAt(0);
 
@@ -79,14 +76,14 @@ namespace Sanford.Multimedia.Midi
         [Conditional("DEBUG")]
         private static void TestMerge()
         {
-            Track a = new Track();
-            Track b = new Track();
+            var a = new Track();
+            var b = new Track();
 
             a.Merge(b);
 
             Debug.Assert(a.Count == 1);
 
-            ChannelMessage message = new ChannelMessage(ChannelCommand.NoteOff, 0, 60, 0);
+            var message = new ChannelMessage(ChannelCommand.NoteOff, 0, 60, 0);
 
             b.Insert(0, message);
             b.Insert(10, message);
@@ -108,7 +105,7 @@ namespace Sanford.Multimedia.Midi
             a.Insert(30, message);
             a.Insert(40, message);
 
-            int count = a.Count;
+            var count = a.Count;
 
             a.Merge(b);
 

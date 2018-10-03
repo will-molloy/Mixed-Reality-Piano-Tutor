@@ -37,7 +37,7 @@ using System;
 namespace Sanford.Multimedia.Midi
 {
     /// <summary>
-    /// Dispatches IMidiMessages to their corresponding sink.
+    ///     Dispatches IMidiMessages to their corresponding sink.
     /// </summary>
     public class MessageDispatcher
     {
@@ -58,42 +58,39 @@ namespace Sanford.Multimedia.Midi
         #endregion
 
         /// <summary>
-        /// Dispatches IMidiMessages to their corresponding sink.
+        ///     Dispatches IMidiMessages to their corresponding sink.
         /// </summary>
         /// <param name="message">
-        /// The IMidiMessage to dispatch.
+        ///     The IMidiMessage to dispatch.
         /// </param>
         public void Dispatch(IMidiMessage message)
         {
             #region Require
 
-            if(message == null)
-            {
-                throw new ArgumentNullException("message");
-            }
+            if (message == null) throw new ArgumentNullException("message");
 
             #endregion
 
-            switch(message.MessageType)
+            switch (message.MessageType)
             {
                 case MessageType.Channel:
-                    OnChannelMessageDispatched(new ChannelMessageEventArgs((ChannelMessage)message));
+                    OnChannelMessageDispatched(new ChannelMessageEventArgs((ChannelMessage) message));
                     break;
 
                 case MessageType.SystemExclusive:
-                    OnSysExMessageDispatched(new SysExMessageEventArgs((SysExMessage)message));
+                    OnSysExMessageDispatched(new SysExMessageEventArgs((SysExMessage) message));
                     break;
 
                 case MessageType.Meta:
-                    OnMetaMessageDispatched(new MetaMessageEventArgs((MetaMessage)message));
+                    OnMetaMessageDispatched(new MetaMessageEventArgs((MetaMessage) message));
                     break;
 
                 case MessageType.SystemCommon:
-                    OnSysCommonMessageDispatched(new SysCommonMessageEventArgs((SysCommonMessage)message));
+                    OnSysCommonMessageDispatched(new SysCommonMessageEventArgs((SysCommonMessage) message));
                     break;
 
                 case MessageType.SystemRealtime:
-                    switch(((SysRealtimeMessage)message).SysRealtimeType)
+                    switch (((SysRealtimeMessage) message).SysRealtimeType)
                     {
                         case SysRealtimeType.ActiveSense:
                             OnSysRealtimeMessageDispatched(SysRealtimeMessageEventArgs.ActiveSense);
@@ -130,52 +127,37 @@ namespace Sanford.Multimedia.Midi
 
         protected virtual void OnChannelMessageDispatched(ChannelMessageEventArgs e)
         {
-            EventHandler<ChannelMessageEventArgs> handler = ChannelMessageDispatched;
+            var handler = ChannelMessageDispatched;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         protected virtual void OnSysExMessageDispatched(SysExMessageEventArgs e)
         {
-            EventHandler<SysExMessageEventArgs> handler = SysExMessageDispatched;
+            var handler = SysExMessageDispatched;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         protected virtual void OnSysCommonMessageDispatched(SysCommonMessageEventArgs e)
         {
-            EventHandler<SysCommonMessageEventArgs> handler = SysCommonMessageDispatched;
+            var handler = SysCommonMessageDispatched;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         protected virtual void OnSysRealtimeMessageDispatched(SysRealtimeMessageEventArgs e)
         {
-            EventHandler<SysRealtimeMessageEventArgs> handler = SysRealtimeMessageDispatched;
+            var handler = SysRealtimeMessageDispatched;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         protected virtual void OnMetaMessageDispatched(MetaMessageEventArgs e)
         {
-            EventHandler<MetaMessageEventArgs> handler = MetaMessageDispatched;
+            var handler = MetaMessageDispatched;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         #endregion

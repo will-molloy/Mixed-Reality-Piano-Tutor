@@ -1,33 +1,10 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf.Interaction
 {
     internal static class BarBeatTimeSpanParser
     {
-        #region Constants
-
-        private const string BarsGroupName = "bars";
-        private const string BeatsGroupName = "beats";
-        private const string TicksGroupName = "ticks";
-
-        private static readonly string BarsGroup = ParsingUtilities.GetNonnegativeNumberGroup(BarsGroupName);
-        private static readonly string BeatsGroup = ParsingUtilities.GetNonnegativeNumberGroup(BeatsGroupName);
-        private static readonly string TicksGroup = ParsingUtilities.GetNonnegativeNumberGroup(TicksGroupName);
-
-        private static readonly string Divider = Regex.Escape(".");
-
-        private static readonly string[] Patterns = new[]
-        {
-            $@"{BarsGroup}\s*{Divider}\s*{BeatsGroup}\s*{Divider}\s*{TicksGroup}",
-        };
-
-        private const string BarsIsOutOfRange = "Bars number is out of range.";
-        private const string BeatsIsOutOfRange = "Beats number is out of range.";
-        private const string TicksIsOutOfRange = "Ticks number is out of range.";
-
-        #endregion
-
         #region Methods
 
         internal static ParsingResult TryParse(string input, out BarBeatTimeSpan timeSpan)
@@ -56,6 +33,29 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             timeSpan = new BarBeatTimeSpan(bars, beats, ticks);
             return ParsingResult.Parsed;
         }
+
+        #endregion
+
+        #region Constants
+
+        private const string BarsGroupName = "bars";
+        private const string BeatsGroupName = "beats";
+        private const string TicksGroupName = "ticks";
+
+        private static readonly string BarsGroup = ParsingUtilities.GetNonnegativeNumberGroup(BarsGroupName);
+        private static readonly string BeatsGroup = ParsingUtilities.GetNonnegativeNumberGroup(BeatsGroupName);
+        private static readonly string TicksGroup = ParsingUtilities.GetNonnegativeNumberGroup(TicksGroupName);
+
+        private static readonly string Divider = Regex.Escape(".");
+
+        private static readonly string[] Patterns =
+        {
+            $@"{BarsGroup}\s*{Divider}\s*{BeatsGroup}\s*{Divider}\s*{TicksGroup}"
+        };
+
+        private const string BarsIsOutOfRange = "Bars number is out of range.";
+        private const string BeatsIsOutOfRange = "Beats number is out of range.";
+        private const string TicksIsOutOfRange = "Ticks number is out of range.";
 
         #endregion
     }

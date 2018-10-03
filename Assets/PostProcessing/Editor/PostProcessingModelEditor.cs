@@ -1,21 +1,20 @@
-using UnityEngine;
-using UnityEngine.PostProcessing;
 using System;
 using System.Linq.Expressions;
+using UnityEngine;
+using UnityEngine.PostProcessing;
 
 namespace UnityEditor.PostProcessing
 {
     public class PostProcessingModelEditor
     {
-        public PostProcessingModel target { get; internal set; }
-        public SerializedProperty serializedProperty { get; internal set; }
-
-        protected SerializedProperty m_SettingsProperty;
+        internal bool alwaysEnabled = false;
+        internal PostProcessingInspector inspector;
         protected SerializedProperty m_EnabledProperty;
 
-        internal bool alwaysEnabled = false;
+        protected SerializedProperty m_SettingsProperty;
         internal PostProcessingProfile profile;
-        internal PostProcessingInspector inspector;
+        public PostProcessingModel target { get; internal set; }
+        public SerializedProperty serializedProperty { get; internal set; }
 
         internal void OnPreEnable()
         {
@@ -26,10 +25,12 @@ namespace UnityEditor.PostProcessing
         }
 
         public virtual void OnEnable()
-        {}
+        {
+        }
 
         public virtual void OnDisable()
-        {}
+        {
+        }
 
         internal void OnGUI()
         {
@@ -46,11 +47,12 @@ namespace UnityEditor.PostProcessing
                 {
                     OnInspectorGUI();
                 }
+
                 EditorGUI.indentLevel--;
             }
         }
 
-        void Reset()
+        private void Reset()
         {
             var obj = serializedProperty.serializedObject;
             Undo.RecordObject(obj.targetObject, "Reset");
@@ -59,7 +61,8 @@ namespace UnityEditor.PostProcessing
         }
 
         public virtual void OnInspectorGUI()
-        {}
+        {
+        }
 
         public void Repaint()
         {

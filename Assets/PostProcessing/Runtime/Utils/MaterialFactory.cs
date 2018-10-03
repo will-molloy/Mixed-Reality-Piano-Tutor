@@ -7,11 +7,23 @@ namespace UnityEngine.PostProcessing
 
     public sealed class MaterialFactory : IDisposable
     {
-        Dictionary<string, Material> m_Materials;
+        private readonly Dictionary<string, Material> m_Materials;
 
         public MaterialFactory()
         {
             m_Materials = new Dictionary<string, Material>();
+        }
+
+        public void Dispose()
+        {
+            var enumerator = m_Materials.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var material = enumerator.Current.Value;
+                GraphicsUtils.Destroy(material);
+            }
+
+            m_Materials.Clear();
         }
 
         public Material Get(string shaderName)
@@ -35,18 +47,6 @@ namespace UnityEngine.PostProcessing
             }
 
             return material;
-        }
-
-        public void Dispose()
-        {
-            var enumerator = m_Materials.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var material = enumerator.Current.Value;
-                GraphicsUtils.Destroy(material);
-            }
-
-            m_Materials.Clear();
         }
     }
 }

@@ -8,11 +8,12 @@ namespace UnityEditor.PostProcessing
 {
     public static class ReflectionUtils
     {
-        static Dictionary<KeyValuePair<object, string>, FieldInfo> s_FieldInfoFromPaths = new Dictionary<KeyValuePair<object, string>, FieldInfo>();
+        private static readonly Dictionary<KeyValuePair<object, string>, FieldInfo> s_FieldInfoFromPaths =
+            new Dictionary<KeyValuePair<object, string>, FieldInfo>();
 
         public static FieldInfo GetFieldInfoFromPath(object source, string path)
         {
-            FieldInfo field = null;
+            FieldInfo field;
             var kvp = new KeyValuePair<object, string>(source, path);
 
             if (!s_FieldInfoFromPaths.TryGetValue(kvp, out field))
@@ -44,7 +45,7 @@ namespace UnityEditor.PostProcessing
                 case ExpressionType.Convert:
                 case ExpressionType.ConvertChecked:
                     var ue = expr.Body as UnaryExpression;
-                    me = (ue != null ? ue.Operand : null) as MemberExpression;
+                    me = ue?.Operand as MemberExpression;
                     break;
                 default:
                     me = expr.Body as MemberExpression;
@@ -59,7 +60,7 @@ namespace UnityEditor.PostProcessing
             }
 
             var sb = new StringBuilder();
-            for (int i = members.Count - 1; i >= 0; i--)
+            for (var i = members.Count - 1; i >= 0; i--)
             {
                 sb.Append(members[i]);
                 if (i > 0) sb.Append('.');
@@ -87,11 +88,12 @@ namespace UnityEditor.PostProcessing
         public static object GetFieldValueFromPath(object source, ref Type baseType, string path)
         {
             var splittedPath = path.Split('.');
-            object srcObject = source;
+            var srcObject = source;
 
             foreach (var t in splittedPath)
             {
-                var fieldInfo = baseType.GetField(t, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                var fieldInfo = baseType.GetField(t,
+                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 
                 if (fieldInfo == null)
                 {
@@ -104,8 +106,8 @@ namespace UnityEditor.PostProcessing
             }
 
             return baseType == null
-                   ? null
-                   : srcObject;
+                ? null
+                : srcObject;
         }
 
         public static object GetParentObject(string path, object obj)
@@ -115,7 +117,8 @@ namespace UnityEditor.PostProcessing
             if (fields.Length == 1)
                 return obj;
 
-            var info = obj.GetType().GetField(fields[0], BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var info = obj.GetType().GetField(fields[0],
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             obj = info.GetValue(obj);
 
             return GetParentObject(string.Join(".", fields, 1, fields.Length - 1), obj);

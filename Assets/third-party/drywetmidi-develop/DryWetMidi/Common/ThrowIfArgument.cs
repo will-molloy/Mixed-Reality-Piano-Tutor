@@ -47,7 +47,8 @@ namespace Melanchall.DryWetMidi.Common
                 throw new ArgumentOutOfRangeException(parameterName, value, message);
         }
 
-        internal static void DoesntSatisfyCondition(string parameterName, int value, Predicate<int> condition, string message)
+        internal static void DoesntSatisfyCondition(string parameterName, int value, Predicate<int> condition,
+            string message)
         {
             if (!condition(value))
                 throw new ArgumentOutOfRangeException(parameterName, value, message);
@@ -111,7 +112,8 @@ namespace Melanchall.DryWetMidi.Common
         internal static void IsNullOrWhiteSpaceString(string parameterName, string value, string stringDescription)
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException($"{stringDescription} is null or contains white-spaces only.", parameterName);
+                throw new ArgumentException($"{stringDescription} is null or contains white-spaces only.",
+                    parameterName);
         }
 
         internal static void IsInvalidIndex(string parameterName, int index, int collectionSize)

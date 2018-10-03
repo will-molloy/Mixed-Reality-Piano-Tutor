@@ -39,18 +39,16 @@ namespace Sanford.Collections.Generic
 {
     public partial class UndoableList<T> : IList<T>
     {
-
         #region SetCommand
 
         private class SetCommand : ICommand
         {
-            private IList<T> theList;
+            private readonly int index;
 
-            private int index;
+            private readonly T newItem;
 
             private T oldItem;
-
-            private T newItem;
+            private readonly IList<T> theList;
 
             private bool undone = true;
 
@@ -58,7 +56,7 @@ namespace Sanford.Collections.Generic
             {
                 this.theList = theList;
                 this.index = index;
-                this.newItem = item;
+                newItem = item;
             }
 
             #region ICommand Members
@@ -67,10 +65,7 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(!undone)
-                {
-                    return;
-                }
+                if (!undone) return;
 
                 #endregion
 
@@ -85,10 +80,7 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(undone)
-                {
-                    return;
-                }
+                if (undone) return;
 
                 #endregion
 
@@ -108,15 +100,14 @@ namespace Sanford.Collections.Generic
 
         private class InsertCommand : ICommand
         {
-            private IList<T> theList;
+            private int count;
 
-            private int index;
+            private readonly int index;
 
-            private T item;
+            private readonly T item;
+            private readonly IList<T> theList;
 
             private bool undone = true;
-
-            private int count;
 
             public InsertCommand(IList<T> theList, int index, T item)
             {
@@ -131,28 +122,22 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(!undone)
-                {
-                    return;
-                }
+                if (!undone) return;
 
                 #endregion
 
                 Debug.Assert(index >= 0 && index <= theList.Count);
 
                 count = theList.Count;
-                theList.Insert(index, item);                
-                undone = false;                
+                theList.Insert(index, item);
+                undone = false;
             }
 
             public void Undo()
             {
                 #region Guard
 
-                if(undone)
-                {
-                    return;
-                }
+                if (undone) return;
 
                 #endregion
 
@@ -174,11 +159,10 @@ namespace Sanford.Collections.Generic
 
         private class InsertRangeCommand : ICommand
         {
-            private List<T> theList;
+            private readonly int index;
 
-            private int index;
-
-            private List<T> insertList;
+            private readonly List<T> insertList;
+            private readonly List<T> theList;
 
             private bool undone = true;
 
@@ -196,10 +180,7 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(!undone)
-                {
-                    return;
-                }
+                if (!undone) return;
 
                 #endregion
 
@@ -214,17 +195,14 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(undone)
-                {
-                    return;
-                }
+                if (undone) return;
 
                 #endregion
 
                 Debug.Assert(index >= 0 && index <= theList.Count);
 
                 theList.RemoveRange(index, insertList.Count);
-                
+
                 undone = true;
             }
 
@@ -235,17 +213,16 @@ namespace Sanford.Collections.Generic
 
         #region RemoveAtCommand
 
-        private class RemoveAtCommand : ICommand        
+        private class RemoveAtCommand : ICommand
         {
-            private IList<T> theList;
+            private int count;
 
-            private int index;
+            private readonly int index;
 
             private T item;
+            private readonly IList<T> theList;
 
             private bool undone = true;
-
-            private int count;
 
             public RemoveAtCommand(IList<T> theList, int index)
             {
@@ -259,10 +236,7 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(!undone)
-                {
-                    return;
-                }
+                if (!undone) return;
 
                 #endregion
 
@@ -278,10 +252,7 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(undone)
-                {
-                    return;
-                }
+                if (undone) return;
 
                 #endregion
 
@@ -302,13 +273,12 @@ namespace Sanford.Collections.Generic
 
         private class RemoveRangeCommand : ICommand
         {
-            private List<T> theList;
+            private readonly int count;
 
-            private int index;
-
-            private int count;
+            private readonly int index;
 
             private List<T> rangeList = new List<T>();
+            private readonly List<T> theList;
 
             private bool undone = true;
 
@@ -325,10 +295,7 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(!undone)
-                {
-                    return;
-                }
+                if (!undone) return;
 
                 #endregion
 
@@ -346,10 +313,7 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(undone)
-                {
-                    return;
-                }
+                if (undone) return;
 
                 #endregion
 
@@ -367,7 +331,7 @@ namespace Sanford.Collections.Generic
 
         private class ClearCommand : ICommand
         {
-            private IList<T> theList;
+            private readonly IList<T> theList;
 
             private IList<T> undoList;
 
@@ -384,10 +348,7 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(!undone)
-                {
-                    return;
-                }
+                if (!undone) return;
 
                 #endregion
 
@@ -402,19 +363,13 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(undone)
-                {
-                    return;
-                }
+                if (undone) return;
 
                 #endregion
 
                 Debug.Assert(theList.Count == 0);
 
-                foreach(T item in undoList)
-                {
-                    theList.Add(item);
-                }
+                foreach (var item in undoList) theList.Add(item);
 
                 undoList.Clear();
 
@@ -430,20 +385,19 @@ namespace Sanford.Collections.Generic
 
         private class ReverseCommand : ICommand
         {
-            private List<T> theList;
+            private readonly int count;
 
-            private int index;
+            private readonly int index;
 
-            private int count;
-
-            private bool reverseRange;
+            private readonly bool reverseRange;
+            private readonly List<T> theList;
 
             private bool undone = true;
 
             public ReverseCommand(List<T> theList)
             {
                 this.theList = theList;
-                this.reverseRange = false;
+                reverseRange = false;
             }
 
             public ReverseCommand(List<T> theList, int index, int count)
@@ -451,7 +405,7 @@ namespace Sanford.Collections.Generic
                 this.theList = theList;
                 this.index = index;
                 this.count = count;
-                this.reverseRange = true;
+                reverseRange = true;
             }
 
             #region ICommand Members
@@ -460,21 +414,14 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(!undone)
-                {
-                    return;
-                }
+                if (!undone) return;
 
                 #endregion
 
-                if(reverseRange)
-                {
+                if (reverseRange)
                     theList.Reverse(index, count);
-                }
                 else
-                {
                     theList.Reverse();
-                }
 
                 undone = false;
             }
@@ -483,21 +430,14 @@ namespace Sanford.Collections.Generic
             {
                 #region Guard
 
-                if(undone)
-                {
-                    return;
-                }
+                if (undone) return;
 
                 #endregion
 
-                if(reverseRange)
-                {
+                if (reverseRange)
                     theList.Reverse(index, count);
-                }
                 else
-                {
                     theList.Reverse();
-                }
 
                 undone = true;
             }

@@ -1,65 +1,43 @@
-using UnityEngine.Rendering;
-
 namespace UnityEngine.PostProcessing
 {
     using DebugMode = BuiltinDebugViewsModel.Mode;
 
     public sealed class DepthOfFieldComponent : PostProcessingComponentRenderTexture<DepthOfFieldModel>
     {
-        static class Uniforms
-        {
-            internal static readonly int _DepthOfFieldTex    = Shader.PropertyToID("_DepthOfFieldTex");
-            internal static readonly int _Distance           = Shader.PropertyToID("_Distance");
-            internal static readonly int _LensCoeff          = Shader.PropertyToID("_LensCoeff");
-            internal static readonly int _MaxCoC             = Shader.PropertyToID("_MaxCoC");
-            internal static readonly int _RcpMaxCoC          = Shader.PropertyToID("_RcpMaxCoC");
-            internal static readonly int _RcpAspect          = Shader.PropertyToID("_RcpAspect");
-            internal static readonly int _MainTex            = Shader.PropertyToID("_MainTex");
-            internal static readonly int _HistoryCoC         = Shader.PropertyToID("_HistoryCoC");
-            internal static readonly int _HistoryWeight      = Shader.PropertyToID("_HistoryWeight");
-            internal static readonly int _DepthOfFieldParams = Shader.PropertyToID("_DepthOfFieldParams");
-        }
+        private const string k_ShaderString = "Hidden/Post FX/Depth Of Field";
 
-        const string k_ShaderString = "Hidden/Post FX/Depth Of Field";
+        // Height of the 35mm full-frame format (36mm x 24mm)
+        private const float k_FilmHeight = 0.024f;
 
-        public override bool active
-        {
-            get
-            {
-                return model.enabled
-                       && SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf)
-                       && SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.RHalf)
-                       && !context.interrupted;
-            }
-        }
+        private RenderTexture m_CoCHistory;
+        private readonly RenderBuffer[] m_MRT = new RenderBuffer[2];
+
+        public override bool active => model.enabled
+                                       && SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf)
+                                       && SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.RHalf)
+                                       && !context.interrupted;
 
         public override DepthTextureMode GetCameraFlags()
         {
             return DepthTextureMode.Depth;
         }
 
-        RenderTexture m_CoCHistory;
-        RenderBuffer[] m_MRT = new RenderBuffer[2];
-
-        // Height of the 35mm full-frame format (36mm x 24mm)
-        const float k_FilmHeight = 0.024f;
-
-        float CalculateFocalLength()
+        private float CalculateFocalLength()
         {
             var settings = model.settings;
 
             if (!settings.useCameraFov)
                 return settings.focalLength / 1000f;
 
-            float fov = context.camera.fieldOfView * Mathf.Deg2Rad;
+            var fov = context.camera.fieldOfView * Mathf.Deg2Rad;
             return 0.5f * k_FilmHeight / Mathf.Tan(0.5f * fov);
         }
 
-        float CalculateMaxCoCRadius(int screenHeight)
+        private float CalculateMaxCoCRadius(int screenHeight)
         {
             // Estimate the allowable maximum radius of CoC from the kernel
             // size (the equation below was empirically derived).
-            float radiusInPixels = (float)model.settings.kernelSize * 4f + 6f;
+            var radiusInPixels = (float) model.settings.kernelSize * 4f + 6f;
 
             // Applying a 5% limit to the CoC radius to keep the size of
             // TileMax/NeighborMax small enough.
@@ -86,10 +64,11 @@ namespace UnityEngine.PostProcessing
             material.SetFloat(Uniforms._MaxCoC, maxCoC);
             material.SetFloat(Uniforms._RcpMaxCoC, 1f / maxCoC);
 
-            var rcpAspect = (float)source.height / source.width;
+            var rcpAspect = (float) source.height / source.width;
             material.SetFloat(Uniforms._RcpAspect, rcpAspect);
 
-            var rt1 = context.renderTextureFactory.Get(context.width / 2, context.height / 2, 0, RenderTextureFormat.ARGBHalf);
+            var rt1 = context.renderTextureFactory.Get(context.width / 2, context.height / 2, 0,
+                RenderTextureFormat.ARGBHalf);
             source.filterMode = FilterMode.Point;
 
             // Pass #1 - Downsampling, prefiltering and CoC calculation
@@ -99,9 +78,11 @@ namespace UnityEngine.PostProcessing
             }
             else
             {
-                var initial = m_CoCHistory == null || !m_CoCHistory.IsCreated() || m_CoCHistory.width != context.width / 2 || m_CoCHistory.height != context.height / 2;
+                var initial = m_CoCHistory == null || !m_CoCHistory.IsCreated() ||
+                              m_CoCHistory.width != context.width / 2 || m_CoCHistory.height != context.height / 2;
 
-                var tempCoCHistory = RenderTexture.GetTemporary(context.width / 2, context.height / 2, 0, RenderTextureFormat.RHalf);
+                var tempCoCHistory = RenderTexture.GetTemporary(context.width / 2, context.height / 2, 0,
+                    RenderTextureFormat.RHalf);
                 tempCoCHistory.filterMode = FilterMode.Point;
                 tempCoCHistory.name = "CoC History";
 
@@ -118,8 +99,9 @@ namespace UnityEngine.PostProcessing
             }
 
             // Pass #2 - Bokeh simulation
-            var rt2 = context.renderTextureFactory.Get(context.width / 2, context.height / 2, 0, RenderTextureFormat.ARGBHalf);
-            Graphics.Blit(rt1, rt2, material, 2 + (int)settings.kernelSize);
+            var rt2 = context.renderTextureFactory.Get(context.width / 2, context.height / 2, 0,
+                RenderTextureFormat.ARGBHalf);
+            Graphics.Blit(rt1, rt2, material, 2 + (int) settings.kernelSize);
 
             // Pass #3 - Postfilter blur
             Graphics.Blit(rt2, rt1, material, 6);
@@ -146,6 +128,20 @@ namespace UnityEngine.PostProcessing
                 RenderTexture.ReleaseTemporary(m_CoCHistory);
 
             m_CoCHistory = null;
+        }
+
+        private static class Uniforms
+        {
+            internal static readonly int _DepthOfFieldTex = Shader.PropertyToID("_DepthOfFieldTex");
+            internal static readonly int _Distance = Shader.PropertyToID("_Distance");
+            internal static readonly int _LensCoeff = Shader.PropertyToID("_LensCoeff");
+            internal static readonly int _MaxCoC = Shader.PropertyToID("_MaxCoC");
+            internal static readonly int _RcpMaxCoC = Shader.PropertyToID("_RcpMaxCoC");
+            internal static readonly int _RcpAspect = Shader.PropertyToID("_RcpAspect");
+            internal static readonly int _MainTex = Shader.PropertyToID("_MainTex");
+            internal static readonly int _HistoryCoC = Shader.PropertyToID("_HistoryCoC");
+            internal static readonly int _HistoryWeight = Shader.PropertyToID("_HistoryWeight");
+            internal static readonly int _DepthOfFieldParams = Shader.PropertyToID("_DepthOfFieldParams");
         }
     }
 }

@@ -39,22 +39,19 @@ namespace Sanford.Multimedia.Midi
 {
     public class ChannelChaser
     {
-        private ChannelMessage[,] controllerMessages;
+        private readonly ChannelMessage[] channelPressureMessages;
+        private readonly ChannelMessage[,] controllerMessages;
 
-        private ChannelMessage[] programChangeMessages;
+        private readonly ChannelMessage[] pitchBendMessages;
 
-        private ChannelMessage[] pitchBendMessages;
+        private readonly ChannelMessage[] polyPressureMessages;
 
-        private ChannelMessage[] channelPressureMessages;
-
-        private ChannelMessage[] polyPressureMessages;
-
-        public event EventHandler<ChasedEventArgs> Chased;
+        private readonly ChannelMessage[] programChangeMessages;
 
         public ChannelChaser()
         {
-            int c = ChannelMessage.MidiChannelMaxValue + 1;
-            int d = ShortMessage.DataMaxValue + 1;
+            var c = ChannelMessage.MidiChannelMaxValue + 1;
+            var d = ShortMessage.DataMaxValue + 1;
 
             controllerMessages = new ChannelMessage[c, d];
 
@@ -64,9 +61,11 @@ namespace Sanford.Multimedia.Midi
             polyPressureMessages = new ChannelMessage[c];
         }
 
+        public event EventHandler<ChasedEventArgs> Chased;
+
         public void Process(ChannelMessage message)
         {
-            switch(message.Command)
+            switch (message.Command)
             {
                 case ChannelCommand.Controller:
                     controllerMessages[message.MidiChannel, message.Data1] = message;
@@ -92,42 +91,40 @@ namespace Sanford.Multimedia.Midi
 
         public void Chase()
         {
-            ArrayList chasedMessages = new ArrayList();
+            var chasedMessages = new ArrayList();
 
-            for(int c = 0; c <= ChannelMessage.MidiChannelMaxValue; c++)
+            for (var c = 0; c <= ChannelMessage.MidiChannelMaxValue; c++)
             {
-                for(int n = 0; n <= ShortMessage.DataMaxValue; n++)
-                {
-                    if(controllerMessages[c, n] != null)
+                for (var n = 0; n <= ShortMessage.DataMaxValue; n++)
+                    if (controllerMessages[c, n] != null)
                     {
                         chasedMessages.Add(controllerMessages[c, n]);
 
                         controllerMessages[c, n] = null;
                     }
-                }
 
-                if(programChangeMessages[c] != null)
+                if (programChangeMessages[c] != null)
                 {
                     chasedMessages.Add(programChangeMessages[c]);
 
                     programChangeMessages[c] = null;
                 }
 
-                if(pitchBendMessages[c] != null)
+                if (pitchBendMessages[c] != null)
                 {
                     chasedMessages.Add(pitchBendMessages[c]);
 
                     pitchBendMessages[c] = null;
                 }
 
-                if(channelPressureMessages[c] != null)
+                if (channelPressureMessages[c] != null)
                 {
                     chasedMessages.Add(channelPressureMessages[c]);
 
                     channelPressureMessages[c] = null;
                 }
 
-                if(polyPressureMessages[c] != null)
+                if (polyPressureMessages[c] != null)
                 {
                     chasedMessages.Add(polyPressureMessages[c]);
 
@@ -140,12 +137,9 @@ namespace Sanford.Multimedia.Midi
 
         public void Reset()
         {
-            for(int c = 0; c <= ChannelMessage.MidiChannelMaxValue; c++)
+            for (var c = 0; c <= ChannelMessage.MidiChannelMaxValue; c++)
             {
-                for(int n = 0; n <= ShortMessage.DataMaxValue; n++)
-                {
-                    controllerMessages[c, n] = null;
-                }
+                for (var n = 0; n <= ShortMessage.DataMaxValue; n++) controllerMessages[c, n] = null;
 
                 programChangeMessages[c] = null;
                 pitchBendMessages[c] = null;
@@ -156,12 +150,9 @@ namespace Sanford.Multimedia.Midi
 
         protected virtual void OnChased(ChasedEventArgs e)
         {
-            EventHandler<ChasedEventArgs> handler = Chased;
+            var handler = Chased;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
     }
 }

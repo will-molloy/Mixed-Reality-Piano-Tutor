@@ -5,6 +5,17 @@ namespace Melanchall.DryWetMidi.Smf
 {
     internal sealed class ChannelEventWriter : IEventWriter
     {
+        #region Methods
+
+        [Conditional("DEBUG")]
+        private static void VerifyEvent(MidiEvent midiEvent)
+        {
+            Debug.Assert(midiEvent != null);
+            Debug.Assert(midiEvent is ChannelEvent, "Event is not Channel event.");
+        }
+
+        #endregion
+
         #region IEventWriter
 
         public void Write(MidiEvent midiEvent, MidiWriter writer, WritingSettings settings, bool writeStatusByte)
@@ -21,9 +32,9 @@ namespace Melanchall.DryWetMidi.Smf
                 if (!StandardEventTypes.Channel.TryGetStatusByte(eventType, out statusByte))
                     Debug.Fail($"Unable to write the {eventType} event.");
 
-                var channel = ((ChannelEvent)midiEvent).Channel;
+                var channel = ((ChannelEvent) midiEvent).Channel;
 
-                var totalStatusByte = DataTypesUtilities.Combine((FourBitNumber)statusByte, channel);
+                var totalStatusByte = DataTypesUtilities.Combine((FourBitNumber) statusByte, channel);
                 writer.WriteByte(totalStatusByte);
             }
 
@@ -51,19 +62,8 @@ namespace Melanchall.DryWetMidi.Smf
             if (!StandardEventTypes.Channel.TryGetStatusByte(midiEvent.GetType(), out statusByte))
                 Debug.Fail($"No status byte defined for {midiEvent.GetType()}.");
 
-            return DataTypesUtilities.Combine((FourBitNumber)statusByte,
-                                              ((ChannelEvent)midiEvent).Channel);
-        }
-
-        #endregion
-
-        #region Methods
-
-        [Conditional("DEBUG")]
-        private static void VerifyEvent(MidiEvent midiEvent)
-        {
-            Debug.Assert(midiEvent != null);
-            Debug.Assert(midiEvent is ChannelEvent, "Event is not Channel event.");
+            return DataTypesUtilities.Combine((FourBitNumber) statusByte,
+                ((ChannelEvent) midiEvent).Channel);
         }
 
         #endregion

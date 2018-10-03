@@ -3,144 +3,151 @@ using System.Runtime.InteropServices;
 
 namespace ArucoUnity.Plugin
 {
-  public static partial class Aruco
-  {
-    public class Dictionary : Utility.HandleCppPtr
+    public static partial class Aruco
     {
-      // Native functions
+        public class Dictionary : Utility.HandleCppPtr
+        {
+            // Constructors & destructor
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_Dictionary_new1(IntPtr bytesList, int markerSize, int maxCorrectionBits);
+            public Dictionary(Cv.Mat bytesList, int markerSize = 0, int maxCorrectionBits = 0)
+                : base(au_Dictionary_new1(bytesList.CppPtr, markerSize, maxCorrectionBits))
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_Dictionary_new2(IntPtr dictionary);
+            public Dictionary() : this(new Cv.Mat())
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_Dictionary_delete(IntPtr dictionary);
+            public Dictionary(Dictionary dictionary) : base(au_Dictionary_new2(dictionary.CppPtr))
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_Dictionary_drawMarker(IntPtr dictionary, int id, int sidePixels, out IntPtr img, int borderBits, IntPtr exception);
+            internal Dictionary(IntPtr dictionaryPtr,
+                Utility.DeleteResponsibility deleteResponsibility = Utility.DeleteResponsibility.True)
+                : base(dictionaryPtr, deleteResponsibility)
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_Dictionary_getDistanceToId(IntPtr dictionary, IntPtr bits, int id, bool allRotations, IntPtr exception);
+            // Properties
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern bool au_Dictionary_identify(IntPtr dictionary, IntPtr onlyBits, out int idx, out int rotation, double maxCorrectionRate, IntPtr exception);
+            public Cv.Mat BytesList
+            {
+                get { return new Cv.Mat(au_Dictionary_getBytesList(CppPtr), Utility.DeleteResponsibility.False); }
+                set { au_Dictionary_setBytesList(CppPtr, value.CppPtr); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_Dictionary_getBitsFromByteList(IntPtr byteList, int markerSize, IntPtr exception);
+            public int MarkerSize
+            {
+                get { return au_Dictionary_getMarkerSize(CppPtr); }
+                set { au_Dictionary_setMarkerSize(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_Dictionary_getByteListFromBits(IntPtr bits);
+            public int MaxCorrectionBits
+            {
+                get { return au_Dictionary_getMaxCorrectionBits(CppPtr); }
+                set { au_Dictionary_setMaxCorrectionBits(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_Dictionary_getBytesList(IntPtr dictionary);
+            public PredefinedDictionaryName Name { get; set; }
+            // Native functions
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_Dictionary_setBytesList(IntPtr dictionary, IntPtr bytesList);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_Dictionary_new1(IntPtr bytesList, int markerSize, int maxCorrectionBits);
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_Dictionary_getMarkerSize(IntPtr dictionary);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_Dictionary_new2(IntPtr dictionary);
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_Dictionary_setMarkerSize(IntPtr dictionary, int markerSize);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_Dictionary_delete(IntPtr dictionary);
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_Dictionary_getMaxCorrectionBits(IntPtr dictionary);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_Dictionary_drawMarker(IntPtr dictionary, int id, int sidePixels,
+                out IntPtr img, int borderBits, IntPtr exception);
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_Dictionary_setMaxCorrectionBits(IntPtr dictionary, int maxCorrectionBits);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_Dictionary_getDistanceToId(IntPtr dictionary, IntPtr bits, int id,
+                bool allRotations, IntPtr exception);
 
-      // Constructors & destructor
+            [DllImport("ArucoUnityPlugin")]
+            private static extern bool au_Dictionary_identify(IntPtr dictionary, IntPtr onlyBits, out int idx,
+                out int rotation, double maxCorrectionRate, IntPtr exception);
 
-      public Dictionary(Cv.Mat bytesList, int markerSize = 0, int maxCorrectionBits = 0)
-        : base(au_Dictionary_new1(bytesList.CppPtr, markerSize, maxCorrectionBits))
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_Dictionary_getBitsFromByteList(IntPtr byteList, int markerSize,
+                IntPtr exception);
 
-      public Dictionary() : this(new Cv.Mat())
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_Dictionary_getByteListFromBits(IntPtr bits);
 
-      public Dictionary(Dictionary dictionary) : base(au_Dictionary_new2(dictionary.CppPtr))
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_Dictionary_getBytesList(IntPtr dictionary);
 
-      internal Dictionary(IntPtr dictionaryPtr, Utility.DeleteResponsibility deleteResponsibility = Utility.DeleteResponsibility.True)
-        : base(dictionaryPtr, deleteResponsibility)
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_Dictionary_setBytesList(IntPtr dictionary, IntPtr bytesList);
 
-      protected override void DeleteCppPtr()
-      {
-        au_Dictionary_delete(CppPtr);
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_Dictionary_getMarkerSize(IntPtr dictionary);
 
-      // Properties
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_Dictionary_setMarkerSize(IntPtr dictionary, int markerSize);
 
-      public Cv.Mat BytesList
-      {
-        get { return new Cv.Mat(au_Dictionary_getBytesList(CppPtr), Utility.DeleteResponsibility.False); }
-        set { au_Dictionary_setBytesList(CppPtr, value.CppPtr); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_Dictionary_getMaxCorrectionBits(IntPtr dictionary);
 
-      public int MarkerSize
-      {
-        get { return au_Dictionary_getMarkerSize(CppPtr); }
-        set { au_Dictionary_setMarkerSize(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_Dictionary_setMaxCorrectionBits(IntPtr dictionary, int maxCorrectionBits);
 
-      public int MaxCorrectionBits
-      {
-        get { return au_Dictionary_getMaxCorrectionBits(CppPtr); }
-        set { au_Dictionary_setMaxCorrectionBits(CppPtr, value); }
-      }
+            protected override void DeleteCppPtr()
+            {
+                au_Dictionary_delete(CppPtr);
+            }
 
-      public PredefinedDictionaryName Name { get; set; }
+            // Static methods
 
-      // Static methods
+            public static Cv.Mat GetBitsFromByteList(Cv.Mat byteList, int markerSiz)
+            {
+                var exception = new Cv.Exception();
+                var bits = new Cv.Mat(au_Dictionary_getBitsFromByteList(byteList.CppPtr, markerSiz, exception.CppPtr));
+                exception.Check();
+                return bits;
+            }
 
-      static public Cv.Mat GetBitsFromByteList(Cv.Mat byteList, int markerSiz)
-      {
-        Cv.Exception exception = new Cv.Exception();
-        Cv.Mat bits = new Cv.Mat(au_Dictionary_getBitsFromByteList(byteList.CppPtr, markerSiz, exception.CppPtr));
-        exception.Check();
-        return bits;
-      }
+            public static Cv.Mat GetByteListFromBits(IntPtr bits)
+            {
+                return new Cv.Mat(au_Dictionary_getByteListFromBits(bits));
+            }
 
-      static public Cv.Mat GetByteListFromBits(IntPtr bits)
-      {
-        return new Cv.Mat(au_Dictionary_getByteListFromBits(bits));
-      }
+            // Methods
 
-      // Methods
+            public void DrawMarker(int id, int sidePixels, out Cv.Mat img, int borderBits)
+            {
+                var exception = new Cv.Exception();
+                IntPtr imgPtr;
 
-      public void DrawMarker(int id, int sidePixels, out Cv.Mat img, int borderBits)
-      {
-        Cv.Exception exception = new Cv.Exception();
-        IntPtr imgPtr;
+                au_Dictionary_drawMarker(CppPtr, id, sidePixels, out imgPtr, borderBits, exception.CppPtr);
+                img = new Cv.Mat(imgPtr);
 
-        au_Dictionary_drawMarker(CppPtr, id, sidePixels, out imgPtr, borderBits, exception.CppPtr);
-        img = new Cv.Mat(imgPtr);
+                exception.Check();
+            }
 
-        exception.Check();
-      }
+            public int GetDistanceToId(Dictionary dictionary, Cv.Mat bits, int id, bool allRotations = true)
+            {
+                var exception = new Cv.Exception();
+                var distanceToId =
+                    au_Dictionary_getDistanceToId(CppPtr, bits.CppPtr, id, allRotations, exception.CppPtr);
+                exception.Check();
+                return distanceToId;
+            }
 
-      public int GetDistanceToId(Dictionary dictionary, Cv.Mat bits, int id, bool allRotations = true)
-      {
-        Cv.Exception exception = new Cv.Exception();
-        int distanceToId = au_Dictionary_getDistanceToId(CppPtr, bits.CppPtr, id, allRotations, exception.CppPtr);
-        exception.Check();
-        return distanceToId;
-      }
-
-      public bool Identify(Dictionary dictionary, Cv.Mat onlyBits, out int idx, out int rotation, double maxCorrectionRate)
-      {
-        Cv.Exception exception = new Cv.Exception();
-        bool result = au_Dictionary_identify(CppPtr, onlyBits.CppPtr, out idx, out rotation, maxCorrectionRate, exception.CppPtr);
-        exception.Check();
-        return result;
-      }
+            public bool Identify(Dictionary dictionary, Cv.Mat onlyBits, out int idx, out int rotation,
+                double maxCorrectionRate)
+            {
+                var exception = new Cv.Exception();
+                var result = au_Dictionary_identify(CppPtr, onlyBits.CppPtr, out idx, out rotation, maxCorrectionRate,
+                    exception.CppPtr);
+                exception.Check();
+                return result;
+            }
+        }
     }
-  }
 }

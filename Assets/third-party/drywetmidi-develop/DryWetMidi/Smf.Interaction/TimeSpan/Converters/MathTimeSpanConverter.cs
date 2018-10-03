@@ -7,7 +7,8 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
     {
         #region Constants
 
-        private static readonly Dictionary<Tuple<MathOperation, MathOperation>, MathOperation> OperationTransformations =
+        private static readonly Dictionary<Tuple<MathOperation, MathOperation>, MathOperation> OperationTransformations
+            =
             new Dictionary<Tuple<MathOperation, MathOperation>, MathOperation>
             {
                 [Tuple.Create(MathOperation.Add, MathOperation.Add)] = MathOperation.Add,
@@ -35,13 +36,13 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
         public long ConvertFrom(ITimeSpan timeSpan, long time, TempoMap tempoMap)
         {
-            var mathTimeSpan = (MathTimeSpan)timeSpan;
+            var mathTimeSpan = (MathTimeSpan) timeSpan;
 
             Func<MathTimeSpan, long, TempoMap, long> converter;
             if (Converters.TryGetValue(mathTimeSpan.Mode, out converter))
                 return converter(mathTimeSpan, time, tempoMap);
-            else
-                throw new ArgumentException($"{mathTimeSpan.Mode} mode is not supported by the converter.", nameof(timeSpan));
+            throw new ArgumentException($"{mathTimeSpan.Mode} mode is not supported by the converter.",
+                nameof(timeSpan));
         }
 
         #endregion
@@ -57,16 +58,17 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             {
                 case MathOperation.Add:
                     return convertedTimeSpan1 + LengthConverter.ConvertFrom(mathTimeSpan.TimeSpan2,
-                                                                             endTime1,
-                                                                             tempoMap);
+                               endTime1,
+                               tempoMap);
 
                 case MathOperation.Subtract:
                     return convertedTimeSpan1 - LengthConverter.ConvertFrom(mathTimeSpan.TimeSpan2,
-                                                                             endTime1,
-                                                                             tempoMap.Flip(endTime1));
+                               endTime1,
+                               tempoMap.Flip(endTime1));
 
                 default:
-                    throw new ArgumentException($"{mathTimeSpan.Operation} is not supported by the converter.", nameof(mathTimeSpan));
+                    throw new ArgumentException($"{mathTimeSpan.Operation} is not supported by the converter.",
+                        nameof(mathTimeSpan));
             }
         }
 
@@ -78,16 +80,17 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             {
                 case MathOperation.Add:
                     return convertedTimeSpan1 + LengthConverter.ConvertFrom(mathTimeSpan.TimeSpan2,
-                                                                             convertedTimeSpan1,
-                                                                             tempoMap);
+                               convertedTimeSpan1,
+                               tempoMap);
 
                 case MathOperation.Subtract:
                     return convertedTimeSpan1 - LengthConverter.ConvertFrom(mathTimeSpan.TimeSpan2,
-                                                                             convertedTimeSpan1,
-                                                                             tempoMap.Flip(convertedTimeSpan1));
+                               convertedTimeSpan1,
+                               tempoMap.Flip(convertedTimeSpan1));
 
                 default:
-                    throw new ArgumentException($"{mathTimeSpan.Operation} is not supported by the converter.", nameof(mathTimeSpan));
+                    throw new ArgumentException($"{mathTimeSpan.Operation} is not supported by the converter.",
+                        nameof(mathTimeSpan));
             }
         }
 
@@ -108,7 +111,8 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
             var timeSpan1AsMath = mathTimeSpan.TimeSpan1 as MathTimeSpan;
             if (timeSpan1AsMath != null)
-                timeSpan1 = TimeSpanConverter.ConvertTo(timeSpan1AsMath, timeSpan1AsMath.TimeSpan1.GetType(), time, tempoMap);
+                timeSpan1 = TimeSpanConverter.ConvertTo(timeSpan1AsMath, timeSpan1AsMath.TimeSpan1.GetType(), time,
+                    tempoMap);
 
             // To subtract one time from another one we need to convert the second time span
             // to the type of the first one. After that result of subtraction will be of the
@@ -122,13 +126,15 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             switch (mathTimeSpan.Operation)
             {
                 case MathOperation.Subtract:
-                    {
-                        var convertedTimeSpan2 = TimeConverter.ConvertTo(timeSpan2, timeSpan1.GetType(), tempoMap);
-                        return TimeSpanConverter.ConvertFrom(timeSpan1.Subtract(convertedTimeSpan2, TimeSpanMode.TimeTime), time, tempoMap);
-                    }
+                {
+                    var convertedTimeSpan2 = TimeConverter.ConvertTo(timeSpan2, timeSpan1.GetType(), tempoMap);
+                    return TimeSpanConverter.ConvertFrom(timeSpan1.Subtract(convertedTimeSpan2, TimeSpanMode.TimeTime),
+                        time, tempoMap);
+                }
 
                 default:
-                    throw new ArgumentException($"{mathTimeSpan.Operation} is not supported by the converter.", nameof(mathTimeSpan));
+                    throw new ArgumentException($"{mathTimeSpan.Operation} is not supported by the converter.",
+                        nameof(mathTimeSpan));
             }
         }
 

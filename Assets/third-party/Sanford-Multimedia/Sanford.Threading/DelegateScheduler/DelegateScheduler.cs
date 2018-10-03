@@ -42,16 +42,31 @@ using Sanford.Collections;
 namespace Sanford.Threading
 {
     /// <summary>
-    /// Provides functionality for timestamped delegate invocation.
+    ///     Provides functionality for timestamped delegate invocation.
     /// </summary>
-    public partial class DelegateScheduler : IDisposable, IComponent
+    public class DelegateScheduler : IDisposable, IComponent
     {
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            #region Guard
+
+            if (disposed) return;
+
+            #endregion
+
+            Dispose(true);
+        }
+
+        #endregion
+
         #region DelegateScheduler Members
 
         #region Fields
 
         /// <summary>
-        /// A constant value representing an unlimited number of delegate invocations.
+        ///     A constant value representing an unlimited number of delegate invocations.
         /// </summary>
         public const int Infinite = -1;
 
@@ -59,28 +74,25 @@ namespace Sanford.Threading
         private const int DefaultPollingInterval = 10;
 
         // For queuing the delegates in priority order.
-        private PriorityQueue queue = new PriorityQueue();
+        private readonly PriorityQueue queue = new PriorityQueue();
 
         // Used for timing events for polling the delegate queue.
-        private System.Timers.Timer timer = new System.Timers.Timer(DefaultPollingInterval);
+        private readonly Timer timer = new Timer(DefaultPollingInterval);
 
         // For storing tasks when the scheduler isn't running.
-        private List<Task> tasks = new List<Task>();
+        private readonly List<Task> tasks = new List<Task>();
 
         // A value indicating whether the DelegateScheduler is running.
-        private bool running = false;
 
         // A value indicating whether the DelegateScheduler has been disposed.
-        private bool disposed = false;
-
-        private ISite site = null;
+        private bool disposed;
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// Raised when a delegate is invoked.
+        ///     Raised when a delegate is invoked.
         /// </summary>
         public event EventHandler<InvokeCompletedEventArgs> InvokeCompleted;
 
@@ -89,16 +101,16 @@ namespace Sanford.Threading
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the DelegateScheduler class.
+        ///     Initializes a new instance of the DelegateScheduler class.
         /// </summary>
         public DelegateScheduler()
         {
-            Initialize();            
+            Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the DelegateScheduler class with the
-        /// specified IContainer.
+        ///     Initializes a new instance of the DelegateScheduler class with the
+        ///     specified IContainer.
         /// </summary>
         public DelegateScheduler(IContainer container)
         {
@@ -113,7 +125,7 @@ namespace Sanford.Threading
         // Initializes the DelegateScheduler.
         private void Initialize()
         {
-            timer.Elapsed += new ElapsedEventHandler(HandleElapsed);
+            timer.Elapsed += HandleElapsed;
         }
 
         ~DelegateScheduler()
@@ -127,7 +139,7 @@ namespace Sanford.Threading
 
         protected virtual void Dispose(bool disposing)
         {
-            if(disposing)
+            if (disposing)
             {
                 Stop();
 
@@ -139,66 +151,59 @@ namespace Sanford.Threading
 
                 OnDisposed(EventArgs.Empty);
 
-                GC.SuppressFinalize(this);            
+                GC.SuppressFinalize(this);
             }
         }
-        
+
         /// <summary>
-        /// Adds a delegate to the DelegateScheduler.
+        ///     Adds a delegate to the DelegateScheduler.
         /// </summary>
         /// <param name="count">
-        /// The number of times the delegate should be invoked.
+        ///     The number of times the delegate should be invoked.
         /// </param>
         /// <param name="millisecondsTimeout">
-        /// The time in milliseconds between delegate invocation.
+        ///     The time in milliseconds between delegate invocation.
         /// </param>
         /// <param name="method">
         /// </param>
         /// The delegate to invoke.
         /// <param name="args">
-        /// The arguments to pass to the delegate when it is invoked.
+        ///     The arguments to pass to the delegate when it is invoked.
         /// </param>
         /// <returns>
-        /// A Task object representing the scheduled task.
+        ///     A Task object representing the scheduled task.
         /// </returns>
         /// <exception cref="ObjectDisposedException">
-        /// If the DelegateScheduler has already been disposed.
+        ///     If the DelegateScheduler has already been disposed.
         /// </exception>
         /// <remarks>
-        /// If an unlimited count is desired, pass the DelegateScheduler.Infinity 
-        /// constant as the count argument.
+        ///     If an unlimited count is desired, pass the DelegateScheduler.Infinity
+        ///     constant as the count argument.
         /// </remarks>
         public Task Add(
             int count,
             int millisecondsTimeout,
-            Delegate method,            
+            Delegate method,
             params object[] args)
         {
             #region Require
 
-            if(disposed)
-            {
-                throw new ObjectDisposedException("DelegateScheduler");
-            }
+            if (disposed) throw new ObjectDisposedException("DelegateScheduler");
 
-            #endregion    
+            #endregion
 
-            Task t = new Task(count, millisecondsTimeout, method, args);
+            var t = new Task(count, millisecondsTimeout, method, args);
 
-            lock(queue.SyncRoot)
+            lock (queue.SyncRoot)
             {
                 // Only add the task to the DelegateScheduler if the count 
                 // is greater than zero or set to Infinite.
-                if(count > 0 || count == DelegateScheduler.Infinite)
+                if (count > 0 || count == Infinite)
                 {
-                    if(IsRunning)
-                    {
+                    if (IsRunning)
                         queue.Enqueue(t);
-                    }
                     else
-                    {
                         tasks.Add(t);
-                    }
                 }
             }
 
@@ -206,78 +211,62 @@ namespace Sanford.Threading
         }
 
         /// <summary>
-        /// Removes the specified Task.
+        ///     Removes the specified Task.
         /// </summary>
         /// <param name="task">
-        /// The Task to be removed.
+        ///     The Task to be removed.
         /// </param>
         /// <exception cref="ObjectDisposedException">
-        /// If the DelegateScheduler has already been disposed.
+        ///     If the DelegateScheduler has already been disposed.
         /// </exception>
         public void Remove(Task task)
         {
             #region Require
 
-            if(disposed)
-            {
-                throw new ObjectDisposedException("DelegateScheduler");
-            }
-
-            #endregion    
-
-            #region Guard
-
-            if(task == null)
-            {
-                return;
-            }
+            if (disposed) throw new ObjectDisposedException("DelegateScheduler");
 
             #endregion
 
-            lock(queue.SyncRoot)
+            #region Guard
+
+            if (task == null) return;
+
+            #endregion
+
+            lock (queue.SyncRoot)
             {
-                if(IsRunning)
-                {
+                if (IsRunning)
                     queue.Remove(task);
-                }
                 else
-                {
-                    tasks.Remove(task);                    
-                }
+                    tasks.Remove(task);
             }
         }
 
         /// <summary>
-        /// Starts the DelegateScheduler.
+        ///     Starts the DelegateScheduler.
         /// </summary>
         /// <exception cref="ObjectDisposedException">
-        /// If the DelegateScheduler has already been disposed.
+        ///     If the DelegateScheduler has already been disposed.
         /// </exception>
         public void Start()
         {
             #region Require
 
-            if(disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (disposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
             #region Guard
 
-            if(IsRunning)
-            {
-                return;
-            }
+            if (IsRunning) return;
 
             #endregion
 
-            lock(queue.SyncRoot)
+            lock (queue.SyncRoot)
             {
                 Task t;
 
-                while(tasks.Count > 0)
+                while (tasks.Count > 0)
                 {
                     t = tasks[tasks.Count - 1];
 
@@ -288,72 +277,61 @@ namespace Sanford.Threading
                     queue.Enqueue(t);
                 }
 
-                running = true;
+                IsRunning = true;
 
                 timer.Start();
             }
         }
 
         /// <summary>
-        /// Stops the DelegateScheduler.
+        ///     Stops the DelegateScheduler.
         /// </summary>
         /// <exception cref="ObjectDisposedException">
-        /// If the DelegateScheduler has already been disposed.
+        ///     If the DelegateScheduler has already been disposed.
         /// </exception>
         public void Stop()
         {
             #region Require
 
-            if(disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (disposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
             #region Guard
 
-            if(!IsRunning)
-            {
-                return;
-            }
+            if (!IsRunning) return;
 
             #endregion
 
-            lock(queue.SyncRoot)
+            lock (queue.SyncRoot)
             {
                 // While there are still tasks left in the queue.
-                while(queue.Count > 0)
-                {
+                while (queue.Count > 0)
                     // Remove task from queue and add it to the Task list
                     // to be used again next time the DelegateScheduler is run.
-                    tasks.Add((Task)queue.Dequeue());
-                }
+                    tasks.Add((Task) queue.Dequeue());
 
                 timer.Stop();
 
-                running = false;
+                IsRunning = false;
             }
         }
 
         /// <summary>
-        /// Clears the DelegateScheduler of all tasks.
+        ///     Clears the DelegateScheduler of all tasks.
         /// </summary>
         /// <exception cref="ObjectDisposedException">
-        /// If the DelegateScheduler has already been disposed.
+        ///     If the DelegateScheduler has already been disposed.
         /// </exception>
         public void Clear()
         {
             #region Require
 
-            if(disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (disposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
-            lock(queue.SyncRoot)
+            lock (queue.SyncRoot)
             {
                 queue.Clear();
                 tasks.Clear();
@@ -363,76 +341,62 @@ namespace Sanford.Threading
         // Responds to the timer's Elapsed event by running any tasks that are due.
         private void HandleElapsed(object sender, ElapsedEventArgs e)
         {
-            Debug.WriteLine("Signal time: " + e.SignalTime.ToString());
+            Debug.WriteLine("Signal time: " + e.SignalTime);
 
-            lock(queue.SyncRoot)
+            lock (queue.SyncRoot)
             {
                 #region Guard
 
-                if(queue.Count == 0)
-                {
-                    return;
-                }
+                if (queue.Count == 0) return;
 
                 #endregion
 
                 // Take a look at the first task in the queue to see if it's
                 // time to run it.
-                Task tk = (Task)queue.Peek();
+                var tk = (Task) queue.Peek();
 
                 // The return value from the delegate that will be invoked.
                 object returnValue;
 
                 // While there are still tasks in the queue and it is time 
                 // to run one or more of them.
-                while(queue.Count > 0 && tk.NextTimeout <= e.SignalTime)
+                while (queue.Count > 0 && tk.NextTimeout <= e.SignalTime)
                 {
                     // Remove task from queue.
                     queue.Dequeue();
 
                     // While it's time for the task to run.
-                    while((tk.Count == Infinite || tk.Count > 0) && tk.NextTimeout <= e.SignalTime)
-                    {
+                    while ((tk.Count == Infinite || tk.Count > 0) && tk.NextTimeout <= e.SignalTime)
                         try
                         {
                             Debug.WriteLine("Invoking delegate.");
-                            Debug.WriteLine("Next timeout: " + tk.NextTimeout.ToString());
+                            Debug.WriteLine("Next timeout: " + tk.NextTimeout);
 
                             // Invoke delegate.
                             returnValue = tk.Invoke(e.SignalTime);
 
                             OnInvokeCompleted(
                                 new InvokeCompletedEventArgs(
-                                tk.Method,
-                                tk.GetArgs(),
-                                returnValue,
-                                null));
+                                    tk.Method,
+                                    tk.GetArgs(),
+                                    returnValue,
+                                    null));
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             OnInvokeCompleted(
                                 new InvokeCompletedEventArgs(
-                                tk.Method,
-                                tk.GetArgs(),
-                                null,
-                                ex));
+                                    tk.Method,
+                                    tk.GetArgs(),
+                                    null,
+                                    ex));
                         }
-                    }
 
                     // If this task should run again.
-                    if(tk.Count == Infinite || tk.Count > 0)
-                    {
-                        // Enqueue task back into priority queue.
-                        queue.Enqueue(tk);
-                    }
+                    if (tk.Count == Infinite || tk.Count > 0) queue.Enqueue(tk);
 
                     // If there are still tasks in the queue.
-                    if(queue.Count > 0)
-                    {
-                        // Take a look at the next task to see if it is
-                        // time to run.
-                        tk = (Task)queue.Peek();
-                    }
+                    if (queue.Count > 0) tk = (Task) queue.Peek();
                 }
             }
         }
@@ -440,23 +404,17 @@ namespace Sanford.Threading
         // Raises the Disposed event.
         protected virtual void OnDisposed(EventArgs e)
         {
-            EventHandler handler = Disposed;
+            var handler = Disposed;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         // Raises the InvokeCompleted event.
         protected virtual void OnInvokeCompleted(InvokeCompletedEventArgs e)
         {
-            EventHandler<InvokeCompletedEventArgs> handler = InvokeCompleted;
+            var handler = InvokeCompleted;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         #endregion
@@ -464,9 +422,9 @@ namespace Sanford.Threading
         #region Properties
 
         /// <summary>
-        /// Gets or sets the interval in milliseconds in which the 
-        /// DelegateScheduler polls its queue of delegates in order to 
-        /// determine when they should run.
+        ///     Gets or sets the interval in milliseconds in which the
+        ///     DelegateScheduler polls its queue of delegates in order to
+        ///     determine when they should run.
         /// </summary>
         public double PollingInterval
         {
@@ -474,10 +432,7 @@ namespace Sanford.Threading
             {
                 #region Require
 
-                if(disposed)
-                {
-                    throw new ObjectDisposedException("PriorityQueue");
-                }
+                if (disposed) throw new ObjectDisposedException("PriorityQueue");
 
                 #endregion
 
@@ -487,10 +442,7 @@ namespace Sanford.Threading
             {
                 #region Require
 
-                if(disposed)
-                {
-                    throw new ObjectDisposedException("PriorityQueue");
-                }
+                if (disposed) throw new ObjectDisposedException("PriorityQueue");
 
                 #endregion
 
@@ -499,29 +451,17 @@ namespace Sanford.Threading
         }
 
         /// <summary>
-        /// Gets a value indicating whether the DelegateScheduler is running.
+        ///     Gets a value indicating whether the DelegateScheduler is running.
         /// </summary>
-        public bool IsRunning
-        {
-            get
-            {
-                return running;
-            }
-        }
+        public bool IsRunning { get; private set; }
 
         /// <summary>
-        /// Gets or sets the object used to marshal event-handler calls and delegate invocations.
+        ///     Gets or sets the object used to marshal event-handler calls and delegate invocations.
         /// </summary>
         public ISynchronizeInvoke SynchronizingObject
         {
-            get
-            {
-                return timer.SynchronizingObject;
-            }
-            set
-            {
-                timer.SynchronizingObject = value;
-            }
+            get { return timer.SynchronizingObject; }
+            set { timer.SynchronizingObject = value; }
         }
 
         #endregion
@@ -530,38 +470,10 @@ namespace Sanford.Threading
 
         #region IComponent Members
 
-        public event System.EventHandler Disposed;
+        public event EventHandler Disposed;
 
-        public ISite Site
-        {
-            get
-            {
-                return site;
-            }
-            set
-            {
-                site = value;
-            }
-        }
+        public ISite Site { get; set; } = null;
 
         #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            #region Guard
-
-            if(disposed)
-            {
-                return;
-            }
-
-            #endregion
-
-            Dispose(true);
-        }
-
-        #endregion        
     }
 }

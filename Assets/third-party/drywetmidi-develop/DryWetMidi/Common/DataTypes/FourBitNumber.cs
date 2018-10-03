@@ -3,25 +3,25 @@
 namespace Melanchall.DryWetMidi.Common
 {
     /// <summary>
-    /// Type that is used to represent a four-bit number (0-15).
+    ///     Type that is used to represent a four-bit number (0-15).
     /// </summary>
     /// <remarks>
-    /// Four-bit numbers widely used by MIDI protocol as parameters of MIDI events.
-    /// So instead of manipulating built-in C# numeric types (like byte or int) and checking for
-    /// out-of-range errors all validation of numbers in the [0; 15] range happens on data type
-    /// level via casting C# integer values to the <see cref="FourBitNumber"/>.
+    ///     Four-bit numbers widely used by MIDI protocol as parameters of MIDI events.
+    ///     So instead of manipulating built-in C# numeric types (like byte or int) and checking for
+    ///     out-of-range errors all validation of numbers in the [0; 15] range happens on data type
+    ///     level via casting C# integer values to the <see cref="FourBitNumber" />.
     /// </remarks>
     public struct FourBitNumber : IComparable<FourBitNumber>
     {
         #region Constants
 
         /// <summary>
-        /// The smallest possible value of a <see cref="FourBitNumber"/>.
+        ///     The smallest possible value of a <see cref="FourBitNumber" />.
         /// </summary>
         public static readonly FourBitNumber MinValue = new FourBitNumber(Min);
 
         /// <summary>
-        /// The largest possible value of a <see cref="FourBitNumber"/>.
+        ///     The largest possible value of a <see cref="FourBitNumber" />.
         /// </summary>
         public static readonly FourBitNumber MaxValue = new FourBitNumber(Max);
 
@@ -39,14 +39,17 @@ namespace Melanchall.DryWetMidi.Common
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FourBitNumber"/> with the specified value.
+        ///     Initializes a new instance of the <see cref="FourBitNumber" /> with the specified value.
         /// </summary>
         /// <param name="value">Value representing four-bit number.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is out of
-        /// [<see cref="MinValue"/>; <see cref="MaxValue"/>] range.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="value" /> is out of
+        ///     [<see cref="MinValue" />; <see cref="MaxValue" />] range.
+        /// </exception>
         public FourBitNumber(byte value)
         {
-            ThrowIfArgument.IsOutOfRange(nameof(value), value, Min, Max, "Value is out of range valid for four-bit number.");
+            ThrowIfArgument.IsOutOfRange(nameof(value), value, Min, Max,
+                "Value is out of range valid for four-bit number.");
 
             _value = value;
         }
@@ -56,18 +59,18 @@ namespace Melanchall.DryWetMidi.Common
         #region Casting
 
         /// <summary>
-        /// Converts the value of a <see cref="FourBitNumber"/> to a <see cref="byte"/>.
+        ///     Converts the value of a <see cref="FourBitNumber" /> to a <see cref="byte" />.
         /// </summary>
-        /// <param name="number"><see cref="FourBitNumber"/> object to convert to a byte value.</param>
+        /// <param name="number"><see cref="FourBitNumber" /> object to convert to a byte value.</param>
         public static implicit operator byte(FourBitNumber number)
         {
             return number._value;
         }
 
         /// <summary>
-        /// Converts the value of a <see cref="byte"/> to a <see cref="FourBitNumber"/>.
+        ///     Converts the value of a <see cref="byte" /> to a <see cref="FourBitNumber" />.
         /// </summary>
-        /// <param name="number">Byte value to convert to a <see cref="FourBitNumber"/> object.</param>
+        /// <param name="number">Byte value to convert to a <see cref="FourBitNumber" /> object.</param>
         public static explicit operator FourBitNumber(byte number)
         {
             return new FourBitNumber(number);
@@ -78,16 +81,18 @@ namespace Melanchall.DryWetMidi.Common
         #region IComparable<FourBitNumber>
 
         /// <summary>
-        /// Compares the current instance with another object of the same type and returns
-        /// an integer that indicates whether the current instance precedes, follows, or
-        /// occurs in the same position in the sort order as the other object.
+        ///     Compares the current instance with another object of the same type and returns
+        ///     an integer that indicates whether the current instance precedes, follows, or
+        ///     occurs in the same position in the sort order as the other object.
         /// </summary>
         /// <param name="other">An object to compare with this instance.</param>
-        /// <returns>A value that indicates the relative order of the objects being compared. The
-        /// return value has these meanings:
-        /// - Less than zero: This instance precedes other in the sort order.
-        /// - Zero: This instance occurs in the same position in the sort order as other.
-        /// - Greater than zero: This instance follows other in the sort order.</returns>
+        /// <returns>
+        ///     A value that indicates the relative order of the objects being compared. The
+        ///     return value has these meanings:
+        ///     - Less than zero: This instance precedes other in the sort order.
+        ///     - Zero: This instance occurs in the same position in the sort order as other.
+        ///     - Greater than zero: This instance follows other in the sort order.
+        /// </returns>
         public int CompareTo(FourBitNumber other)
         {
             return _value.CompareTo(other._value);
@@ -98,7 +103,7 @@ namespace Melanchall.DryWetMidi.Common
         #region Overrides
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
@@ -107,7 +112,7 @@ namespace Melanchall.DryWetMidi.Common
         }
 
         /// <summary>
-        /// Determines whether the specified object is equal to the current object.
+        ///     Determines whether the specified object is equal to the current object.
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
@@ -116,12 +121,12 @@ namespace Melanchall.DryWetMidi.Common
             if (!(obj is FourBitNumber))
                 return false;
 
-            var fourBitNumber = (FourBitNumber)obj;
+            var fourBitNumber = (FourBitNumber) obj;
             return fourBitNumber._value == _value;
         }
 
         /// <summary>
-        /// Serves as the default hash function.
+        ///     Serves as the default hash function.
         /// </summary>
         /// <returns>A hash code for the current object.</returns>
         public override int GetHashCode()

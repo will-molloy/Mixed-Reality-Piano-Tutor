@@ -15,7 +15,7 @@ namespace Melanchall.DryWetMidi.Smf
 
             Type eventType;
             var midiEvent = StandardEventTypes.SysEx.TryGetType(currentStatusByte, out eventType)
-                ? (SysExEvent)Activator.CreateInstance(eventType)
+                ? (SysExEvent) Activator.CreateInstance(eventType)
                 : null;
 
             if (midiEvent == null)

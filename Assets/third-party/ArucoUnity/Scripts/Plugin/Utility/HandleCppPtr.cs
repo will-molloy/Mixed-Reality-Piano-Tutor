@@ -3,55 +3,51 @@ using System.Runtime.InteropServices;
 
 namespace ArucoUnity.Plugin
 {
-  public static partial class Utility
-  {
-    public enum DeleteResponsibility
+    public static class Utility
     {
-      True,
-      False
-    }
-
-    public abstract class HandleCppPtr
-    {
-      // Constructors & destructor
-
-      public HandleCppPtr(DeleteResponsibility deleteResponsibility = DeleteResponsibility.True)
-      {
-        CppPtr = IntPtr.Zero;
-        DeleteResponsibility = deleteResponsibility;
-      }
-
-      public HandleCppPtr(IntPtr cppPtr, DeleteResponsibility deleteResponsibility = DeleteResponsibility.True)
-      {
-        CppPtr = cppPtr;
-        DeleteResponsibility = deleteResponsibility;
-      }
-
-      ~HandleCppPtr()
-      {
-        if (DeleteResponsibility == DeleteResponsibility.True)
+        public enum DeleteResponsibility
         {
-          DeleteCppPtr();
+            True,
+            False
         }
-      }
 
-      // Properties
+        public abstract class HandleCppPtr
+        {
+            // Variables
 
-      public DeleteResponsibility DeleteResponsibility { get; set; }
+            private HandleRef handle;
+            // Constructors & destructor
 
-      public IntPtr CppPtr
-      {
-        get { return handle.Handle; }
-        set { handle = new HandleRef(this, value); }
-      }
+            public HandleCppPtr(DeleteResponsibility deleteResponsibility = DeleteResponsibility.True)
+            {
+                CppPtr = IntPtr.Zero;
+                DeleteResponsibility = deleteResponsibility;
+            }
 
-      // Variables
+            public HandleCppPtr(IntPtr cppPtr, DeleteResponsibility deleteResponsibility = DeleteResponsibility.True)
+            {
+                CppPtr = cppPtr;
+                DeleteResponsibility = deleteResponsibility;
+            }
 
-      HandleRef handle;
+            // Properties
 
-      // Methods
+            public DeleteResponsibility DeleteResponsibility { get; set; }
 
-      protected abstract void DeleteCppPtr();
+            public IntPtr CppPtr
+            {
+                get { return handle.Handle; }
+                set { handle = new HandleRef(this, value); }
+            }
+
+            ~HandleCppPtr()
+            {
+                if (DeleteResponsibility == DeleteResponsibility.True) DeleteCppPtr();
+            }
+
+            // Methods
+
+            protected abstract void DeleteCppPtr();
+        }
     }
-  }
 }

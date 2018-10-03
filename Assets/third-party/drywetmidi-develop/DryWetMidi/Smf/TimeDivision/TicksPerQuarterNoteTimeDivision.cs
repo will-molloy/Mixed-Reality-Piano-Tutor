@@ -3,63 +3,64 @@
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Time division that represents number of delta-time "ticks" which make up a quarter-note.
+    ///     Time division that represents number of delta-time "ticks" which make up a quarter-note.
     /// </summary>
     public sealed class TicksPerQuarterNoteTimeDivision : TimeDivision
     {
         #region Constants
 
         /// <summary>
-        /// Default number of ticks which make up a quarter-note.
+        ///     Default number of ticks which make up a quarter-note.
         /// </summary>
         public const short DefaultTicksPerQuarterNote = 96;
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TicksPerQuarterNoteTimeDivision"/>.
-        /// </summary>
-        public TicksPerQuarterNoteTimeDivision()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TicksPerQuarterNoteTimeDivision"/> with
-        /// the specified ticks number per a quarter-note.
-        /// </summary>
-        /// <param name="ticksPerQuarterNote">Number of ticks which make up a quarter-note.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="ticksPerQuarterNote"/> is negative.</exception>
-        public TicksPerQuarterNoteTimeDivision(short ticksPerQuarterNote)
-        {
-            ThrowIfArgument.IsNegative(nameof(ticksPerQuarterNote),
-                                        ticksPerQuarterNote,
-                                        "Ticks per quarter-note must be non-negative number.");
-
-            TicksPerQuarterNote = ticksPerQuarterNote;
-        }
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Gets or sets number of ticks which make up a quarter-note.
+        ///     Gets or sets number of ticks which make up a quarter-note.
         /// </summary>
         public short TicksPerQuarterNote { get; set; } = DefaultTicksPerQuarterNote;
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="TicksPerQuarterNoteTimeDivision" />.
+        /// </summary>
+        public TicksPerQuarterNoteTimeDivision()
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="TicksPerQuarterNoteTimeDivision" /> with
+        ///     the specified ticks number per a quarter-note.
+        /// </summary>
+        /// <param name="ticksPerQuarterNote">Number of ticks which make up a quarter-note.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="ticksPerQuarterNote" /> is negative.</exception>
+        public TicksPerQuarterNoteTimeDivision(short ticksPerQuarterNote)
+        {
+            ThrowIfArgument.IsNegative(nameof(ticksPerQuarterNote),
+                ticksPerQuarterNote,
+                "Ticks per quarter-note must be non-negative number.");
+
+            TicksPerQuarterNote = ticksPerQuarterNote;
+        }
 
         #endregion
 
         #region Operators
 
         /// <summary>
-        /// Determines if two <see cref="TicksPerQuarterNoteTimeDivision"/> objects are equal.
+        ///     Determines if two <see cref="TicksPerQuarterNoteTimeDivision" /> objects are equal.
         /// </summary>
-        /// <param name="timeDivision1">The first <see cref="TicksPerQuarterNoteTimeDivision"/> to compare.</param>
-        /// <param name="timeDivision2">The second <see cref="TicksPerQuarterNoteTimeDivision"/> to compare.</param>
+        /// <param name="timeDivision1">The first <see cref="TicksPerQuarterNoteTimeDivision" /> to compare.</param>
+        /// <param name="timeDivision2">The second <see cref="TicksPerQuarterNoteTimeDivision" /> to compare.</param>
         /// <returns>true if the time divisions are equal, false otherwise.</returns>
-        public static bool operator ==(TicksPerQuarterNoteTimeDivision timeDivision1, TicksPerQuarterNoteTimeDivision timeDivision2)
+        public static bool operator ==(TicksPerQuarterNoteTimeDivision timeDivision1,
+            TicksPerQuarterNoteTimeDivision timeDivision2)
         {
             if (ReferenceEquals(timeDivision1, timeDivision2))
                 return true;
@@ -71,12 +72,13 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Determines if two <see cref="TicksPerQuarterNoteTimeDivision"/> objects are not equal.
+        ///     Determines if two <see cref="TicksPerQuarterNoteTimeDivision" /> objects are not equal.
         /// </summary>
-        /// <param name="timeDivision1">The first <see cref="TicksPerQuarterNoteTimeDivision"/> to compare.</param>
-        /// <param name="timeDivision2">The second <see cref="TicksPerQuarterNoteTimeDivision"/> to compare.</param>
+        /// <param name="timeDivision1">The first <see cref="TicksPerQuarterNoteTimeDivision" /> to compare.</param>
+        /// <param name="timeDivision2">The second <see cref="TicksPerQuarterNoteTimeDivision" /> to compare.</param>
         /// <returns>false if the time divisions are equal, true otherwise.</returns>
-        public static bool operator !=(TicksPerQuarterNoteTimeDivision timeDivision1, TicksPerQuarterNoteTimeDivision timeDivision2)
+        public static bool operator !=(TicksPerQuarterNoteTimeDivision timeDivision1,
+            TicksPerQuarterNoteTimeDivision timeDivision2)
         {
             return !(timeDivision1 == timeDivision2);
         }
@@ -91,7 +93,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Clones time division by creating a copy of it.
+        ///     Clones time division by creating a copy of it.
         /// </summary>
         /// <returns>Copy of the time division.</returns>
         public override TimeDivision Clone()
@@ -100,7 +102,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
@@ -109,17 +111,17 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Determines whether the specified object is equal to the current object.
+        ///     Determines whether the specified object is equal to the current object.
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return this == (obj as TicksPerQuarterNoteTimeDivision);
+            return this == obj as TicksPerQuarterNoteTimeDivision;
         }
 
         /// <summary>
-        /// Returns the hash code for this instance.
+        ///     Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()

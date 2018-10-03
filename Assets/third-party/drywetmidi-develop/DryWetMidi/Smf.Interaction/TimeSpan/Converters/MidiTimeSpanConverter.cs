@@ -6,12 +6,12 @@
 
         public ITimeSpan ConvertTo(long timeSpan, long time, TempoMap tempoMap)
         {
-            return (MidiTimeSpan)timeSpan;
+            return (MidiTimeSpan) timeSpan;
         }
 
         public long ConvertFrom(ITimeSpan timeSpan, long time, TempoMap tempoMap)
         {
-            return ((MidiTimeSpan)timeSpan).TimeSpan;
+            return ((MidiTimeSpan) timeSpan).TimeSpan;
         }
 
         #endregion

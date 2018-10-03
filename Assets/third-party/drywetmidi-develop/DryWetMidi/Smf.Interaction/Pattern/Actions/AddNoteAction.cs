@@ -15,16 +15,6 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
         #endregion
 
-        #region Properties
-
-        public MusicTheory.Note Note { get; }
-
-        public SevenBitNumber Velocity { get; }
-
-        public ITimeSpan Length { get; }
-
-        #endregion
-
         #region IPatternAction
 
         public PatternActionResult Invoke(long time, PatternContext context)
@@ -39,8 +29,18 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
                 Velocity = Velocity
             };
 
-            return new PatternActionResult(time + noteLength, new[] { note });
+            return new PatternActionResult(time + noteLength, new[] {note});
         }
+
+        #endregion
+
+        #region Properties
+
+        public MusicTheory.Note Note { get; }
+
+        public SevenBitNumber Velocity { get; }
+
+        public ITimeSpan Length { get; }
 
         #endregion
     }

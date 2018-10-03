@@ -6,103 +6,34 @@ namespace Sanford.Multimedia.Midi
 {
     public class Sequencer : IComponent
     {
-        private Sequence sequence = null;
-
-        private List<IEnumerator<int>> enumerators = new List<IEnumerator<int>>();
-
-        private MessageDispatcher dispatcher = new MessageDispatcher();
-
-        private ChannelChaser chaser = new ChannelChaser();
-
-        private ChannelStopper stopper = new ChannelStopper();
-
-        private MidiInternalClock clock = new MidiInternalClock();
-
-        private int tracksPlayingCount;
-
         private readonly object lockObject = new object();
 
-        private bool playing = false;
+        private readonly ChannelChaser chaser = new ChannelChaser();
 
-        private bool disposed = false;
+        private readonly MidiInternalClock clock = new MidiInternalClock();
 
-        private ISite site = null;
+        private readonly MessageDispatcher dispatcher = new MessageDispatcher();
 
-        #region Events
+        private bool disposed;
 
-        public event EventHandler PlayingCompleted;
+        private readonly List<IEnumerator<int>> enumerators = new List<IEnumerator<int>>();
 
-        public event EventHandler<ChannelMessageEventArgs> ChannelMessagePlayed
-        {
-            add
-            {
-                dispatcher.ChannelMessageDispatched += value;
-            }
-            remove
-            {
-                dispatcher.ChannelMessageDispatched -= value;
-            }
-        }
+        private bool playing;
+        private Sequence sequence;
 
-        public event EventHandler<SysExMessageEventArgs> SysExMessagePlayed
-        {
-            add
-            {
-                dispatcher.SysExMessageDispatched += value;
-            }
-            remove
-            {
-                dispatcher.SysExMessageDispatched -= value;
-            }
-        }
+        private readonly ChannelStopper stopper = new ChannelStopper();
 
-        public event EventHandler<MetaMessageEventArgs> MetaMessagePlayed
-        {
-            add
-            {
-                dispatcher.MetaMessageDispatched += value;
-            }
-            remove
-            {
-                dispatcher.MetaMessageDispatched -= value;
-            }
-        }
-
-        public event EventHandler<ChasedEventArgs> Chased
-        {
-            add
-            {
-                chaser.Chased += value;
-            }
-            remove
-            {
-                chaser.Chased -= value;
-            }
-        }
-
-        public event EventHandler<StoppedEventArgs> Stopped
-        {
-            add
-            {
-                stopper.Stopped += value;
-            }
-            remove
-            {
-                stopper.Stopped -= value;
-            }
-        }
-
-        #endregion
+        private int tracksPlayingCount;
 
         public Sequencer()
         {
             dispatcher.MetaMessageDispatched += delegate(object sender, MetaMessageEventArgs e)
             {
-                if(e.Message.MetaType == MetaType.EndOfTrack)
+                if (e.Message.MetaType == MetaType.EndOfTrack)
                 {
                     tracksPlayingCount--;
 
-                    if(tracksPlayingCount == 0)
+                    if (tracksPlayingCount == 0)
                     {
                         Stop();
 
@@ -120,22 +51,92 @@ namespace Sanford.Multimedia.Midi
                 stopper.Process(e.Message);
             };
 
-            clock.Tick += delegate(object sender, EventArgs e)
+            clock.Tick += delegate
             {
-                lock(lockObject)
+                lock (lockObject)
                 {
-                    if(!playing)
-                    {
-                        return;
-                    }
+                    if (!playing) return;
 
-                    foreach(IEnumerator<int> enumerator in enumerators)
-                    {
-                        enumerator.MoveNext();
-                    }
+                    foreach (var enumerator in enumerators) enumerator.MoveNext();
                 }
             };
         }
+
+        public int Position
+        {
+            get
+            {
+                #region Require
+
+                if (disposed) throw new ObjectDisposedException(GetType().Name);
+
+                #endregion
+
+                return clock.Ticks;
+            }
+            set
+            {
+                #region Require
+
+                if (disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+                if (value < 0) throw new ArgumentOutOfRangeException();
+
+                #endregion
+
+                bool wasPlaying;
+
+                lock (lockObject)
+                {
+                    wasPlaying = playing;
+
+                    Stop();
+
+                    clock.SetTicks(value);
+                }
+
+                lock (lockObject)
+                {
+                    if (wasPlaying) Continue();
+                }
+            }
+        }
+
+        public Sequence Sequence
+        {
+            get { return sequence; }
+            set
+            {
+                #region Require
+
+                if (value == null)
+                    throw new ArgumentNullException();
+                if (value.SequenceType == SequenceType.Smpte) throw new NotSupportedException();
+
+                #endregion
+
+                lock (lockObject)
+                {
+                    Stop();
+                    sequence = value;
+                }
+            }
+        }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            #region Guard
+
+            if (disposed) return;
+
+            #endregion
+
+            Dispose(true);
+        }
+
+        #endregion
 
         ~Sequencer()
         {
@@ -144,9 +145,8 @@ namespace Sanford.Multimedia.Midi
 
         protected virtual void Dispose(bool disposing)
         {
-            if(disposing)
-            {
-                lock(lockObject)
+            if (disposing)
+                lock (lockObject)
                 {
                     Stop();
 
@@ -156,21 +156,17 @@ namespace Sanford.Multimedia.Midi
 
                     GC.SuppressFinalize(this);
                 }
-            }
         }
 
         public void Start()
         {
             #region Require
 
-            if(disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (disposed) throw new ObjectDisposedException(GetType().Name);
 
-            #endregion           
+            #endregion
 
-            lock(lockObject)
+            lock (lockObject)
             {
                 Stop();
 
@@ -184,32 +180,24 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (disposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
             #region Guard
 
-            if(Sequence == null)
-            {
-                return;
-            }
+            if (Sequence == null) return;
 
             #endregion
 
-            lock(lockObject)
+            lock (lockObject)
             {
                 Stop();
 
                 enumerators.Clear();
 
-                foreach(Track t in Sequence)
-                {
+                foreach (var t in Sequence)
                     enumerators.Add(t.TickIterator(Position, chaser, dispatcher).GetEnumerator());
-                }
 
                 tracksPlayingCount = Sequence.Count;
 
@@ -223,21 +211,15 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
+            if (disposed) throw new ObjectDisposedException(GetType().Name);
 
             #endregion
 
-            lock(lockObject)
+            lock (lockObject)
             {
                 #region Guard
 
-                if(!playing)
-                {
-                    return;
-                }
+                if (!playing) return;
 
                 #endregion
 
@@ -249,137 +231,59 @@ namespace Sanford.Multimedia.Midi
 
         protected virtual void OnPlayingCompleted(EventArgs e)
         {
-            EventHandler handler = PlayingCompleted;
+            var handler = PlayingCompleted;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         protected virtual void OnDisposed(EventArgs e)
         {
-            EventHandler handler = Disposed;
+            var handler = Disposed;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
-        public int Position
+        #region Events
+
+        public event EventHandler PlayingCompleted;
+
+        public event EventHandler<ChannelMessageEventArgs> ChannelMessagePlayed
         {
-            get
-            {
-                #region Require
-
-                if(disposed)
-                {
-                    throw new ObjectDisposedException(this.GetType().Name);
-                }
-
-                #endregion
-
-                return clock.Ticks;
-            }
-            set
-            {
-                #region Require
-
-                if(disposed)
-                {
-                    throw new ObjectDisposedException(this.GetType().Name);
-                }
-                else if(value < 0)
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
-
-                #endregion
-
-                bool wasPlaying;
-
-                lock(lockObject)
-                {
-                    wasPlaying = playing;
-
-                    Stop();
-
-                    clock.SetTicks(value);
-                }
-
-                lock(lockObject)
-                {
-                    if(wasPlaying)
-                    {
-                        Continue();
-                    }
-                }
-            }
+            add { dispatcher.ChannelMessageDispatched += value; }
+            remove { dispatcher.ChannelMessageDispatched -= value; }
         }
 
-        public Sequence Sequence
+        public event EventHandler<SysExMessageEventArgs> SysExMessagePlayed
         {
-            get
-            {
-                return sequence;
-            }
-            set
-            {
-                #region Require
-
-                if(value == null)
-                {
-                    throw new ArgumentNullException();
-                }
-                else if(value.SequenceType == SequenceType.Smpte)
-                {
-                    throw new NotSupportedException();
-                }
-
-                #endregion
-
-                lock(lockObject)
-                {
-                    Stop();
-                    sequence = value;
-                }
-            }
+            add { dispatcher.SysExMessageDispatched += value; }
+            remove { dispatcher.SysExMessageDispatched -= value; }
         }
+
+        public event EventHandler<MetaMessageEventArgs> MetaMessagePlayed
+        {
+            add { dispatcher.MetaMessageDispatched += value; }
+            remove { dispatcher.MetaMessageDispatched -= value; }
+        }
+
+        public event EventHandler<ChasedEventArgs> Chased
+        {
+            add { chaser.Chased += value; }
+            remove { chaser.Chased -= value; }
+        }
+
+        public event EventHandler<StoppedEventArgs> Stopped
+        {
+            add { stopper.Stopped += value; }
+            remove { stopper.Stopped -= value; }
+        }
+
+        #endregion
 
         #region IComponent Members
 
         public event EventHandler Disposed;
 
-        public ISite Site
-        {
-            get
-            {
-                return site;
-            }
-            set
-            {
-                site = value;
-            }
-        }
-
-        #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            #region Guard
-
-            if(disposed)
-            {
-                return;
-            }
-
-            #endregion
-
-            Dispose(true);
-        }
+        public ISite Site { get; set; } = null;
 
         #endregion
     }

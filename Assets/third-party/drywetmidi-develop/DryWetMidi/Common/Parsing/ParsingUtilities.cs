@@ -9,8 +9,11 @@ namespace Melanchall.DryWetMidi.Common
     {
         #region Constants
 
-        private const NumberStyles NonnegativeNumberStyle = NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
-        private const NumberStyles NumberStyle = NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite | NumberStyles.AllowLeadingSign;
+        private const NumberStyles NonnegativeNumberStyle =
+            NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+
+        private const NumberStyles NumberStyle = NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite |
+                                                 NumberStyles.AllowLeadingSign;
 
         #endregion
 
@@ -29,7 +32,7 @@ namespace Melanchall.DryWetMidi.Common
         public static Match Match(string input, IEnumerable<string> patterns)
         {
             return patterns.Select(p => Regex.Match(input.Trim(), $"^{p}$", RegexOptions.IgnoreCase))
-                           .FirstOrDefault(m => m.Success);
+                .FirstOrDefault(m => m.Success);
         }
 
         public static bool ParseNonnegativeInt(Match match, string groupName, int defaultValue, out int value)
@@ -50,7 +53,8 @@ namespace Melanchall.DryWetMidi.Common
             return !group.Success || long.TryParse(group.Value, NonnegativeNumberStyle, null, out value);
         }
 
-        private static bool ParseInt(Match match, string groupName, int defaultValue, NumberStyles numberStyle, out int value)
+        private static bool ParseInt(Match match, string groupName, int defaultValue, NumberStyles numberStyle,
+            out int value)
         {
             value = defaultValue;
 

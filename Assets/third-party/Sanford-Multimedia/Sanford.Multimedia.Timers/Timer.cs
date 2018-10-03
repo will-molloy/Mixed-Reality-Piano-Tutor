@@ -40,51 +40,67 @@ using System.Runtime.InteropServices;
 namespace Sanford.Multimedia.Timers
 {
     /// <summary>
-    /// Defines constants for the multimedia Timer's event types.
+    ///     Defines constants for the multimedia Timer's event types.
     /// </summary>
     public enum TimerMode
     {
         /// <summary>
-        /// Timer event occurs once.
+        ///     Timer event occurs once.
         /// </summary>
         OneShot,
 
         /// <summary>
-        /// Timer event occurs periodically.
+        ///     Timer event occurs periodically.
         /// </summary>
         Periodic
-    };
+    }
 
     /// <summary>
-    /// Represents information about the multimedia Timer's capabilities.
+    ///     Represents information about the multimedia Timer's capabilities.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct TimerCaps
     {
         /// <summary>
-        /// Minimum supported period in milliseconds.
+        ///     Minimum supported period in milliseconds.
         /// </summary>
         public int periodMin;
 
         /// <summary>
-        /// Maximum supported period in milliseconds.
+        ///     Maximum supported period in milliseconds.
         /// </summary>
         public int periodMax;
 
-        public static TimerCaps Default
-        {
-            get
-            {
-                return new TimerCaps { periodMin = 1, periodMax = Int32.MaxValue };
-            }
-        }
+        public static TimerCaps Default => new TimerCaps {periodMin = 1, periodMax = int.MaxValue};
     }
 
     /// <summary>
-    /// Represents the Windows multimedia timer.
+    ///     Represents the Windows multimedia timer.
     /// </summary>
-    sealed class Timer : ITimer
+    internal sealed class Timer : ITimer
     {
+        #region IDisposable Members
+
+        /// <summary>
+        ///     Frees timer resources.
+        /// </summary>
+        public void Dispose()
+        {
+            #region Guard
+
+            if (disposed) return;
+
+            #endregion
+
+            disposed = true;
+
+            if (IsRunning) timeKillEvent(timerID);
+
+            OnDisposed(EventArgs.Empty);
+        }
+
+        #endregion
+
         #region Timer Members
 
         #region Delegates
@@ -129,7 +145,7 @@ namespace Sanford.Multimedia.Timers
         private volatile int period;
 
         // Timer resolution in milliseconds.
-        private volatile int resolution;        
+        private volatile int resolution;
 
         // Called by Windows when a timer periodic event occurs.
         private TimeProc timeProcPeriodic;
@@ -141,36 +157,34 @@ namespace Sanford.Multimedia.Timers
         private EventRaiser tickRaiser;
 
         // The ISynchronizeInvoke object to use for marshaling events.
-        private ISynchronizeInvoke synchronizingObject = null;
+        private ISynchronizeInvoke synchronizingObject;
 
         // Indicates whether or not the timer is running.
-        private bool running = false;
 
         // Indicates whether or not the timer has been disposed.
-        private volatile bool disposed = false;
+        private volatile bool disposed;
 
         // For implementing IComponent.
-        private ISite site = null;
 
         // Multimedia timer capabilities.
-        private static TimerCaps caps;
+        private static readonly TimerCaps caps;
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// Occurs when the Timer has started;
+        ///     Occurs when the Timer has started;
         /// </summary>
         public event EventHandler Started;
 
         /// <summary>
-        /// Occurs when the Timer has stopped;
+        ///     Occurs when the Timer has stopped;
         /// </summary>
         public event EventHandler Stopped;
 
         /// <summary>
-        /// Occurs when the time period has elapsed.
+        ///     Occurs when the time period has elapsed.
         /// </summary>
         public event EventHandler Tick;
 
@@ -179,7 +193,7 @@ namespace Sanford.Multimedia.Timers
         #region Construction
 
         /// <summary>
-        /// Initialize class.
+        ///     Initialize class.
         /// </summary>
         static Timer()
         {
@@ -188,10 +202,10 @@ namespace Sanford.Multimedia.Timers
         }
 
         /// <summary>
-        /// Initializes a new instance of the Timer class with the specified IContainer.
+        ///     Initializes a new instance of the Timer class with the specified IContainer.
         /// </summary>
         /// <param name="container">
-        /// The IContainer to which the Timer will add itself.
+        ///     The IContainer to which the Timer will add itself.
         /// </param>
         public Timer(IContainer container)
         {
@@ -204,7 +218,7 @@ namespace Sanford.Multimedia.Timers
         }
 
         /// <summary>
-        /// Initializes a new instance of the Timer class.
+        ///     Initializes a new instance of the Timer class.
         /// </summary>
         public Timer()
         {
@@ -213,25 +227,21 @@ namespace Sanford.Multimedia.Timers
 
         ~Timer()
         {
-            if(IsRunning)
-            {
-                // Stop and destroy timer.
-                timeKillEvent(timerID);
-            }
+            if (IsRunning) timeKillEvent(timerID);
         }
 
         // Initialize timer with default values.
         private void Initialize()
         {
-            this.mode = TimerMode.Periodic;
-            this.period = Capabilities.periodMin;
-            this.resolution = 1;
+            mode = TimerMode.Periodic;
+            period = Capabilities.periodMin;
+            resolution = 1;
 
-            running = false;
+            IsRunning = false;
 
-            timeProcPeriodic = new TimeProc(TimerPeriodicEventCallback);
-            timeProcOneShot = new TimeProc(TimerOneShotEventCallback);
-            tickRaiser = new EventRaiser(OnTick);
+            timeProcPeriodic = TimerPeriodicEventCallback;
+            timeProcOneShot = TimerOneShotEventCallback;
+            tickRaiser = OnTick;
         }
 
         #endregion
@@ -239,62 +249,46 @@ namespace Sanford.Multimedia.Timers
         #region Methods
 
         /// <summary>
-        /// Starts the timer.
+        ///     Starts the timer.
         /// </summary>
         /// <exception cref="ObjectDisposedException">
-        /// The timer has already been disposed.
+        ///     The timer has already been disposed.
         /// </exception>
         /// <exception cref="TimerStartException">
-        /// The timer failed to start.
+        ///     The timer failed to start.
         /// </exception>
         public void Start()
         {
             #region Require
 
-            if(disposed)
-            {
-                throw new ObjectDisposedException("Timer");
-            }
+            if (disposed) throw new ObjectDisposedException("Timer");
 
             #endregion
 
             #region Guard
 
-            if(IsRunning)
-            {
-                return;
-            }
+            if (IsRunning) return;
 
             #endregion
 
             // If the periodic event callback should be used.
-            if(Mode == TimerMode.Periodic)
-            {
-                // Create and start timer.
-                timerID = timeSetEvent(Period, Resolution, timeProcPeriodic, IntPtr.Zero, (int)Mode);
-            }
+            if (Mode == TimerMode.Periodic)
+                timerID = timeSetEvent(Period, Resolution, timeProcPeriodic, IntPtr.Zero, (int) Mode);
             // Else the one shot event callback should be used.
             else
-            {
-                // Create and start timer.
-                timerID = timeSetEvent(Period, Resolution, timeProcOneShot, IntPtr.Zero, (int)Mode);
-            }
+                timerID = timeSetEvent(Period, Resolution, timeProcOneShot, IntPtr.Zero, (int) Mode);
 
             // If the timer was created successfully.
-            if(timerID != 0)
+            if (timerID != 0)
             {
-                running = true;
+                IsRunning = true;
 
-                if(SynchronizingObject != null && SynchronizingObject.InvokeRequired)
-                {
+                if (SynchronizingObject != null && SynchronizingObject.InvokeRequired)
                     SynchronizingObject.BeginInvoke(
                         new EventRaiser(OnStarted),
-                        new object[] { EventArgs.Empty });
-                }
+                        new object[] {EventArgs.Empty});
                 else
-                {
                     OnStarted(EventArgs.Empty);
-                }                
             }
             else
             {
@@ -303,49 +297,39 @@ namespace Sanford.Multimedia.Timers
         }
 
         /// <summary>
-        /// Stops timer.
+        ///     Stops timer.
         /// </summary>
         /// <exception cref="ObjectDisposedException">
-        /// If the timer has already been disposed.
+        ///     If the timer has already been disposed.
         /// </exception>
         public void Stop()
         {
             #region Require
 
-            if(disposed)
-            {
-                throw new ObjectDisposedException("Timer");
-            }
+            if (disposed) throw new ObjectDisposedException("Timer");
 
             #endregion
 
             #region Guard
 
-            if(!running)
-            {
-                return;
-            }
+            if (!IsRunning) return;
 
             #endregion
 
             // Stop and destroy timer.
-            int result = timeKillEvent(timerID);
+            var result = timeKillEvent(timerID);
 
             Debug.Assert(result == TIMERR_NOERROR);
 
-            running = false;
+            IsRunning = false;
 
-            if(SynchronizingObject != null && SynchronizingObject.InvokeRequired)
-            {
+            if (SynchronizingObject != null && SynchronizingObject.InvokeRequired)
                 SynchronizingObject.BeginInvoke(
                     new EventRaiser(OnStopped),
-                    new object[] { EventArgs.Empty });
-            }
+                    new object[] {EventArgs.Empty});
             else
-            {
                 OnStopped(EventArgs.Empty);
-            }
-        }        
+        }
 
         #region Callbacks
 
@@ -355,21 +339,14 @@ namespace Sanford.Multimedia.Timers
         {
             #region Guard
 
-            if(disposed)
-            {
-                return;
-            }
+            if (disposed) return;
 
             #endregion
 
-            if(synchronizingObject != null)
-            {
-                synchronizingObject.BeginInvoke(tickRaiser, new object[] { EventArgs.Empty });
-            }
+            if (synchronizingObject != null)
+                synchronizingObject.BeginInvoke(tickRaiser, new object[] {EventArgs.Empty});
             else
-            {
                 OnTick(EventArgs.Empty);
-            }
         }
 
         // Callback method called by the Win32 multimedia timer when a timer
@@ -378,16 +355,13 @@ namespace Sanford.Multimedia.Timers
         {
             #region Guard
 
-            if(disposed)
-            {
-                return;
-            }
+            if (disposed) return;
 
             #endregion
 
-            if(synchronizingObject != null)
+            if (synchronizingObject != null)
             {
-                synchronizingObject.BeginInvoke(tickRaiser, new object[] { EventArgs.Empty });
+                synchronizingObject.BeginInvoke(tickRaiser, new object[] {EventArgs.Empty});
                 Stop();
             }
             else
@@ -404,55 +378,43 @@ namespace Sanford.Multimedia.Timers
         // Raises the Disposed event.
         private void OnDisposed(EventArgs e)
         {
-            EventHandler handler = Disposed;
+            var handler = Disposed;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         // Raises the Started event.
         private void OnStarted(EventArgs e)
         {
-            EventHandler handler = Started;
+            var handler = Started;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         // Raises the Stopped event.
         private void OnStopped(EventArgs e)
         {
-            EventHandler handler = Stopped;
+            var handler = Stopped;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
         // Raises the Tick event.
         private void OnTick(EventArgs e)
         {
-            EventHandler handler = Tick;
+            var handler = Tick;
 
-            if(handler != null)
-            {
-                handler(this, e);
-            }
+            if (handler != null) handler(this, e);
         }
 
-        #endregion        
+        #endregion
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Gets or sets the object used to marshal event-handler calls.
+        ///     Gets or sets the object used to marshal event-handler calls.
         /// </summary>
         public ISynchronizeInvoke SynchronizingObject
         {
@@ -460,10 +422,7 @@ namespace Sanford.Multimedia.Timers
             {
                 #region Require
 
-                if(disposed)
-                {
-                    throw new ObjectDisposedException("Timer");
-                }
+                if (disposed) throw new ObjectDisposedException("Timer");
 
                 #endregion
 
@@ -473,10 +432,7 @@ namespace Sanford.Multimedia.Timers
             {
                 #region Require
 
-                if(disposed)
-                {
-                    throw new ObjectDisposedException("Timer");
-                }
+                if (disposed) throw new ObjectDisposedException("Timer");
 
                 #endregion
 
@@ -485,21 +441,18 @@ namespace Sanford.Multimedia.Timers
         }
 
         /// <summary>
-        /// Gets or sets the time between Tick events.
+        ///     Gets or sets the time between Tick events.
         /// </summary>
         /// <exception cref="ObjectDisposedException">
-        /// If the timer has already been disposed.
-        /// </exception>   
+        ///     If the timer has already been disposed.
+        /// </exception>
         public int Period
         {
             get
             {
                 #region Require
 
-                if(disposed)
-                {
-                    throw new ObjectDisposedException("Timer");
-                }
+                if (disposed) throw new ObjectDisposedException("Timer");
 
                 #endregion
 
@@ -509,21 +462,17 @@ namespace Sanford.Multimedia.Timers
             {
                 #region Require
 
-                if(disposed)
-                {
+                if (disposed)
                     throw new ObjectDisposedException("Timer");
-                }
-                else if(value < Capabilities.periodMin || value > Capabilities.periodMax)
-                {
+                if (value < Capabilities.periodMin || value > Capabilities.periodMax)
                     throw new ArgumentOutOfRangeException("Period", value,
                         "Multimedia Timer period out of range.");
-                }
 
                 #endregion
 
                 period = value;
 
-                if(IsRunning)
+                if (IsRunning)
                 {
                     Stop();
                     Start();
@@ -532,17 +481,17 @@ namespace Sanford.Multimedia.Timers
         }
 
         /// <summary>
-        /// Gets or sets the timer resolution.
+        ///     Gets or sets the timer resolution.
         /// </summary>
         /// <exception cref="ObjectDisposedException">
-        /// If the timer has already been disposed.
-        /// </exception>        
+        ///     If the timer has already been disposed.
+        /// </exception>
         /// <remarks>
-        /// The resolution is in milliseconds. The resolution increases 
-        /// with smaller values; a resolution of 0 indicates periodic events 
-        /// should occur with the greatest possible accuracy. To reduce system 
-        /// overhead, however, you should use the maximum value appropriate 
-        /// for your application.
+        ///     The resolution is in milliseconds. The resolution increases
+        ///     with smaller values; a resolution of 0 indicates periodic events
+        ///     should occur with the greatest possible accuracy. To reduce system
+        ///     overhead, however, you should use the maximum value appropriate
+        ///     for your application.
         /// </remarks>
         public int Resolution
         {
@@ -550,10 +499,7 @@ namespace Sanford.Multimedia.Timers
             {
                 #region Require
 
-                if(disposed)
-                {
-                    throw new ObjectDisposedException("Timer");
-                }
+                if (disposed) throw new ObjectDisposedException("Timer");
 
                 #endregion
 
@@ -563,21 +509,17 @@ namespace Sanford.Multimedia.Timers
             {
                 #region Require
 
-                if(disposed)
-                {
+                if (disposed)
                     throw new ObjectDisposedException("Timer");
-                }
-                else if(value < 0)
-                {
+                if (value < 0)
                     throw new ArgumentOutOfRangeException("Resolution", value,
                         "Multimedia timer resolution out of range.");
-                }
 
                 #endregion
 
                 resolution = value;
 
-                if(IsRunning)
+                if (IsRunning)
                 {
                     Stop();
                     Start();
@@ -586,10 +528,10 @@ namespace Sanford.Multimedia.Timers
         }
 
         /// <summary>
-        /// Gets the timer mode.
+        ///     Gets the timer mode.
         /// </summary>
         /// <exception cref="ObjectDisposedException">
-        /// If the timer has already been disposed.
+        ///     If the timer has already been disposed.
         /// </exception>
         public TimerMode Mode
         {
@@ -597,10 +539,7 @@ namespace Sanford.Multimedia.Timers
             {
                 #region Require
 
-                if(disposed)
-                {
-                    throw new ObjectDisposedException("Timer");
-                }
+                if (disposed) throw new ObjectDisposedException("Timer");
 
                 #endregion
 
@@ -610,16 +549,13 @@ namespace Sanford.Multimedia.Timers
             {
                 #region Require
 
-                if(disposed)
-                {
-                    throw new ObjectDisposedException("Timer");
-                }
+                if (disposed) throw new ObjectDisposedException("Timer");
 
                 #endregion
-                
+
                 mode = value;
 
-                if(IsRunning)
+                if (IsRunning)
                 {
                     Stop();
                     Start();
@@ -628,26 +564,14 @@ namespace Sanford.Multimedia.Timers
         }
 
         /// <summary>
-        /// Gets a value indicating whether the Timer is running.
+        ///     Gets a value indicating whether the Timer is running.
         /// </summary>
-        public bool IsRunning
-        {
-            get
-            {
-                return running;
-            }
-        }
+        public bool IsRunning { get; private set; }
 
         /// <summary>
-        /// Gets the timer capabilities.
+        ///     Gets the timer capabilities.
         /// </summary>
-        public static TimerCaps Capabilities
-        {
-            get
-            {
-                return caps;
-            }
-        }
+        public static TimerCaps Capabilities => caps;
 
         #endregion
 
@@ -655,62 +579,23 @@ namespace Sanford.Multimedia.Timers
 
         #region IComponent Members
 
-        public event System.EventHandler Disposed;
+        public event EventHandler Disposed;
 
-        public ISite Site
-        {
-            get
-            {
-                return site;
-            }
-            set
-            {
-                site = value;
-            }
-        }
+        public ISite Site { get; set; } = null;
 
         #endregion
-
-        #region IDisposable Members
-
-        /// <summary>
-        /// Frees timer resources.
-        /// </summary>
-        public void Dispose()
-        {
-            #region Guard
-
-            if(disposed)
-            {
-                return;
-            }
-
-            #endregion               
-
-            disposed = true;
-
-            if(running)
-            {
-                // Stop and destroy timer.
-                timeKillEvent(timerID);
-            }                      
-
-            OnDisposed(EventArgs.Empty);
-        }
-
-        #endregion       
     }
 
     /// <summary>
-    /// The exception that is thrown when a timer fails to start.
+    ///     The exception that is thrown when a timer fails to start.
     /// </summary>
     public class TimerStartException : ApplicationException
     {
         /// <summary>
-        /// Initializes a new instance of the TimerStartException class.
+        ///     Initializes a new instance of the TimerStartException class.
         /// </summary>
         /// <param name="message">
-        /// The error message that explains the reason for the exception. 
+        ///     The error message that explains the reason for the exception.
         /// </param>
         public TimerStartException(string message) : base(message)
         {

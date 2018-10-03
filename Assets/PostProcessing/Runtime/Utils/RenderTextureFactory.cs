@@ -5,11 +5,16 @@ namespace UnityEngine.PostProcessing
 {
     public sealed class RenderTextureFactory : IDisposable
     {
-        HashSet<RenderTexture> m_TemporaryRTs;
+        private readonly HashSet<RenderTexture> m_TemporaryRTs;
 
         public RenderTextureFactory()
         {
             m_TemporaryRTs = new HashSet<RenderTexture>();
+        }
+
+        public void Dispose()
+        {
+            ReleaseAll();
         }
 
         public RenderTexture Get(RenderTexture baseRenderTexture)
@@ -22,10 +27,13 @@ namespace UnityEngine.PostProcessing
                 baseRenderTexture.sRGB ? RenderTextureReadWrite.sRGB : RenderTextureReadWrite.Linear,
                 baseRenderTexture.filterMode,
                 baseRenderTexture.wrapMode
-                );
+            );
         }
 
-        public RenderTexture Get(int width, int height, int depthBuffer = 0, RenderTextureFormat format = RenderTextureFormat.ARGBHalf, RenderTextureReadWrite rw = RenderTextureReadWrite.Default, FilterMode filterMode = FilterMode.Bilinear, TextureWrapMode wrapMode = TextureWrapMode.Clamp, string name = "FactoryTempTexture")
+        public RenderTexture Get(int width, int height, int depthBuffer = 0,
+            RenderTextureFormat format = RenderTextureFormat.ARGBHalf,
+            RenderTextureReadWrite rw = RenderTextureReadWrite.Default, FilterMode filterMode = FilterMode.Bilinear,
+            TextureWrapMode wrapMode = TextureWrapMode.Clamp, string name = "FactoryTempTexture")
         {
             var rt = RenderTexture.GetTemporary(width, height, depthBuffer, format);
             rt.filterMode = filterMode;
@@ -41,7 +49,8 @@ namespace UnityEngine.PostProcessing
                 return;
 
             if (!m_TemporaryRTs.Contains(rt))
-                throw new ArgumentException(string.Format("Attempting to remove a RenderTexture that was not allocated: {0}", rt));
+                throw new ArgumentException(
+                    string.Format("Attempting to remove a RenderTexture that was not allocated: {0}", rt));
 
             m_TemporaryRTs.Remove(rt);
             RenderTexture.ReleaseTemporary(rt);
@@ -54,11 +63,6 @@ namespace UnityEngine.PostProcessing
                 RenderTexture.ReleaseTemporary(enumerator.Current);
 
             m_TemporaryRTs.Clear();
-        }
-
-        public void Dispose()
-        {
-            ReleaseAll();
         }
     }
 }

@@ -36,11 +36,23 @@ using System;
 
 namespace Sanford.Multimedia.Midi
 {
-	/// <summary>
-	/// Provides functionality for building song position pointer messages.
-	/// </summary>
-	public class SongPositionPointerBuilder : IMessageBuilder
-	{
+    /// <summary>
+    ///     Provides functionality for building song position pointer messages.
+    /// </summary>
+    public class SongPositionPointerBuilder : IMessageBuilder
+    {
+        #region IMessageBuilder Members
+
+        /// <summary>
+        ///     Builds a song position pointer message.
+        /// </summary>
+        public void Build()
+        {
+            builder.Build();
+        }
+
+        #endregion
+
         #region SongPositionPointerBuilder Members
 
         #region Constants
@@ -67,14 +79,14 @@ namespace Sanford.Multimedia.Midi
 
         // Used for building the SysCommonMessage to represent the song
         // position pointer.
-        private SysCommonMessageBuilder builder;
+        private readonly SysCommonMessageBuilder builder;
 
         #endregion
 
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the SongPositionPointerBuilder class.
+        ///     Initializes a new instance of the SongPositionPointerBuilder class.
         /// </summary>
         public SongPositionPointerBuilder()
         {
@@ -85,15 +97,15 @@ namespace Sanford.Multimedia.Midi
         }
 
         /// <summary>
-        /// Initializes a new instance of the SongPositionPointerBuilder class
-        /// with the specified song position pointer message.
+        ///     Initializes a new instance of the SongPositionPointerBuilder class
+        ///     with the specified song position pointer message.
         /// </summary>
         /// <param name="message">
-        /// The song position pointer message to use for initializing the 
-        /// SongPositionPointerBuilder.
+        ///     The song position pointer message to use for initializing the
+        ///     SongPositionPointerBuilder.
         /// </param>
         /// <exception cref="ArgumentException">
-        /// If message is not a song position pointer message.
+        ///     If message is not a song position pointer message.
         /// </exception>
         public SongPositionPointerBuilder(SysCommonMessage message)
         {
@@ -110,29 +122,25 @@ namespace Sanford.Multimedia.Midi
         #region Methods
 
         /// <summary>
-        /// Initializes the SongPositionPointerBuilder with the specified 
-        /// SysCommonMessage.
+        ///     Initializes the SongPositionPointerBuilder with the specified
+        ///     SysCommonMessage.
         /// </summary>
         /// <param name="message">
-        /// The SysCommonMessage to use to initialize the 
-        /// SongPositionPointerBuilder.
+        ///     The SysCommonMessage to use to initialize the
+        ///     SongPositionPointerBuilder.
         /// </param>
         /// <exception cref="ArgumentException">
-        /// If the SysCommonMessage is not a song position pointer message.
+        ///     If the SysCommonMessage is not a song position pointer message.
         /// </exception>
         public void Initialize(SysCommonMessage message)
         {
             #region Require
 
-            if(message == null)
-            {
+            if (message == null)
                 throw new ArgumentNullException("message");
-            }
-            else if(message.SysCommonType != SysCommonType.SongPositionPointer)
-            {
+            if (message.SysCommonType != SysCommonType.SongPositionPointer)
                 throw new ArgumentException(
                     "Message is not a song position pointer message.");
-            }
 
             #endregion
 
@@ -144,60 +152,50 @@ namespace Sanford.Multimedia.Midi
         #region Properties
 
         /// <summary>
-        /// Gets or sets the sequence position in ticks.
+        ///     Gets or sets the sequence position in ticks.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Value is set to less than zero.
+        ///     Value is set to less than zero.
         /// </exception>
         /// <remarks>
-        /// Note: the position in ticks value is converted to the song position
-        /// pointer value. Since the song position pointer has a lower 
-        /// resolution than the position in ticks, there is a probable loss of 
-        /// resolution when setting the position in ticks value.
+        ///     Note: the position in ticks value is converted to the song position
+        ///     pointer value. Since the song position pointer has a lower
+        ///     resolution than the position in ticks, there is a probable loss of
+        ///     resolution when setting the position in ticks value.
         /// </remarks>
         public int PositionInTicks
         {
-            get
-            {
-                return SongPosition * tickScale * TicksPer16thNote;
-            }
+            get { return SongPosition * tickScale * TicksPer16thNote; }
             set
             {
                 #region Require
 
-                if(value < 0)
-                {
+                if (value < 0)
                     throw new ArgumentOutOfRangeException("PositionInTicks", value,
                         "Position in ticks out of range.");
-                }
 
                 #endregion
 
                 SongPosition = value / (tickScale * TicksPer16thNote);
             }
-        }        
+        }
 
         /// <summary>
-        /// Gets or sets the PulsesPerQuarterNote object.
+        ///     Gets or sets the PulsesPerQuarterNote object.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Value is not a multiple of 24.
+        ///     Value is not a multiple of 24.
         /// </exception>
         public int Ppqn
         {
-            get
-            {
-                return ppqn;
-            }
+            get { return ppqn; }
             set
             {
                 #region Require
 
-                if(value < PpqnClock.PpqnMinValue)
-                {
+                if (value < PpqnClock.PpqnMinValue)
                     throw new ArgumentOutOfRangeException("Ppqn", value,
-                         "Pulses per quarter note is smaller than 24.");
-                }
+                        "Pulses per quarter note is smaller than 24.");
 
                 #endregion
 
@@ -208,26 +206,21 @@ namespace Sanford.Multimedia.Midi
         }
 
         /// <summary>
-        /// Gets or sets the song position.
+        ///     Gets or sets the song position.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Value is set to less than zero.
+        ///     Value is set to less than zero.
         /// </exception>
         public int SongPosition
         {
-            get
-            {
-                return (builder.Data2 << Shift) | builder.Data1;                
-            }
+            get { return (builder.Data2 << Shift) | builder.Data1; }
             set
             {
                 #region Require
 
-                if(value < 0)
-                {
+                if (value < 0)
                     throw new ArgumentOutOfRangeException("SongPosition", value,
                         "Song position pointer out of range.");
-                }
 
                 #endregion
 
@@ -237,29 +230,11 @@ namespace Sanford.Multimedia.Midi
         }
 
         /// <summary>
-        /// Gets the built song position pointer message.
+        ///     Gets the built song position pointer message.
         /// </summary>
-        public SysCommonMessage Result
-        {
-            get
-            {
-                return builder.Result;
-            }
-        }
+        public SysCommonMessage Result => builder.Result;
 
         #endregion
-
-        #endregion
-
-        #region IMessageBuilder Members
-
-        /// <summary>
-        /// Builds a song position pointer message.
-        /// </summary>
-        public void Build()
-        {
-            builder.Build();
-        }
 
         #endregion
     }

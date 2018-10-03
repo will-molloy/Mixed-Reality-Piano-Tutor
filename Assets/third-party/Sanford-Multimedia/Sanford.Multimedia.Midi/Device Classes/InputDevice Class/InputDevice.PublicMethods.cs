@@ -43,10 +43,7 @@ namespace Sanford.Multimedia.Midi
         {
             #region Guard
 
-            if(IsDisposed)
-            {
-                return;
-            }
+            if (IsDisposed) return;
 
             #endregion
 
@@ -57,54 +54,32 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException("InputDevice");
-            }
+            if (IsDisposed) throw new ObjectDisposedException("InputDevice");
 
             #endregion
 
             #region Guard
 
-            if(recording)
-            {
-                return;
-            }
+            if (recording) return;
 
             #endregion
 
-            lock(lockObject)
+            lock (lockObject)
             {
-                int result = AddSysExBuffer();
+                var result = AddSysExBuffer();
 
-                if(result == DeviceException.MMSYSERR_NOERROR)
-                {
-                    result = AddSysExBuffer();
-                }
+                if (result == DeviceException.MMSYSERR_NOERROR) result = AddSysExBuffer();
 
-                if(result == DeviceException.MMSYSERR_NOERROR)
-                {
-                    result = AddSysExBuffer();
-                }
+                if (result == DeviceException.MMSYSERR_NOERROR) result = AddSysExBuffer();
 
-                if(result == DeviceException.MMSYSERR_NOERROR)
-                {
-                    result = AddSysExBuffer();
-                }
+                if (result == DeviceException.MMSYSERR_NOERROR) result = AddSysExBuffer();
 
-                if(result == DeviceException.MMSYSERR_NOERROR)
-                {
-                    result = midiInStart(Handle);
-                }
+                if (result == DeviceException.MMSYSERR_NOERROR) result = midiInStart(Handle);
 
-                if(result == MidiDeviceException.MMSYSERR_NOERROR)
-                {
+                if (result == DeviceException.MMSYSERR_NOERROR)
                     recording = true;
-                }
                 else
-                {
                     throw new InputDeviceException(result);
-                }
             }
         }
 
@@ -112,34 +87,24 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException("InputDevice");
-            }
+            if (IsDisposed) throw new ObjectDisposedException("InputDevice");
 
             #endregion
 
             #region Guard
 
-            if(!recording)
-            {
-                return;
-            }
+            if (!recording) return;
 
             #endregion
 
-            lock(lockObject)
+            lock (lockObject)
             {
-                int result = midiInStop(Handle);
+                var result = midiInStop(Handle);
 
-                if(result == MidiDeviceException.MMSYSERR_NOERROR)
-                {
+                if (result == DeviceException.MMSYSERR_NOERROR)
                     recording = false;
-                }
                 else
-                {
                     throw new InputDeviceException(result);
-                }
             }
         }
 
@@ -147,27 +112,21 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(IsDisposed)
-            {
-                throw new ObjectDisposedException("InputDevice");
-            }
+            if (IsDisposed) throw new ObjectDisposedException("InputDevice");
 
             #endregion
 
-            lock(lockObject)
+            lock (lockObject)
             {
                 resetting = true;
 
-                int result = midiInReset(Handle);                
+                var result = midiInReset(Handle);
 
-                if(result == MidiDeviceException.MMSYSERR_NOERROR)
+                if (result == DeviceException.MMSYSERR_NOERROR)
                 {
                     recording = false;
 
-                    while(bufferCount > 0)
-                    {
-                        Monitor.Wait(lockObject);
-                    }
+                    while (bufferCount > 0) Monitor.Wait(lockObject);
 
                     resetting = false;
                 }
@@ -179,19 +138,16 @@ namespace Sanford.Multimedia.Midi
                 }
             }
         }
-        
+
         public static MidiInCaps GetDeviceCapabilities(int deviceID)
         {
             int result;
-            MidiInCaps caps = new MidiInCaps();
+            var caps = new MidiInCaps();
 
-            IntPtr devID = (IntPtr)deviceID;
+            var devID = (IntPtr) deviceID;
             result = midiInGetDevCaps(devID, ref caps, SizeOfMidiHeader);
 
-            if(result != MidiDeviceException.MMSYSERR_NOERROR)
-            {
-                throw new InputDeviceException(result);
-            }
+            if (result != DeviceException.MMSYSERR_NOERROR) throw new InputDeviceException(result);
 
             return caps;
         }
@@ -200,10 +156,7 @@ namespace Sanford.Multimedia.Midi
         {
             #region Guard
 
-            if(IsDisposed)
-            {
-                return;
-            }
+            if (IsDisposed) return;
 
             #endregion
 

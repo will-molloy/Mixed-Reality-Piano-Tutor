@@ -4,6 +4,17 @@ namespace Melanchall.DryWetMidi.Smf
 {
     internal sealed class MetaEventWriter : IEventWriter
     {
+        #region Methods
+
+        [Conditional("DEBUG")]
+        private static void VerifyEvent(MidiEvent midiEvent)
+        {
+            Debug.Assert(midiEvent != null);
+            Debug.Assert(midiEvent is MetaEvent, "Event is not Meta event.");
+        }
+
+        #endregion
+
         #region IEventWriter
 
         public void Write(MidiEvent midiEvent, MidiWriter writer, WritingSettings settings, bool writeStatusByte)
@@ -21,11 +32,14 @@ namespace Melanchall.DryWetMidi.Smf
 
             var unknownMetaEvent = midiEvent as UnknownMetaEvent;
             if (unknownMetaEvent != null)
+            {
                 statusByte = unknownMetaEvent.StatusByte;
+            }
             else
             {
                 var eventType = midiEvent.GetType();
-                if (!StandardEventTypes.Meta.TryGetStatusByte(eventType, out statusByte) && settings.CustomMetaEventTypes?.TryGetStatusByte(eventType, out statusByte) != true)
+                if (!StandardEventTypes.Meta.TryGetStatusByte(eventType, out statusByte) &&
+                    settings.CustomMetaEventTypes?.TryGetStatusByte(eventType, out statusByte) != true)
                     Debug.Fail($"Unable to write the {eventType} event.");
             }
 
@@ -53,17 +67,6 @@ namespace Melanchall.DryWetMidi.Smf
             VerifyEvent(midiEvent);
 
             return EventStatusBytes.Global.Meta;
-        }
-
-        #endregion
-
-        #region Methods
-
-        [Conditional("DEBUG")]
-        private static void VerifyEvent(MidiEvent midiEvent)
-        {
-            Debug.Assert(midiEvent != null);
-            Debug.Assert(midiEvent is MetaEvent, "Event is not Meta event.");
         }
 
         #endregion

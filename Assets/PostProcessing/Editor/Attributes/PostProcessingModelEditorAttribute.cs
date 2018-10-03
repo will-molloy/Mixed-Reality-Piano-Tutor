@@ -4,8 +4,8 @@ namespace UnityEditor.PostProcessing
 {
     public class PostProcessingModelEditorAttribute : Attribute
     {
-        public readonly Type type;
         public readonly bool alwaysEnabled;
+        public readonly Type type;
 
         public PostProcessingModelEditorAttribute(Type type, bool alwaysEnabled = false)
         {

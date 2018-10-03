@@ -13,13 +13,28 @@ using System.Diagnostics;
 
 namespace Sanford.Collections.Immutable
 {
-	/// <summary>
-	/// Represents a collection of elements accessible by index and supports
-	/// insertion and deletion.
-	/// </summary>
-	[ImmutableObject(true)]
-	public class ArrayList
-	{
+    /// <summary>
+    ///     Represents a collection of elements accessible by index and supports
+    ///     insertion and deletion.
+    /// </summary>
+    [ImmutableObject(true)]
+    public class ArrayList
+    {
+        #region IEnumerable Members
+
+        /// <summary>
+        ///     Returns an enumerator that can iterate through the ArrayList.
+        /// </summary>
+        /// <returns>
+        ///     An IEnumerator that can be used to iterate through the ArrayList.
+        /// </returns>
+        public IEnumerator GetEnumerator()
+        {
+            return new AvlEnumerator(root, Count);
+        }
+
+        #endregion
+
         #region ArrayList Members
 
         #region Constants
@@ -58,17 +73,16 @@ namespace Sanford.Collections.Immutable
         #region Fields
 
         // The number of items in the ArrayList.
-        private int count = 0;
 
         // The root of the tree.
-        private IAvlNode root;
+        private readonly IAvlNode root;
 
         #endregion
 
         #region Contstruction
 
         /// <summary>
-        /// Initializes the ArrayList class.
+        ///     Initializes the ArrayList class.
         /// </summary>
         static ArrayList()
         {
@@ -76,7 +90,7 @@ namespace Sanford.Collections.Immutable
             IAvlNode child = AvlNode.NullNode;
 
             // Create the tree pool.
-            for(int i = 0; i < TreePoolHeight; i++)
+            for (var i = 0; i < TreePoolHeight; i++)
             {
                 parent = new AvlNode(null, child, child);
                 child = parent;
@@ -89,25 +103,25 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArrayList class.
+        ///     Initializes a new instance of the ArrayList class.
         /// </summary>
-		public ArrayList()
-		{
+        public ArrayList()
+        {
             root = GetSubTree(DefaultCapacityHeight);
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArrayList class that contains 
-        /// elements copied from the specified collection.
+        ///     Initializes a new instance of the ArrayList class that contains
+        ///     elements copied from the specified collection.
         /// </summary>
         /// <param name="collection">
-        /// The ICollection whose elements are copied to the new list. 
+        ///     The ICollection whose elements are copied to the new list.
         /// </param>
         public ArrayList(ICollection collection)
         {
-            if(collection.Count > 0)
+            if (collection.Count > 0)
             {
-                int height = (int)Math.Log(collection.Count, 2) + 1;
+                var height = (int) Math.Log(collection.Count, 2) + 1;
 
                 root = CollectionToTree(collection.GetEnumerator(), height);
             }
@@ -116,61 +130,52 @@ namespace Sanford.Collections.Immutable
                 root = GetSubTree(DefaultCapacityHeight);
             }
 
-            count = collection.Count;
+            Count = collection.Count;
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArrayList class with the 
-        /// specified root and count.
+        ///     Initializes a new instance of the ArrayList class with the
+        ///     specified root and count.
         /// </summary>
         /// <param name="root">
-        /// The root of the tree.
+        ///     The root of the tree.
         /// </param>
         /// <param name="count">
-        /// The number of items in the ArrayList.
+        ///     The number of items in the ArrayList.
         /// </param>
         private ArrayList(IAvlNode root, int count)
         {
             this.root = root;
-            this.count = count;
+            Count = count;
         }
 
-        #endregion        
+        #endregion
 
         #region Methods
 
         /// <summary>
-        /// Adds an object to the end of the ArrayList.
+        ///     Adds an object to the end of the ArrayList.
         /// </summary>
         /// <param name="value">
-        /// The Object to be added to the end of the ArrayList. 
+        ///     The Object to be added to the end of the ArrayList.
         /// </param>
         /// <returns>
-        /// A new ArrayList object with the specified value added at the end.
+        ///     A new ArrayList object with the specified value added at the end.
         /// </returns>
         public ArrayList Add(object value)
         {
             ArrayList result;
 
             // If the tree has been filled.
-            if(count == root.Count)
-            {
-                // Create a new ArrayList while enlarging the tree. The 
-                // current count serves as an index for setting the specified
-                // value.
+            if (Count == root.Count)
                 result = new ArrayList(
-                    SetValue(count, value, EnlargeTree()), 
-                    count + 1);
-            }
+                    SetValue(Count, value, EnlargeTree()),
+                    Count + 1);
             // Else the tree has not been filled.
             else
-            {
-                // Create a new ArrayList. The current count serves as an index 
-                // for setting the specified value.
                 result = new ArrayList(
-                    SetValue(count, value, root), 
-                    count + 1);
-            }
+                    SetValue(Count, value, root),
+                    Count + 1);
 
             // Postconditions.
             Debug.Assert(result.Count == Count + 1);
@@ -180,14 +185,14 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Determines whether an element is in the ArrayList.
+        ///     Determines whether an element is in the ArrayList.
         /// </summary>
         /// <param name="value">
-        /// The Object to locate in the ArrayList. 
+        ///     The Object to locate in the ArrayList.
         /// </param>
         /// <returns>
-        /// <b>true</b> if item is found in the ArrayList; otherwise, 
-        /// <b>false</b>.
+        ///     <b>true</b> if item is found in the ArrayList; otherwise,
+        ///     <b>false</b>.
         /// </returns>
         public bool Contains(object value)
         {
@@ -195,28 +200,25 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Returns the zero-based index of the first occurrence of a value in 
-        /// the ArrayList.
+        ///     Returns the zero-based index of the first occurrence of a value in
+        ///     the ArrayList.
         /// </summary>
         /// <param name="value">
-        /// The Object to locate in the ArrayList.
+        ///     The Object to locate in the ArrayList.
         /// </param>
         /// <returns>
-        /// The zero-based index of the first occurrence of value within the 
-        /// ArrayList, if found; otherwise, -1.
+        ///     The zero-based index of the first occurrence of value within the
+        ///     ArrayList, if found; otherwise, -1.
         /// </returns>
         public int IndexOf(object value)
         {
-            int index = 0;
+            var index = 0;
 
             // Iterate through the ArrayList and compare each value with the
             // specified value. If they match, return the index of the value.
-            foreach(object v in this)
+            foreach (var v in this)
             {
-                if(value.Equals(v))
-                {
-                    return index;
-                }
+                if (value.Equals(v)) return index;
 
                 index++;
             }
@@ -226,32 +228,30 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Inserts an element into the ArrayList at the specified index.
+        ///     Inserts an element into the ArrayList at the specified index.
         /// </summary>
         /// <param name="index">
-        /// The zero-based index at which value should be inserted. 
+        ///     The zero-based index at which value should be inserted.
         /// </param>
         /// <param name="value">
-        /// The Object to insert.
+        ///     The Object to insert.
         /// </param>
         /// <returns>
-        /// A new ArrayList with the specified object inserted at the specified 
-        /// index.
+        ///     A new ArrayList with the specified object inserted at the specified
+        ///     index.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// index is less than zero or index is greater than Count.
+        ///     index is less than zero or index is greater than Count.
         /// </exception>
         public ArrayList Insert(int index, object value)
         {
             // Preconditions.
-            if(index < 0 || index > Count)
-            {
+            if (index < 0 || index > Count)
                 throw new ArgumentOutOfRangeException(
                     "ArrayList index out of range.");
-            }            
 
             // Create new ArrayList with the value inserted at the specified index.
-            ArrayList result = new ArrayList(Insert(index, value, root), count + 1);
+            var result = new ArrayList(Insert(index, value, root), Count + 1);
 
             // Post conditions.
             Debug.Assert(result.GetValue(index) == value);
@@ -260,23 +260,23 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Removes the first occurrence of a specified object from the 
-        /// ArrayList.
+        ///     Removes the first occurrence of a specified object from the
+        ///     ArrayList.
         /// </summary>
         /// <param name="value">
-        /// The Object to remove from the ArrayList. 
+        ///     The Object to remove from the ArrayList.
         /// </param>
         /// <returns>
-        /// A new ArrayList with the first occurrent of the specified object 
-        /// removed.
+        ///     A new ArrayList with the first occurrent of the specified object
+        ///     removed.
         /// </returns>
         public ArrayList Remove(object value)
         {
             ArrayList result;
-            int index = IndexOf(value);
+            var index = IndexOf(value);
 
             // If the object is in the ArrayList.
-            if(index > -1)
+            if (index > -1)
             {
                 // Remove the object.
                 result = RemoveAt(index);
@@ -294,29 +294,27 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Removes the element at the specified index of the ArrayList.
+        ///     Removes the element at the specified index of the ArrayList.
         /// </summary>
         /// <param name="index">
-        /// The zero-based index of the element to remove. 
+        ///     The zero-based index of the element to remove.
         /// </param>
         /// <returns>
-        /// A new ArrayList with the element at the specified index removed.
+        ///     A new ArrayList with the element at the specified index removed.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// index is less than zero or index is equal to or greater than Count.
+        ///     index is less than zero or index is equal to or greater than Count.
         /// </exception>
         public ArrayList RemoveAt(int index)
         {
             // Preconditions.
-            if(index < 0 || index >= Count)
-            {
+            if (index < 0 || index >= Count)
                 throw new ArgumentOutOfRangeException("index", index,
                     "ArrayList index out of range.");
-            } 
-           
+
             // Create a new ArrayList with the element at the specified index 
             // removed.
-            ArrayList result = new ArrayList(RemoveAt(index, root), count - 1);
+            var result = new ArrayList(RemoveAt(index, root), Count - 1);
 
             // Postconditions.
             Debug.Assert(result.Count == Count - 1);
@@ -325,56 +323,52 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Gets the value at the specified index.
+        ///     Gets the value at the specified index.
         /// </summary>
         /// <param name="index">
-        /// The zero-based index of the element to get.
+        ///     The zero-based index of the element to get.
         /// </param>
         /// <returns>
-        /// The value at the specified index.
+        ///     The value at the specified index.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// index is less than zero or index is equal to or greater than Count.
+        ///     index is less than zero or index is equal to or greater than Count.
         /// </exception>
         public object GetValue(int index)
         {
             // Preconditions.
-            if(index < 0 || index >= Count)
-            {
+            if (index < 0 || index >= Count)
                 throw new ArgumentOutOfRangeException("index", index,
                     "Index out of range.");
-            }
 
             return GetValue(index, root);
         }
 
         /// <summary>
-        /// Sets the value at the specified index.
+        ///     Sets the value at the specified index.
         /// </summary>
         /// <param name="index">
-        /// The zero-based index of the element to set.
+        ///     The zero-based index of the element to set.
         /// </param>
         /// <param name="value">
-        /// The value to set at the specified index.
+        ///     The value to set at the specified index.
         /// </param>
         /// <returns>
-        /// A new ArrayList with the specified value set at the specified index.
+        ///     A new ArrayList with the specified value set at the specified index.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// index is less than zero or index is equal to or greater than Count.
+        ///     index is less than zero or index is equal to or greater than Count.
         /// </exception>
         public ArrayList SetValue(int index, object value)
         {
             // Preconditions.
-            if(index < 0 || index >= count)
-            {
+            if (index < 0 || index >= Count)
                 throw new ArgumentOutOfRangeException(
                     "ArrayList index out of range.");
-            }
 
             // Create a new ArrayList with the specified value set at the 
             // specified index.
-            ArrayList result = new ArrayList(SetValue(index, value, root), count);
+            var result = new ArrayList(SetValue(index, value, root), Count);
 
             // Postconditions.
             Debug.Assert(result.GetValue(index) == value);
@@ -385,18 +379,15 @@ namespace Sanford.Collections.Immutable
         private IAvlNode CollectionToTree(IEnumerator enumerator, int height)
         {
             IAvlNode result;
-            
-            if(height == 0)
+
+            if (height == 0)
             {
                 object data = null;
 
-                if(enumerator.MoveNext())
-                {
-                    data = enumerator.Current;
-                }
+                if (enumerator.MoveNext()) data = enumerator.Current;
 
                 result = new AvlNode(
-                    data, 
+                    data,
                     AvlNode.NullNode,
                     AvlNode.NullNode);
             }
@@ -407,7 +398,7 @@ namespace Sanford.Collections.Immutable
 
                 leftChild = CollectionToTree(enumerator, height - 1);
 
-                if(enumerator.MoveNext())
+                if (enumerator.MoveNext())
                 {
                     data = enumerator.Current;
 
@@ -420,7 +411,7 @@ namespace Sanford.Collections.Immutable
 
                 result = new AvlNode(
                     data,
-                    leftChild,                    
+                    leftChild,
                     rightChild);
             }
 
@@ -453,30 +444,21 @@ namespace Sanford.Collections.Immutable
             Debug.Assert(node != AvlNode.NullNode);
 
             object result;
-            int leftCount =  node.LeftChild.Count;
+            var leftCount = node.LeftChild.Count;
 
             // If the node has been found.
-            if(index == leftCount)
-            {
-                // Get value.
+            if (index == leftCount)
                 result = node.Data;
-            }
             // Else if the node is in the left tree.
-            else if(index < leftCount)
-            {
-                // Move search to left child.
+            else if (index < leftCount)
                 result = GetValue(index, node.LeftChild);
-            }
             // Else if the node is in the right tree.
             else
-            {
-                // Move search to the right child.
                 result = GetValue(index - (leftCount + 1), node.RightChild);
-            }
 
             return result;
         }
-        
+
         // Recursive SetValue helper method.
         private IAvlNode SetValue(int index, object value, IAvlNode node)
         {
@@ -485,34 +467,23 @@ namespace Sanford.Collections.Immutable
             Debug.Assert(node != AvlNode.NullNode);
 
             IAvlNode result;
-            int leftCount = node.LeftChild.Count;
+            var leftCount = node.LeftChild.Count;
 
             // If the node has been found.
-            if(index == leftCount)
-            {
-                // Create new node with the new value.
+            if (index == leftCount)
                 result = new AvlNode(value, node.LeftChild, node.RightChild);
-            }
             // Else if the node is in the left tree.
-            else if(index < leftCount)
-            {
-                // Create new node and move search to the left child. The new 
-                // node will reuse the right child subtree.
+            else if (index < leftCount)
                 result = new AvlNode(
-                    node.Data, 
+                    node.Data,
                     SetValue(index, value, node.LeftChild),
                     node.RightChild);
-            }
             // Else if the node is in the right tree.
             else
-            {
-                // Create new node and move search to the right child. The new 
-                // node will reuse the left child subtree.
                 result = new AvlNode(
                     node.Data,
                     node.LeftChild,
                     SetValue(index - (leftCount + 1), value, node.RightChild));
-            }
 
             return result;
         }
@@ -523,30 +494,27 @@ namespace Sanford.Collections.Immutable
             // Preconditions.
             Debug.Assert(height >= 0 && height <= TreePool.Height);
 
-            IAvlNode result = TreePool;
+            var result = TreePool;
 
             // How far to descend into the tree pool to get the subtree.
-            int d = TreePool.Height - height;
+            var d = TreePool.Height - height;
 
             // Descend down the tree pool until arriving at the root of the 
             // subtree.
-            for(int i = 0; i < d; i++)
-            {
-                result = result.LeftChild;
-            }
+            for (var i = 0; i < d; i++) result = result.LeftChild;
 
             // Postconditions.
             Debug.Assert(result.Height == height);
-      
+
             return result;
-        }        
+        }
 
         // Recursive Insert helper method.
         private IAvlNode Insert(int index, object value, IAvlNode node)
         {
             // Preconditions.
             Debug.Assert(index >= 0 && index <= Count);
-            Debug.Assert(node != null);            
+            Debug.Assert(node != null);
 
             /*
              * The insertion algorithm searches for the correct place to add a
@@ -556,32 +524,24 @@ namespace Sanford.Collections.Immutable
             IAvlNode result;
 
             // If the bottom of the tree has not yet been reached.
-            if(node != AvlNode.NullNode)
+            if (node != AvlNode.NullNode)
             {
-                int leftCount = node.LeftChild.Count;
+                var leftCount = node.LeftChild.Count;
 
                 // If we need to descend to the left.
-                if(index <= leftCount)
-                {
-                    // Create new node and move search to the left child. The 
-                    // new node will reuse the right child subtree.
+                if (index <= leftCount)
                     result = new AvlNode(
                         node.Data,
                         Insert(index, value, node.LeftChild),
                         node.RightChild);
-                }
                 // Else we need to descend to the right.
                 else
-                {
-                    // Create new node and move search to the right child. The 
-                    // new node will reuse the left child subtree.
                     result = new AvlNode(
                         node.Data,
                         node.LeftChild,
-                        Insert(index - (leftCount + 1), 
-                            value, 
+                        Insert(index - (leftCount + 1),
+                            value,
                             node.RightChild));
-                }
             }
             // Else the bottom of the tree has been reached.
             else
@@ -599,11 +559,7 @@ namespace Sanford.Collections.Immutable
              */
 
             // If the node is not balanced.
-            if(!result.IsBalanced())
-            {                
-                // Rebalance node.
-                result = result.Balance();
-            }
+            if (!result.IsBalanced()) result = result.Balance();
 
             // Postconditions.
             Debug.Assert(result.IsBalanced());
@@ -620,74 +576,39 @@ namespace Sanford.Collections.Immutable
 
             IAvlNode newNode = AvlNode.NullNode;
 
-            int leftCount = node.LeftChild.Count;
+            var leftCount = node.LeftChild.Count;
 
             // If the node has been found.
-            if(index == leftCount)
-            {
+            if (index == leftCount)
                 newNode = node.Remove();
-            }
             // Else if the node is in the left tree.
-            else if(index < leftCount)
-            {
-                // Create new node and move search to the left child. The new 
-                // node will reuse the right child subtree.
+            else if (index < leftCount)
                 newNode = new AvlNode(
                     node.Data,
                     RemoveAt(index, node.LeftChild),
                     node.RightChild);
-            }
             // Else if the node is in the right tree.
             else
-            {
-                // Create new node and move search to the right child. The new 
-                // node will reuse the left child subtree.
                 newNode = new AvlNode(
                     node.Data,
                     node.LeftChild,
                     RemoveAt(index - (leftCount + 1), node.RightChild));
-            }
 
             // If the node is out of balance.
-            if(!newNode.IsBalanced())
-            {
-                // Rebalance node.
-                newNode = newNode.Balance();
-            }
+            if (!newNode.IsBalanced()) newNode = newNode.Balance();
 
             // Postconditions.
             Debug.Assert(newNode.IsBalanced());
 
             return newNode;
-        }        
-
-        #endregion
-
-        /// <summary>
-        /// Gets the number of elements contained in the ArrayList.
-        /// </summary>
-        public int Count
-        {
-            get
-            {
-                return count;
-            }
         }
 
         #endregion
 
-        #region IEnumerable Members
-
         /// <summary>
-        /// Returns an enumerator that can iterate through the ArrayList.
+        ///     Gets the number of elements contained in the ArrayList.
         /// </summary>
-        /// <returns>
-        /// An IEnumerator that can be used to iterate through the ArrayList.
-        /// </returns>
-        public IEnumerator GetEnumerator()
-        {
-            return new AvlEnumerator(root, Count);
-        }
+        public int Count { get; }
 
         #endregion
     }

@@ -38,61 +38,27 @@ namespace Sanford.Multimedia.Midi
 {
     public class MidiEvent
     {
-        private object owner = null;
-
-        private int absoluteTicks;
-
-        private IMidiMessage message;
-
-        private MidiEvent next = null;
-
-        private MidiEvent previous = null;
-
         internal MidiEvent(object owner, int absoluteTicks, IMidiMessage message)
         {
             #region Require
 
-            if(owner == null)
-            {
+            if (owner == null)
                 throw new ArgumentNullException("owner");
-            }
-            else if(absoluteTicks < 0)
-            {
+            if (absoluteTicks < 0)
                 throw new ArgumentOutOfRangeException("absoluteTicks", absoluteTicks,
                     "Absolute ticks out of range.");
-            }
-            else if(message == null)
-            {
-                throw new ArgumentNullException("e");
-            }
+            if (message == null) throw new ArgumentNullException("e");
 
             #endregion
 
-            this.owner = owner;
-            this.absoluteTicks = absoluteTicks;
-            this.message = message;
+            Owner = owner;
+            AbsoluteTicks = absoluteTicks;
+            MidiMessage = message;
         }
 
-        internal void SetAbsoluteTicks(int absoluteTicks)
-        {
-            this.absoluteTicks = absoluteTicks;
-        }
+        internal object Owner { get; }
 
-        internal object Owner
-        {
-            get
-            {
-                return owner;
-            }
-        }
-
-        public int AbsoluteTicks
-        {
-            get
-            {
-                return absoluteTicks;
-            }
-        }
+        public int AbsoluteTicks { get; private set; }
 
         public int DeltaTicks
         {
@@ -100,49 +66,24 @@ namespace Sanford.Multimedia.Midi
             {
                 int deltaTicks;
 
-                if(Previous != null)
-                {
-                    deltaTicks = AbsoluteTicks - previous.AbsoluteTicks;
-                }
+                if (Previous != null)
+                    deltaTicks = AbsoluteTicks - Previous.AbsoluteTicks;
                 else
-                {
                     deltaTicks = AbsoluteTicks;
-                }
 
                 return deltaTicks;
             }
         }
 
-        public IMidiMessage MidiMessage
-        {
-            get
-            {
-                return message;
-            }
-        }
+        public IMidiMessage MidiMessage { get; }
 
-        internal MidiEvent Next
-        {
-            get
-            {
-                return next;
-            }
-            set
-            {
-                next = value;
-            }
-        }
+        internal MidiEvent Next { get; set; } = null;
 
-        internal MidiEvent Previous
+        internal MidiEvent Previous { get; set; } = null;
+
+        internal void SetAbsoluteTicks(int absoluteTicks)
         {
-            get
-            {
-                return previous;
-            }
-            set
-            {
-                previous = value;
-            }
+            AbsoluteTicks = absoluteTicks;
         }
     }
 }

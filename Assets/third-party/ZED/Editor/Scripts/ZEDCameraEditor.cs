@@ -1,30 +1,31 @@
 ﻿//======= Copyright (c) Stereolabs Corporation, All rights reserved. ===============
-using UnityEngine;
+
+using sl;
 using UnityEditor;
+using UnityEngine;
 
 /// <summary>
-/// Custom inspector :Add a button to the ZEDCameraSettingsEditor at the end of the panel ZEDManager
+///     Custom inspector :Add a button to the ZEDCameraSettingsEditor at the end of the panel ZEDManager
 /// </summary>
-[CustomEditor(typeof(ZEDManager)), CanEditMultipleObjects]
+[CustomEditor(typeof(ZEDManager))]
+[CanEditMultipleObjects]
 public class ZEDCameraEditor : Editor
 {
-    ZEDManager manager; 
+    private DEPTH_MODE depthmode;
+    private ZEDManager manager;
+
+    private bool pendingchange;
 
     //Store copies of ZEDManager's fields to detect changes
-    sl.RESOLUTION resolution;
-    sl.DEPTH_MODE depthmode;
-    bool usespatialmemory;
-    bool usedepthocclusion;
-    bool usepostprocessing;
+    private RESOLUTION resolution;
+    private bool usedepthocclusion;
+    private bool usepostprocessing;
+    private bool usespatialmemory;
 
-    bool pendingchange = false;
- 
 
     private void OnEnable()
     {
-
-
-        manager = (ZEDManager)target;
+        manager = (ZEDManager) target;
 
         resolution = manager.resolution;
         depthmode = manager.depthMode;
@@ -37,21 +38,18 @@ public class ZEDCameraEditor : Editor
     {
         DrawDefaultInspector();
 
-        if(GUI.changed)
-        {
-            pendingchange = CheckChange();
-        }
+        if (GUI.changed) pendingchange = CheckChange();
 
         if (Application.isPlaying && manager.IsZEDReady && pendingchange)
         {
             GUILayout.Space(10);
 
-            GUIStyle orangetext = new GUIStyle(EditorStyles.label);
+            var orangetext = new GUIStyle(EditorStyles.label);
             orangetext.normal.textColor = Color.red;
             orangetext.wordWrap = true;
 
-            string labeltext = "Settings have changed that require restarting the camera to apply.";
-            Rect labelrect = GUILayoutUtility.GetRect(new GUIContent(labeltext, ""), orangetext);
+            var labeltext = "Settings have changed that require restarting the camera to apply.";
+            var labelrect = GUILayoutUtility.GetRect(new GUIContent(labeltext, ""), orangetext);
             EditorGUI.LabelField(labelrect, labeltext, orangetext);
 
 
@@ -67,13 +65,11 @@ public class ZEDCameraEditor : Editor
 
                 pendingchange = false;
             }
-
-
         }
 
-		GUIStyle standardStyle = new GUIStyle(EditorStyles.textField);
-		GUIStyle errorStyle = new GUIStyle(EditorStyles.textField);
-		errorStyle.normal.textColor = Color.red;
+        var standardStyle = new GUIStyle(EditorStyles.textField);
+        var errorStyle = new GUIStyle(EditorStyles.textField);
+        errorStyle.normal.textColor = Color.red;
 
         GUILayout.Space(10);
 
@@ -84,37 +80,36 @@ public class ZEDCameraEditor : Editor
         EditorGUILayout.TextField("Engine FPS:", manager.engineFPS);
         EditorGUILayout.TextField("Camera FPS:", manager.cameraFPS);
 
-		if (manager.IsCameraTracked) 
-			EditorGUILayout.TextField ("Tracking State:", manager.trackingState, standardStyle);	
-		else 
-			EditorGUILayout.TextField ("Tracking State:", manager.trackingState,errorStyle);
-		
+        if (manager.IsCameraTracked)
+            EditorGUILayout.TextField("Tracking State:", manager.trackingState, standardStyle);
+        else
+            EditorGUILayout.TextField("Tracking State:", manager.trackingState, errorStyle);
 
-		if (Application.isPlaying)
-			EditorGUILayout.TextField ("HMD Device:", manager.HMDDevice);
-		else {
-			//Detect through USB
-			if (sl.ZEDCamera.CheckUSBDeviceConnected(sl.USB_DEVICE.USB_DEVICE_OCULUS))
-				EditorGUILayout.TextField ("HMD Device:", "Oculus USB Detected");
-			else if (sl.ZEDCamera.CheckUSBDeviceConnected(sl.USB_DEVICE.USB_DEVICE_OCULUS))
-				EditorGUILayout.TextField ("HMD Device:", "HTC USB Detected");
-			else
-				EditorGUILayout.TextField ("HMD Device:", "-");
-		}
+
+        if (Application.isPlaying)
+        {
+            EditorGUILayout.TextField("HMD Device:", manager.HMDDevice);
+        }
+        else
+        {
+            //Detect through USB
+            if (ZEDCamera.CheckUSBDeviceConnected(USB_DEVICE.USB_DEVICE_OCULUS))
+                EditorGUILayout.TextField("HMD Device:", "Oculus USB Detected");
+            else if (ZEDCamera.CheckUSBDeviceConnected(USB_DEVICE.USB_DEVICE_OCULUS))
+                EditorGUILayout.TextField("HMD Device:", "HTC USB Detected");
+            else
+                EditorGUILayout.TextField("HMD Device:", "-");
+        }
+
         EditorGUI.EndDisabledGroup();
 
         GUILayout.Space(20);
         if (GUILayout.Button("Open Camera Control"))
-        {
             EditorWindow.GetWindow(typeof(ZEDCameraSettingsEditor), false, "ZED Camera").Show();
-        }
-
-        
-
     }
 
     /// <summary>
-    /// Check if something has changed that requires restarting the camera
+    ///     Check if something has changed that requires restarting the camera
     /// </summary>
     /// <returns></returns>
     private bool CheckChange()
@@ -124,9 +119,7 @@ public class ZEDCameraEditor : Editor
             usespatialmemory != manager.enableSpatialMemory ||
             //usedepthocclusion != manager.depthOcclusion ||
             usepostprocessing != manager.postProcessing)
-        {
             return true;
-        }
-        else return false;
+        return false;
     }
 }

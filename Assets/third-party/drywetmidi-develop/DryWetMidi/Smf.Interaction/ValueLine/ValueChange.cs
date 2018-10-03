@@ -3,7 +3,7 @@
 namespace Melanchall.DryWetMidi.Smf.Interaction
 {
     /// <summary>
-    /// Represents a change of a parameter's value at some time.
+    ///     Represents a change of a parameter's value at some time.
     /// </summary>
     /// <typeparam name="TValue">Type of value.</typeparam>
     public sealed class ValueChange<TValue> : ITimedObject
@@ -11,13 +11,13 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValueChange{T}"/> with the specified
-        /// time of change and new value.
+        ///     Initializes a new instance of the <see cref="ValueChange{T}" /> with the specified
+        ///     time of change and new value.
         /// </summary>
         /// <param name="time">MIDI time when value is changed.</param>
         /// <param name="value">New value that will last until next value change.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="time"/> is negative.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="time" /> is negative.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value" /> is null.</exception>
         internal ValueChange(long time, TValue value)
         {
             ThrowIfTimeArgument.IsNegative(nameof(time), time);
@@ -32,12 +32,12 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Properties
 
         /// <summary>
-        /// Gets the MIDI time when value is changed.
+        ///     Gets the MIDI time when value is changed.
         /// </summary>
         public long Time { get; }
 
         /// <summary>
-        /// Gets the new value that will last until next value change.
+        ///     Gets the new value that will last until next value change.
         /// </summary>
         public TValue Value { get; }
 
@@ -46,10 +46,10 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Operators
 
         /// <summary>
-        /// Determines if two <see cref="ValueChange{TValue}"/> objects are equal.
+        ///     Determines if two <see cref="ValueChange{TValue}" /> objects are equal.
         /// </summary>
-        /// <param name="change1">The first <see cref="ValueChange{TValue}"/> to compare.</param>
-        /// <param name="change2">The second <see cref="ValueChange{TValue}"/> to compare.</param>
+        /// <param name="change1">The first <see cref="ValueChange{TValue}" /> to compare.</param>
+        /// <param name="change2">The second <see cref="ValueChange{TValue}" /> to compare.</param>
         /// <returns>true if the value changes are equal, false otherwise.</returns>
         public static bool operator ==(ValueChange<TValue> change1, ValueChange<TValue> change2)
         {
@@ -64,10 +64,10 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Determines if two <see cref="ValueChange{TValue}"/> objects are not equal.
+        ///     Determines if two <see cref="ValueChange{TValue}" /> objects are not equal.
         /// </summary>
-        /// <param name="change1">The first <see cref="ValueChange{TValue}"/> to compare.</param>
-        /// <param name="change2">The second <see cref="ValueChange{TValue}"/> to compare.</param>
+        /// <param name="change1">The first <see cref="ValueChange{TValue}" /> to compare.</param>
+        /// <param name="change2">The second <see cref="ValueChange{TValue}" /> to compare.</param>
         /// <returns>false if the value changes are equal, true otherwise.</returns>
         public static bool operator !=(ValueChange<TValue> change1, ValueChange<TValue> change2)
         {
@@ -79,7 +79,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Overrides
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
@@ -88,17 +88,17 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Determines whether the specified object is equal to the current object.
+        ///     Determines whether the specified object is equal to the current object.
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return this == (obj as ValueChange<TValue>);
+            return this == obj as ValueChange<TValue>;
         }
 
         /// <summary>
-        /// Returns the hash code for this instance.
+        ///     Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()

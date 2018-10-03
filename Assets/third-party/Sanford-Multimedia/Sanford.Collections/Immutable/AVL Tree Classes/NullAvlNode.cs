@@ -11,18 +11,18 @@ using System.ComponentModel;
 namespace Sanford.Collections.Immutable
 {
     /// <summary>
-    /// Represents a null AVL node.
+    ///     Represents a null AVL node.
     /// </summary>
     [ImmutableObject(true)]
-	internal class NullAvlNode : IAvlNode
-	{
+    internal class NullAvlNode : IAvlNode
+    {
         #region IAvlNode Members
 
         /// <summary>
-        /// Removes the current node from the AVL tree.
+        ///     Removes the current node from the AVL tree.
         /// </summary>
         /// <returns>
-        /// The node to in the tree to replace the current node.
+        ///     The node to in the tree to replace the current node.
         /// </returns>
         public IAvlNode Remove()
         {
@@ -30,10 +30,10 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Balances the subtree represented by the node.
+        ///     Balances the subtree represented by the node.
         /// </summary>
         /// <returns>
-        /// The root node of the balanced subtree.
+        ///     The root node of the balanced subtree.
         /// </returns>
         public IAvlNode Balance()
         {
@@ -41,11 +41,11 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Indicates whether or not the subtree the node represents is in 
-        /// balance.
+        ///     Indicates whether or not the subtree the node represents is in
+        ///     balance.
         /// </summary>
         /// <returns>
-        /// <b>true</b> if the subtree is in balance; otherwise, <b>false</b>.
+        ///     <b>true</b> if the subtree is in balance; otherwise, <b>false</b>.
         /// </returns>
         public bool IsBalanced()
         {
@@ -53,70 +53,34 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Gets the balance factor of the subtree the node represents.
+        ///     Gets the balance factor of the subtree the node represents.
         /// </summary>
-        public int BalanceFactor
-        {
-            get
-            {
-                return 0;
-            }
-        }
+        public int BalanceFactor => 0;
 
         /// <summary>
-        /// Gets the number of nodes in the subtree.
+        ///     Gets the number of nodes in the subtree.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return 0;
-            }
-        }
+        public int Count => 0;
 
         /// <summary>
-        /// Gets the node's data.
+        ///     Gets the node's data.
         /// </summary>
-        public object Data
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public object Data => null;
 
         /// <summary>
-        /// Gets the height of the subtree the node represents.
+        ///     Gets the height of the subtree the node represents.
         /// </summary>
-        public int Height
-        {
-            get
-            {
-                return 0;
-            }
-        }
+        public int Height => 0;
 
         /// <summary>
-        /// Gets the node's left child.
+        ///     Gets the node's left child.
         /// </summary>
-        public IAvlNode LeftChild
-        {
-            get
-            {
-                return this;
-            }
-        }
+        public IAvlNode LeftChild => this;
 
         /// <summary>
-        /// Gets the node's right child.
+        ///     Gets the node's right child.
         /// </summary>
-        public IAvlNode RightChild
-        {
-            get
-            {
-                return this;
-            }
-        }
+        public IAvlNode RightChild => this;
 
         #endregion
     }

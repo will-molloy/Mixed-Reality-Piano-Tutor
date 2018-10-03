@@ -1,18 +1,18 @@
 ﻿namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents an unknown chunk.
+    ///     Represents an unknown chunk.
     /// </summary>
     /// <remarks>
-    /// Structure of MIDI file chunks allows custom chunks be implemented and written to a MIDI file.
-    /// Chunks DryWetMIDI doesn't know about will be read as an instances of the <see cref="UnknownChunk"/>.
+    ///     Structure of MIDI file chunks allows custom chunks be implemented and written to a MIDI file.
+    ///     Chunks DryWetMIDI doesn't know about will be read as an instances of the <see cref="UnknownChunk" />.
     /// </remarks>
     public sealed class UnknownChunk : MidiChunk
     {
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnknownChunk"/> with the specified ID.
+        ///     Initializes a new instance of the <see cref="UnknownChunk" /> with the specified ID.
         /// </summary>
         /// <param name="id">Chunk's ID.</param>
         internal UnknownChunk(string id)
@@ -25,7 +25,7 @@
         #region Properties
 
         /// <summary>
-        /// Gets data contained in the current <see cref="UnknownChunk"/>.
+        ///     Gets data contained in the current <see cref="UnknownChunk" />.
         /// </summary>
         public byte[] Data { get; private set; }
 
@@ -34,10 +34,10 @@
         #region Overrides
 
         /// <summary>
-        /// Reads content of a <see cref="UnknownChunk"/>.
+        ///     Reads content of a <see cref="UnknownChunk" />.
         /// </summary>
         /// <remarks>
-        /// Content of an <see cref="UnknownChunk"/> is array of bytes.
+        ///     Content of an <see cref="UnknownChunk" /> is array of bytes.
         /// </remarks>
         /// <param name="reader">Reader to read the chunk's content with.</param>
         /// <param name="settings">Settings according to which the chunk's content must be read.</param>
@@ -47,20 +47,21 @@
         protected override void ReadContent(MidiReader reader, ReadingSettings settings, uint size)
         {
             var availableSize = reader.Length - reader.Position;
-            var bytes = reader.ReadBytes((int)(availableSize < size ? availableSize : size));
+            var bytes = reader.ReadBytes((int) (availableSize < size ? availableSize : size));
             if (bytes.Length < size && settings.NotEnoughBytesPolicy == NotEnoughBytesPolicy.Abort)
-                throw new NotEnoughBytesException("Chunk's data cannot be read since the reader's underlying stream doesn't have enough bytes.",
-                                                  size,
-                                                  bytes.Length);
+                throw new NotEnoughBytesException(
+                    "Chunk's data cannot be read since the reader's underlying stream doesn't have enough bytes.",
+                    size,
+                    bytes.Length);
 
             Data = bytes;
         }
 
         /// <summary>
-        /// Writes content of a <see cref="UnknownChunk"/>.
+        ///     Writes content of a <see cref="UnknownChunk" />.
         /// </summary>
         /// <remarks>
-        /// Content of an <see cref="UnknownChunk"/> is array of bytes.
+        ///     Content of an <see cref="UnknownChunk" /> is array of bytes.
         /// </remarks>
         /// <param name="writer">Writer to write the chunk's content with.</param>
         /// <param name="settings">Settings according to which the chunk's content must be written.</param>
@@ -74,18 +75,18 @@
         }
 
         /// <summary>
-        /// Gets size of <see cref="UnknownChunk"/>'s content as number of bytes required to write it according
-        /// to the specified <see cref="WritingSettings"/>.
+        ///     Gets size of <see cref="UnknownChunk" />'s content as number of bytes required to write it according
+        ///     to the specified <see cref="WritingSettings" />.
         /// </summary>
         /// <param name="settings">Settings according to which the chunk's content will be written.</param>
-        /// <returns>Number of bytes required to write <see cref="UnknownChunk"/>'s content.</returns>
+        /// <returns>Number of bytes required to write <see cref="UnknownChunk" />'s content.</returns>
         protected override uint GetContentSize(WritingSettings settings)
         {
-            return (uint)(Data?.Length ?? 0);
+            return (uint) (Data?.Length ?? 0);
         }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()

@@ -35,92 +35,92 @@
 namespace Sanford.Multimedia
 {
     /// <summary>
-    /// Defines constants representing the 12 Note of the chromatic scale.
+    ///     Defines constants representing the 12 Note of the chromatic scale.
     /// </summary>
     public enum Note
     {
         /// <summary>
-        /// C natural.
+        ///     C natural.
         /// </summary>
-        C, 
+        C,
 
         /// <summary>
-        /// C sharp.
+        ///     C sharp.
         /// </summary>
         CSharp,
 
         /// <summary>
-        /// D flat.
+        ///     D flat.
         /// </summary>
         DFlat = CSharp,
 
         /// <summary>
-        /// D natural.
+        ///     D natural.
         /// </summary>
         D,
 
         /// <summary>
-        /// D sharp.
+        ///     D sharp.
         /// </summary>
         DSharp,
 
         /// <summary>
-        /// E flat.
+        ///     E flat.
         /// </summary>
         EFlat = DSharp,
 
         /// <summary>
-        /// E natural.
+        ///     E natural.
         /// </summary>
         E,
 
         /// <summary>
-        /// F natural.
+        ///     F natural.
         /// </summary>
         F,
 
         /// <summary>
-        /// F sharp.
+        ///     F sharp.
         /// </summary>
         FSharp,
 
         /// <summary>
-        /// G flat.
+        ///     G flat.
         /// </summary>
         GFlat = FSharp,
 
         /// <summary>
-        /// G natural.
+        ///     G natural.
         /// </summary>
         G,
 
         /// <summary>
-        /// G sharp.
+        ///     G sharp.
         /// </summary>
         GSharp,
 
         /// <summary>
-        /// A flat.
+        ///     A flat.
         /// </summary>
         AFlat = GSharp,
 
         /// <summary>
-        /// A natural.
+        ///     A natural.
         /// </summary>
         A,
 
         /// <summary>
-        /// A sharp.
+        ///     A sharp.
         /// </summary>
         ASharp,
 
         /// <summary>
-        /// B flat.
+        ///     B flat.
         /// </summary>
         BFlat = ASharp,
 
         /// <summary>
-        /// B natural.
+        ///     B natural.
         /// </summary>
         B
     }

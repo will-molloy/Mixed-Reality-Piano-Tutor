@@ -3,25 +3,34 @@
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents a text meta event.
+    ///     Represents a text meta event.
     /// </summary>
     /// <remarks>
-    /// There are several meta events that have text content and the same structure. All these
-    /// events are derived from <see cref="BaseTextEvent"/>.
+    ///     There are several meta events that have text content and the same structure. All these
+    ///     events are derived from <see cref="BaseTextEvent" />.
     /// </remarks>
     public abstract class BaseTextEvent : MetaEvent
     {
+        #region Properties
+
+        /// <summary>
+        ///     Gets or sets text contained in the event.
+        /// </summary>
+        public string Text { get; set; }
+
+        #endregion
+
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseTextEvent"/>.
+        ///     Initializes a new instance of the <see cref="BaseTextEvent" />.
         /// </summary>
         public BaseTextEvent()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseTextEvent"/> with the specified text.
+        ///     Initializes a new instance of the <see cref="BaseTextEvent" /> with the specified text.
         /// </summary>
         /// <param name="text">Text contained in the event.</param>
         public BaseTextEvent(string text)
@@ -32,30 +41,23 @@ namespace Melanchall.DryWetMidi.Smf
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets text contained in the event.
-        /// </summary>
-        public string Text { get; set; }
-
-        #endregion
-
         #region Overrides
 
         /// <summary>
-        /// Reads content of a MIDI meta event.
+        ///     Reads content of a MIDI meta event.
         /// </summary>
         /// <param name="reader">Reader to read the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be read.</param>
         /// <param name="size">Size of the event's content.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Text event cannot be read since the size is
-        /// negative number.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     Text event cannot be read since the size is
+        ///     negative number.
+        /// </exception>
         protected sealed override void ReadContent(MidiReader reader, ReadingSettings settings, int size)
         {
             ThrowIfArgument.IsNegative(nameof(size),
-                                       size,
-                                       "Text event cannot be read since the size is negative number.");
+                size,
+                "Text event cannot be read since the size is negative number.");
 
             if (size == 0)
                 return;
@@ -66,7 +68,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Writes content of a MIDI meta event.
+        ///     Writes content of a MIDI meta event.
         /// </summary>
         /// <param name="writer">Writer to write the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
@@ -82,7 +84,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets the size of the content of a MIDI meta event.
+        ///     Gets the size of the content of a MIDI meta event.
         /// </summary>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
         /// <returns>Size of the event's content.</returns>

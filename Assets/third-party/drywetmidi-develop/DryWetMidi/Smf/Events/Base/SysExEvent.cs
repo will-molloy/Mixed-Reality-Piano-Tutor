@@ -1,15 +1,15 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System;
+﻿using System;
 using System.Linq;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents a MIDI file system exclusive event.
+    ///     Represents a MIDI file system exclusive event.
     /// </summary>
     /// <remarks>
-    /// System exclusive events are used to specify a MIDI system exclusive message, either as one unit or in packets,
-    /// or as an "escape" to specify any arbitrary bytes to be transmitted.
+    ///     System exclusive events are used to specify a MIDI system exclusive message, either as one unit or in packets,
+    ///     or as an "escape" to specify any arbitrary bytes to be transmitted.
     /// </remarks>
     public abstract class SysExEvent : MidiEvent
     {
@@ -22,12 +22,12 @@ namespace Melanchall.DryWetMidi.Smf
         #region Properties
 
         /// <summary>
-        /// Gets a value indicating whether this sytem exclusive event is completed or not.
+        ///     Gets a value indicating whether this sytem exclusive event is completed or not.
         /// </summary>
         public bool Completed => Data?.LastOrDefault() == EndOfEventByte;
 
         /// <summary>
-        /// Gets or sets the event's data.
+        ///     Gets or sets the event's data.
         /// </summary>
         public byte[] Data { get; set; }
 
@@ -36,7 +36,7 @@ namespace Melanchall.DryWetMidi.Smf
         #region Overrides
 
         /// <summary>
-        /// Reads content of a MIDI event.
+        ///     Reads content of a MIDI event.
         /// </summary>
         /// <param name="reader">Reader to read the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be read.</param>
@@ -44,14 +44,14 @@ namespace Melanchall.DryWetMidi.Smf
         internal sealed override void Read(MidiReader reader, ReadingSettings settings, int size)
         {
             ThrowIfArgument.IsNegative(nameof(size),
-                                        size,
-                                        "Non-negative size have to be specified in order to read SysEx event.");
+                size,
+                "Non-negative size have to be specified in order to read SysEx event.");
 
             Data = reader.ReadBytes(size);
         }
 
         /// <summary>
-        /// Writes content of a MIDI event.
+        ///     Writes content of a MIDI event.
         /// </summary>
         /// <param name="writer">Writer to write the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
@@ -63,7 +63,7 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Gets the size of the content of a MIDI event.
+        ///     Gets the size of the content of a MIDI event.
         /// </summary>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
         /// <returns>Size of the event's content.</returns>
@@ -73,13 +73,13 @@ namespace Melanchall.DryWetMidi.Smf
         }
 
         /// <summary>
-        /// Clones event by creating a copy of it.
+        ///     Clones event by creating a copy of it.
         /// </summary>
         /// <returns>Copy of the event.</returns>
         protected sealed override MidiEvent CloneEvent()
         {
             var eventType = GetType();
-            var sysExEvent = (SysExEvent)Activator.CreateInstance(eventType);
+            var sysExEvent = (SysExEvent) Activator.CreateInstance(eventType);
 
             sysExEvent.Data = Data?.Clone() as byte[];
 

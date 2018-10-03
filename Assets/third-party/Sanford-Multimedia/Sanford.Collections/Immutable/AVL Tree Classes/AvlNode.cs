@@ -12,12 +12,12 @@ using System.Diagnostics;
 
 namespace Sanford.Collections.Immutable
 {
-	/// <summary>
-	/// Represents a node in an AVL tree.
-	/// </summary>
-	[ImmutableObject(true)]
-	internal class AvlNode : IAvlNode
-	{
+    /// <summary>
+    ///     Represents a node in an AVL tree.
+    /// </summary>
+    [ImmutableObject(true)]
+    internal class AvlNode : IAvlNode
+    {
         #region AvlNode Members
 
         #region Class Fields
@@ -30,52 +30,47 @@ namespace Sanford.Collections.Immutable
         #region Instance Fields
 
         // The data represented by this node.
-        private readonly object data;
 
         // The number of nodes in the subtree.
-        private readonly int count;
 
         // The height of this node.
-        private readonly int height;
 
         // Left and right children.
-        private readonly IAvlNode leftChild;
-        private readonly IAvlNode rightChild;
 
         #endregion
 
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the AvlNode class with the specified 
-        /// data and left and right children.
+        ///     Initializes a new instance of the AvlNode class with the specified
+        ///     data and left and right children.
         /// </summary>
         /// <param name="data">
-        /// The data for the node.
+        ///     The data for the node.
         /// </param>
         /// <param name="leftChild">
-        /// The left child.
+        ///     The left child.
         /// </param>
         /// <param name="rightChild">
-        /// The right child.
+        ///     The right child.
         /// </param>
-		public AvlNode(object data, IAvlNode leftChild, IAvlNode rightChild)
-		{
+        public AvlNode(object data, IAvlNode leftChild, IAvlNode rightChild)
+        {
             // Preconditions.
             Debug.Assert(leftChild != null && rightChild != null);
 
-            this.data = data;
-            this.leftChild = leftChild;
-            this.rightChild = rightChild;
+            Data = data;
+            LeftChild = leftChild;
+            RightChild = rightChild;
 
-            count = 1 + leftChild.Count + rightChild.Count;
-            height = 1 + Math.Max(leftChild.Height, rightChild.Height);
-		}
+            Count = 1 + leftChild.Count + rightChild.Count;
+            Height = 1 + Math.Max(leftChild.Height, rightChild.Height);
+        }
 
         #endregion
 
         #region Methods
-        
+
         #region Rotation Methods
 
         // Left - left single rotation.
@@ -93,13 +88,13 @@ namespace Sanford.Collections.Immutable
 
             // Create right child of the new root.
             IAvlNode a = new AvlNode(
-                node.Data, 
-                node.LeftChild.RightChild, 
+                node.Data,
+                node.LeftChild.RightChild,
                 node.RightChild);
 
             IAvlNode b = new AvlNode(
-                node.LeftChild.Data, 
-                node.LeftChild.LeftChild, 
+                node.LeftChild.Data,
+                node.LeftChild.LeftChild,
                 a);
 
             // Postconditions.
@@ -134,11 +129,11 @@ namespace Sanford.Collections.Immutable
              */
 
             IAvlNode a = new AvlNode(
-                node.Data, 
-                DoRRRotation(node.LeftChild), 
+                node.Data,
+                DoRRRotation(node.LeftChild),
                 node.RightChild);
 
-            IAvlNode c = DoLLRotation(a);
+            var c = DoLLRotation(a);
 
             // Postconditions.
             Debug.Assert(c.Data == node.LeftChild.RightChild.Data);
@@ -150,7 +145,7 @@ namespace Sanford.Collections.Immutable
 
         // Right - right single rotation.
         private IAvlNode DoRRRotation(IAvlNode node)
-        { 
+        {
             /*
              *  An RR rotation looks like the following:  
              * 
@@ -163,13 +158,13 @@ namespace Sanford.Collections.Immutable
 
             // Create left child of the new root.
             IAvlNode a = new AvlNode(
-                node.Data, 
-                node.LeftChild, 
+                node.Data,
+                node.LeftChild,
                 node.RightChild.LeftChild);
 
             IAvlNode b = new AvlNode(
-                node.RightChild.Data, 
-                a, 
+                node.RightChild.Data,
+                a,
                 node.RightChild.RightChild);
 
             // Postconditions.
@@ -204,16 +199,16 @@ namespace Sanford.Collections.Immutable
              */
 
             IAvlNode a = new AvlNode(
-                node.Data, 
+                node.Data,
                 node.LeftChild,
                 DoLLRotation(node.RightChild));
 
-            IAvlNode c = DoRRRotation(a);
+            var c = DoRRRotation(a);
 
             // Postconditions.
             Debug.Assert(c.Data == node.RightChild.LeftChild.Data);
             Debug.Assert(c.LeftChild.Data == node.Data);
-            Debug.Assert(c.RightChild.Data == node.RightChild.Data);                
+            Debug.Assert(c.RightChild.Data == node.RightChild.Data);
 
             return c;
         }
@@ -227,35 +222,35 @@ namespace Sanford.Collections.Immutable
         #region IAvlNode Members
 
         /// <summary>
-        /// Removes the current node from the AVL tree.
+        ///     Removes the current node from the AVL tree.
         /// </summary>
         /// <returns>
-        /// The node to in the tree to replace the current node.
+        ///     The node to in the tree to replace the current node.
         /// </returns>
         public IAvlNode Remove()
         {
-            IAvlNode result; 
+            IAvlNode result;
 
             /*
              * Deal with the three cases for removing a node from a binary tree.
              */
 
             // If the node has no right children.
-            if(this.RightChild == AvlNode.NullNode)
-            {  
+            if (RightChild == NullNode)
+            {
                 // The replacement node is the node's left child.
-                result = this.LeftChild;
+                result = LeftChild;
             }
-                // Else if the node's right child has no left children.
-            else if(this.RightChild.LeftChild == AvlNode.NullNode)
+            // Else if the node's right child has no left children.
+            else if (RightChild.LeftChild == NullNode)
             {
                 // The replacement node is the node's right child.
                 result = new AvlNode(
-                    this.RightChild.Data,
-                    this.LeftChild,
-                    this.RightChild.RightChild);
+                    RightChild.Data,
+                    LeftChild,
+                    RightChild.RightChild);
             }
-                // Else the node's right child has left children.
+            // Else the node's right child has left children.
             else
             {
                 /*
@@ -264,14 +259,14 @@ namespace Sanford.Collections.Immutable
                  * node to be removed.
                  */
 
-                IAvlNode replacement = AvlNode.NullNode;
-                IAvlNode rightChild = RemoveReplacement(this.RightChild, ref replacement);
+                IAvlNode replacement = NullNode;
+                var rightChild = RemoveReplacement(RightChild, ref replacement);
 
                 // Create new node with the replacement node and the new
                 // right child.
                 result = new AvlNode(
                     replacement.Data,
-                    this.LeftChild,
+                    LeftChild,
                     rightChild);
             }
 
@@ -284,7 +279,7 @@ namespace Sanford.Collections.Immutable
             IAvlNode newNode;
 
             // If the bottom of the left tree has been found.
-            if(node.LeftChild == AvlNode.NullNode)
+            if (node.LeftChild == NullNode)
             {
                 // The replacement node is the node found at this point.
                 replacement = node;
@@ -293,7 +288,7 @@ namespace Sanford.Collections.Immutable
                 // ascend back up the tree.
                 newNode = node.RightChild;
             }
-                // Else the bottom of the left tree has not been found.
+            // Else the bottom of the left tree has not been found.
             else
             {
                 // Create new node and continue descending down the left tree.
@@ -302,11 +297,7 @@ namespace Sanford.Collections.Immutable
                     node.RightChild);
 
                 // If the node is out of balance.
-                if(!newNode.IsBalanced())
-                {
-                    // Rebalance the node.
-                    newNode = newNode.Balance();
-                }
+                if (!newNode.IsBalanced()) newNode = newNode.Balance();
             }
 
             // Postconditions.
@@ -316,37 +307,29 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Balances the subtree represented by the node.
+        ///     Balances the subtree represented by the node.
         /// </summary>
         /// <returns>
-        /// The root node of the balanced subtree.
+        ///     The root node of the balanced subtree.
         /// </returns>
         public IAvlNode Balance()
         {
             IAvlNode result;
 
-            if(BalanceFactor < -1)
+            if (BalanceFactor < -1)
             {
-                if(leftChild.BalanceFactor < 0)
-                {
+                if (LeftChild.BalanceFactor < 0)
                     result = DoLLRotation(this);
-                }
                 else
-                {
                     result = DoLRRotation(this);
-                }
             }
-            else if(BalanceFactor > 1)
+            else if (BalanceFactor > 1)
             {
-                if(rightChild.BalanceFactor > 0)
-                {
+                if (RightChild.BalanceFactor > 0)
                     result = DoRRRotation(this);
-                }
                 else
-                {
                     result = DoRLRotation(this);
-                }
-            } 
+            }
             else
             {
                 result = this;
@@ -358,11 +341,11 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Indicates whether or not the subtree the node represents is in 
-        /// balance.
+        ///     Indicates whether or not the subtree the node represents is in
+        ///     balance.
         /// </summary>
         /// <returns>
-        /// <b>true</b> if the subtree is in balance; otherwise, <b>false</b>.
+        ///     <b>true</b> if the subtree is in balance; otherwise, <b>false</b>.
         /// </returns>
         public bool IsBalanced()
         {
@@ -370,70 +353,34 @@ namespace Sanford.Collections.Immutable
         }
 
         /// <summary>
-        /// Gets the balance factor of the subtree the node represents.
+        ///     Gets the balance factor of the subtree the node represents.
         /// </summary>
-        public int BalanceFactor
-        {
-            get
-            {
-                return rightChild.Height - leftChild.Height;
-            }
-        }
+        public int BalanceFactor => RightChild.Height - LeftChild.Height;
 
         /// <summary>
-        /// Gets the number of nodes in the subtree.
+        ///     Gets the number of nodes in the subtree.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return count;
-            }
-        }
+        public int Count { get; }
 
         /// <summary>
-        /// Gets the node's data.
+        ///     Gets the node's data.
         /// </summary>
-        public object Data
-        {
-            get
-            {
-                return data;
-            }
-        }
+        public object Data { get; }
 
         /// <summary>
-        /// Gets the height of the subtree the node represents.
+        ///     Gets the height of the subtree the node represents.
         /// </summary>
-        public int Height
-        {
-            get
-            {
-                return height;
-            }
-        }
+        public int Height { get; }
 
         /// <summary>
-        /// Gets the node's left child.
+        ///     Gets the node's left child.
         /// </summary>
-        public IAvlNode LeftChild
-        {
-            get
-            {
-                return leftChild;
-            }
-        }
+        public IAvlNode LeftChild { get; }
 
         /// <summary>
-        /// Gets the node's right child.
+        ///     Gets the node's right child.
         /// </summary>
-        public IAvlNode RightChild
-        {
-            get
-            {
-                return rightChild;
-            }
-        }
+        public IAvlNode RightChild { get; }
 
         #endregion
     }

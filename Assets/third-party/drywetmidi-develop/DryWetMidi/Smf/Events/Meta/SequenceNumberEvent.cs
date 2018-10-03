@@ -1,26 +1,35 @@
 ﻿namespace Melanchall.DryWetMidi.Smf
 {
     /// <summary>
-    /// Represents a Sequence Number meta event.
+    ///     Represents a Sequence Number meta event.
     /// </summary>
     /// <remarks>
-    /// The MIDI sequence number meta message defines the number of a sequence in type 0 and 1 MIDI files,
-    /// or the pattern number in type 2 MIDI files.
+    ///     The MIDI sequence number meta message defines the number of a sequence in type 0 and 1 MIDI files,
+    ///     or the pattern number in type 2 MIDI files.
     /// </remarks>
     public sealed class SequenceNumberEvent : MetaEvent
     {
+        #region Properties
+
+        /// <summary>
+        ///     Gets or sets the number of a sequence.
+        /// </summary>
+        public ushort Number { get; set; }
+
+        #endregion
+
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SequenceNumberEvent"/>.
+        ///     Initializes a new instance of the <see cref="SequenceNumberEvent" />.
         /// </summary>
         public SequenceNumberEvent()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SequenceNumberEvent"/> with the
-        /// specified number of a sequence.
+        ///     Initializes a new instance of the <see cref="SequenceNumberEvent" /> with the
+        ///     specified number of a sequence.
         /// </summary>
         /// <param name="number">The number of a sequence.</param>
         public SequenceNumberEvent(ushort number)
@@ -31,19 +40,10 @@
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the number of a sequence.
-        /// </summary>
-        public ushort Number { get; set; }
-
-        #endregion
-
         #region Overrides
 
         /// <summary>
-        /// Reads content of a MIDI meta event.
+        ///     Reads content of a MIDI meta event.
         /// </summary>
         /// <param name="reader">Reader to read the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be read.</param>
@@ -60,7 +60,7 @@
         }
 
         /// <summary>
-        /// Writes content of a MIDI meta event.
+        ///     Writes content of a MIDI meta event.
         /// </summary>
         /// <param name="writer">Writer to write the content with.</param>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
@@ -70,7 +70,7 @@
         }
 
         /// <summary>
-        /// Gets the size of the content of a MIDI meta event.
+        ///     Gets the size of the content of a MIDI meta event.
         /// </summary>
         /// <param name="settings">Settings according to which the event's content must be written.</param>
         /// <returns>Size of the event's content.</returns>
@@ -80,7 +80,7 @@
         }
 
         /// <summary>
-        /// Clones event by creating a copy of it.
+        ///     Clones event by creating a copy of it.
         /// </summary>
         /// <returns>Copy of the event.</returns>
         protected override MidiEvent CloneEvent()
@@ -89,7 +89,7 @@
         }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()

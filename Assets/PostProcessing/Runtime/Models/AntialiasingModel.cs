@@ -11,10 +11,73 @@ namespace UnityEngine.PostProcessing
             Taa
         }
 
+        [SerializeField] private Settings m_Settings = Settings.defaultSettings;
+
+        public Settings settings
+        {
+            get { return m_Settings; }
+            set { m_Settings = value; }
+        }
+
+        public override void Reset()
+        {
+            m_Settings = Settings.defaultSettings;
+        }
+
+        #region TAA Settings
+
+        [Serializable]
+        public struct TaaSettings
+        {
+            [Tooltip(
+                "The diameter (in texels) inside which jitter samples are spread. Smaller values result in crisper but more aliased output, while larger values result in more stable but blurrier output.")]
+            [Range(0.1f, 1f)]
+            public float jitterSpread;
+
+            [Tooltip("Controls the amount of sharpening applied to the color buffer.")] [Range(0f, 3f)]
+            public float sharpen;
+
+            [Tooltip(
+                "The blend coefficient for a stationary fragment. Controls the percentage of history sample blended into the final color.")]
+            [Range(0f, 0.99f)]
+            public float stationaryBlending;
+
+            [Tooltip(
+                "The blend coefficient for a fragment with significant motion. Controls the percentage of history sample blended into the final color.")]
+            [Range(0f, 0.99f)]
+            public float motionBlending;
+
+            public static TaaSettings defaultSettings => new TaaSettings
+            {
+                jitterSpread = 0.75f,
+                sharpen = 0.3f,
+                stationaryBlending = 0.95f,
+                motionBlending = 0.85f
+            };
+        }
+
+        #endregion
+
+        [Serializable]
+        public struct Settings
+        {
+            public Method method;
+            public FxaaSettings fxaaSettings;
+            public TaaSettings taaSettings;
+
+            public static Settings defaultSettings => new Settings
+            {
+                method = Method.Fxaa,
+                fxaaSettings = FxaaSettings.defaultSettings,
+                taaSettings = TaaSettings.defaultSettings
+            };
+        }
+
         // Most settings aren't exposed to the user anymore, presets are enough. Still, I'm leaving
         // the tooltip attributes in case an user wants to customize each preset.
 
         #region FXAA Settings
+
         public enum FxaaPreset
         {
             ExtremePerformance,
@@ -86,11 +149,13 @@ namespace UnityEngine.PostProcessing
         [Serializable]
         public struct FxaaConsoleSettings
         {
-            [Tooltip("The amount of spread applied to the sampling coordinates while sampling for subpixel information.")]
+            [Tooltip(
+                "The amount of spread applied to the sampling coordinates while sampling for subpixel information.")]
             [Range(0.33f, 0.5f)]
             public float subpixelSpreadAmount;
 
-            [Tooltip("This value dictates how sharp the edges in the image are kept; a higher value implies sharper edges.")]
+            [Tooltip(
+                "This value dictates how sharp the edges in the image are kept; a higher value implies sharper edges.")]
             [Range(2f, 8f)]
             public float edgeSharpnessAmount;
 
@@ -156,87 +221,12 @@ namespace UnityEngine.PostProcessing
         {
             public FxaaPreset preset;
 
-            public static FxaaSettings defaultSettings
+            public static FxaaSettings defaultSettings => new FxaaSettings
             {
-                get
-                {
-                    return new FxaaSettings
-                    {
-                        preset = FxaaPreset.Default
-                    };
-                }
-            }
+                preset = FxaaPreset.Default
+            };
         }
+
         #endregion
-
-        #region TAA Settings
-        [Serializable]
-        public struct TaaSettings
-        {
-            [Tooltip("The diameter (in texels) inside which jitter samples are spread. Smaller values result in crisper but more aliased output, while larger values result in more stable but blurrier output.")]
-            [Range(0.1f, 1f)]
-            public float jitterSpread;
-
-            [Tooltip("Controls the amount of sharpening applied to the color buffer.")]
-            [Range(0f, 3f)]
-            public float sharpen;
-
-            [Tooltip("The blend coefficient for a stationary fragment. Controls the percentage of history sample blended into the final color.")]
-            [Range(0f, 0.99f)]
-            public float stationaryBlending;
-
-            [Tooltip("The blend coefficient for a fragment with significant motion. Controls the percentage of history sample blended into the final color.")]
-            [Range(0f, 0.99f)]
-            public float motionBlending;
-
-            public static TaaSettings defaultSettings
-            {
-                get
-                {
-                    return new TaaSettings
-                    {
-                        jitterSpread = 0.75f,
-                        sharpen = 0.3f,
-                        stationaryBlending = 0.95f,
-                        motionBlending = 0.85f
-                    };
-                }
-            }
-        }
-        #endregion
-
-        [Serializable]
-        public struct Settings
-        {
-            public Method method;
-            public FxaaSettings fxaaSettings;
-            public TaaSettings taaSettings;
-
-            public static Settings defaultSettings
-            {
-                get
-                {
-                    return new Settings
-                    {
-                        method = Method.Fxaa,
-                        fxaaSettings = FxaaSettings.defaultSettings,
-                        taaSettings = TaaSettings.defaultSettings
-                    };
-                }
-            }
-        }
-
-        [SerializeField]
-        Settings m_Settings = Settings.defaultSettings;
-        public Settings settings
-        {
-            get { return m_Settings; }
-            set { m_Settings = value; }
-        }
-
-        public override void Reset()
-        {
-            m_Settings = Settings.defaultSettings;
-        }
     }
 }

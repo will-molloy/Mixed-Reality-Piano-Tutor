@@ -13,12 +13,14 @@ namespace Melanchall.DryWetMidi.MusicTheory
         private const string AccidentalGroupName = "a";
 
         private static readonly string NoteNameGroup = $"(?<{NoteNameGroupName}>C|D|E|F|G|A|B)";
-        private static readonly string AccidentalGroup = $"(?<{AccidentalGroupName}>{Regex.Escape(Note.SharpShortString)}|{Note.SharpLongString})";
 
-        private static readonly string[] Patterns = new[]
+        private static readonly string AccidentalGroup =
+            $"(?<{AccidentalGroupName}>{Regex.Escape(Note.SharpShortString)}|{Note.SharpLongString})";
+
+        private static readonly string[] Patterns =
         {
             $@"{NoteNameGroup}\s*{AccidentalGroup}",
-            $@"{NoteNameGroup}",
+            $@"{NoteNameGroup}"
         };
 
         private const string NoteNameIsInvalid = "Note's name is invalid.";

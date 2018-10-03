@@ -33,6 +33,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using Sanford.Threading;
 
 namespace Sanford.Multimedia.Midi
@@ -42,29 +43,25 @@ namespace Sanford.Multimedia.Midi
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the InputDevice class with the 
-        /// specified device ID.
+        ///     Initializes a new instance of the InputDevice class with the
+        ///     specified device ID.
         /// </summary>
-        public InputDevice(int deviceID, bool postEventsOnCreationContext = true, bool postDriverCallbackToDelegateQueue = true)
-           : base(deviceID)
+        public InputDevice(int deviceID, bool postEventsOnCreationContext = true,
+            bool postDriverCallbackToDelegateQueue = true)
+            : base(deviceID)
         {
             midiInProc = HandleMessage;
 
             delegateQueue = new DelegateQueue();
-            int result = midiInOpen(out handle, deviceID, midiInProc, IntPtr.Zero, CALLBACK_FUNCTION);
+            var result = midiInOpen(out handle, deviceID, midiInProc, IntPtr.Zero, CALLBACK_FUNCTION);
 
-            System.Diagnostics.Debug.WriteLine("MidiIn handle:" + handle.ToInt64());
+            Debug.WriteLine("MidiIn handle:" + handle.ToInt64());
 
-            if (result != MidiDeviceException.MMSYSERR_NOERROR)
-            {
-                throw new InputDeviceException(result);
-            }
+            if (result != DeviceException.MMSYSERR_NOERROR) throw new InputDeviceException(result);
 
             PostEventsOnCreationContext = postEventsOnCreationContext;
             PostDriverCallbackToDelegateQueue = postDriverCallbackToDelegateQueue;
-        
-        
-       }
+        }
 
         ~InputDevice()
         {

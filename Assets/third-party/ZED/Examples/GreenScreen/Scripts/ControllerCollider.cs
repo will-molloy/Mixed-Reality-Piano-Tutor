@@ -3,15 +3,15 @@
 using UnityEngine;
 
 /// <summary>
-/// Set box and rigidbodies on the Controllers
+///     Set box and rigidbodies on the Controllers
 /// </summary>
-public class ControllerCollider : MonoBehaviour {
-
+public class ControllerCollider : MonoBehaviour
+{
 #if ZED_STEAM_VR
 
     private ZEDSteamVRControllerManager padManager;
 
-    void Start()
+    private void Start()
     {
         padManager = GetComponent<ZEDSteamVRControllerManager>();
     }
@@ -28,42 +28,28 @@ public class ControllerCollider : MonoBehaviour {
 
     private void PadIndexSet()
     {
-        int i = 0;
-        foreach (GameObject o in padManager.controllersGameObject)
+        var i = 0;
+        foreach (var o in padManager.controllersGameObject)
         {
-            if (o != null)
-            {
-
-                Setcollider(o);
-            }
+            if (o != null) Setcollider(o);
 
             i++;
         }
-
     }
 
     private void Setcollider(GameObject o)
     {
-        MeshFilter[] listMesh = o.GetComponentsInChildren<MeshFilter>();
-        foreach (MeshFilter mf in listMesh)
-        {
+        var listMesh = o.GetComponentsInChildren<MeshFilter>();
+        foreach (var mf in listMesh)
             if (mf.name == "body")
             {
-                MeshCollider mesh = mf.gameObject.GetComponent<MeshCollider>();
-                if (!mesh)
-                {
-                    mf.gameObject.AddComponent<MeshCollider>();
-                }
-                Rigidbody rigid = mf.gameObject.GetComponent<Rigidbody>();
-                if (!rigid)
-                {
-                    rigid = mf.gameObject.AddComponent<Rigidbody>();
-                }
+                var mesh = mf.gameObject.GetComponent<MeshCollider>();
+                if (!mesh) mf.gameObject.AddComponent<MeshCollider>();
+                var rigid = mf.gameObject.GetComponent<Rigidbody>();
+                if (!rigid) rigid = mf.gameObject.AddComponent<Rigidbody>();
                 rigid.useGravity = false;
                 rigid.isKinematic = true;
             }
-        }
-
     }
 #endif
 }

@@ -35,7 +35,7 @@
 namespace Sanford.Multimedia
 {
     /// <summary>
-    /// Defines constants for all major and minor keys.
+    ///     Defines constants for all major and minor keys.
     /// </summary>
     public enum Key
     {
@@ -68,6 +68,6 @@ namespace Sanford.Multimedia
         EMajor,
         BMajor,
         FSharpMajor,
-        CSharpMajor,
+        CSharpMajor
     }
 }

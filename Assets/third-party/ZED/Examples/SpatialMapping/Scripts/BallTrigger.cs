@@ -3,14 +3,15 @@
 using UnityEngine;
 
 /// <summary>
-/// Send events when the ball has touched an object
+///     Send events when the ball has touched an object
 /// </summary>
 public class BallTrigger : MonoBehaviour
 {
-    private Rigidbody body;
-    private bool hasDamaged = false;
     private const float dammage = 1.0f;
     private const float minVelocityDammage = 5;
+    private Rigidbody body;
+    private bool hasDamaged;
+
     private void Start()
     {
         body = GetComponent<Rigidbody>();
@@ -21,7 +22,7 @@ public class BallTrigger : MonoBehaviour
         hasDamaged = false;
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (hasDamaged || body.velocity.magnitude < minVelocityDammage) return;
         if (other.gameObject.name.Contains("ZomBunny"))

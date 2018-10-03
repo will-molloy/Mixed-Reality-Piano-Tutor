@@ -26,7 +26,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
             var programEvent = Program.GetProgramEvent();
             var timedEvent = new TimedEvent(programEvent, time);
 
-            return new PatternActionResult(time, new[] { timedEvent });
+            return new PatternActionResult(time, new[] {timedEvent});
         }
 
         #endregion

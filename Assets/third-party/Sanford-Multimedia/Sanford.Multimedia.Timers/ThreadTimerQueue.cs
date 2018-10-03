@@ -31,30 +31,26 @@ using System.Threading;
 namespace Sanford.Multimedia.Timers
 {
     /// <summary>
-    /// Queues and executes timer events in an internal worker thread.
+    ///     Queues and executes timer events in an internal worker thread.
     /// </summary>
-    class ThreadTimerQueue
+    internal class ThreadTimerQueue
     {
-        Stopwatch watch = Stopwatch.StartNew();
-        Thread loop;
-        List<Tick> tickQueue = new List<Tick>();
+        private static ThreadTimerQueue instance;
+        private Thread loop;
+        private readonly List<Tick> tickQueue = new List<Tick>();
+        private readonly Stopwatch watch = Stopwatch.StartNew();
+
+        private ThreadTimerQueue()
+        {
+        }
 
         public static ThreadTimerQueue Instance
         {
             get
             {
-                if (instance == null)
-                {
-                    instance = new ThreadTimerQueue();
-                }
+                if (instance == null) instance = new ThreadTimerQueue();
                 return instance;
-
             }
-        }
-        static ThreadTimerQueue instance;
-
-        private ThreadTimerQueue()
-        {
         }
 
         public void Add(ThreadTimer timer)
@@ -74,6 +70,7 @@ namespace Sanford.Multimedia.Timers
                     loop = new Thread(TimerLoop);
                     loop.Start();
                 }
+
                 Monitor.PulseAll(this);
             }
         }
@@ -82,60 +79,32 @@ namespace Sanford.Multimedia.Timers
         {
             lock (this)
             {
-                int i = 0;
+                var i = 0;
                 for (; i < tickQueue.Count; ++i)
-                {
                     if (tickQueue[i].Timer == timer)
-                    {
                         break;
-                    }
-                }
-                if (i < tickQueue.Count)
-                {
-                    tickQueue.RemoveAt(i);
-                }
+                if (i < tickQueue.Count) tickQueue.RemoveAt(i);
                 Monitor.PulseAll(this);
             }
         }
 
-        class Tick : IComparable
-        {
-            public ThreadTimer Timer;
-            public TimeSpan Time;
-
-            public int CompareTo(object obj)
-            {
-                var r = obj as Tick;
-                if (r == null)
-                {
-                    return -1;
-                }
-                return Time.CompareTo(r.Time);
-            }
-        }
-
-        static TimeSpan Min(TimeSpan x0, TimeSpan x1)
+        private static TimeSpan Min(TimeSpan x0, TimeSpan x1)
         {
             if (x0 > x1)
-            {
                 return x1;
-            }
-            else
-            {
-                return x0;
-            }
+            return x0;
         }
 
         /// <summary>
-        /// The thread to execute the timer events
+        ///     The thread to execute the timer events
         /// </summary>
         private void TimerLoop()
         {
             lock (this)
             {
-                TimeSpan maxTimeout = TimeSpan.FromMilliseconds(500);
+                var maxTimeout = TimeSpan.FromMilliseconds(500);
 
-                for (int queueEmptyCount = 0; queueEmptyCount < 3; ++queueEmptyCount)
+                for (var queueEmptyCount = 0; queueEmptyCount < 3; ++queueEmptyCount)
                 {
                     var waitTime = maxTimeout;
                     if (tickQueue.Count > 0)
@@ -144,10 +113,7 @@ namespace Sanford.Multimedia.Timers
                         queueEmptyCount = 0;
                     }
 
-                    if (waitTime > TimeSpan.Zero)
-                    {
-                        Monitor.Wait(this, waitTime);
-                    }
+                    if (waitTime > TimeSpan.Zero) Monitor.Wait(this, waitTime);
 
                     if (tickQueue.Count > 0)
                     {
@@ -167,7 +133,21 @@ namespace Sanford.Multimedia.Timers
                         }
                     }
                 }
+
                 loop = null;
+            }
+        }
+
+        private class Tick : IComparable
+        {
+            public TimeSpan Time;
+            public ThreadTimer Timer;
+
+            public int CompareTo(object obj)
+            {
+                var r = obj as Tick;
+                if (r == null) return -1;
+                return Time.CompareTo(r.Time);
             }
         }
     }

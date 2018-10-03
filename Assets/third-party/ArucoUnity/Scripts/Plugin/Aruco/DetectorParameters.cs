@@ -3,246 +3,285 @@ using System.Runtime.InteropServices;
 
 namespace ArucoUnity.Plugin
 {
-  public static partial class Aruco
-  {
-    public class DetectorParameters : Utility.HandleCppPtr
+    public static partial class Aruco
     {
-      // Native functions
+        public class DetectorParameters : Utility.HandleCppPtr
+        {
+            public DetectorParameters() : base(au_DetectorParameters_create())
+            {
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern IntPtr au_DetectorParameters_create();
+            public int AdaptiveThreshWinSizeMin
+            {
+                get { return au_DetectorParameters_getAdaptiveThreshWinSizeMin(CppPtr); }
+                set { au_DetectorParameters_setAdaptiveThreshWinSizeMin(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_delete(IntPtr parameters);
+            public int AdaptiveThreshWinSizeMax
+            {
+                get { return au_DetectorParameters_getAdaptiveThreshWinSizeMax(CppPtr); }
+                set { au_DetectorParameters_setAdaptiveThreshWinSizeMax(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_DetectorParameters_getAdaptiveThreshWinSizeMin(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setAdaptiveThreshWinSizeMin(IntPtr parameters, int adaptiveThreshWinSizeMin);
+            public int AdaptiveThreshWinSizeStep
+            {
+                get { return au_DetectorParameters_getAdaptiveThreshWinSizeStep(CppPtr); }
+                set { au_DetectorParameters_setAdaptiveThreshWinSizeStep(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_DetectorParameters_getAdaptiveThreshWinSizeMax(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setAdaptiveThreshWinSizeMax(IntPtr parameters, int adaptiveThreshWinSizeMax);
+            public double AdaptiveThreshConstant
+            {
+                get { return au_DetectorParameters_getAdaptiveThreshConstant(CppPtr); }
+                set { au_DetectorParameters_setAdaptiveThreshConstant(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_DetectorParameters_getAdaptiveThreshWinSizeStep(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setAdaptiveThreshWinSizeStep(IntPtr parameters, int adaptiveThreshWinSizeStep);
+            public double MinMarkerPerimeterRate
+            {
+                get { return au_DetectorParameters_getMinMarkerPerimeterRate(CppPtr); }
+                set { au_DetectorParameters_setMinMarkerPerimeterRate(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getAdaptiveThreshConstant(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setAdaptiveThreshConstant(IntPtr parameters, double adaptiveThreshConstant);
+            public double MaxMarkerPerimeterRate
+            {
+                get { return au_DetectorParameters_getMaxMarkerPerimeterRate(CppPtr); }
+                set { au_DetectorParameters_setMaxMarkerPerimeterRate(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getMinMarkerPerimeterRate(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setMinMarkerPerimeterRate(IntPtr parameters, double minMarkerPerimeterRate);
+            public double PolygonalApproxAccuracyRate
+            {
+                get { return au_DetectorParameters_getPolygonalApproxAccuracyRate(CppPtr); }
+                set { au_DetectorParameters_setPolygonalApproxAccuracyRate(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getMaxMarkerPerimeterRate(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setMaxMarkerPerimeterRate(IntPtr parameters, double maxMarkerPerimeterRate);
+            public double MinCornerDistanceRate
+            {
+                get { return au_DetectorParameters_getMinCornerDistanceRate(CppPtr); }
+                set { au_DetectorParameters_setMinCornerDistanceRate(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getPolygonalApproxAccuracyRate(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setPolygonalApproxAccuracyRate(IntPtr parameters, double polygonalApproxAccuracyRate);
+            public int MinDistanceToBorder
+            {
+                get { return au_DetectorParameters_getMinDistanceToBorder(CppPtr); }
+                set { au_DetectorParameters_setMinDistanceToBorder(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getMinCornerDistanceRate(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setMinCornerDistanceRate(IntPtr parameters, double minCornerDistanceRate);
+            public double MinMarkerDistanceRate
+            {
+                get { return au_DetectorParameters_getMinMarkerDistanceRate(CppPtr); }
+                set { au_DetectorParameters_setMinMarkerDistanceRate(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_DetectorParameters_getMinDistanceToBorder(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setMinDistanceToBorder(IntPtr parameters, int minDistanceToBorder);
+            public CornerRefineMethod CornerRefinementMethod
+            {
+                get { return (CornerRefineMethod) au_DetectorParameters_getCornerRefinementMethod(CppPtr); }
+                set { au_DetectorParameters_setCornerRefinementMethod(CppPtr, (int) value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getMinMarkerDistanceRate(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setMinMarkerDistanceRate(IntPtr parameters, double minMarkerDistanceRate);
+            public int CornerRefinementWinSize
+            {
+                get { return au_DetectorParameters_getCornerRefinementWinSize(CppPtr); }
+                set { au_DetectorParameters_setCornerRefinementWinSize(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_DetectorParameters_getCornerRefinementMethod(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setCornerRefinementMethod(IntPtr parameters, int cornerRefinementMethod);
+            public int CornerRefinementMaxIterations
+            {
+                get { return au_DetectorParameters_getCornerRefinementMaxIterations(CppPtr); }
+                set { au_DetectorParameters_setCornerRefinementMaxIterations(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_DetectorParameters_getCornerRefinementWinSize(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setCornerRefinementWinSize(IntPtr parameters, int cornerRefinementWinSize);
+            public double CornerRefinementMinAccuracy
+            {
+                get { return au_DetectorParameters_getCornerRefinementMinAccuracy(CppPtr); }
+                set { au_DetectorParameters_setCornerRefinementMinAccuracy(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_DetectorParameters_getCornerRefinementMaxIterations(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setCornerRefinementMaxIterations(IntPtr parameters, int cornerRefinementMaxIterations);
+            public int MarkerBorderBits
+            {
+                get { return au_DetectorParameters_getMarkerBorderBits(CppPtr); }
+                set { au_DetectorParameters_setMarkerBorderBits(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getCornerRefinementMinAccuracy(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setCornerRefinementMinAccuracy(IntPtr parameters, double cornerRefinementMinAccuracy);
+            public int PerspectiveRemovePixelPerCell
+            {
+                get { return au_DetectorParameters_getPerspectiveRemovePixelPerCell(CppPtr); }
+                set { au_DetectorParameters_setPerspectiveRemovePixelPerCell(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_DetectorParameters_getMarkerBorderBits(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setMarkerBorderBits(IntPtr parameters, int markerBorderBits);
+            public double PerspectiveRemoveIgnoredMarginPerCell
+            {
+                get { return au_DetectorParameters_getPerspectiveRemoveIgnoredMarginPerCell(CppPtr); }
+                set { au_DetectorParameters_setPerspectiveRemoveIgnoredMarginPerCell(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern int au_DetectorParameters_getPerspectiveRemovePixelPerCell(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setPerspectiveRemovePixelPerCell(IntPtr parameters, int perspectiveRemovePixelPerCell);
+            public double MaxErroneousBitsInBorderRate
+            {
+                get { return au_DetectorParameters_getMaxErroneousBitsInBorderRate(CppPtr); }
+                set { au_DetectorParameters_setMaxErroneousBitsInBorderRate(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getPerspectiveRemoveIgnoredMarginPerCell(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setPerspectiveRemoveIgnoredMarginPerCell(IntPtr parameters, double perspectiveRemoveIgnoredMarginPerCell);
+            public double MinOtsuStdDev
+            {
+                get { return au_DetectorParameters_getMinOtsuStdDev(CppPtr); }
+                set { au_DetectorParameters_setMinOtsuStdDev(CppPtr, value); }
+            }
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getMaxErroneousBitsInBorderRate(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setMaxErroneousBitsInBorderRate(IntPtr parameters, double maxErroneousBitsInBorderRate);
+            public double ErrorCorrectionRate
+            {
+                get { return au_DetectorParameters_getErrorCorrectionRate(CppPtr); }
+                set { au_DetectorParameters_setErrorCorrectionRate(CppPtr, value); }
+            }
+            // Native functions
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getMinOtsuStdDev(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setMinOtsuStdDev(IntPtr parameters, double minOtsuStdDev);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern IntPtr au_DetectorParameters_create();
 
-      [DllImport("ArucoUnityPlugin")]
-      static extern double au_DetectorParameters_getErrorCorrectionRate(IntPtr parameters);
-      [DllImport("ArucoUnityPlugin")]
-      static extern void au_DetectorParameters_setErrorCorrectionRate(IntPtr parameters, double errorCorrectionRate);
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_delete(IntPtr parameters);
 
-      public DetectorParameters() : base(au_DetectorParameters_create())
-      {
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_DetectorParameters_getAdaptiveThreshWinSizeMin(IntPtr parameters);
 
-      protected override void DeleteCppPtr()
-      {
-        au_DetectorParameters_delete(CppPtr);
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setAdaptiveThreshWinSizeMin(IntPtr parameters,
+                int adaptiveThreshWinSizeMin);
 
-      public int AdaptiveThreshWinSizeMin
-      {
-        get { return au_DetectorParameters_getAdaptiveThreshWinSizeMin(CppPtr); }
-        set { au_DetectorParameters_setAdaptiveThreshWinSizeMin(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_DetectorParameters_getAdaptiveThreshWinSizeMax(IntPtr parameters);
 
-      public int AdaptiveThreshWinSizeMax
-      {
-        get { return au_DetectorParameters_getAdaptiveThreshWinSizeMax(CppPtr); }
-        set { au_DetectorParameters_setAdaptiveThreshWinSizeMax(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setAdaptiveThreshWinSizeMax(IntPtr parameters,
+                int adaptiveThreshWinSizeMax);
 
-      public int AdaptiveThreshWinSizeStep
-      {
-        get { return au_DetectorParameters_getAdaptiveThreshWinSizeStep(CppPtr); }
-        set { au_DetectorParameters_setAdaptiveThreshWinSizeStep(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_DetectorParameters_getAdaptiveThreshWinSizeStep(IntPtr parameters);
 
-      public double AdaptiveThreshConstant
-      {
-        get { return au_DetectorParameters_getAdaptiveThreshConstant(CppPtr); }
-        set { au_DetectorParameters_setAdaptiveThreshConstant(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setAdaptiveThreshWinSizeStep(IntPtr parameters,
+                int adaptiveThreshWinSizeStep);
 
-      public double MinMarkerPerimeterRate
-      {
-        get { return au_DetectorParameters_getMinMarkerPerimeterRate(CppPtr); }
-        set { au_DetectorParameters_setMinMarkerPerimeterRate(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getAdaptiveThreshConstant(IntPtr parameters);
 
-      public double MaxMarkerPerimeterRate
-      {
-        get { return au_DetectorParameters_getMaxMarkerPerimeterRate(CppPtr); }
-        set { au_DetectorParameters_setMaxMarkerPerimeterRate(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setAdaptiveThreshConstant(IntPtr parameters,
+                double adaptiveThreshConstant);
 
-      public double PolygonalApproxAccuracyRate
-      {
-        get { return au_DetectorParameters_getPolygonalApproxAccuracyRate(CppPtr); }
-        set { au_DetectorParameters_setPolygonalApproxAccuracyRate(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getMinMarkerPerimeterRate(IntPtr parameters);
 
-      public double MinCornerDistanceRate
-      {
-        get { return au_DetectorParameters_getMinCornerDistanceRate(CppPtr); }
-        set { au_DetectorParameters_setMinCornerDistanceRate(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setMinMarkerPerimeterRate(IntPtr parameters,
+                double minMarkerPerimeterRate);
 
-      public int MinDistanceToBorder
-      {
-        get { return au_DetectorParameters_getMinDistanceToBorder(CppPtr); }
-        set { au_DetectorParameters_setMinDistanceToBorder(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getMaxMarkerPerimeterRate(IntPtr parameters);
 
-      public double MinMarkerDistanceRate
-      {
-        get { return au_DetectorParameters_getMinMarkerDistanceRate(CppPtr); }
-        set { au_DetectorParameters_setMinMarkerDistanceRate(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setMaxMarkerPerimeterRate(IntPtr parameters,
+                double maxMarkerPerimeterRate);
 
-      public CornerRefineMethod CornerRefinementMethod
-      {
-        get { return (CornerRefineMethod)au_DetectorParameters_getCornerRefinementMethod(CppPtr); }
-        set { au_DetectorParameters_setCornerRefinementMethod(CppPtr, (int)value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getPolygonalApproxAccuracyRate(IntPtr parameters);
 
-      public int CornerRefinementWinSize
-      {
-        get { return au_DetectorParameters_getCornerRefinementWinSize(CppPtr); }
-        set { au_DetectorParameters_setCornerRefinementWinSize(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setPolygonalApproxAccuracyRate(IntPtr parameters,
+                double polygonalApproxAccuracyRate);
 
-      public int CornerRefinementMaxIterations
-      {
-        get { return au_DetectorParameters_getCornerRefinementMaxIterations(CppPtr); }
-        set { au_DetectorParameters_setCornerRefinementMaxIterations(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getMinCornerDistanceRate(IntPtr parameters);
 
-      public double CornerRefinementMinAccuracy
-      {
-        get { return au_DetectorParameters_getCornerRefinementMinAccuracy(CppPtr); }
-        set { au_DetectorParameters_setCornerRefinementMinAccuracy(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setMinCornerDistanceRate(IntPtr parameters,
+                double minCornerDistanceRate);
 
-      public int MarkerBorderBits
-      {
-        get { return au_DetectorParameters_getMarkerBorderBits(CppPtr); }
-        set { au_DetectorParameters_setMarkerBorderBits(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_DetectorParameters_getMinDistanceToBorder(IntPtr parameters);
 
-      public int PerspectiveRemovePixelPerCell
-      {
-        get { return au_DetectorParameters_getPerspectiveRemovePixelPerCell(CppPtr); }
-        set { au_DetectorParameters_setPerspectiveRemovePixelPerCell(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setMinDistanceToBorder(IntPtr parameters,
+                int minDistanceToBorder);
 
-      public double PerspectiveRemoveIgnoredMarginPerCell
-      {
-        get { return au_DetectorParameters_getPerspectiveRemoveIgnoredMarginPerCell(CppPtr); }
-        set { au_DetectorParameters_setPerspectiveRemoveIgnoredMarginPerCell(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getMinMarkerDistanceRate(IntPtr parameters);
 
-      public double MaxErroneousBitsInBorderRate
-      {
-        get { return au_DetectorParameters_getMaxErroneousBitsInBorderRate(CppPtr); }
-        set { au_DetectorParameters_setMaxErroneousBitsInBorderRate(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setMinMarkerDistanceRate(IntPtr parameters,
+                double minMarkerDistanceRate);
 
-      public double MinOtsuStdDev
-      {
-        get { return au_DetectorParameters_getMinOtsuStdDev(CppPtr); }
-        set { au_DetectorParameters_setMinOtsuStdDev(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_DetectorParameters_getCornerRefinementMethod(IntPtr parameters);
 
-      public double ErrorCorrectionRate
-      {
-        get { return au_DetectorParameters_getErrorCorrectionRate(CppPtr); }
-        set { au_DetectorParameters_setErrorCorrectionRate(CppPtr, value); }
-      }
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setCornerRefinementMethod(IntPtr parameters,
+                int cornerRefinementMethod);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_DetectorParameters_getCornerRefinementWinSize(IntPtr parameters);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setCornerRefinementWinSize(IntPtr parameters,
+                int cornerRefinementWinSize);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_DetectorParameters_getCornerRefinementMaxIterations(IntPtr parameters);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setCornerRefinementMaxIterations(IntPtr parameters,
+                int cornerRefinementMaxIterations);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getCornerRefinementMinAccuracy(IntPtr parameters);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setCornerRefinementMinAccuracy(IntPtr parameters,
+                double cornerRefinementMinAccuracy);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_DetectorParameters_getMarkerBorderBits(IntPtr parameters);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setMarkerBorderBits(IntPtr parameters,
+                int markerBorderBits);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern int au_DetectorParameters_getPerspectiveRemovePixelPerCell(IntPtr parameters);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setPerspectiveRemovePixelPerCell(IntPtr parameters,
+                int perspectiveRemovePixelPerCell);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getPerspectiveRemoveIgnoredMarginPerCell(
+                IntPtr parameters);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setPerspectiveRemoveIgnoredMarginPerCell(IntPtr parameters,
+                double perspectiveRemoveIgnoredMarginPerCell);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getMaxErroneousBitsInBorderRate(IntPtr parameters);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setMaxErroneousBitsInBorderRate(IntPtr parameters,
+                double maxErroneousBitsInBorderRate);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getMinOtsuStdDev(IntPtr parameters);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setMinOtsuStdDev(IntPtr parameters, double minOtsuStdDev);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern double au_DetectorParameters_getErrorCorrectionRate(IntPtr parameters);
+
+            [DllImport("ArucoUnityPlugin")]
+            private static extern void au_DetectorParameters_setErrorCorrectionRate(IntPtr parameters,
+                double errorCorrectionRate);
+
+            protected override void DeleteCppPtr()
+            {
+                au_DetectorParameters_delete(CppPtr);
+            }
+        }
     }
-  }
 }

@@ -60,14 +60,22 @@ namespace UnityEditor.PostProcessing
 
             hueCenterCursor = new GUIStyle("ColorPicker2DThumb")
             {
-                normal = { background = (Texture2D)EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/ShurikenPlus.png") },
+                normal =
+                {
+                    background =
+                        (Texture2D) EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/ShurikenPlus.png")
+                },
                 fixedWidth = 6,
                 fixedHeight = 6
             };
 
             hueRangeCursor = new GUIStyle(hueCenterCursor)
             {
-                normal = { background = (Texture2D)EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/CircularToggle_ON.png") }
+                normal =
+                {
+                    background =
+                        (Texture2D) EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/CircularToggle_ON.png")
+                }
             };
 
             wheelThumb = new GUIStyle("ColorPicker2DThumb");
@@ -84,13 +92,13 @@ namespace UnityEditor.PostProcessing
             };
 
             wheelThumbSize = new Vector2(
-                    !Mathf.Approximately(wheelThumb.fixedWidth, 0f) ? wheelThumb.fixedWidth : wheelThumb.padding.horizontal,
-                    !Mathf.Approximately(wheelThumb.fixedHeight, 0f) ? wheelThumb.fixedHeight : wheelThumb.padding.vertical
-                    );
+                !Mathf.Approximately(wheelThumb.fixedWidth, 0f) ? wheelThumb.fixedWidth : wheelThumb.padding.horizontal,
+                !Mathf.Approximately(wheelThumb.fixedHeight, 0f) ? wheelThumb.fixedHeight : wheelThumb.padding.vertical
+            );
 
             header = new GUIStyle("ShurikenModuleTitle")
             {
-                font = (new GUIStyle("Label")).font,
+                font = new GUIStyle("Label").font,
                 border = new RectOffset(15, 7, 4, 4),
                 fixedHeight = 22,
                 contentOffset = new Vector2(20f, -2f)
@@ -99,13 +107,15 @@ namespace UnityEditor.PostProcessing
             headerCheckbox = new GUIStyle("ShurikenCheckMark");
             headerFoldout = new GUIStyle("Foldout");
 
-            playIcon = (Texture2D)EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/IN foldout act.png");
-            checkerIcon = (Texture2D)EditorGUIUtility.LoadRequired("Icons/CheckerFloor.png");
+            playIcon = (Texture2D) EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/IN foldout act.png");
+            checkerIcon = (Texture2D) EditorGUIUtility.LoadRequired("Icons/CheckerFloor.png");
 
             if (EditorGUIUtility.isProSkin)
-                paneOptionsIcon = (Texture2D)EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/pane options.png");
+                paneOptionsIcon =
+                    (Texture2D) EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/pane options.png");
             else
-                paneOptionsIcon = (Texture2D)EditorGUIUtility.LoadRequired("Builtin Skins/LightSkin/Images/pane options.png");
+                paneOptionsIcon =
+                    (Texture2D) EditorGUIUtility.LoadRequired("Builtin Skins/LightSkin/Images/pane options.png");
         }
     }
 }

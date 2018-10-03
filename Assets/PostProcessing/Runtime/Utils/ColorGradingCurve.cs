@@ -9,16 +9,13 @@ namespace UnityEngine.PostProcessing
     {
         public AnimationCurve curve;
 
-        [SerializeField]
-        bool m_Loop;
+        private AnimationCurve m_InternalLoopingCurve;
 
-        [SerializeField]
-        float m_ZeroValue;
+        [SerializeField] private bool m_Loop;
 
-        [SerializeField]
-        float m_Range;
+        [SerializeField] private float m_Range;
 
-        AnimationCurve m_InternalLoopingCurve;
+        [SerializeField] private float m_ZeroValue;
 
         public ColorGradingCurve(AnimationCurve curve, float zeroValue, bool loop, Vector2 bounds)
         {

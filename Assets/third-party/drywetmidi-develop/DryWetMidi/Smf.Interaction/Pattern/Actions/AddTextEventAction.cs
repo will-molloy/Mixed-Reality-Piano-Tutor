@@ -24,10 +24,10 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
 
         public PatternActionResult Invoke(long time, PatternContext context)
         {
-            var textEvent = (BaseTextEvent)Activator.CreateInstance(typeof(TEvent), Text);
+            var textEvent = (BaseTextEvent) Activator.CreateInstance(typeof(TEvent), Text);
             var timedEvent = new TimedEvent(textEvent, time);
 
-            return new PatternActionResult(time, new[] { timedEvent });
+            return new PatternActionResult(time, new[] {timedEvent});
         }
 
         #endregion

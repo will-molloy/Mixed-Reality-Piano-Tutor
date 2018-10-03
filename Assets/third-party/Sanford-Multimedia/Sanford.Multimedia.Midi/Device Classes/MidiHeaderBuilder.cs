@@ -38,39 +38,38 @@ using System.Runtime.InteropServices;
 
 namespace Sanford.Multimedia.Midi
 {
-	/// <summary>
-	/// Builds a pointer to a MidiHeader structure.
-	/// </summary>
-	internal class MidiHeaderBuilder
-	{
+    /// <summary>
+    ///     Builds a pointer to a MidiHeader structure.
+    /// </summary>
+    internal class MidiHeaderBuilder
+    {
         // The length of the system exclusive buffer.
         private int bufferLength;
+
+        // Indicates whether the pointer to the MidiHeader has been built.
+        private bool built;
 
         // The system exclusive data.
         private byte[] data;
 
-        // Indicates whether the pointer to the MidiHeader has been built.
-        private bool built = false;
-
         // The built pointer to the MidiHeader.
-        private IntPtr result;
 
         /// <summary>
-        /// Initializes a new instance of the MidiHeaderBuilder.
+        ///     Initializes a new instance of the MidiHeaderBuilder.
         /// </summary>
-		public MidiHeaderBuilder()
-		{
+        public MidiHeaderBuilder()
+        {
             BufferLength = 1;
-		}
+        }
 
         #region Methods
 
         /// <summary>
-        /// Builds the pointer to the MidiHeader structure.
+        ///     Builds the pointer to the MidiHeader structure.
         /// </summary>
         public void Build()
         {
-            MidiHeader header = new MidiHeader();
+            var header = new MidiHeader();
 
             // Initialize the MidiHeader.
             header.bufferLength = BufferLength;
@@ -79,16 +78,13 @@ namespace Sanford.Multimedia.Midi
             header.flags = 0;
 
             // Write data to the MidiHeader.
-            for(int i = 0; i < BufferLength; i++)
-            {
-                Marshal.WriteByte(header.data, i, data[i]);
-            }
+            for (var i = 0; i < BufferLength; i++) Marshal.WriteByte(header.data, i, data[i]);
 
             try
             {
-                result = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(MidiHeader)));
+                Result = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(MidiHeader)));
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Marshal.FreeHGlobal(header.data);
 
@@ -97,12 +93,12 @@ namespace Sanford.Multimedia.Midi
 
             try
             {
-                Marshal.StructureToPtr(header, result, false);
+                Marshal.StructureToPtr(header, Result, false);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Marshal.FreeHGlobal(header.data);
-                Marshal.FreeHGlobal(result);
+                Marshal.FreeHGlobal(Result);
 
                 throw;
             }
@@ -111,23 +107,20 @@ namespace Sanford.Multimedia.Midi
         }
 
         /// <summary>
-        /// Initializes the MidiHeaderBuilder with the specified SysExMessage.
+        ///     Initializes the MidiHeaderBuilder with the specified SysExMessage.
         /// </summary>
         /// <param name="message">
-        /// The SysExMessage to use for initializing the MidiHeaderBuilder.
+        ///     The SysExMessage to use for initializing the MidiHeaderBuilder.
         /// </param>
         public void InitializeBuffer(SysExMessage message)
         {
             // If this is a start system exclusive message.
-            if(message.SysExType == SysExType.Start)
+            if (message.SysExType == SysExType.Start)
             {
                 BufferLength = message.Length;
 
                 // Copy entire message.
-                for(int i = 0; i < BufferLength; i++)
-                {
-                    data[i] = message[i];
-                }
+                for (var i = 0; i < BufferLength; i++) data[i] = message[i];
             }
             // Else this is a continuation message.
             else
@@ -135,10 +128,7 @@ namespace Sanford.Multimedia.Midi
                 BufferLength = message.Length - 1;
 
                 // Copy all but the first byte of message.
-                for(int i = 0; i < BufferLength; i++)
-                {
-                    data[i] = message[i + 1];
-                }
+                for (var i = 0; i < BufferLength; i++) data[i] = message[i + 1];
             }
         }
 
@@ -146,23 +136,15 @@ namespace Sanford.Multimedia.Midi
         {
             #region Require
 
-            if(events == null)
-            {
+            if (events == null)
                 throw new ArgumentNullException("events");
-            }
-            else if(events.Count % 4 != 0)
-            {
-                throw new ArgumentException("Stream events not word aligned.");
-            }
+            if (events.Count % 4 != 0) throw new ArgumentException("Stream events not word aligned.");
 
             #endregion
 
             #region Guard
 
-            if(events.Count == 0)
-            {
-                return;
-            }
+            if (events.Count == 0) return;
 
             #endregion
 
@@ -172,31 +154,28 @@ namespace Sanford.Multimedia.Midi
         }
 
         /// <summary>
-        /// Releases the resources associated with the built MidiHeader pointer.
+        ///     Releases the resources associated with the built MidiHeader pointer.
         /// </summary>
         public void Destroy()
         {
             #region Require
 
-            if(!built)
-            {
-                throw new InvalidOperationException("Cannot destroy MidiHeader");
-            }
+            if (!built) throw new InvalidOperationException("Cannot destroy MidiHeader");
 
             #endregion
 
-            Destroy(result);
+            Destroy(Result);
         }
 
         /// <summary>
-        /// Releases the resources associated with the specified MidiHeader pointer.
+        ///     Releases the resources associated with the specified MidiHeader pointer.
         /// </summary>
         /// <param name="headerPtr">
-        /// The MidiHeader pointer.
+        ///     The MidiHeader pointer.
         /// </param>
         public void Destroy(IntPtr headerPtr)
         {
-            MidiHeader header = (MidiHeader)Marshal.PtrToStructure(headerPtr, typeof(MidiHeader));
+            var header = (MidiHeader) Marshal.PtrToStructure(headerPtr, typeof(MidiHeader));
 
             Marshal.FreeHGlobal(header.data);
             Marshal.FreeHGlobal(headerPtr);
@@ -207,23 +186,18 @@ namespace Sanford.Multimedia.Midi
         #region Properties
 
         /// <summary>
-        /// The length of the system exclusive buffer.
+        ///     The length of the system exclusive buffer.
         /// </summary>
         public int BufferLength
         {
-            get
-            {
-                return bufferLength;
-            }
+            get { return bufferLength; }
             set
             {
                 #region Require
 
-                if(value <= 0)
-                {
-                    throw new ArgumentOutOfRangeException("BufferLength", value, 
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException("BufferLength", value,
                         "MIDI header buffer length out of range.");
-                }
 
                 #endregion
 
@@ -233,16 +207,10 @@ namespace Sanford.Multimedia.Midi
         }
 
         /// <summary>
-        /// Gets the pointer to the MidiHeader.
+        ///     Gets the pointer to the MidiHeader.
         /// </summary>
-        public IntPtr Result
-        {
-            get
-            {
-                return result;
-            }
-        }
+        public IntPtr Result { get; private set; }
 
         #endregion
-	}
+    }
 }

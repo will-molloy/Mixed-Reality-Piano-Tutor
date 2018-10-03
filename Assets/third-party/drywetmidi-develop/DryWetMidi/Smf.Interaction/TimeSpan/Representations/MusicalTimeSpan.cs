@@ -1,47 +1,47 @@
-﻿using Melanchall.DryWetMidi.Common;
-using System;
+﻿using System;
+using Melanchall.DryWetMidi.Common;
 
 namespace Melanchall.DryWetMidi.Smf.Interaction
 {
     /// <summary>
-    /// Represents a time span as a fraction of the whole note's length.
+    ///     Represents a time span as a fraction of the whole note's length.
     /// </summary>
     public sealed class MusicalTimeSpan : ITimeSpan
     {
         #region Constants
 
         /// <summary>
-        /// <see cref="MusicalTimeSpan"/> that corresponds to the whole length.
+        ///     <see cref="MusicalTimeSpan" /> that corresponds to the whole length.
         /// </summary>
         public static readonly MusicalTimeSpan Whole = new MusicalTimeSpan(WholeFraction);
 
         /// <summary>
-        /// <see cref="MusicalTimeSpan"/> that corresponds to the half length.
+        ///     <see cref="MusicalTimeSpan" /> that corresponds to the half length.
         /// </summary>
         public static readonly MusicalTimeSpan Half = new MusicalTimeSpan(HalfFraction);
 
         /// <summary>
-        /// <see cref="MusicalTimeSpan"/> that corresponds to the quarter length.
+        ///     <see cref="MusicalTimeSpan" /> that corresponds to the quarter length.
         /// </summary>
         public static readonly MusicalTimeSpan Quarter = new MusicalTimeSpan(QuarterFraction);
 
         /// <summary>
-        /// <see cref="MusicalTimeSpan"/> that corresponds to the eighth length.
+        ///     <see cref="MusicalTimeSpan" /> that corresponds to the eighth length.
         /// </summary>
         public static readonly MusicalTimeSpan Eighth = new MusicalTimeSpan(EighthFraction);
 
         /// <summary>
-        /// <see cref="MusicalTimeSpan"/> that corresponds to the sixteenth length.
+        ///     <see cref="MusicalTimeSpan" /> that corresponds to the sixteenth length.
         /// </summary>
         public static readonly MusicalTimeSpan Sixteenth = new MusicalTimeSpan(SixteenthFraction);
 
         /// <summary>
-        /// <see cref="MusicalTimeSpan"/> that corresponds to the thirty-second length.
+        ///     <see cref="MusicalTimeSpan" /> that corresponds to the thirty-second length.
         /// </summary>
         public static readonly MusicalTimeSpan ThirtySecond = new MusicalTimeSpan(ThirtySecondFraction);
 
         /// <summary>
-        /// <see cref="MusicalTimeSpan"/> that corresponds to the sixty-fourth length.
+        ///     <see cref="MusicalTimeSpan" /> that corresponds to the sixty-fourth length.
         /// </summary>
         public static readonly MusicalTimeSpan SixtyFourth = new MusicalTimeSpan(SixtyFourthFraction);
 
@@ -72,14 +72,14 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         private const int DoubleDotCount = 2;
 
         private const int NumberOfDigitsAfterDecimalPoint = 3;
-        private static readonly int FractionPartMultiplier = (int)Math.Pow(10, NumberOfDigitsAfterDecimalPoint);
+        private static readonly int FractionPartMultiplier = (int) Math.Pow(10, NumberOfDigitsAfterDecimalPoint);
 
         #endregion
 
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MusicalTimeSpan"/>.
+        ///     Initializes a new instance of the <see cref="MusicalTimeSpan" />.
         /// </summary>
         public MusicalTimeSpan()
             : this(ZeroTimeSpanNumerator, ZeroTimeSpanDenominator)
@@ -87,24 +87,26 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MusicalTimeSpan"/> with the specified
-        /// fraction of the whole note's length.
+        ///     Initializes a new instance of the <see cref="MusicalTimeSpan" /> with the specified
+        ///     fraction of the whole note's length.
         /// </summary>
         /// <param name="fraction">The fraction of the whole note's length.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="fraction"/> is zero or negative.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="fraction" /> is zero or negative.</exception>
         public MusicalTimeSpan(long fraction)
             : this(FractionNumerator, fraction)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MusicalTimeSpan"/> with the specified
-        /// numerator and denominator of the fraction of the whole note's length.
+        ///     Initializes a new instance of the <see cref="MusicalTimeSpan" /> with the specified
+        ///     numerator and denominator of the fraction of the whole note's length.
         /// </summary>
         /// <param name="numerator">The numerator of fraction of the whole note's length.</param>
         /// <param name="denominator">The denominator of fraction of the whole note's length.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="numerator"/> is negative. -or-
-        /// <paramref name="denominator"/> is zero or negative.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="numerator" /> is negative. -or-
+        ///     <paramref name="denominator" /> is zero or negative.
+        /// </exception>
         public MusicalTimeSpan(long numerator, long denominator)
         {
             ThrowIfArgument.IsNegative(nameof(numerator), numerator, "Numerator is negative.");
@@ -121,12 +123,12 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Properties
 
         /// <summary>
-        /// Gets the numerator of the current <see cref="MusicalTimeSpan"/>.
+        ///     Gets the numerator of the current <see cref="MusicalTimeSpan" />.
         /// </summary>
         public long Numerator { get; } = ZeroTimeSpanNumerator;
 
         /// <summary>
-        /// Gets the denominator of the current <see cref="MusicalTimeSpan"/>.
+        ///     Gets the denominator of the current <see cref="MusicalTimeSpan" />.
         /// </summary>
         public long Denominator { get; } = ZeroTimeSpanDenominator;
 
@@ -135,98 +137,106 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Methods
 
         /// <summary>
-        /// Returns the current <see cref="MusicalTimeSpan"/> modified by the specified number
-        /// of dots.
+        ///     Returns the current <see cref="MusicalTimeSpan" /> modified by the specified number
+        ///     of dots.
         /// </summary>
-        /// <param name="dotsCount">The number of dots to modify the current <see cref="MusicalTimeSpan"/>.</param>
-        /// <returns>The dotted version of the current <see cref="MusicalTimeSpan"/>.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="dotsCount"/> is negative.</exception>
+        /// <param name="dotsCount">The number of dots to modify the current <see cref="MusicalTimeSpan" />.</param>
+        /// <returns>The dotted version of the current <see cref="MusicalTimeSpan" />.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="dotsCount" /> is negative.</exception>
         public MusicalTimeSpan Dotted(int dotsCount)
         {
             ThrowIfArgument.IsNegative(nameof(dotsCount), dotsCount, "Dots count is negative.");
 
-            return new MusicalTimeSpan(Numerator * ((1 << dotsCount + 1) - 1),
-                                       Denominator * (1 << dotsCount));
+            return new MusicalTimeSpan(Numerator * ((1 << (dotsCount + 1)) - 1),
+                Denominator * (1 << dotsCount));
         }
 
         /// <summary>
-        /// Returns the current <see cref="MusicalTimeSpan"/> modified by one dot.
+        ///     Returns the current <see cref="MusicalTimeSpan" /> modified by one dot.
         /// </summary>
-        /// <returns>The single dotted version of the current <see cref="MusicalTimeSpan"/>.</returns>
+        /// <returns>The single dotted version of the current <see cref="MusicalTimeSpan" />.</returns>
         public MusicalTimeSpan SingleDotted()
         {
             return Dotted(SingleDotCount);
         }
 
         /// <summary>
-        /// Returns the current <see cref="MusicalTimeSpan"/> modified by two dots.
+        ///     Returns the current <see cref="MusicalTimeSpan" /> modified by two dots.
         /// </summary>
-        /// <returns>The double dotted version of the current <see cref="MusicalTimeSpan"/>.</returns>
+        /// <returns>The double dotted version of the current <see cref="MusicalTimeSpan" />.</returns>
         public MusicalTimeSpan DoubleDotted()
         {
             return Dotted(DoubleDotCount);
         }
 
         /// <summary>
-        /// Returns a tuplet based on the current <see cref="MusicalTimeSpan"/>.
+        ///     Returns a tuplet based on the current <see cref="MusicalTimeSpan" />.
         /// </summary>
         /// <param name="tupletNotesCount">Notes count of a tuplet to construct.</param>
         /// <param name="tupletSpaceSize">Space of a tuplet to construct.</param>
-        /// <returns>A tuplet based on the current <see cref="MusicalTimeSpan"/>.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="tupletNotesCount"/> is zero
-        /// or negative. -or- <paramref name="tupletSpaceSize"/> is zero or negative.</exception>
+        /// <returns>A tuplet based on the current <see cref="MusicalTimeSpan" />.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="tupletNotesCount" /> is zero
+        ///     or negative. -or- <paramref name="tupletSpaceSize" /> is zero or negative.
+        /// </exception>
         public MusicalTimeSpan Tuplet(int tupletNotesCount, int tupletSpaceSize)
         {
-            ThrowIfArgument.IsNonpositive(nameof(tupletNotesCount), tupletNotesCount, "Tuplet's notes count is zero or negative.");
-            ThrowIfArgument.IsNonpositive(nameof(tupletSpaceSize), tupletSpaceSize, "Tuplet's space size is zero or negative.");
+            ThrowIfArgument.IsNonpositive(nameof(tupletNotesCount), tupletNotesCount,
+                "Tuplet's notes count is zero or negative.");
+            ThrowIfArgument.IsNonpositive(nameof(tupletSpaceSize), tupletSpaceSize,
+                "Tuplet's space size is zero or negative.");
 
             return new MusicalTimeSpan(Numerator * tupletSpaceSize,
-                                       Denominator * tupletNotesCount);
+                Denominator * tupletNotesCount);
         }
 
         /// <summary>
-        /// Returns a triplet based on the current <see cref="MusicalTimeSpan"/>.
+        ///     Returns a triplet based on the current <see cref="MusicalTimeSpan" />.
         /// </summary>
-        /// <returns>A triplet based on the current <see cref="MusicalTimeSpan"/>.</returns>
+        /// <returns>A triplet based on the current <see cref="MusicalTimeSpan" />.</returns>
         public MusicalTimeSpan Triplet()
         {
             return Tuplet(TripletNotesCount, TripletSpaceSize);
         }
 
         /// <summary>
-        /// Returns a duplet based on the current <see cref="MusicalTimeSpan"/>.
+        ///     Returns a duplet based on the current <see cref="MusicalTimeSpan" />.
         /// </summary>
-        /// <returns>A duplet based on the current <see cref="MusicalTimeSpan"/>.</returns>
+        /// <returns>A duplet based on the current <see cref="MusicalTimeSpan" />.</returns>
         public MusicalTimeSpan Duplet()
         {
             return Tuplet(DupletNotesCount, DupletSpaceSize);
         }
 
         /// <summary>
-        /// Converts the string representation of a whole note's fraction to its <see cref="MusicalTimeSpan"/>
-        /// equivalent. A return value indicates whether the conversion succeeded.
+        ///     Converts the string representation of a whole note's fraction to its <see cref="MusicalTimeSpan" />
+        ///     equivalent. A return value indicates whether the conversion succeeded.
         /// </summary>
         /// <param name="input">A string containing a time span to convert.</param>
-        /// <param name="timeSpan">When this method returns, contains the <see cref="MusicalTimeSpan"/>
-        /// equivalent of the time span contained in <paramref name="input"/>, if the conversion succeeded, or
-        /// null if the conversion failed. The conversion fails if the <paramref name="input"/> is null or
-        /// <see cref="String.Empty"/>, or is not of the correct format. This parameter is passed uninitialized;
-        /// any value originally supplied in result will be overwritten.</param>
-        /// <returns>true if <paramref name="input"/> was converted successfully; otherwise, false.</returns>
+        /// <param name="timeSpan">
+        ///     When this method returns, contains the <see cref="MusicalTimeSpan" />
+        ///     equivalent of the time span contained in <paramref name="input" />, if the conversion succeeded, or
+        ///     null if the conversion failed. The conversion fails if the <paramref name="input" /> is null or
+        ///     <see cref="String.Empty" />, or is not of the correct format. This parameter is passed uninitialized;
+        ///     any value originally supplied in result will be overwritten.
+        /// </param>
+        /// <returns>true if <paramref name="input" /> was converted successfully; otherwise, false.</returns>
         public static bool TryParse(string input, out MusicalTimeSpan timeSpan)
         {
             return MusicalTimeSpanParser.TryParse(input, out timeSpan).Status == ParsingStatus.Parsed;
         }
 
         /// <summary>
-        /// Converts the string representation of a whole note's fraction to its <see cref="MusicalTimeSpan"/>
-        /// equivalent.
+        ///     Converts the string representation of a whole note's fraction to its <see cref="MusicalTimeSpan" />
+        ///     equivalent.
         /// </summary>
         /// <param name="input">A string containing a time span to convert.</param>
-        /// <returns>A <see cref="MusicalTimeSpan"/> equivalent to the time span contained in
-        /// <paramref name="input"/>.</returns>
-        /// <exception cref="ArgumentException"><paramref name="input"/> is null or contains white-spaces only.</exception>
-        /// <exception cref="FormatException"><paramref name="input"/> has invalid format.</exception>
+        /// <returns>
+        ///     A <see cref="MusicalTimeSpan" /> equivalent to the time span contained in
+        ///     <paramref name="input" />.
+        /// </returns>
+        /// <exception cref="ArgumentException"><paramref name="input" /> is null or contains white-spaces only.</exception>
+        /// <exception cref="FormatException"><paramref name="input" /> has invalid format.</exception>
         public static MusicalTimeSpan Parse(string input)
         {
             MusicalTimeSpan timeSpan;
@@ -238,7 +248,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Reduces the specified musical time spans to the common denominator.
+        ///     Reduces the specified musical time spans to the common denominator.
         /// </summary>
         /// <param name="fraction1">First time span.</param>
         /// <param name="fraction2">Second time span.</param>
@@ -246,10 +256,10 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         /// <param name="numerator2">Numerator of the reduced second time span.</param>
         /// <param name="denominator">Common denominator of reduced time spans.</param>
         private static void ReduceToCommonDenominator(MusicalTimeSpan fraction1,
-                                                      MusicalTimeSpan fraction2,
-                                                      out long numerator1,
-                                                      out long numerator2,
-                                                      out long denominator)
+            MusicalTimeSpan fraction2,
+            out long numerator1,
+            out long numerator2,
+            out long denominator)
         {
             denominator = MathUtilities.LeastCommonMultiple(fraction1.Denominator, fraction2.Denominator);
 
@@ -262,10 +272,10 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Operators
 
         /// <summary>
-        /// Determines if two <see cref="MusicalTimeSpan"/> objects are equal.
+        ///     Determines if two <see cref="MusicalTimeSpan" /> objects are equal.
         /// </summary>
-        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan"/> to compare.</param>
-        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan"/> to compare.</param>
+        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan" /> to compare.</param>
+        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan" /> to compare.</param>
         /// <returns>true if time spans are equal, false otherwise.</returns>
         public static bool operator ==(MusicalTimeSpan timeSpan1, MusicalTimeSpan timeSpan2)
         {
@@ -281,10 +291,10 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Determines if two <see cref="MusicalTimeSpan"/> objects are not equal.
+        ///     Determines if two <see cref="MusicalTimeSpan" /> objects are not equal.
         /// </summary>
-        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan"/> to compare.</param>
-        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan"/> to compare.</param>
+        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan" /> to compare.</param>
+        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan" /> to compare.</param>
         /// <returns>false if time spans are equal, true otherwise.</returns>
         public static bool operator !=(MusicalTimeSpan timeSpan1, MusicalTimeSpan timeSpan2)
         {
@@ -292,64 +302,74 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Multiplies the specified <see cref="MusicalTimeSpan"/> by a number.
+        ///     Multiplies the specified <see cref="MusicalTimeSpan" /> by a number.
         /// </summary>
-        /// <param name="timeSpan">The <see cref="MusicalTimeSpan"/> to multiply by <paramref name="number"/>.</param>
+        /// <param name="timeSpan">The <see cref="MusicalTimeSpan" /> to multiply by <paramref name="number" />.</param>
         /// <param name="number">The multiplier.</param>
-        /// <returns>An object whose value is the result of multiplication of <paramref name="timeSpan"/> by
-        /// <paramref name="number"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="timeSpan"/> is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="number"/> is negative.</exception>
+        /// <returns>
+        ///     An object whose value is the result of multiplication of <paramref name="timeSpan" /> by
+        ///     <paramref name="number" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="timeSpan" /> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="number" /> is negative.</exception>
         public static MusicalTimeSpan operator *(MusicalTimeSpan timeSpan, long number)
         {
             ThrowIfArgument.IsNull(nameof(timeSpan), timeSpan);
             ThrowIfArgument.IsNegative(nameof(number), number, "Number is negative.");
 
             return new MusicalTimeSpan(timeSpan.Numerator * number,
-                                       timeSpan.Denominator);
+                timeSpan.Denominator);
         }
 
         /// <summary>
-        /// Multiplies the specified <see cref="MusicalTimeSpan"/> by a number.
+        ///     Multiplies the specified <see cref="MusicalTimeSpan" /> by a number.
         /// </summary>
         /// <param name="number">The multiplier.</param>
-        /// <param name="timeSpan">The <see cref="MusicalTimeSpan"/> to multiply by <paramref name="number"/>.</param>
-        /// <returns>An object whose value is the result of multiplication of <paramref name="timeSpan"/> by
-        /// <paramref name="number"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="timeSpan"/> is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="number"/> is negative.</exception>
+        /// <param name="timeSpan">The <see cref="MusicalTimeSpan" /> to multiply by <paramref name="number" />.</param>
+        /// <returns>
+        ///     An object whose value is the result of multiplication of <paramref name="timeSpan" /> by
+        ///     <paramref name="number" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="timeSpan" /> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="number" /> is negative.</exception>
         public static MusicalTimeSpan operator *(long number, MusicalTimeSpan timeSpan)
         {
             return timeSpan * number;
         }
 
         /// <summary>
-        /// Divides the specified <see cref="MusicalTimeSpan"/> by a number.
+        ///     Divides the specified <see cref="MusicalTimeSpan" /> by a number.
         /// </summary>
-        /// <param name="timeSpan">The <see cref="MusicalTimeSpan"/> to divide by <paramref name="number"/>.</param>
+        /// <param name="timeSpan">The <see cref="MusicalTimeSpan" /> to divide by <paramref name="number" />.</param>
         /// <param name="number">The multiplier.</param>
-        /// <returns>An object whose value is the result of division of <paramref name="timeSpan"/> by
-        /// <paramref name="number"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="timeSpan"/> is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="number"/> is negative.</exception>
+        /// <returns>
+        ///     An object whose value is the result of division of <paramref name="timeSpan" /> by
+        ///     <paramref name="number" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="timeSpan" /> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="number" /> is negative.</exception>
         public static MusicalTimeSpan operator /(MusicalTimeSpan timeSpan, long number)
         {
             ThrowIfArgument.IsNull(nameof(timeSpan), timeSpan);
             ThrowIfArgument.IsNonpositive(nameof(number), number, "Number is zero or negative.");
 
             return new MusicalTimeSpan(timeSpan.Numerator,
-                                       timeSpan.Denominator * number);
+                timeSpan.Denominator * number);
         }
 
         /// <summary>
-        /// Adds two specified <see cref="MusicalTimeSpan"/> instances.
+        ///     Adds two specified <see cref="MusicalTimeSpan" /> instances.
         /// </summary>
-        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan"/> to add.</param>
-        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan"/> to add.</param>
-        /// <returns>An object whose value is the sum of the values of <paramref name="timeSpan1"/> and
-        /// <paramref name="timeSpan2"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="timeSpan1"/> is null. -or-
-        /// <paramref name="timeSpan2"/> is null.</exception>
+        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan" /> to add.</param>
+        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan" /> to add.</param>
+        /// <returns>
+        ///     An object whose value is the sum of the values of <paramref name="timeSpan1" /> and
+        ///     <paramref name="timeSpan2" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="timeSpan1" /> is null. -or-
+        ///     <paramref name="timeSpan2" /> is null.
+        /// </exception>
         public static MusicalTimeSpan operator +(MusicalTimeSpan timeSpan1, MusicalTimeSpan timeSpan2)
         {
             ThrowIfArgument.IsNull(nameof(timeSpan1), timeSpan1);
@@ -361,15 +381,19 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Subtracts a specified <see cref="MusicalTimeSpan"/> from another one.
+        ///     Subtracts a specified <see cref="MusicalTimeSpan" /> from another one.
         /// </summary>
         /// <param name="timeSpan1">The minuend.</param>
         /// <param name="timeSpan2">The subtrahend.</param>
-        /// <returns>An object whose value is the result of the value of <paramref name="timeSpan1"/> minus
-        /// the value of <paramref name="timeSpan2"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="timeSpan1"/> is null. -or-
-        /// <paramref name="timeSpan2"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="timeSpan1"/> is less than <paramref name="timeSpan2"/>.</exception>
+        /// <returns>
+        ///     An object whose value is the result of the value of <paramref name="timeSpan1" /> minus
+        ///     the value of <paramref name="timeSpan2" />.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="timeSpan1" /> is null. -or-
+        ///     <paramref name="timeSpan2" /> is null.
+        /// </exception>
+        /// <exception cref="ArgumentException"><paramref name="timeSpan1" /> is less than <paramref name="timeSpan2" />.</exception>
         public static MusicalTimeSpan operator -(MusicalTimeSpan timeSpan1, MusicalTimeSpan timeSpan2)
         {
             ThrowIfArgument.IsNull(nameof(timeSpan1), timeSpan1);
@@ -384,14 +408,18 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Indicates whether a specified <see cref="MusicalTimeSpan"/> is less than another one.
+        ///     Indicates whether a specified <see cref="MusicalTimeSpan" /> is less than another one.
         /// </summary>
-        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan"/> to compare.</param>
-        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan"/> to compare.</param>
-        /// <returns>true if the value of <paramref name="timeSpan1"/> is less than the value of
-        /// <paramref name="timeSpan2"/>; otherwise, false.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="timeSpan1"/> is null. -or-
-        /// <paramref name="timeSpan2"/> is null.</exception>
+        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan" /> to compare.</param>
+        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan" /> to compare.</param>
+        /// <returns>
+        ///     true if the value of <paramref name="timeSpan1" /> is less than the value of
+        ///     <paramref name="timeSpan2" />; otherwise, false.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="timeSpan1" /> is null. -or-
+        ///     <paramref name="timeSpan2" /> is null.
+        /// </exception>
         public static bool operator <(MusicalTimeSpan timeSpan1, MusicalTimeSpan timeSpan2)
         {
             ThrowIfArgument.IsNull(nameof(timeSpan1), timeSpan1);
@@ -403,14 +431,18 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Indicates whether a specified <see cref="MusicalTimeSpan"/> is greater than another one.
+        ///     Indicates whether a specified <see cref="MusicalTimeSpan" /> is greater than another one.
         /// </summary>
-        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan"/> to compare.</param>
-        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan"/> to compare.</param>
-        /// <returns>true if the value of <paramref name="timeSpan1"/> is greater than the value of
-        /// <paramref name="timeSpan2"/>; otherwise, false.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="timeSpan1"/> is null. -or-
-        /// <paramref name="timeSpan2"/> is null.</exception>
+        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan" /> to compare.</param>
+        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan" /> to compare.</param>
+        /// <returns>
+        ///     true if the value of <paramref name="timeSpan1" /> is greater than the value of
+        ///     <paramref name="timeSpan2" />; otherwise, false.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="timeSpan1" /> is null. -or-
+        ///     <paramref name="timeSpan2" /> is null.
+        /// </exception>
         public static bool operator >(MusicalTimeSpan timeSpan1, MusicalTimeSpan timeSpan2)
         {
             ThrowIfArgument.IsNull(nameof(timeSpan1), timeSpan1);
@@ -422,15 +454,19 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Indicates whether a specified <see cref="MusicalTimeSpan"/> is less than or equal to
-        /// another one.
+        ///     Indicates whether a specified <see cref="MusicalTimeSpan" /> is less than or equal to
+        ///     another one.
         /// </summary>
-        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan"/> to compare.</param>
-        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan"/> to compare.</param>
-        /// <returns>true if the value of <paramref name="timeSpan1"/> is less than or equal to the value of
-        /// <paramref name="timeSpan2"/>; otherwise, false.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="timeSpan1"/> is null. -or-
-        /// <paramref name="timeSpan2"/> is null.</exception>
+        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan" /> to compare.</param>
+        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan" /> to compare.</param>
+        /// <returns>
+        ///     true if the value of <paramref name="timeSpan1" /> is less than or equal to the value of
+        ///     <paramref name="timeSpan2" />; otherwise, false.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="timeSpan1" /> is null. -or-
+        ///     <paramref name="timeSpan2" /> is null.
+        /// </exception>
         public static bool operator <=(MusicalTimeSpan timeSpan1, MusicalTimeSpan timeSpan2)
         {
             ThrowIfArgument.IsNull(nameof(timeSpan1), timeSpan1);
@@ -442,15 +478,19 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Indicates whether a specified <see cref="MusicalTimeSpan"/> is greater than or equal to
-        /// another one.
+        ///     Indicates whether a specified <see cref="MusicalTimeSpan" /> is greater than or equal to
+        ///     another one.
         /// </summary>
-        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan"/> to compare.</param>
-        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan"/> to compare.</param>
-        /// <returns>true if the value of <paramref name="timeSpan1"/> is greater than or equal to the value of
-        /// <paramref name="timeSpan2"/>; otherwise, false.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="timeSpan1"/> is null. -or-
-        /// <paramref name="timeSpan2"/> is null.</exception>
+        /// <param name="timeSpan1">The first <see cref="MusicalTimeSpan" /> to compare.</param>
+        /// <param name="timeSpan2">The second <see cref="MusicalTimeSpan" /> to compare.</param>
+        /// <returns>
+        ///     true if the value of <paramref name="timeSpan1" /> is greater than or equal to the value of
+        ///     <paramref name="timeSpan2" />; otherwise, false.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="timeSpan1" /> is null. -or-
+        ///     <paramref name="timeSpan2" /> is null.
+        /// </exception>
         public static bool operator >=(MusicalTimeSpan timeSpan1, MusicalTimeSpan timeSpan2)
         {
             ThrowIfArgument.IsNull(nameof(timeSpan1), timeSpan1);
@@ -466,17 +506,17 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region Overrides
 
         /// <summary>
-        /// Determines whether the specified object is equal to the current object.
+        ///     Determines whether the specified object is equal to the current object.
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return this == (obj as MusicalTimeSpan);
+            return this == obj as MusicalTimeSpan;
         }
 
         /// <summary>
-        /// Returns the hash code for this instance.
+        ///     Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
@@ -485,7 +525,7 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
@@ -498,18 +538,22 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         #region ITimeSpan
 
         /// <summary>
-        /// Adds a time span to the current one.
+        ///     Adds a time span to the current one.
         /// </summary>
         /// <remarks>
-        /// If <paramref name="timeSpan"/> and the current time span have the same type,
-        /// the result time span will be of this type too; otherwise - of the <see cref="MathTimeSpan"/>.
+        ///     If <paramref name="timeSpan" /> and the current time span have the same type,
+        ///     the result time span will be of this type too; otherwise - of the <see cref="MathTimeSpan" />.
         /// </remarks>
         /// <param name="timeSpan">Time span to add to the current one.</param>
-        /// <param name="mode">Mode of the operation that defines meaning of time spans the
-        /// operation will be performed on.</param>
-        /// <returns>Time span that is a sum of the <paramref name="timeSpan"/> and the
-        /// current time span.</returns>
-        /// <exception cref="ArgumentException"><paramref name="mode"/> is invalid.</exception>
+        /// <param name="mode">
+        ///     Mode of the operation that defines meaning of time spans the
+        ///     operation will be performed on.
+        /// </param>
+        /// <returns>
+        ///     Time span that is a sum of the <paramref name="timeSpan" /> and the
+        ///     current time span.
+        /// </returns>
+        /// <exception cref="ArgumentException"><paramref name="mode" /> is invalid.</exception>
         public ITimeSpan Add(ITimeSpan timeSpan, TimeSpanMode mode)
         {
             ThrowIfArgument.IsNull(nameof(timeSpan), timeSpan);
@@ -521,17 +565,21 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Subtracts a time span from the current one.
+        ///     Subtracts a time span from the current one.
         /// </summary>
         /// <remarks>
-        /// If <paramref name="timeSpan"/> and the current time span have the same type,
-        /// the result time span will be of this type too; otherwise - of the <see cref="MathTimeSpan"/>.
+        ///     If <paramref name="timeSpan" /> and the current time span have the same type,
+        ///     the result time span will be of this type too; otherwise - of the <see cref="MathTimeSpan" />.
         /// </remarks>
         /// <param name="timeSpan">Time span to subtract from the current one.</param>
-        /// <param name="mode">Mode of the operation that defines meaning of time spans the
-        /// operation will be performed on.</param>
-        /// <returns>Time span that is a difference between the <paramref name="timeSpan"/> and the
-        /// current time span.</returns>
+        /// <param name="mode">
+        ///     Mode of the operation that defines meaning of time spans the
+        ///     operation will be performed on.
+        /// </param>
+        /// <returns>
+        ///     Time span that is a difference between the <paramref name="timeSpan" /> and the
+        ///     current time span.
+        /// </returns>
         public ITimeSpan Subtract(ITimeSpan timeSpan, TimeSpanMode mode)
         {
             ThrowIfArgument.IsNull(nameof(timeSpan), timeSpan);
@@ -543,33 +591,36 @@ namespace Melanchall.DryWetMidi.Smf.Interaction
         }
 
         /// <summary>
-        /// Stretches the current time span by multiplying its length by the specified multiplier.
+        ///     Stretches the current time span by multiplying its length by the specified multiplier.
         /// </summary>
         /// <param name="multiplier">Multiplier to stretch the time span by.</param>
-        /// <returns>Time span that is the current time span stretched by the <paramref name="multiplier"/>.</returns>
+        /// <returns>Time span that is the current time span stretched by the <paramref name="multiplier" />.</returns>
         public ITimeSpan Multiply(double multiplier)
         {
             ThrowIfArgument.IsNegative(nameof(multiplier), multiplier, "Multiplier is negative.");
 
-            return new MusicalTimeSpan((long)Math.Round(Numerator * Math.Round(multiplier, NumberOfDigitsAfterDecimalPoint) * FractionPartMultiplier),
-                                       Denominator * FractionPartMultiplier);
+            return new MusicalTimeSpan(
+                (long) Math.Round(Numerator * Math.Round(multiplier, NumberOfDigitsAfterDecimalPoint) *
+                                  FractionPartMultiplier),
+                Denominator * FractionPartMultiplier);
         }
 
         /// <summary>
-        /// Shrinks the current time span by dividing its length by the specified divisor.
+        ///     Shrinks the current time span by dividing its length by the specified divisor.
         /// </summary>
         /// <param name="divisor">Divisor to shrink the time span by.</param>
-        /// <returns>Time span that is the current time span shrinked by the <paramref name="divisor"/>.</returns>
+        /// <returns>Time span that is the current time span shrinked by the <paramref name="divisor" />.</returns>
         public ITimeSpan Divide(double divisor)
         {
             ThrowIfArgument.IsNonpositive(nameof(divisor), divisor, "Divisor is zero or negative.");
 
             return new MusicalTimeSpan(Numerator * FractionPartMultiplier,
-                                       (long)Math.Round(Denominator * Math.Round(divisor, NumberOfDigitsAfterDecimalPoint) * FractionPartMultiplier));
+                (long) Math.Round(Denominator * Math.Round(divisor, NumberOfDigitsAfterDecimalPoint) *
+                                  FractionPartMultiplier));
         }
 
         /// <summary>
-        /// Clones the current time span.
+        ///     Clones the current time span.
         /// </summary>
         /// <returns>Copy of the current time span.</returns>
         public ITimeSpan Clone()
