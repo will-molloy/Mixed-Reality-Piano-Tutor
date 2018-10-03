@@ -41,9 +41,13 @@ A Gamified Piano Practice Environment.
 - Play the 'MainUI' scene
 - Navigate the UI to play a MIDI file
 - Press 'Enter' to load the piano roll once in the 'PlayMode' scene
+- Press 'h' to toggle the virtual piano
+  - You may also continue to calibrate if needed
+- Press 'o' to toggle the ZED-Mini's occlusion
 - Press 'Escape' to quit the song early and view the end-of-session feedback
     - Scroll the feedback with: PageUp, PageDown
     - Alternatively view this mode from the 'HistoryUI' scene
+  
 
 ### Load MIDI files
 - Place your files in 'Assets/MIDI'
@@ -52,5 +56,6 @@ A Gamified Piano Practice Environment.
 
 ## Contribute
 - Feel free to fork the repository
+  - You may consider using [git-lfs](https://git-lfs.github.com/)
 - Feel free to contact us {wmol664, qhua948}@aucklanduni.ac.nz
 
