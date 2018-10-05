@@ -13,7 +13,7 @@ A Gamified Piano Practice Environment.
 - HTC Vive Trackers (controllers work fine)
 - HTC Vive Lighthouses
 - [ZED Mini stereo camera](https://www.stereolabs.com/zed-mini/)
-  - Including [ZED SDK](https://www.stereolabs.com/developers/)
+  - Including [ZED SDK](https://www.stereolabs.com/developers/) (we used 2.4)
   - And matching [Unity plugin](https://github.com/stereolabs/zed-unity/releases)
 - Capable computer
 - Unity3D
