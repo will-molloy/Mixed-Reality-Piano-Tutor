@@ -25,11 +25,18 @@ A Gamified Piano Practice Environment.
 
 ### Install
 - Clone the repository
+- Install Unity, ZED SDK, and SteamVR
 - Open the Unity project
+- Ensure Vive, ZED, MIDI keyboard etc. are connected to your PC (USB 3.0 and display port)
 
 ### Calibrate
 - Play the 'PlayMode' scene
-- Ensure your tracker (or controller) doesn't move, i.e. fasten it to your keyboard
+- Attach the Vive controller to your keyboard such that it doesn't move
+    - Note it must be the correct controller
+    - You can change this by setting the 'Left Marker' in the PianoBuilderMarkerHook script (under the 'Piano / Sequencer / Calibration' object) with the other controller found in the 'CameraRig' object
+      - Using one marker takes the first markers position ('Left marker')
+      - Using two markers takes the centre of the two
+- Start the scene, make sure your keyboard controls the scene by clicking on the game screen
 - Ensure you can view the virtual piano at the tip of your tracker
     -   If not press 'r' to reset the position
     -   Otherwise your tracker isn't being tracked correctly
@@ -40,20 +47,25 @@ A Gamified Piano Practice Environment.
 
 ### Play
 - Play the 'MainUI' scene
-- Navigate the UI to play a MIDI file
+- Navigate the UI to play a MIDI file, set the game speed, and username
+- Make sure your keyboard controls the scene by clicking on the game screen
 - Press 'Enter' to load the piano roll once in the 'PlayMode' scene
 - Press 'h' to toggle the virtual piano
-  - You may also continue to calibrate if needed
 - Press 'o' to toggle the ZED-Mini's occlusion
 - Press 'Escape' to quit the song early and view the end-of-session feedback
     - Scroll the feedback with: PageUp, PageDown
-    - Alternatively view this mode from the 'HistoryUI' scene
+    - This will also save the session, hence you can alternatively view this mode from the 'HistoryUI' scene
+-  Note you can continue to adjust the calibration while in game
   
 
 ### Load MIDI files
 - Place your files in 'Assets/MIDI'
     -  They will automatically be detected
 - Update MIDI file difficulty associations in the 'Assets/Resources/midi-difficulties.json' file
+
+### Changing defaults
+- In the RunTimeSettings.cs class (found in Assets/Scripts) you can edit defaults such as the MIDI directory, and default song chosen for the PlayMode scene
+- Future work includes creating a user interface for this
 
 ## Contribute
 - Feel free to fork the repository
