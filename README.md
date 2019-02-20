@@ -70,5 +70,16 @@ A Gamified Piano Practice Environment.
 ## Contribute
 - Feel free to fork the repository
   - You may consider using [git-lfs](https://git-lfs.github.com/)
-- Feel free to contact us {wmol664, qhua948}@aucklanduni.ac.nz
+  
+## FAQ
+*Feel free to contact us {wmol664, qhua948}@aucklanduni.ac.nz*
 
+### How to convert midi file into json string?
+Looking at [MidiFileSequencer:](https://github.com/wilmol/Mixed-Reality-Piano-Tutor/blob/master/Assets/Scripts/Midi_Sequencer/MidiFileSequencer.cs)
+
+We used a 3rd party library (DryWetMidi) which turns a midi file into List\<Note\> (See method: public void LoadMidiFile(string file))
+
+Then we create NoteDuration objects from each note. (See method: private void SpawnNotesDropDown(List\<Note\> notes))
+  
+Then use another 3rd party library (JsonDotNet) to save the JSON from List\<NoteDuration\>
+This works because NoteDuration is serialisable with [DataContract], (see the bottom of that file).
