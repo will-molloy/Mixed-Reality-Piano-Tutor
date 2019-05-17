@@ -3,6 +3,10 @@ A Gamified Piano Practice Environment.
 
 *SOFTENG 700AB: Honours Research Project (University of Auckland).*
 
+## Paper/report 
+
+[https://ieeexplore.ieee.org/abstract/document/8706474](https://ieeexplore.ieee.org/abstract/document/8706474)
+
 ## Video
 
 [https://www.youtube.com/watch?v=nWIq1QS27Sk](https://www.youtube.com/watch?v=nWIq1QS27Sk)
